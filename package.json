@@ -1,0 +1,11 @@
+{
+  "name": "nork-scraper-1951",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "GeorgeThomas1863",
+  "license": "ISC"
+}
