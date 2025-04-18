@@ -10,7 +10,6 @@ export const scrapeNewKCNA = async () => {
     const dataModel = new KCNA(type);
     const listPageArray = await dataModel.getListPageArray();
     console.log(listPageArray);
-    console.log(listPageArray);
 
     const dataObjArray = await dataModel.getDataObjArray();
   }

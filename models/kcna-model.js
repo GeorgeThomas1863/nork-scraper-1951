@@ -1,6 +1,8 @@
 import CONFIG from "../config/scrape-config.js";
 import Article from "./article-model.js";
-import { listPageMap } from "../config/map.js";
+import dbModel from "./db-model.js";
+
+import { listPageMap, newDownloadMap } from "../config/map.js";
 
 /**
  * @class KCNA
@@ -49,7 +51,11 @@ class KCNA {
   }
 
   async getDataObjArray() {
-    // const newDataModel = new dbModel()
+    const newDataParams = await newDownloadMap();
+    const downloadModel = new dbModel(newDataParams);
+    const downloadArray = await downloadModel.findNewURLs();
+    console.log("HOLY FUCK THIS IS TEDIOUS");
+    console.log(downloadArray);
   }
 }
 
