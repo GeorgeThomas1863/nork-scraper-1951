@@ -34,13 +34,16 @@ class KCNA {
   async getListPageArray() {
     //get html
     const type = this.dataObject;
-    const htmlModel = new KCNA({ url: CONFIG[type] });
-    const listPageHTML = await htmlModel.getHTML();
+
+    //figure out a map obj here
 
     switch (type) {
-      case "articleListURL":
-        const articleListModel = new Article(listPageHTML);
-        const articleListArray = await articleListModel.parseArticleList();
+      case "article":
+        const articleHTMLModel = new KCNA({ url: CONFIG.articleListURL });
+        const articleListPageHTML = await articleHTMLModel.getHTML();
+        const articleParseModel = new Article(articleListPageHTML);
+        const articleListArray = await articleParseModel.parseArticleList();
+        console.log(articleListArray);
     }
   }
 
