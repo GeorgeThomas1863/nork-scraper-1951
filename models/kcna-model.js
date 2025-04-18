@@ -1,5 +1,6 @@
 import CONFIG from "../config/scrape-config.js";
 import Article from "./article-model.js";
+import { listPageMap } from "../config/map.js";
 
 /**
  * @class KCNA
@@ -34,15 +35,15 @@ class KCNA {
   async getListPageArray() {
     //get html
     const type = this.dataObject;
-
+    const listPageParam = await listPageMap(type);
+    const listPageModel = new KCNA({ url: CONFIG[listPageParam] });
+    const listPageHTML = await listPageModel.getHTML();
     //figure out a map obj here
 
     switch (type) {
       case "article":
-        const articleHTMLModel = new KCNA({ url: CONFIG.articleListURL });
-        const articleListPageHTML = await articleHTMLModel.getHTML();
-        const articleParseModel = new Article(articleListPageHTML);
-        const articleListArray = await articleParseModel.parseArticleList();
+        const articleModel = new Article(listPageHTML);
+        const articleListArray = await articleModel.parseArticleList();
         console.log(articleListArray);
     }
   }
