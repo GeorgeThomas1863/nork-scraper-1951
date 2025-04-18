@@ -27,6 +27,14 @@ class KCNA {
       console.log(error);
     }
   }
+
+  async getListPageArray() {
+    //get html
+    const htmlModel = new KCNA(this.dataObject.url)
+    const listPageHTML = await htmlModel.getHTML()
+    console.log("ALLAHU AKBAR")
+    console.log(listPageHTML)
+  }
 }
 
 export default KCNA;
