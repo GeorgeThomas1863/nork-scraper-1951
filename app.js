@@ -18,7 +18,7 @@ import express from "express";
 import routes from "./routes/router.js";
 import * as db from "./data/db.js";
 
-import { runAllScrape, runNewScrape } from "./src/scrape.js";
+import { scrapeNewKCNA } from "./src/scrape.js";
 
 //FIRST CONNECT TO DB
 // (need this HERE bc main function will execute before express and fuck everything)
@@ -32,8 +32,7 @@ app.use(express.json());
 app.use(routes);
 
 //RUN FUNCTION
-runAllScrape();
-// runNewScrape(); //faster for testing
+scrapeNewKCNA();
 
 //PORT to listen
 // app.listen(CONFIG.port);

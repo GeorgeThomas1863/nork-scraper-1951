@@ -1,11 +1,19 @@
 {
   "name": "nork-scraper-1951",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon app.js"
   },
   "author": "GeorgeThomas1863",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.8.4",
+    "express": "^5.1.0",
+    "jsdom": "^26.1.0",
+    "mongodb": "^6.15.0",
+    "nodemon": "^3.1.9"
+  }
 }
