@@ -51,7 +51,10 @@ class KCNA {
   }
 
   async getDataObjArray() {
-    const newDataParams = await newDownloadMap(this.dataObject);
+    const type = this.dataObject;
+    console.log("TYPE");
+    console.log(type);
+    const newDataParams = await newDownloadMap(type);
     console.log(newDataParams);
     const downloadModel = new dbModel(newDataParams);
     const downloadArray = await downloadModel.findNewURLs();
