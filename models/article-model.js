@@ -53,6 +53,10 @@ class Article {
     return articleListNormal;
   }
 
+  //---------------
+
+  //FOR ARTICLE LIST
+
   async parseLinkArray(inputArray) {
     const urlConstant = "http://www.kcna.kp";
 
@@ -64,7 +68,7 @@ class Article {
       const url = urlConstant + href; //build full url
 
       //GET DATE
-      const dateElement = linkElementArray[i].querySelector(".publish-time");
+      const dateElement = inputArray[i].querySelector(".publish-time");
       if (!dateElement) continue;
       const dateText = dateElement.textContent.trim();
       const articleDate = await this.parseDateElement(dateText);
@@ -101,6 +105,10 @@ class Article {
     const articleDate = new Date(year, month - 1, day);
     return articleDate;
   }
+
+  //--------------------------
+
+  //FOR ARTICLE OBJ
 
   async parseArticleText() {
     const textArray = this.dataObject;
