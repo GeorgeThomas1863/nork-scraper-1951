@@ -54,8 +54,8 @@ class KCNA {
     const newDataParams = await newDownloadMap();
     const downloadModel = new dbModel(newDataParams);
     const downloadArray = await downloadModel.findNewURLs();
-    console.log("HOLY FUCK THIS IS TEDIOUS");
-    console.log(downloadArray);
+    console.log("!!!HERE");
+    console.log(downloadArray[0]);
   }
 }
 
