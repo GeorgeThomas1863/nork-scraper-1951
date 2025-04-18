@@ -52,10 +52,11 @@ class KCNA {
 
   async getDataObjArray() {
     const newDataParams = await newDownloadMap();
-    const downloadModel = new dbModel(newDataParams);
-    const downloadArray = await downloadModel.findNewURLs();
-    console.log("!!!HERE");
-    console.log(downloadArray[0]);
+    console.log(newDataParams);
+    // const downloadModel = new dbModel(newDataParams);
+    // const downloadArray = await downloadModel.findNewURLs();
+    // console.log("!!!HERE");
+    // console.log(downloadArray[0]);
   }
 }
 
