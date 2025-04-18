@@ -7,8 +7,12 @@ export const scrapeNewKCNA = async () => {
   //below for testing
   for (let i = 0; i < 1; i++) {
     const type = CONFIG.typeArr[i];
-    const listPageModel = new KCNA(type);
-    const listPageArray = await listPageModel.getListPageArray();
+    const dataModel = new KCNA(type);
+    const listPageArray = await dataModel.getListPageArray();
+    console.log(listPageArray);
+    console.log(listPageArray);
+
+    const dataObjArray = await dataModel.getDataObjArray();
   }
 };
 

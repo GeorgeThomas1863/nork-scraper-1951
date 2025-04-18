@@ -43,6 +43,10 @@ class KCNA {
         const articleListArray = await articleListModel.parseArticleList();
     }
   }
+
+  async getDataObjArray() {
+    // const newDataModel = new dbModel()
+  }
 }
 
 export default KCNA;
