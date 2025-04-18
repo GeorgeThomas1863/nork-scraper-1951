@@ -1,4 +1,5 @@
 import CONFIG from "../config/scrape-config.js";
+import Article from "./article-model.js";
 
 /**
  * @class KCNA
@@ -35,8 +36,12 @@ class KCNA {
     const type = this.dataObject;
     const htmlModel = new KCNA({ url: CONFIG[type] });
     const listPageHTML = await htmlModel.getHTML();
-    console.log("ALLAHU AKBAR");
-    console.log(listPageHTML);
+
+    switch (type) {
+      case "articleListURL":
+        const articleListModel = new Article(listPageHTML);
+        const articleListArray = await articleListModel.parseArticleList();
+    }
   }
 }
 
