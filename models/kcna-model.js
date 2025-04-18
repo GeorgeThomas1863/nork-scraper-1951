@@ -2,7 +2,7 @@ import CONFIG from "../config/scrape-config.js";
 import Article from "./article-model.js";
 import dbModel from "./db-model.js";
 
-import { listPageMap, newDownloadMap } from "../config/map.js";
+import { newListMap, newDownloadMap } from "../config/map.js";
 
 /**
  * @class KCNA
@@ -38,7 +38,7 @@ class KCNA {
    * get LATEST list page data [predefined locations where urls for items]
    * @function getNewListArray
    * @returns arrray of listObjs (item url / date)
-   */ 
+   */
   async getNewListArray() {
     //get html
     const type = this.dataObject;
@@ -53,7 +53,7 @@ class KCNA {
         const articleModel = new Article(newListHTML);
         const articleListArray = await articleModel.parseArticleList();
         console.log(articleListArray);
-        break
+        break;
     }
   }
 
@@ -61,7 +61,7 @@ class KCNA {
 
   //MOVE TO UTIL
   async getNewItemArray() {
-    const type = this.dataObject
+    const type = this.dataObject;
     const newDataParams = await newDownloadMap(type);
     const downloadModel = new dbModel(newDataParams);
     const downloadArray = await downloadModel.findNewURLs();
