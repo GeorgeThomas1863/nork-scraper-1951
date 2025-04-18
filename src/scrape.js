@@ -8,7 +8,7 @@ export const scrapeNewKCNA = async () => {
 export const getListPageHTML = async (type) => {
   if (!type) return null;
 
-  const listPageModel = new KCNA({ url: CONFIG.type });
+  const listPageModel = new KCNA({ url: CONFIG[type] });
   const listPageHTML = await listPageModel.getHTML();
   console.log("AHHHHHHHHHHH");
   console.log(listPageHTML);
