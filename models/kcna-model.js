@@ -1,3 +1,5 @@
+import CONFIG from "../config/scrape-config.js";
+
 /**
  * @class KCNA
  * @description Does shit on KCNA and with KCNA data
@@ -30,10 +32,11 @@ class KCNA {
 
   async getListPageArray() {
     //get html
-    const htmlModel = new KCNA(this.dataObject.url)
-    const listPageHTML = await htmlModel.getHTML()
-    console.log("ALLAHU AKBAR")
-    console.log(listPageHTML)
+    const type = this.dataObject;
+    const htmlModel = new KCNA({ url: CONFIG[type] });
+    const listPageHTML = await htmlModel.getHTML();
+    console.log("ALLAHU AKBAR");
+    console.log(listPageHTML);
   }
 }
 
