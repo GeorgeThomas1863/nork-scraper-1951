@@ -36,7 +36,8 @@ class KCNA {
 
   async getListPageArray() {
     //get html
-    const listPageParam = await listPageMap(this.dataObject);
+    const type = this.dataObject;
+    const listPageParam = await listPageMap(type);
     const listPageModel = new KCNA({ url: CONFIG[listPageParam] });
     const listPageHTML = await listPageModel.getHTML();
     //figure out a map obj here
@@ -50,7 +51,8 @@ class KCNA {
   }
 
   async getDataObjArray() {
-    const newDataParams = await newDownloadMap(this.dataObject);
+    const type = this.dataObject
+    const newDataParams = await newDownloadMap(type);
     console.log(newDataParams);
     const downloadModel = new dbModel(newDataParams);
     const downloadArray = await downloadModel.findNewURLs();
