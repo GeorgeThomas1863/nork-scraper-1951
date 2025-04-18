@@ -34,26 +34,35 @@ class KCNA {
     }
   }
 
-  async getListPageArray() {
+  /**
+   * get LATEST list page data [predefined locations where urls for items]
+   * @function getNewListArray
+   * @returns arrray of listObjs (item url / date)
+   */ 
+  async getNewListArray() {
     //get html
     const type = this.dataObject;
-    const listPageParam = await listPageMap(type);
-    const listPageModel = new KCNA({ url: CONFIG[listPageParam] });
-    const listPageHTML = await listPageModel.getHTML();
+    const newListParam = await newListMap(type);
+    const newListModel = new KCNA({ url: CONFIG[newListParam] });
+    const newListHTML = await newListModel.getHTML();
+
     //figure out a map obj here
 
     switch (type) {
       case "article":
-        const articleModel = new Article(listPageHTML);
+        const articleModel = new Article(newListHTML);
         const articleListArray = await articleModel.parseArticleList();
         console.log(articleListArray);
+        break
     }
   }
 
-  async getDataObjArray() {
+  //WILL HAVE GET NEW PAGE ARRAY HERE
+
+  //MOVE TO UTIL
+  async getNewItemArray() {
     const type = this.dataObject
     const newDataParams = await newDownloadMap(type);
-    console.log(newDataParams);
     const downloadModel = new dbModel(newDataParams);
     const downloadArray = await downloadModel.findNewURLs();
     console.log("!!!HERE");

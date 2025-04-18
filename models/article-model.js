@@ -58,31 +58,39 @@ class Article {
   //FOR ARTICLE LIST
 
   async parseLinkArray(inputArray) {
-    const urlConstant = "http://www.kcna.kp";
-
     //loop through a tags and pull out hrefs
     const articleListArray = [];
     for (let i = 0; i < inputArray.length; i++) {
-      const href = inputArray[i].getAttribute("href");
-      if (!href) continue;
-      const url = urlConstant + href; //build full url
+      const listItem = inputArray[i];
+      const articleListObj = await this.buildArticleListObj(listItem);
 
-      //GET DATE
-      const dateElement = inputArray[i].querySelector(".publish-time");
-      if (!dateElement) continue;
-      const dateText = dateElement.textContent.trim();
-      const articleDate = await this.parseDateElement(dateText);
-
-      //build obj
-      const listObj = {
-        url: url,
-        date: articleDate,
-      };
-
-      articleListArray.push(listObj); //add to array
+      articleListArray.push(articleListObj); //add to array
     }
 
     return articleListArray;
+  }
+
+  async buildArticleListObj(listItem) {
+    const href = listItem.getAttribute("href");
+    if (!href) return;
+
+    //build full url
+    const urlConstant = "http://www.kcna.kp";
+    const url = urlConstant + href;
+
+    //GET DATE
+    const dateElement = listItem[i].querySelector(".publish-time");
+    if (!dateElement) return;
+    const dateText = dateElement.textContent.trim();
+    const articleDate = await this.parseDateElement(dateText);
+
+    //build obj
+    const articleListObj = {
+      url: url,
+      date: articleDate,
+    };
+
+    return articleListObj;
   }
 
   //breaks out date parsing

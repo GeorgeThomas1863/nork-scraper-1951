@@ -1,17 +1,19 @@
 import CONFIG from "../config/scrape-config.js";
 import KCNA from "../models/kcna-model.js";
 
-export const scrapeNewKCNA = async () => {
+export const scrapeKCNA = async () => {
   //loop through types
   // for (let i = 0; i<CONFIG.typeArr; i++){
   //below for testing
   for (let i = 0; i < 1; i++) {
     const type = CONFIG.typeArr[i];
     const dataModel = new KCNA(type);
-    const listPageArray = await dataModel.getListPageArray();
-    console.log(listPageArray);
+    const newListArray = await dataModel.getNewListArray();
+    console.log(newListArray);
 
-    const dataObjArray = await dataModel.getDataObjArray();
+    //getNewPageArray (for pics / vids)
+
+    const itemObjArray = await dataModel.getNewItemArray();
   }
 };
 
