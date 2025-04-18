@@ -79,7 +79,7 @@ class Article {
     const url = urlConstant + href;
 
     //GET DATE
-    const dateElement = listItem[i].querySelector(".publish-time");
+    const dateElement = listItem.querySelector(".publish-time");
     if (!dateElement) return;
     const dateText = dateElement.textContent.trim();
     const articleDate = await this.parseDateElement(dateText);
