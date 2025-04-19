@@ -192,15 +192,14 @@ class Pic {
   async getPicSetPageHTML(picSetItem) {
     const htmlModel = new KCNA(picSetItem);
     const html = await htmlModel.getHTML();
+    console.log("AHHHHHHHHHH");
+    console.log(html);
     return html;
   }
 
   async buildPicSetObj(html) {
     const dom = new JSDOM(html);
     const document = dom.window.document;
-
-    console.log("AHHHHHHHHHHHHHH");
-    console.log(document);
   }
 }
 
