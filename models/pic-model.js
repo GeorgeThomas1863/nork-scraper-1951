@@ -125,7 +125,7 @@ class Pic {
 
     const storeDataModel = new dbModel(picSetListNormal, CONFIG.picSets);
     const storeData = await storeDataModel.storeArray();
-    console.log("STORING PIC SET")
+    console.log("STORING PIC SET");
     console.log(storeData);
 
     return picSetListNormal;
@@ -145,9 +145,12 @@ class Pic {
 
   async buildPicSetListObj(inputItem) {
     const titleWrapper = inputItem.querySelector(".title a");
+
+    //get PicSetURL
     const href = titleWrapper.getAttribute("href");
-    console.log("!!!!HREF");
-    console.log(href);
+    const urlConstant = "http://www.kcna.kp";
+    const picSetURL = urlConstant + href;
+
     // build url const url =
 
     //get date
@@ -161,12 +164,12 @@ class Pic {
     const title = titleRaw.replace(dateElement.textContent, "").trim();
 
     const picSetListObj = {
-      url: href,
+      url: picSetURL,
       title: title,
       date: picSetDate,
     };
 
-    console.log("PIC SET LIST OBJ")
+    console.log("PIC SET LIST OBJ");
     console.log(picSetListObj);
     return picSetListObj;
   }
