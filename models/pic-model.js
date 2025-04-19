@@ -182,24 +182,60 @@ class Pic {
   async parsePicSetPage() {
     const downloadArray = this.dataObject;
     for (let i = 0; i < downloadArray.length; i++) {
-      const picSetItem = downloadArray[i];
-      //get HTML
-      const picSetPageHTML = await this.getPicSetPageHTML(picSetItem);
-      const picSetObj = await this.buildPicSetObj(picSetPageHTML);
+      try {
+        const inputObj = downloadArray[i];
+        //get HTML
+        const picSetPageHTML = await this.getPicSetPageHTML(inputObj);
+        const picObjArray = await this.buildPicSetObj(picSetPageHTML);
+        inputObj.picArray = picObjArray;
+
+        const storePicSetModel = new dbModel(inputObj, CONFIG.picSets);
+        const storePicSetData = await storePicSetModel.storeUniqueURL();
+        console.log(storePicSetData);
+      } catch (e) {
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      }
     }
   }
 
   async getPicSetPageHTML(picSetItem) {
     const htmlModel = new KCNA(picSetItem);
     const html = await htmlModel.getHTML();
-    console.log("AHHHHHHHHHH");
-    console.log(html);
     return html;
   }
 
   async buildPicSetObj(html) {
     const dom = new JSDOM(html);
     const document = dom.window.document;
+    const picElementArray = document.querySelectorAll(".content img");
+
+    const picSetArray = [];
+    for (i = 0; i < picElementArray.length; i++) {
+      try {
+        const picObj = await this.parsePicElement(picElementArray[i]);
+        if (!picURL) continue;
+        picSetArray.push(picObj);
+
+        const storePicModel = new dbModel(picObj, CONFIG.pics);
+        const storePicData = await storePicModel.storeUniqueURL();
+        console.log(storePicData);
+      } catch (e) {
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      }
+    }
+
+    return picSetArray;
+  }
+
+  async parsePicElement(picElement) {
+    if (!picElement) return null;
+    const imgSrc = picElement.getAttribute("src");
+
+    //PROB WONT WORK
+    const picModel = new Pic(imgSrc);
+    const picObj = await picModel.buildArticlePicObj();
+
+    return picObj;
   }
 }
 
