@@ -178,7 +178,7 @@ class Article {
     if (!parseObj) return null;
 
     const articleObj = { ...inputObj, ...parseObj };
-    const storeModel = new dbModel(articleObj, CONFIG.articleDownloaded);
+    const storeModel = new dbModel(articleObj, CONFIG.articlesDownloaded);
     const storeData = await storeModel.storeUniqueURL();
     console.log(storeData);
     return articleObj;
