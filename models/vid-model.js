@@ -95,8 +95,8 @@ class Vid {
     const thumbnailURL = urlConstant + thumbSrc;
 
     //parse vidId / dateString
-    const kcnaId = +vidSrc.substring(vidSrc.lastIndexOf("/") + 2, vidSrc.lastIndexOf("."));
-    const dateString = vidSrc.substring(vidSrc.indexOf("video/kp/") + 9, vidSrc.indexOf("/V"));
+    const kcnaId = +thumbSrc.substring(thumbSrc.lastIndexOf("/") + 2, thumbSrc.lastIndexOf("."));
+    const dateString = thumbSrc.substring(thumbSrc.indexOf("video/kp/") + 9, thumbSrc.indexOf("/V"));
 
     //get date
     const dateElement = vidElement.querySelector(".publish-time");

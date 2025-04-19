@@ -1,6 +1,6 @@
 //TO DO:
 
-//ensure picSetsDownloaded works
+//SWITCH VID AND PIC REQS to be ONLY HEAD REQs 
 
 //refactor some names, work with gemini / your ppt
 //Get vid set working
@@ -41,4 +41,4 @@ scrapeKCNA();
 
 //PORT to listen
 // app.listen(CONFIG.port);
-app.listen(1951);
+app.listen(1950);
