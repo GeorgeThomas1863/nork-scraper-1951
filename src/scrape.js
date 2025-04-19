@@ -11,9 +11,7 @@ export const scrapeKCNA = async () => {
   //loop through types
   for (let i = 0; i < typeArr.length; i++) {
     const type = typeArr[i];
-    console.log("!!!!!!!!!!!")
-    console.log(type)
-    const newDataKCNA = await getNewDataKCNA(dataType);
+    const newDataKCNA = await getNewDataKCNA(type);
 
     console.log(newDataKCNA);
     console.log("FINSIHED FUCKER");
@@ -27,8 +25,6 @@ export const scrapeKCNA = async () => {
  * @returns array of finished data for tracking
  */
 export const getNewDataKCNA = async (type) => {
-  console.log("AHHHHHHHHH");
-  console.log(type);
   console.log("STARTING SCRAPE OF " + type.toUpperCase() + "S");
   const dataModel = new KCNA(type);
   const newListArray = await dataModel.getNewListArray();
