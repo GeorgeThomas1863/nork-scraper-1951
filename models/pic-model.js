@@ -181,7 +181,7 @@ class Pic {
 
   async parsePicSetPage() {
     const downloadArray = this.dataObject;
-    for (i = 0; i < downloadArray.length; i++) {
+    for (let i = 0; i < downloadArray.length; i++) {
       const picSetItem = downloadArray[i];
       //get HTML
       const picSetPageHTML = await getPicSetPageHTML(picSetItem);
