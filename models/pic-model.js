@@ -209,11 +209,9 @@ class Pic {
     const dom = new JSDOM(html);
     const document = dom.window.document;
     const picElementArray = document.querySelectorAll(".content img");
-    console.log("AHHHHH");
-    console.log(picElementArray.length);
 
     const picSetArray = [];
-    for (i = 0; i < picElementArray.length; i++) {
+    for (let i = 0; i < picElementArray.length; i++) {
       try {
         const picObj = await this.parsePicElement(picElementArray[i]);
         if (!picObj) continue;
