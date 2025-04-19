@@ -9,19 +9,14 @@ import { newListMap, newDownloadMap } from "../config/map.js";
  * @description Does shit on KCNA and with KCNA data
  */
 class KCNA {
-  /**
-   * @constructor
-   * @param {Object} dataObject - The data object with request parameters
-   */
   constructor(dataObject) {
     this.dataObject = dataObject;
   }
 
   /**
-   * Fetches HTML content from the specified URL (works for any url), returns as text
+   * Gets HTML content from the specified URL (works for any url), returns as text
    * @function getHTML
-   * @returns {Promise<string>} The HTML content as text
-   * @throws {Error} Logs the error to console if the request fails
+   * @returns  HTML content as text
    */
   async getHTML() {
     try {
@@ -34,23 +29,25 @@ class KCNA {
     }
   }
 
+  //----------------------
+
+  //LIST PAGE
+
   /**
-   * get LATEST list page data [predefined locations where urls for items]
+   * get NEWEST LIST PAGE data [predefined PAGE with urls for articles, pics, vids]
    * @function getNewListArray
-   * @returns arrray of listObjs (item url / date)
+   * @returns arrray of listObjs (item url / date / id etc)
    */
   async getNewListArray() {
     //get html
     const type = this.dataObject;
     console.log("GETTING LIST DATA FOR " + type.toUpperCase() + "S");
-    const newListParam = await newListMap(type);
-    const newListModel = new KCNA({ url: CONFIG[newListParam] });
-    const newListHTML = await newListModel.getHTML();
+    const newListHTML = await this.getNewListHTML(type);
     if (!newListHTML) return "FETCH FUCKED";
-    //figure out a map obj here
 
     switch (type) {
       case "article":
+        //pass to article model for parsing
         const articleListModel = new Article(newListHTML);
         const articleListArray = await articleListModel.parseArticleList();
         console.log(articleListArray);
@@ -58,21 +55,59 @@ class KCNA {
     }
   }
 
+  /**
+   * Gets LIST PAGE HTML for latest (predefined) item location
+   * @param {} type (article, picSet, vid)
+   * @returns
+   */
+  async getNewListHTML(type) {
+    const newListParam = await newListMap(type);
+    const newListModel = new KCNA({ url: CONFIG[newListParam] });
+    const newListHTML = await newListModel.getHTML();
+    return newListHTML;
+  }
+
+  //-----------------------------
+
   //WILL HAVE GET NEW PAGE ARRAY HERE
 
-  //MOVE TO UTIL
+  //------------------
+
+  //ITEM OBJECT SECTION
+
+  /**
+   * Gets new obj Items for each data type (article, picSet, vid), returns as array (for tracking)
+   * @function getNewObjArray
+   * @returns array of objs for tracking
+   */
   async getNewObjArray() {
     const type = this.dataObject;
-    const newDataParams = await newDownloadMap(type);
-    const downloadModel = new dbModel(newDataParams);
-    const downloadArray = await downloadModel.findNewURLs();
+    const downloadArray = await this.getDownloadArray(type);
 
+    //return on null
+    if (!downloadArray || !downloadArray.length) return "NOTHING NEW TO DOWNLOAD"
+
+    //otherwise pass to each item model to parse
     switch (type) {
       case "article":
         const articleObjModel = new Article(downloadArray);
-        const articleObjArray = await articleObjModel.buildArticleObjArray();
+        const articleObjArray = await articleObjModel.getNewArticleObjArray();
         return articleObjArray;
     }
+  }
+
+  /**
+   * Gets Obj items to download using MONGO (to pull those not downloaded)
+   * @function getDownloadArray
+   * @param {*} type (data item type: article, picSet, vid)
+   * @returns array of data objs for tracking
+   */
+  async getDownloadArray(type) {
+    //uses map to lookup params, params contain correct collections
+    const newDataParams = await newDownloadMap(type);
+    const downloadModel = new dbModel(newDataParams);
+    const downloadArray = await downloadModel.findNewURLs();
+    return downloadArray
   }
 }
 

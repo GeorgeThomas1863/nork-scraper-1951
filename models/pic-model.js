@@ -1,11 +1,21 @@
 // import CONFIG from "../config/scrape-config.js";
 // import dbModel from "./db-model.js";
 
+/**
+ * @class Pic
+ * @description Does shit with KCNA Pics (gets them, stores them, uploads, etc)
+ */
 class Pic {
   constructor(dataObject) {
     this.dataObject = dataObject;
   }
 
+  /**
+   * Builds picObj from looking up pic headers (and input)
+   * throws ERROR if URL doesnt exist / wrong, NULL if url NOT pic (to iterate through dateArray)
+   * @params requires url, kcnaId, dateString as input params
+   * @returns finished picObj
+   */
   async buildPicObj() {
     //call picURL here to avoid confusion
     const { url, kcnaId, dateString } = this.dataObject;
@@ -45,9 +55,17 @@ class Pic {
       picEditDate: picEditDate,
     };
 
+    console.log(picObj);
+
     return picObj;
   }
 
+  /**
+   * Builds and returns articlePicObj, extracts params from articlePic input, passes to buildPicObj to lookup pic / get headers
+   * @function buildArticlePicObj
+   * @params raw articlePicObj html data
+   * @returns finished articlePicObj
+   */
   async buildArticlePicObj() {
     const imgSrc = this.dataObject;
     if (!imgSrc) return null;
@@ -72,9 +90,6 @@ class Pic {
     //build pic OBJ from PIC URL file (checks if new AND stores it)
     const picObjModel = new Pic(picParams);
     const picObj = await picObjModel.buildPicObj();
-
-    console.log("ARTICLE PIC OBJECT");
-    console.log(picObj);
 
     return picObj;
   }
