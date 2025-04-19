@@ -184,9 +184,20 @@ class Article {
     return parseObj;
   }
 
-  async buildArticlePicArray(url) {
+  async parseArticleText(inputArray) {
+    const paragraphArray = [];
+    for (let i = 0; i < inputArray.length; i++) {
+      paragraphArray.push(inputArray[i].textContent.trim());
+    }
+
+    // Join paragraphs with double newlines for better readability
+    const articleText = paragraphArray.join("\n\n");
+    return articleText;
+  }
+
+  async buildArticlePicArray(picPageURL) {
     //get the html, build dom
-    const htmlModel = new KCNA(url);
+    const htmlModel = new KCNA({ url: picPageURL });
     const html = await htmlModel.getHTML();
 
     //if fails return null
@@ -202,11 +213,14 @@ class Article {
     //get and loop through img elements
     const imgArray = document.querySelectorAll("img");
     for (let i = 0; i < imgArray.length; i++) {
-      const imgItem = imgArray[i];
-      const articlePicObj = await this.getArticlePicObj(imgItem);
-      if (!articlePicObj) return null;
+      try {
+        const articlePicObj = await this.getArticlePicObj(imgArray[i]);
+        if (!articlePicObj) continue;
 
-      articlePicArray.push(articlePicObj);
+        articlePicArray.push(articlePicObj);
+      } catch (e) {
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      }
     }
 
     return articlePicArray;
@@ -218,21 +232,11 @@ class Article {
     const imgSrc = imgItem.getAttribute("src");
     const picObjModel = new Pic(imgSrc);
     const articlePicObj = await picObjModel.buildArticlePicObj();
+
     return articlePicObj;
   }
 
   //-----------------
-
-  async parseArticleText(inputArray) {
-    const paragraphArray = [];
-    for (let i = 0; i < inputArray.length; i++) {
-      paragraphArray.push(inputArray[i].textContent.trim());
-    }
-
-    // Join paragraphs with double newlines for better readability
-    const articleText = paragraphArray.join("\n\n");
-    return articleText;
-  }
 }
 
 export default Article;
