@@ -42,7 +42,7 @@ class dbModel {
   }
 
   /**
-   * Stores array of data data
+   * Stores array of data data (could alsoi put in util)
    * @function storeArrays
    * @returns {array} ARRAY of sorted OBJECTs
    */
@@ -61,6 +61,7 @@ class dbModel {
         //(claude claims i can instantiate a new instance from within this class)
         const storeModel = new dbModel(inputObj, this.collection);
         const storeData = await storeModel.storeUniqueURL();
+        console.log(storeData);
         storeArray.push(storeData);
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
