@@ -53,7 +53,7 @@ class KCNA {
         const articleListModel = new Article(newListHTML);
         const articleListArray = await articleListModel.parseArticleList();
         console.log(articleListArray);
-        break;
+        return articleListArray;
     }
   }
 
@@ -70,9 +70,9 @@ class KCNA {
 
     switch (type) {
       case "article":
-        const articleObjModel = new articleObjArray(downloadArray);
+        const articleObjModel = new Article(downloadArray);
         const articleObjArray = await articleObjModel.buildArticleObjArray();
-        break;
+        return articleObjArray;
     }
   }
 }
