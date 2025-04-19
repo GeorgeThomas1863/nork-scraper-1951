@@ -218,6 +218,11 @@ class Article {
         if (!articlePicObj) continue;
 
         articlePicArray.push(articlePicObj);
+
+        //store to PIC DB HERE (if unique) for pulling later (after everything done / added to array)
+        const storeModel = new dbModel(picObj, CONFIG.pics);
+        const storePic = await storeModel.storeUniqueURL();
+        console.log(storePic);
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       }

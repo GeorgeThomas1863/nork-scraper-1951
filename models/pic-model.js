@@ -1,3 +1,6 @@
+// import CONFIG from "../config/scrape-config.js";
+// import dbModel from "./db-model.js";
+
 class Pic {
   constructor(dataObject) {
     this.dataObject = dataObject;
