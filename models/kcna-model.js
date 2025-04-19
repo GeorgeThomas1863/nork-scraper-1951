@@ -50,8 +50,8 @@ class KCNA {
 
     switch (type) {
       case "article":
-        const articleModel = new Article(newListHTML);
-        const articleListArray = await articleModel.parseArticleList();
+        const articleListModel = new Article(newListHTML);
+        const articleListArray = await articleListModel.parseArticleList();
         console.log(articleListArray);
         break;
     }
@@ -60,13 +60,20 @@ class KCNA {
   //WILL HAVE GET NEW PAGE ARRAY HERE
 
   //MOVE TO UTIL
-  async getNewItemArray() {
+  async getNewObjArray() {
     const type = this.dataObject;
     const newDataParams = await newDownloadMap(type);
     const downloadModel = new dbModel(newDataParams);
     const downloadArray = await downloadModel.findNewURLs();
-    console.log("!!!HERE");
-    console.log(downloadArray[0]);
+    console.log("!!!TYPE FAGGOT");
+    console.log(type);
+
+    switch (type) {
+      case "article":
+        const articleObjModel = new articleObjArray(downloadArray);
+        const articleObjArray = await articleObjModel.buildArticleObjArray();
+        break;
+    }
   }
 }
 

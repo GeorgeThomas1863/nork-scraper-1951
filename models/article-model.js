@@ -1,8 +1,9 @@
 import { JSDOM } from "jsdom";
 
 import CONFIG from "../config/scrape-config.js";
+import KCNA from "./kcna-model.js";
 import dbModel from "./db-model.js";
-// import Pic from "./pic-model.js";
+import Pic from "./pic-model.js";
 import UTIL from "./util-model.js";
 
 /**
@@ -16,6 +17,8 @@ class Article {
 
   //------------
   //PARSE DATA
+
+  //FOR ARTICLE LIST
 
   /**
    * Fetches HTML content from the specified URL (works for any url), returns as text
@@ -52,10 +55,6 @@ class Article {
     //for tracking
     return articleListNormal;
   }
-
-  //---------------
-
-  //FOR ARTICLE LIST
 
   async parseLinkArray(inputArray) {
     //loop through a tags and pull out hrefs
@@ -117,25 +116,78 @@ class Article {
   //--------------------------
 
   //FOR ARTICLE OBJ
+  async buildArticleObjArray() {
+    const inputArray = this.dataObject;
+    if (!inputArray || !inputArray.length) return null;
 
-  async parseArticleText() {
-    const textArray = this.dataObject;
+    //loop (dont check if stored since inputArray based on mongo compare earlier)
+    const articleObjArray = [];
+    for (i = 0; i < inputArray.length; i++) {
+      const inputObj = inputArray[i];
+      const articleObj = await buildArticleObj(inputObj);
+      if (!articleObj) return null;
 
-    //MIGHT NEED TO BE LET (TEST)
-    const paragraphArray = [];
-    for (let i = 0; i < textArray.length; i++) {
-      paragraphArray.push(textArray[i].textContent.trim());
+      articleObjArray.push(articleObj);
     }
 
-    // Join paragraphs with double newlines for better readability
-    const articleText = paragraphArray.join("\n\n");
-    return articleText;
+    return articleObjArray;
   }
 
-  async parsePicPageHtml() {
+  async buildArticleObj(inputObj) {
+    const htmlModel = new KCNA(inputObj);
+    const articleHTML = await htmlModel.get();
+    if (!articleHTML) return null;
+
+    const parseObj = await parseArticleHTML(articleHTML);
+    if (!parseObj) return null;
+
+    const articleObj = { ...inputObj, ...parseObj };
+    const storeModel = new dbModel(articleObj, CONFIG.articleDownloaded);
+    const storeData = await storeModel.storeUniqueURL();
+    console.log(storeData);
+    return articleObj;
+  }
+
+  async parseArticleHTML(html) {
+    const dom = new JSDOM(html);
+    const document = dom.window.document;
+
+    // Extract the title - KCNA uses article-main-title class
+    const titleElement = document.querySelector(".article-main-title");
+    const articleTitle = titleElement?.textContent?.replace(/\s+/g, " ").trim();
+
+    //break out content parsing
+    const textElement = document.querySelector(".content-wrapper");
+    const textArray = textElement.querySelectorAll("p"); //array of paragraph elements
+    const articleText = await parseArticleText(textArray);
+
+    //build obj
+    const parseObj = {
+      title: articleTitle,
+      text: articleText,
+    };
+
+    //get article PAGE (if exists) where all pics are displayed
+    const mediaIconElement = document.querySelector(".media-icon");
+    const picPageHref = mediaIconElement?.firstElementChild?.getAttribute("href");
+
+    //return article obj if no pic
+    if (!picPageHref) return parseObj;
+
+    //otherwise build pic / pic array
+    const picPageURL = "http://www.kcna.kp" + picPageHref;
+    const articlePicArray = await buildArticlePicArray(picPageURL);
+
+    //add to object and return
+    parseObj.picPageURL = picPageURL;
+    parseObj.articlePicArray = articlePicArray;
+    return parseObj;
+  }
+
+  async buildArticlePicArray(url) {
     //get the html, build dom
-    const picHtmlModel = new Article(this.dataObject);
-    const html = await picHtmlModel.getHTML();
+    const htmlModel = new KCNA(url);
+    const html = await htmlModel.getHTML();
 
     //if fails return null
     if (!html) return null;
@@ -151,40 +203,35 @@ class Article {
     const imgArray = document.querySelectorAll("img");
     for (let i = 0; i < imgArray.length; i++) {
       const imgItem = imgArray[i];
-      if (!imgItem) continue;
+      const articlePicObj = await getArticlePicObj(imgItem);
+      if (!articlePicObj) return null;
 
-      const imgSrc = imgItem.getAttribute("src");
-      const picObjModel = new Pic(imgSrc);
-      const picObj = await picObjModel.buildArticlePicObj();
-      if (!picObj) continue;
-
-      articlePicArray.push(picObj);
+      articlePicArray.push(articlePicObj);
     }
 
     return articlePicArray;
   }
 
-  //----------------------
-  //BUILD OBJ
-  async buildArticleObj() {
-    const listObj = this.dataObject;
-    if (!listObj) return null;
+  async getArticlePicObj(imgItem) {
+    if (!imgItem) return null;
 
-    const htmlModel = new Article(listObj.url);
-    const html = await htmlModel.getHTML();
+    const imgSrc = imgItem.getAttribute("src");
+    const picObjModel = new Pic(imgSrc);
+    const articlePicObj = await picObjModel.buildArticlePicObj();
+    return articlePicObj;
+  }
 
-    //parse the html
-    const parseModel = new Article(html);
-    const parseObj = await parseModel.parseArticleContent();
-    if (!parseObj) return null;
+  //-----------------
 
-    //build articleObj and store it
-    const articleObj = { ...parseObj, ...listObj };
-    const storeModel = new dbModel(articleObj, CONFIG.articleDownloaded);
-    const storeData = await storeModel.storeUniqueURL();
-    console.log(storeData);
+  async parseArticleText(inputArray) {
+    const paragraphArray = [];
+    for (let i = 0; i < inputArray.length; i++) {
+      paragraphArray.push(inputArray[i].textContent.trim());
+    }
 
-    return articleObj;
+    // Join paragraphs with double newlines for better readability
+    const articleText = paragraphArray.join("\n\n");
+    return articleText;
   }
 }
 
