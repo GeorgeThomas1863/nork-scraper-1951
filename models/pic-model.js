@@ -1,7 +1,8 @@
 import { JSDOM } from "jsdom";
 
-// import CONFIG from "../config/scrape-config.js";
-// import dbModel from "./db-model.js";
+import CONFIG from "../config/scrape-config.js";
+import dbModel from "./db-model.js";
+import UTIL from "./util-model.js";
 
 /**
  * @class Pic
@@ -106,10 +107,64 @@ class Pic {
 
   //PICSET LIST
   async parsePicSetList() {
-    console.log("!!!!PIC SET HTML");
-    console.log(this.dataObject);
-    // const dom = new JSDOM(this.dataObject);
-    // const document = dom.window.document;
+    const dom = new JSDOM(this.dataObject);
+    const document = dom.window.document;
+
+    const photoWrapperArray = document.querySelectorAll(".photo-wrapper");
+    if (!photoWrapperArray || !photoWrapperArray.length) return null;
+
+    const picSetListArray = await this.parsePhotoWrapperArray(photoWrapperArray);
+    console.log("AHHHHHHHHHH")
+    console.log(picSetListArray);
+
+    // const picSetListArray = await this.parsePhotoWrapperArray(photoWrapperArray);
+
+    // const picElementArray = photoWrapperElement;
+    // //if no article links (shouldnt happen)
+    // if (!articleLinkElement) return null;
+
+    // // get array of article list (from link elements)
+    // const linkElementArray = articleLinkElement.querySelectorAll("a");
+    // const articleListArray = await this.parseLinkArray(linkElementArray);
+  }
+
+  async parsePhotoWrapperArray(inputArray) {
+    const picSetListArray = [];
+    for (let i = 0; i < inputArray.length; i++) {
+      const photoWrapper = inputArray[i];
+      const picSetListObj = await this.buildPicSetListObj(photoWrapper);
+
+      picSetListArray.push(picSetListObj);
+    }
+
+    return picSetListArray;
+  }
+
+  async buildPicSetListObj(inputItem) {
+    const titleWrapper = inputItem.querySelector(".title a");
+    const href = titleWrapper.getAttribute("href");
+    console.log("!!!!HREF");
+    console.log(href);
+    // build url const url =
+
+    //get date
+    const dateElement = inputItem.querySelector(".publish-time");
+    const dateText = dateElement.textContent.trim();
+    const dateModel = new UTIL(dateText);
+    const picSetDate = await dateModel.parseDateElement();
+
+    //get title
+    const titleRaw = titleWrapper.textContent.trim();
+    const title = titleRaw.replace(dateElement.textContent, "").trim();
+
+    const picSetListObj = {
+      url: href,
+      title: title,
+      date: picSetDate,
+    };
+
+    console.log(picSetListObj);
+    return picSetListObj;
   }
 }
 

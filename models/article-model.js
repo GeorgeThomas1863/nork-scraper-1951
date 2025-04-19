@@ -93,7 +93,8 @@ class Article {
     const dateElement = listItem.querySelector(".publish-time");
     if (!dateElement) return;
     const dateText = dateElement.textContent.trim();
-    const articleDate = await this.parseDateElement(dateText);
+    const dateModel = new UTIL(dateText)
+    const articleDate = await dateModel.parseDateElement();
 
     //build obj
     const articleListObj = {
@@ -107,31 +108,7 @@ class Article {
     return articleListObj;
   }
 
-  /**
-   * Parses date element for article list item format (MIGHT be able to use elsewhere; move to UTIL)
-   * @function parseDateElement
-   * @param {*} dateText raw date text from article list format
-   * @returns date as standard JS date obj (for storing in Mongo)
-   */
-  async parseDateElement(dateText) {
-    //return null if empty
-    if (!dateText) return null;
 
-    const dateRaw = dateText.replace(/[\[\]]/g, "");
-
-    // Convert the date string (YYYY.MM.DD) to a JavaScript Date object, then split to arr
-    const dateArr = dateRaw.split(".");
-    const year = parseInt(dateArr[0]);
-    // JS months are 0-based (subtract 1 at end)
-    const month = parseInt(dateArr[1]);
-    const day = parseInt(dateArr[2]);
-
-    // Validate the date; if fucked return null
-    if (isNaN(year) || isNaN(month) || isNaN(day)) return null;
-
-    const articleDate = new Date(year, month - 1, day);
-    return articleDate;
-  }
 
   //--------------------------
 
