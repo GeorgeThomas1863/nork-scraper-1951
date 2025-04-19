@@ -186,6 +186,10 @@ class Pic {
         const inputObj = downloadArray[i];
         //get HTML
         const picSetPageHTML = await this.getPicSetPageHTML(inputObj);
+
+        console.log("AHHHHHHH");
+        console.log(picSetPageHTML);
+
         const picObjArray = await this.buildPicSetObj(picSetPageHTML);
         inputObj.picArray = picObjArray;
 
@@ -198,8 +202,8 @@ class Pic {
     }
   }
 
-  async getPicSetPageHTML(picSetItem) {
-    const htmlModel = new KCNA(picSetItem);
+  async getPicSetPageHTML(inputObj) {
+    const htmlModel = new KCNA(inputObj);
     const html = await htmlModel.getHTML();
     return html;
   }
