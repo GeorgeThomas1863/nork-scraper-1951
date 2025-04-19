@@ -135,7 +135,7 @@ class Article {
 
   async buildArticleObj(inputObj) {
     const htmlModel = new KCNA(inputObj);
-    const articleHTML = await htmlModel.get();
+    const articleHTML = await htmlModel.getHTML();
     if (!articleHTML) return null;
 
     const parseObj = await this.parseArticleHTML(articleHTML);
