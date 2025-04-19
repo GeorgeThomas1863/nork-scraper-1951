@@ -1,6 +1,7 @@
 import { JSDOM } from "jsdom";
 
 import CONFIG from "../config/scrape-config.js";
+import KCNA from "./kcna-model.js";
 import dbModel from "./db-model.js";
 import UTIL from "./util-model.js";
 
@@ -172,6 +173,34 @@ class Pic {
     console.log("PIC SET LIST OBJ");
     console.log(picSetListObj);
     return picSetListObj;
+  }
+
+  //----------------------
+
+  //PIC SET PAGE (page where multiple pics in set are displayed)
+
+  async parsePicSetPage() {
+    const downloadArray = this.dataObject;
+    for (i = 0; i < downloadArray.length; i++) {
+      const picSetItem = downloadArray[i];
+      //get HTML
+      const picSetPageHTML = await getPicSetPageHTML(picSetItem);
+      const picSetObj = await this.buildPicSetObj(picSetPageHTML);
+    }
+  }
+
+  async getPicSetPageHTML(picSetItem) {
+    const htmlModel = new KCNA(picSetItem);
+    const html = await htmlModel.getHTML();
+    return html;
+  }
+
+  async buildPicSetObj(html) {
+    const dom = new JSDOM(html);
+    const document = dom.window.document;
+
+    console.log("AHHHHHHHHHHHHHH");
+    console.log(document);
   }
 }
 

@@ -107,7 +107,14 @@ class KCNA {
         const articleObjModel = new Article(downloadArray);
         const articleObjArray = await articleObjModel.getNewArticleObjArray();
         return articleObjArray;
+
+      case "picSets":
+        const picSetPageModel = new Pic(downloadArray)
+        const picSetPageArray = await picSetPageModel.parsePicSetPage()
     }
+
+    
+
   }
 
   /**
