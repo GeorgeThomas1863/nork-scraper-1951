@@ -8,6 +8,7 @@ import KCNA from "../models/kcna-model.js";
  */
 export const scrapeKCNA = async () => {
   const { typeArr } = CONFIG;
+  console.log(typeArr[0]);
   //loop through types
   for (let i = 0; i < typeArr; i++) {
     const type = typeArr[i];
