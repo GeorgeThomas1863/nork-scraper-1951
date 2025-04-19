@@ -184,7 +184,7 @@ class Pic {
     for (let i = 0; i < downloadArray.length; i++) {
       const picSetItem = downloadArray[i];
       //get HTML
-      const picSetPageHTML = await getPicSetPageHTML(picSetItem);
+      const picSetPageHTML = await this.getPicSetPageHTML(picSetItem);
       const picSetObj = await this.buildPicSetObj(picSetPageHTML);
     }
   }
