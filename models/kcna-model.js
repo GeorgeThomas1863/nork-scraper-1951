@@ -29,8 +29,8 @@ class KCNA {
       // console.log(res);
       const data = await res.text();
       return data;
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
   }
 
@@ -45,7 +45,7 @@ class KCNA {
     const newListParam = await newListMap(type);
     const newListModel = new KCNA({ url: CONFIG[newListParam] });
     const newListHTML = await newListModel.getHTML();
-
+    if (!newListHTML) return "FETCH FUCKED"
     //figure out a map obj here
 
     switch (type) {
@@ -65,8 +65,6 @@ class KCNA {
     const newDataParams = await newDownloadMap(type);
     const downloadModel = new dbModel(newDataParams);
     const downloadArray = await downloadModel.findNewURLs();
-    console.log("!!!TYPE FAGGOT");
-    console.log(type);
 
     switch (type) {
       case "article":
