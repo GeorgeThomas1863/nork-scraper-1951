@@ -8,7 +8,6 @@ import KCNA from "../models/kcna-model.js";
  */
 export const scrapeKCNA = async () => {
   const { typeArr } = CONFIG;
-  console.log(typeArr[0]);
   //loop through types
   for (let i = 0; i < typeArr; i++) {
     const type = typeArr[i];
@@ -26,6 +25,8 @@ export const scrapeKCNA = async () => {
  * @returns array of finished data for tracking
  */
 export const getNewDataKCNA = async (type) => {
+  console.log("AHHHHHHHHH")
+  console.log(type)
   console.log("STARTING SCRAPE OF " + type.toUpperCase() + "S");
   const dataModel = new KCNA(type);
   const newListArray = await dataModel.getNewListArray();
