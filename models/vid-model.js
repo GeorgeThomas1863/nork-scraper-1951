@@ -15,8 +15,22 @@ class Vid {
   }
 
   async buildVidObj() {
-    console.log("BUILD VID OBJECT");
-    console.log(this.dataObject);
+    const { url, kcnaId, dateString } = this.dataObject;
+
+    const res = await fetch(url);
+
+    //if URL doesnt exist / return headers throw error
+    if (!res || !res.headers) {
+      const error = new Error("URL DOESNT EXIST");
+      error.url = url;
+      error.function = "getPicData KCNA MODEL";
+      throw error;
+    }
+
+    //get pic headers
+    const headerData = res.headers;
+    console.log("VID HEADER DATA");
+    console.log(headerData);
   }
 
   //------------
@@ -70,19 +84,19 @@ class Vid {
   async buildVidListObj(vidElement) {
     const urlConstant = "http://www.kcna.kp";
 
-    // extract vid URL
-    const vidLinkElement = vidElement.querySelector(".img img");
-    const vidSrc = vidLinkElement.getAttribute("src");
-    const vidURL = urlConstant + vidSrc;
+    //extract vid link
+    const vidLinkElement = vidElement.querySelector(".img a");
+    const href = vidLinkElement.getAttribute("href");
+    const vidURL = urlConstant + href;
+
+    //thumbnail
+    const thumbnailElement = vidElement.querySelector(".img img");
+    const thumbSrc = thumbnailElement.getAttribute("src");
+    const thumbnailURL = urlConstant + thumbSrc;
 
     //parse vidId / dateString
-    const kcnaId = vidSrc.substring(vidSrc.lastIndexOf("/") + 2, vidSrc.lastIndexOf("."));
+    const kcnaId = +vidSrc.substring(vidSrc.lastIndexOf("/") + 2, vidSrc.lastIndexOf("."));
     const dateString = vidSrc.substring(vidSrc.indexOf("video/kp/") + 9, vidSrc.indexOf("/V"));
-
-    //extract thumbnail
-    const thumbnailElement = vidElement.querySelector(".img a");
-    const href = thumbnailElement.getAttribute("href");
-    const thumbnailURL = urlConstant + href;
 
     //get date
     const dateElement = vidElement.querySelector(".publish-time");
@@ -118,12 +132,8 @@ class Vid {
       try {
         const inputObj = downloadArray[i];
 
-        //get HTML
-        const vidPageHTML = await this.getVidPageHTML(inputObj);
-
-        const vidObjModel = new Vid(vidPageHTML);
-        const parseObj = await vidObjModel.buildVidObj();
-        const vidObj = { ...inputObj, ...parseObj };
+        const vidObjModel = new Vid(inputObj);
+        const vidObj = await vidObjModel.buildVidObj();
 
         const storePicSetModel = new dbModel(vidObj, CONFIG.vidsDownloaded);
         const storePicSetData = await storePicSetModel.storeUniqueURL();
@@ -138,12 +148,6 @@ class Vid {
 
     //return for tracking
     return vidObjArray;
-  }
-
-  async getVidPageHTML(inputObj) {
-    const htmlModel = new KCNA(inputObj);
-    const html = await htmlModel.getHTML();
-    return html;
   }
 }
 
