@@ -1,3 +1,5 @@
+import { JSDOM } from "jsdom";
+
 // import CONFIG from "../config/scrape-config.js";
 // import dbModel from "./db-model.js";
 
@@ -9,6 +11,10 @@ class Pic {
   constructor(dataObject) {
     this.dataObject = dataObject;
   }
+
+  //------------
+
+  //GET PIC DATA
 
   /**
    * Builds picObj from looking up pic headers (and input)
@@ -92,6 +98,18 @@ class Pic {
     const picObj = await picObjModel.buildPicObj();
 
     return picObj;
+  }
+
+  //---------------------
+
+  //PARSE DATA
+
+  //PICSET LIST
+  async parsePicSetList() {
+    console.log("!!!!PIC SET HTML");
+    console.log(this.dataObject);
+    // const dom = new JSDOM(this.dataObject);
+    // const document = dom.window.document;
   }
 }
 

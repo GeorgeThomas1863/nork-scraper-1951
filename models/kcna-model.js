@@ -1,6 +1,9 @@
 import CONFIG from "../config/scrape-config.js";
-import Article from "./article-model.js";
 import dbModel from "./db-model.js";
+
+import Article from "./article-model.js";
+import Pic from "./pic-model.js";
+import Vid from "./vid-model.js";
 
 import { newListMap, newDownloadMap } from "../config/map.js";
 
@@ -52,6 +55,17 @@ class KCNA {
         const articleListArray = await articleListModel.parseArticleList();
         console.log(articleListArray);
         return articleListArray;
+
+      case "picSet":
+        const picSetModel = new Pic(newListHTML);
+        const picSetListArray = await picSetModel.parsePicSetList();
+        console.log(picSetListArray);
+        return picSetListArray;
+
+      case "vid":
+        const vidModel = new Vid(newListHTML);
+        const vidListArray = await vidModel.parseVidList();
+        return vidListArray
     }
   }
 
@@ -85,7 +99,7 @@ class KCNA {
     const downloadArray = await this.getDownloadArray(type);
 
     //return on null
-    if (!downloadArray || !downloadArray.length) return "NOTHING NEW TO DOWNLOAD"
+    if (!downloadArray || !downloadArray.length) return "NOTHING NEW TO DOWNLOAD";
 
     //otherwise pass to each item model to parse
     switch (type) {
@@ -107,7 +121,7 @@ class KCNA {
     const newDataParams = await newDownloadMap(type);
     const downloadModel = new dbModel(newDataParams);
     const downloadArray = await downloadModel.findNewURLs();
-    return downloadArray
+    return downloadArray;
   }
 }
 

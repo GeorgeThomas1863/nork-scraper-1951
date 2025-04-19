@@ -101,6 +101,9 @@ class Article {
       date: articleDate,
     };
 
+    console.log("ArticleListObj RAW");
+    console.log(articleListObj);
+
     return articleListObj;
   }
 
