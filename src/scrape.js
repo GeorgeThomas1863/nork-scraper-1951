@@ -10,8 +10,8 @@ export const scrapeKCNA = async () => {
   const { typeArr } = CONFIG;
   //loop through types
   for (let i = 0; i < typeArr; i++) {
-    const type = typeArr[i];
-    const newDataKCNA = await getNewDataKCNA(type);
+    const dataType = typeArr[i];
+    const newDataKCNA = await getNewDataKCNA(dataType);
 
     console.log(newDataKCNA);
     console.log("FINSIHED FUCKER");
@@ -24,17 +24,17 @@ export const scrapeKCNA = async () => {
  * @param {} type (article, picSet, vid)
  * @returns array of finished data for tracking
  */
-export const getNewDataKCNA = async (type) => {
-  console.log("AHHHHHHHHH")
-  console.log(type)
-  console.log("STARTING SCRAPE OF " + type.toUpperCase() + "S");
-  const dataModel = new KCNA(type);
+export const getNewDataKCNA = async (dataType) => {
+  console.log("AHHHHHHHHH");
+  console.log(dataType);
+  console.log("STARTING SCRAPE OF " + dataType.toUpperCase() + "S");
+  const dataModel = new KCNA(dataType);
   const newListArray = await dataModel.getNewListArray();
   console.log(newListArray);
 
   //getNewPageArray (for pics / vids)
 
-  console.log("GETTING OBJECTS FOR " + type.toUpperCase() + "S");
+  console.log("GETTING OBJECTS FOR " + dataType.toUpperCase() + "S");
   const newObjArray = await dataModel.getNewObjArray();
   return newObjArray;
 };
