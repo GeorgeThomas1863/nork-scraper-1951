@@ -1,7 +1,7 @@
 //TO DO:
 
-//FIX PIC SAVING IN ARTICLE PIC OBJ (or buildPicObj)
-//MOVE ON TO GETTING PIC SET, then GETTING VID SET
+//refactor some names, work with gemini / your ppt
+//Get vid set working
 
 //MAKE ARRAY OF PIC SET LIST PAGES (manual)
 //MAKE ARRAY OF VID LIST PAGES
