@@ -46,7 +46,7 @@ class Article {
 
     //add article ID
     const idModel = new UTIL(articleListSort);
-    const articleListNormal = await idModel.addArticleId();
+    const articleListNormal = await idModel.addArticleId(CONFIG.articles);
 
     const storeDataModel = new dbModel(articleListNormal, CONFIG.articles);
     const storeData = await storeDataModel.storeArray();
@@ -93,7 +93,7 @@ class Article {
     const dateElement = listItem.querySelector(".publish-time");
     if (!dateElement) return;
     const dateText = dateElement.textContent.trim();
-    const dateModel = new UTIL(dateText)
+    const dateModel = new UTIL(dateText);
     const articleDate = await dateModel.parseDateElement();
 
     //build obj
@@ -107,8 +107,6 @@ class Article {
 
     return articleListObj;
   }
-
-
 
   //--------------------------
 

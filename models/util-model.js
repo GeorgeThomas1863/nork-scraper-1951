@@ -45,11 +45,11 @@ class UTIL {
    * @function addArticleId
    * @returns current article Id
    */
-  async addArticleId() {
+  async addArticleId(collection) {
     const inputArray = this.dataObject;
     if (!inputArray || !inputArray.length) return null;
 
-    const currentArticleId = await this.getArticleId();
+    const currentArticleId = await this.getArticleId(collection);
 
     const returnArray = [];
     for (let i = 0; i < inputArray.length; i++) {
@@ -69,8 +69,8 @@ class UTIL {
     return returnArray;
   }
 
-  async getArticleId() {
-    const dataModel = new dbModel({ keyToLookup: "articleId" }, CONFIG.articles);
+  async getArticleId(collection) {
+    const dataModel = new dbModel({ keyToLookup: "articleId" }, collection);
     const articleIdStored = await dataModel.findMaxId();
 
     //if doesnt exists
@@ -80,16 +80,7 @@ class UTIL {
     return articleIdStored + 1;
   }
 
-  async getCurrentKCNAId() {
-    const dataModel = new dbModel(this.dataObject, CONFIG.pics);
-    const maxId = await dataModel.findMaxId();
 
-    //no id on first lookup
-    if (!maxId || CONFIG.currentId > maxId) return CONFIG.currentId;
-
-    //otherwise calculate it
-    return maxId;
-  }
 
   async getDateArray() {
     const currentDate = new Date();
@@ -112,6 +103,17 @@ class UTIL {
     }
 
     return dateArray;
+  }
+
+  async getCurrentKCNAId() {
+    const dataModel = new dbModel(this.dataObject, CONFIG.pics);
+    const maxId = await dataModel.findMaxId();
+
+    //no id on first lookup
+    if (!maxId || CONFIG.currentId > maxId) return CONFIG.currentId;
+
+    //otherwise calculate it
+    return maxId;
   }
 
   /**

@@ -114,18 +114,21 @@ class Pic {
     if (!photoWrapperArray || !photoWrapperArray.length) return null;
 
     const picSetListArray = await this.parsePhotoWrapperArray(photoWrapperArray);
-    console.log("AHHHHHHHHHH")
-    console.log(picSetListArray);
 
-    // const picSetListArray = await this.parsePhotoWrapperArray(photoWrapperArray);
+    //sort the array
+    const sortModel = new UTIL(picSetListArray);
+    const picSetListSort = await sortModel.sortArrayByDate();
 
-    // const picElementArray = photoWrapperElement;
-    // //if no article links (shouldnt happen)
-    // if (!articleLinkElement) return null;
+    //add picSetId ID
+    const idModel = new UTIL(picSetListSort);
+    const picSetListNormal = await idModel.addArticleId(CONFIG.picSets);
 
-    // // get array of article list (from link elements)
-    // const linkElementArray = articleLinkElement.querySelectorAll("a");
-    // const articleListArray = await this.parseLinkArray(linkElementArray);
+    const storeDataModel = new dbModel(picSetListNormal, CONFIG.picSets);
+    const storeData = await storeDataModel.storeArray();
+    console.log("STORING PIC SET")
+    console.log(storeData);
+
+    return picSetListNormal;
   }
 
   async parsePhotoWrapperArray(inputArray) {
@@ -163,6 +166,7 @@ class Pic {
       date: picSetDate,
     };
 
+    console.log("PIC SET LIST OBJ")
     console.log(picSetListObj);
     return picSetListObj;
   }
