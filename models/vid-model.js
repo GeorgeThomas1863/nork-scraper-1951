@@ -66,7 +66,7 @@ class Vid {
         if (!vidListObj) return null;
 
         //store data
-        const storeVidModel = new dbModel(vidListObj, CONFIG.vids);
+        const storeVidModel = new dbModel(vidListObj, CONFIG.vidPages);
         const storeData = await storeVidModel.storeUniqueURL();
         console.log(storeData);
 
@@ -124,23 +124,21 @@ class Vid {
   //----------------------
 
   //VID OBJ SECTION
-  async getNewVidObjArray() {
+  async getNewVidPageArray() {
     const downloadArray = this.dataObject;
 
-    const vidObjArray = [];
+    const vidPageArray = [];
     for (let i = 0; i < downloadArray.length; i++) {
       try {
         const inputObj = downloadArray[i];
+        const vidPageObj = await this.buildVidPageObj(inputObj);
 
-        const vidObjModel = new Vid(inputObj);
-        const vidObj = await vidObjModel.buildVidObj();
-
-        const storePicSetModel = new dbModel(vidObj, CONFIG.vidsDownloaded);
+        const storePicSetModel = new dbModel(vidPageObj, CONFIG.vidPagesDownloaded);
         const storePicSetData = await storePicSetModel.storeUniqueURL();
         console.log(storePicSetData);
 
         //add to array
-        vidObjArray.push(vidObj);
+        vidPageArray.push(vidPageObj);
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       }
@@ -148,6 +146,31 @@ class Vid {
 
     //return for tracking
     return vidObjArray;
+  }
+
+  async buildVidPageObj(inputObj) {
+    const vidPageHTML = await this.getVidPageHTML(inputObj);
+    const parseObj = await this.parseVidPage(vidPageHTML);
+  }
+
+  async getVidPageHTML(inputObj) {
+    if (!inputObj) return null;
+
+    const htmlModel = new KCNA(inputObj);
+    const html = await htmlModel.getHTML();
+    return html;
+  }
+
+  async parseVidPage(html) {
+    const dom = new JSDOM(html);
+    const document = dom.window.document;
+
+    //get vid mp4 url
+    const vidElement = document.querySelector(".content video");
+    const vidSrc = vidElement.getAttribute("src");
+
+    console.log("REAL FUCKING VID LINK");
+    console.log(vidSrc);
   }
 }
 

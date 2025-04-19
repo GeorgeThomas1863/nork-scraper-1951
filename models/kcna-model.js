@@ -49,20 +49,20 @@ class KCNA {
     if (!newListHTML) return "FETCH FUCKED";
 
     switch (type) {
-      case "article":
+      case "articles":
         //pass to article model for parsing
         const articleListModel = new Article(newListHTML);
         const articleListArray = await articleListModel.parseArticleList();
         console.log(articleListArray);
         return articleListArray;
 
-      case "picSet":
+      case "pics":
         const picSetModel = new Pic(newListHTML);
         const picSetListArray = await picSetModel.parsePicSetList();
         console.log(picSetListArray);
         return picSetListArray;
 
-      case "vid":
+      case "vids":
         const vidModel = new Vid(newListHTML);
         const vidListArray = await vidModel.parseVidList();
         console.log(vidListArray);
@@ -100,19 +100,19 @@ class KCNA {
 
     //otherwise pass to each item model to parse
     switch (type) {
-      case "article":
+      case "articles":
         const articleObjModel = new Article(downloadArray);
         const articleObjArray = await articleObjModel.getNewArticleObjArray();
         return articleObjArray;
 
-      case "picSet":
+      case "pics":
         const picSetPageModel = new Pic(downloadArray);
         const picSetPageArray = await picSetPageModel.parsePicSetPage();
         return picSetPageArray;
 
-      case "vid":
+      case "vids":
         const vidObjModel = new Vid(downloadArray);
-        const vidObjArray = vidObjModel.getNewVidObjArray();
+        const vidObjArray = vidObjModel.getNewVidPageArray();
         return vidObjArray;
     }
   }
