@@ -124,7 +124,7 @@ class Article {
     const articleObjArray = [];
     for (let i = 0; i < inputArray.length; i++) {
       const inputObj = inputArray[i];
-      const articleObj = await buildArticleObj(inputObj);
+      const articleObj = await this.buildArticleObj(inputObj);
       if (!articleObj) return null;
 
       articleObjArray.push(articleObj);
@@ -138,7 +138,7 @@ class Article {
     const articleHTML = await htmlModel.get();
     if (!articleHTML) return null;
 
-    const parseObj = await parseArticleHTML(articleHTML);
+    const parseObj = await this.parseArticleHTML(articleHTML);
     if (!parseObj) return null;
 
     const articleObj = { ...inputObj, ...parseObj };
@@ -159,7 +159,7 @@ class Article {
     //break out content parsing
     const textElement = document.querySelector(".content-wrapper");
     const textArray = textElement.querySelectorAll("p"); //array of paragraph elements
-    const articleText = await parseArticleText(textArray);
+    const articleText = await this.parseArticleText(textArray);
 
     //build obj
     const parseObj = {
@@ -176,7 +176,7 @@ class Article {
 
     //otherwise build pic / pic array
     const picPageURL = "http://www.kcna.kp" + picPageHref;
-    const articlePicArray = await buildArticlePicArray(picPageURL);
+    const articlePicArray = await this.buildArticlePicArray(picPageURL);
 
     //add to object and return
     parseObj.picPageURL = picPageURL;
@@ -203,7 +203,7 @@ class Article {
     const imgArray = document.querySelectorAll("img");
     for (let i = 0; i < imgArray.length; i++) {
       const imgItem = imgArray[i];
-      const articlePicObj = await getArticlePicObj(imgItem);
+      const articlePicObj = await this.getArticlePicObj(imgItem);
       if (!articlePicObj) return null;
 
       articlePicArray.push(articlePicObj);
