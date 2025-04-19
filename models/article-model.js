@@ -46,7 +46,7 @@ class Article {
 
     //add article ID
     const idModel = new UTIL(articleListSort);
-    const articleListNormal = await idModel.addArticleId(CONFIG.articles);
+    const articleListNormal = await idModel.addArticleId(CONFIG.articles, "articleId");
 
     const storeDataModel = new dbModel(articleListNormal, CONFIG.articles);
     const storeData = await storeDataModel.storeArray();

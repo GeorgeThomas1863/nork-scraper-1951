@@ -45,11 +45,11 @@ class UTIL {
    * @function addArticleId
    * @returns current article Id
    */
-  async addArticleId(collection) {
+  async addArticleId(collection, type) {
     const inputArray = this.dataObject;
     if (!inputArray || !inputArray.length) return null;
 
-    const currentArticleId = await this.getArticleId(collection);
+    const currentItemId = await this.getArticleId(collection);
 
     const returnArray = [];
     for (let i = 0; i < inputArray.length; i++) {
@@ -57,7 +57,7 @@ class UTIL {
       const normalObj = { ...inputObj };
 
       //add in articleId
-      normalObj.articleId = i + currentArticleId;
+      normalObj.type = i + currentItemId;
 
       console.log("ARTICLE LIST OBJ");
       console.log(normalObj);

@@ -121,7 +121,7 @@ class Pic {
 
     //add picSetId ID
     const idModel = new UTIL(picSetListSort);
-    const picSetListNormal = await idModel.addArticleId(CONFIG.picSets);
+    const picSetListNormal = await idModel.addArticleId(CONFIG.picSets, "picSetId");
 
     const storeDataModel = new dbModel(picSetListNormal, CONFIG.picSets);
     const storeData = await storeDataModel.storeArray();
