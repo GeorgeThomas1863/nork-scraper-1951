@@ -42,8 +42,8 @@ class KCNA {
   async getNewListArray() {
     //get html
     const type = this.dataObject;
+    console.log("GETTING LIST DATA FOR " + type.toUpperCase() + "S");
     const newListParam = await newListMap(type);
-    console.log("GETTING LIST DATA FOR " + newListParam + "s");
     const newListModel = new KCNA({ url: CONFIG[newListParam] });
     const newListHTML = await newListModel.getHTML();
     if (!newListHTML) return "FETCH FUCKED";

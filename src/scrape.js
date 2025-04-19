@@ -7,14 +7,14 @@ export const scrapeKCNA = async () => {
   //below for testing
   for (let i = 0; i < 1; i++) {
     const type = CONFIG.typeArr[i];
-    console.log("STARTING SCRAPE OF " + type);
+    console.log("STARTING SCRAPE OF " + type.toUpperCase() + "S");
     const dataModel = new KCNA(type);
     const newListArray = await dataModel.getNewListArray();
     console.log(newListArray);
 
     //getNewPageArray (for pics / vids)
 
-    console.log("NOW GETTING OBJECTS OF " + type)
+    console.log("GETTING OBJECTS FOR " + type.toUpperCase() + "S")
     const newObjArray = await dataModel.getNewObjArray();
     console.log(newObjArray)
     console.log("FINSIHED FUCKER")
