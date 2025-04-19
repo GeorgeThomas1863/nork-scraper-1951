@@ -220,7 +220,7 @@ class Article {
         articlePicArray.push(articlePicObj);
 
         //store to PIC DB HERE (if unique) for pulling later (after everything done / added to array)
-        const storeModel = new dbModel(picObj, CONFIG.pics);
+        const storeModel = new dbModel(articlePicObj, CONFIG.pics);
         const storePic = await storeModel.storeUniqueURL();
         console.log(storePic);
       } catch (e) {
