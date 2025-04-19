@@ -1,5 +1,7 @@
 //TO DO:
 
+//ensure picSetsDownloaded works
+
 //refactor some names, work with gemini / your ppt
 //Get vid set working
 
