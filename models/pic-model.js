@@ -187,9 +187,6 @@ class Pic {
         //get HTML
         const picSetPageHTML = await this.getPicSetPageHTML(inputObj);
 
-        console.log("AHHHHHHH");
-        console.log(picSetPageHTML);
-
         const picObjArray = await this.buildPicSetObj(picSetPageHTML);
         inputObj.picArray = picObjArray;
 
@@ -212,12 +209,14 @@ class Pic {
     const dom = new JSDOM(html);
     const document = dom.window.document;
     const picElementArray = document.querySelectorAll(".content img");
+    console.log("AHHHHH");
+    console.log(picElementArray.length);
 
     const picSetArray = [];
     for (i = 0; i < picElementArray.length; i++) {
       try {
         const picObj = await this.parsePicElement(picElementArray[i]);
-        if (!picURL) continue;
+        if (!picObj) continue;
         picSetArray.push(picObj);
 
         const storePicModel = new dbModel(picObj, CONFIG.pics);
