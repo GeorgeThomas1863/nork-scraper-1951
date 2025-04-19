@@ -122,7 +122,7 @@ class Article {
 
     //loop (dont check if stored since inputArray based on mongo compare earlier)
     const articleObjArray = [];
-    for (i = 0; i < inputArray.length; i++) {
+    for (let i = 0; i < inputArray.length; i++) {
       const inputObj = inputArray[i];
       const articleObj = await buildArticleObj(inputObj);
       if (!articleObj) return null;
