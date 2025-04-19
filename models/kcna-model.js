@@ -65,6 +65,7 @@ class KCNA {
       case "vid":
         const vidModel = new Vid(newListHTML);
         const vidListArray = await vidModel.parseVidList();
+        console.log(vidListArray);
         return vidListArray;
     }
   }
@@ -80,10 +81,6 @@ class KCNA {
     const newListHTML = await newListModel.getHTML();
     return newListHTML;
   }
-
-  //-----------------------------
-
-  //WILL HAVE GET NEW PAGE ARRAY HERE
 
   //------------------
 
@@ -111,6 +108,12 @@ class KCNA {
       case "picSet":
         const picSetPageModel = new Pic(downloadArray);
         const picSetPageArray = await picSetPageModel.parsePicSetPage();
+        return picSetPageArray;
+
+      case "vid":
+        const vidObjModel = new Vid(downloadArray);
+        const vidObjArray = vidObjModel.getNewVidObjArray();
+        return vidObjArray;
     }
   }
 

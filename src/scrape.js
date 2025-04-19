@@ -30,8 +30,6 @@ export const getNewDataKCNA = async (type) => {
   const newListArray = await dataModel.getNewListArray();
   console.log(newListArray);
 
-  //getNewPageArray (for pics / vids)
-
   console.log("GETTING OBJECTS FOR " + type.toUpperCase() + "S");
   const newObjArray = await dataModel.getNewObjArray();
   return newObjArray;
