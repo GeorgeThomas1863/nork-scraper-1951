@@ -190,7 +190,7 @@ class Pic {
         const picObjArray = await this.buildPicSetObj(picSetPageHTML);
         inputObj.picArray = picObjArray;
 
-        const storePicSetModel = new dbModel(inputObj, CONFIG.picSets);
+        const storePicSetModel = new dbModel(inputObj, CONFIG.picSetsDownloaded);
         const storePicSetData = await storePicSetModel.storeUniqueURL();
         console.log(storePicSetData);
       } catch (e) {
