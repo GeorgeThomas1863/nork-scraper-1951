@@ -44,7 +44,7 @@ class KCNA {
   async getNewListData() {
     //get html
     const type = this.dataObject;
-    console.log("GETTING LIST DATA FOR " + type.toUpperCase());
+    // console.log("GETTING LIST DATA FOR " + type.toUpperCase());
     const newListHTML = await this.getNewListHTML(type);
     if (!newListHTML) return "FETCH FUCKED";
 
@@ -93,7 +93,7 @@ class KCNA {
    */
   async getNewContentData() {
     const type = this.dataObject;
-    console.log("GETTING OBJECT DATA FOR " + type.toUpperCase());
+    // console.log("GETTING OBJECT DATA FOR " + type.toUpperCase());
     const downloadArray = await this.getContentToDownloadArray(type);
 
     //return on null
@@ -144,19 +144,19 @@ class KCNA {
       case "articles":
         return null;
 
-      case "pics":
-        const picModel = new Pic(type);
-        const picArray = await picModel.getNewPics();
-        const picData = await picModel.downloadNewPics(picArray);
-        console.log(picData);
-        return picData;
+      // case "pics":
+      //   const picModel = new Pic(type);
+      //   const picArray = await picModel.getNewPics();
+      //   const picData = await picModel.downloadNewPics(picArray);
+      //   console.log(picData);
+      //   return picData;
 
-      case "vids":
-        const vidModel = new Pic(type);
-        const vidArray = await vidModel.getNewPics();
-        const vidData = await vidModel.downloadNewPics(vidArray);
-        console.log(vidData);
-        return picData;
+      // case "vids":
+      //   const vidModel = new Pic(type);
+      //   const vidArray = await vidModel.getNewPics();
+      //   const vidData = await vidModel.downloadNewPics(vidArray);
+      //   console.log(vidData);
+      //   return picData;
     }
   }
 }
