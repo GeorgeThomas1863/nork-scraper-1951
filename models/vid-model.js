@@ -93,6 +93,7 @@ class Vid {
     const thumbnailElement = vidElement.querySelector(".img img");
     const thumbSrc = thumbnailElement.getAttribute("src");
     const thumbnailURL = urlConstant + thumbSrc;
+    await this.storeVidThumbnail(thumbnailURL);
 
     //parse vidId / dateString
     const kcnaId = +thumbSrc.substring(thumbSrc.lastIndexOf("/") + 2, thumbSrc.lastIndexOf("."));
@@ -119,6 +120,16 @@ class Vid {
     };
 
     return vidListObj;
+  }
+
+  async storeVidThumbnail(picURL) {
+    try {
+      const picModel = new dbModel({ url: picURL }, CONFIG.picURLs);
+      const storeData = await picModel.storeUniqueURL();
+      console.log(storeData);
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
   }
 
   //----------------------

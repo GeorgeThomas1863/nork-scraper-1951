@@ -137,7 +137,27 @@ class KCNA {
   //NEW MEDIA SECTION
 
   async getNewMediaData() {
-    console.log("BUILD FAGGOT");
+    const type = this.dataObject;
+    console.log("GETTING MEDIA FOR " + type.toUpperCase());
+
+    switch (type) {
+      case "articles":
+        return null;
+
+      case "pics":
+        const picModel = new Pic(type);
+        const picArray = await picModel.getNewPics();
+        const picData = await picModel.downloadNewPics(picArray);
+        console.log(picData);
+        return picData;
+
+      case "vids":
+        const vidModel = new Pic(type);
+        const vidArray = await vidModel.getNewPics();
+        const vidData = await vidModel.downloadNewPics(vidArray);
+        console.log(vidData);
+        return picData;
+    }
   }
 }
 

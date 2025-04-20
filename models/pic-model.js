@@ -242,9 +242,9 @@ class Pic {
 
         picSetArray.push(picURL);
 
-        //handle pic OBJ HERE (gets pic data stores in pic)
-        // const picDataModel = new Pic(picURL);
-        // await picDataModel.handlePicData();
+        //store url to picDB (so dont have to do again)
+        const picDataModel = new dbModel({ url: picURL }, CONFIG.picURLs);
+        await picDataModel.storeUniqueURL();
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       }
@@ -262,6 +262,22 @@ class Pic {
 
     return picURL;
   }
+
+  //-----------------------------------
+
+  //GET NEW PICS
+  // async getNewPics() {
+  //   const articleModel = new dbModel("", CONFIG.articlesDownloaded);
+  //   const articleArray = await articleModel.getAll();
+
+  //   for (let i = 0; i <articleArray.length; i++){
+  //     const articleItem = articleArray[i]
+  //     const articlePicArray = await this.extractArticlePics(articleItem)
+  //   }
+
+  // }
+
+  // async extractArticlePics()
 }
 
 export default Pic;

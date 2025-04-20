@@ -248,9 +248,9 @@ class Article {
 
         articlePicArray.push(articlePicURL);
 
-        //save data to pic db, but NOT here
-        // const picDataModel = new Pic(articlePicURL);
-        // await picDataModel.handlePicData();
+        //store url to picDB (so dont have to do again)
+        const picDataModel = new dbModel({ url: articlePicURL }, CONFIG.picURLs);
+        await picDataModel.storeUniqueURL();
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       }
@@ -271,8 +271,8 @@ class Article {
     const imgSrc = imgItem.getAttribute("src");
     const urlConstant = "http://www.kcna.kp";
 
-    const picURL = urlConstant + imgSrc;
-    return picURL;
+    const articlePicURL = urlConstant + imgSrc;
+    return articlePicURL;
   }
 
   //-----------------
