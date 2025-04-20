@@ -70,6 +70,9 @@ class Article {
       const listItem = inputArray[i];
       const articleListObj = await this.getArticleListObj(listItem);
 
+      console.log("ARTICLE LIST OBJ FAGGOT");
+      console.log(articleListObj);
+
       articleListArray.push(articleListObj); //add to array
     }
 
