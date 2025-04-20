@@ -1,6 +1,6 @@
 //TO DO:
 
-//SWITCH VID AND PIC REQS to be ONLY HEAD REQs 
+//UNFUCK / FINISH VID LINK DOWNLOAD
 
 //refactor some names, work with gemini / your ppt
 //Get vid set working

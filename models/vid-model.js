@@ -65,6 +65,8 @@ class Vid {
         const vidListObj = await this.buildVidListObj(vidElement);
         if (!vidListObj) return null;
 
+        console.log("HERE FUCKER")
+
         //store data
         const storeVidModel = new dbModel(vidListObj, CONFIG.vidPages);
         const storeData = await storeVidModel.storeUniqueURL();

@@ -25,12 +25,12 @@ export const scrapeKCNA = async () => {
  * @returns array of finished data for tracking
  */
 export const getNewDataKCNA = async (type) => {
-  console.log("STARTING SCRAPE OF " + type.toUpperCase() + "S");
+  console.log("STARTING SCRAPE OF " + type.toUpperCase());
   const dataModel = new KCNA(type);
   const newListArray = await dataModel.getNewListArray();
   console.log(newListArray);
 
-  console.log("GETTING OBJECTS FOR " + type.toUpperCase() + "S");
+  console.log("GETTING OBJECTS FOR " + type.toUpperCase());
   const newObjArray = await dataModel.getNewObjArray();
   return newObjArray;
 };
