@@ -32,8 +32,6 @@ class Pic {
       try {
         const picItem = picArray[i];
 
-        console.log("PIC CHECK");
-        console.log(picItem);
         const picData = await this.getPicData(picItem.url);
         if (!picData) continue;
 
@@ -194,8 +192,8 @@ class Pic {
       date: picSetDate,
     };
 
-    console.log("PIC SET LIST OBJ");
-    console.log(picSetListObj);
+    // console.log("PIC SET LIST OBJ");
+    // console.log(picSetListObj);
     return picSetListObj;
   }
 

@@ -39,8 +39,8 @@ class Vid {
 
     //get pic headers
     const headerData = res.headers;
-    console.log("VID HEADER DATA");
-    console.log(headerData);
+    // console.log("VID HEADER DATA");
+    // console.log(headerData);
   }
 
   //------------

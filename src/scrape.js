@@ -16,11 +16,11 @@ export const scrapeKCNA = async () => {
     const dataModel = new KCNA(type);
     console.log("GETTING LIST DATA FOR " + type.toUpperCase());
     const newListArray = await dataModel.getNewListData();
-    console.log(newListArray);
+    // console.log(newListArray);
 
     console.log("GETTING NEW CONTENT FOR " + type.toUpperCase());
     const newContentArray = await dataModel.getNewContentData();
-    console.log(newContentArray);
+  //   console.log(newContentArray);
   }
 
   //get pic / vid media (articles index 0)
@@ -30,9 +30,9 @@ export const scrapeKCNA = async () => {
     const dataModel = new KCNA(type);
     console.log("GETTING NEW MEDIA FOR " + type.toUpperCase());
     const newMediaArray = await dataModel.getNewMediaData();
-    console.log(newMediaArray);
+    // console.log(newMediaArray);
     const downloadData = await dataModel.downloadNewMedia();
-    console.log(downloadData);
+    // console.log(downloadData);
   }
 
   console.log("FINSIHED FUCKER");

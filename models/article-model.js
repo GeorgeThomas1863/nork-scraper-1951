@@ -50,7 +50,7 @@ class Article {
 
     const storeDataModel = new dbModel(articleListNormal, CONFIG.articles);
     const storeData = await storeDataModel.storeArray();
-    console.log(storeData);
+    // console.log(storeData);
 
     //for tracking
     return articleListNormal;
@@ -153,8 +153,6 @@ class Article {
     if (!parseObj) return null;
 
     const articleObj = { ...inputObj, ...parseObj };
-    console.log("FUCKING ARTICLE OBJ");
-    console.log(articleObj);
 
     const storeModel = new dbModel(articleObj, CONFIG.articlesDownloaded);
     const storeData = await storeModel.storeUniqueURL();
