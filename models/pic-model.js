@@ -1,4 +1,5 @@
 import { JSDOM } from "jsdom";
+import axios from "axios";
 
 import CONFIG from "../config/scrape-config.js";
 import KCNA from "./kcna-model.js";
@@ -84,13 +85,14 @@ class Pic {
     //call picURL here to avoid confusion
     const { url, kcnaId, dateString } = picParams;
 
-    console.log("REACHING THE END OF MY ROPE");
-    console.log(url);
-    console.log(kcnaId);
-
     // const res = await fetch(url);
-    const res = await fetch(url, {
+    // const res = await fetch(url, {
+    //   headers: { Range: "bytes=0-1" },
+    // });
+
+    const res = await axios.get(url, {
       headers: { Range: "bytes=0-1" },
+      timeout: 30000,
     });
 
     //if URL doesnt exist / return headers throw error
@@ -104,15 +106,15 @@ class Pic {
     //get pic headers
     const headerData = res.headers;
     console.log(headerData);
-    const dataType = headerData.get("content-type");
+    const dataType = headerData["content-type"];
 
     //if not pic RETURN NULL [KEY FOR PROPER DATE ARRAY ITERATION]
     if (!dataType || dataType !== "image/jpeg") return null;
 
     //otherwise get data about pic and add to obj //TEST
-    const serverData = headerData.get("server");
-    const eTag = headerData.get("etag");
-    const picEditDate = new Date(headerData.get("last-modified"));
+    const serverData = headerData.server;
+    const eTag = headerData.etag;
+    const picEditDate = new Date(headerData["last-modified"]);
 
     const picObj = {
       url: url,

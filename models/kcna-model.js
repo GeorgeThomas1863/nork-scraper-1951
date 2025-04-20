@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import CONFIG from "../config/scrape-config.js";
 import dbModel from "./db-model.js";
 
@@ -21,14 +23,29 @@ class KCNA {
    * @function getHTML
    * @returns  HTML content as text
    */
+  // async getHTML() {
+  //   try {
+  //     const res = await fetch(this.dataObject.url);
+  //     // console.log(res);
+  //     const data = await res.text();
+  //     return data;
+  //   } catch (e) {
+  //     console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+  //   }
+  // }
+
+  //FUCKING SWITCHING TO AXIOS
   async getHTML() {
     try {
-      const res = await fetch(this.dataObject.url);
-      // console.log(res);
-      const data = await res.text();
-      return data;
+      const res = await axios.get({
+        url: this.dataObject.url,
+        timeout: 30000,
+        responseType: "text",
+      });
+
+      return res.data;
     } catch (e) {
-      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      console.log(this.dataObject.url + "; " + e.message + "; F BREAK: " + e.function);
     }
   }
 
