@@ -126,7 +126,7 @@ class KCNA {
   async getDownloadArray(type) {
     //uses map to lookup params, params contain correct collections
     const newDataParams = await newDownloadMap(type);
-    const downloadModel = new dbModel(newDataParams);
+    const downloadModel = new dbModel(newDataParams, "");
     const downloadArray = await downloadModel.findNewURLs();
     return downloadArray;
   }
