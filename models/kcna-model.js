@@ -163,6 +163,9 @@ class KCNA {
   async getMediaToDownloadArray(type) {
     //uses map to lookup params, params contain correct collections
     const newDataParams = await newMediaMap(type);
+    console.log("AHHHHHHHHHH");
+    console.log(newDataParams);
+    
     const downloadModel = new dbModel(newDataParams, "");
     const downloadArray = await downloadModel.findNewURLs();
     return downloadArray;

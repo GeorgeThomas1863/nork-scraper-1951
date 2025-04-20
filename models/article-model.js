@@ -49,7 +49,7 @@ class Article {
     const articleListNormal = await idModel.addArticleId(CONFIG.articles, "articleId");
 
     const storeDataModel = new dbModel(articleListNormal, CONFIG.articles);
-    const storeData = await storeDataModel.storeArray();
+    await storeDataModel.storeArray();
     // console.log(storeData);
 
     //for tracking
@@ -196,6 +196,9 @@ class Article {
     const picPageURL = "http://www.kcna.kp" + picPageHref;
     const articlePicArray = await this.getArticlePicArray(picPageURL);
 
+    //if articlePicArray fails to return (load) return null (to download again later)
+    if (!articlePicArray || !articlePicArray.length) return null;
+
     //add to object and return
     parseObj.picPageURL = picPageURL;
     parseObj.articlePicArray = articlePicArray;
@@ -246,9 +249,6 @@ class Article {
       try {
         const articlePicURL = await this.getArticlePicURL(imgArray[i]);
         if (!articlePicURL) continue;
-
-        console.log("AHHHHHHHHHHHHHH");
-        console.log(articlePicURL);
 
         articlePicArray.push(articlePicURL);
 
