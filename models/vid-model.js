@@ -133,9 +133,9 @@ class Vid {
         const inputObj = downloadArray[i];
         const vidPageObj = await this.buildVidPageObj(inputObj);
 
-        // const storePicSetModel = new dbModel(vidPageObj, CONFIG.vidPagesDownloaded);
-        // const storePicSetData = await storePicSetModel.storeUniqueURL();
-        // console.log(storePicSetData);
+        const storePicSetModel = new dbModel(vidPageObj, CONFIG.vidPages);
+        const storePicSetData = await storePicSetModel.storeUniqueURL();
+        console.log(storePicSetData);
 
         //add to array
         vidPageArray.push(vidPageObj);
@@ -145,52 +145,33 @@ class Vid {
     }
 
     //return for tracking
-    return vidObjArray;
+    return vidPageArray;
   }
 
   async buildVidPageObj(inputObj) {
     console.log(inputObj);
+    const vidPageObj = { ...inputObj };
     const vidPageModel = new KCNA(inputObj);
     const vidPageHTML = await vidPageModel.getHTML();
 
-    console.log(vidPageHTML)
+    //extract vidURL as string
+    const vidURL = await this.extractVidStr(vidPageHTML);
+    vidPageObj.vidURL = vidURL;
 
-    // const dom = new JSDOM(vidPageHTML);
-    // const document = dom.window.document;
-    // const ballfucker = document.querySelector(".content source");
-    // const ballfucker1 = ballfucker.getAttribute("src");
-    // console.log("AHHHHHHHHHH");
-    // console.log(ballfucker);
-    // console.log(ballfucker1);
-
-    // return parseObj;
+    return vidPageObj;
   }
 
-  // async getVidPageHTML(inputObj) {
-  //   if (!inputObj) return null;
+  //extract vid URL as String
+  async extractVidStr(str) {
+    //claude regex that extracts anythng starting with '/siteFiles/video AND ending with .mp4'
+    const regex = /'\/siteFiles\/video[^']*?\.mp4'/;
+    const match = str.match(regex);
+    const vidStr = match[0].substring(1, match[0].length - 1); //get rid of leading / trailing quotes
 
-  //   const htmlModel = new KCNA(inputObj);
-  //   const html = await htmlModel.getHTML();
-  //   return html;
-  // }
-
-  // async parseVidPage(html) {
-  //   const dom = new JSDOM(html);
-  //   const document = dom.window.document;
-
-  //   //get vid mp4 url
-  //   const vidElement = document.querySelector("video");
-  //   console.log(vidElement);
-  //   // console.log("AHHHHHHHH")
-  //   // console.log(vidElementRaw.textContent);
-
-  //   // const vidElement = vidElement.querySelector('source[type="video/mp4"]');
-  //   // const vidSrc = vidElement.getAttribute("src");
-
-  //   // console.log("AHHHHHHHHHHH");
-  //   // console.log("REAL FUCKING VID LINK");
-  //   // console.log(vidSrc);
-  // }
+    const urlConstant = "http://www.kcna.kp";
+    const vidURL = urlConstant + vidStr;
+    return vidURL;
+  }
 }
 
 export default Vid;
