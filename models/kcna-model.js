@@ -141,6 +141,15 @@ class KCNA {
     console.log("GETTING MEDIA FOR " + type.toUpperCase());
     const downloadArray = await this.getMediaToDownloadArray(type);
 
+    switch (type) {
+      case "articles":
+        return null;
+
+      case "pics":
+        const picModel = new Pic(downloadArray);
+        const picData = await picModel.getPicDataArray();
+    }
+
     // console.log("DOWNLOAD ARRAY FAGGOT");
     // console.log(downloadArray);
   }

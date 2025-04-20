@@ -27,9 +27,6 @@ export const scrapeKCNA = async () => {
   for (let i = 1; i < typeArr.length; i++) {
     const type = typeArr[i];
 
-    console.log("AHHHHHHHHHHHH");
-    console.log(type);
-
     const dataModel = new KCNA(type);
     console.log("GETTING NEW MEDIA FOR " + type.toUpperCase());
     const newMediaArray = await dataModel.getNewMediaData();

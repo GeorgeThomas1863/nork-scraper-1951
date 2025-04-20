@@ -19,14 +19,67 @@ class Pic {
   //GET PIC DATA
 
   /**
+   * Builds and returns articlePicObj, extracts params from articlePic input, passes to buildPicObj to lookup pic / get headers
+   * @function getItemPicObj
+   * @params raw articlePicObj html data
+   * @returns finished articlePicObj
+   */
+  async getPicDataArray() {
+    const picArray = this.dataObject;
+
+    const picDataArray = [];
+    for (let i = 0; i < picArray.length; i++) {
+      try {
+        const picData = getPicData(picArray[i].url);
+        if (!picData) continue;
+
+        picDataArray.push(picData);
+      } catch (e) {
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      }
+    }
+
+    return picDataArray;
+  }
+
+  async getPicData(picURL) {
+    const picParams = await this.getPicParams(picURL);
+    const picObj = await this.buildPicObj(picParams);
+    if (!picObj) return null;
+
+    //store it
+    const storeModel = new dbModel(picObj, CONFIG.pics);
+    const storeData = await storeModel.storeUniqueURL();
+    console.log(storeData);
+
+    return picObj;
+  }
+
+  async getPicParams(picURL) {
+    //extract kcnaId
+    const kcnaId = +picURL.substring(picURL.length - 11, picURL.length - 4);
+
+    //extract out stupid date string
+    const dateString = picURL.substring(picURL.indexOf("/photo/") + "/photo/".length, picURL.indexOf("/PIC", picURL.indexOf("/photo/")));
+
+    const picParams = {
+      url: picURL,
+      kcnaId: kcnaId,
+      dateString: dateString,
+    };
+
+    return picParams;
+  }
+
+  /**
    * Builds picObj from looking up pic headers (and input)
-   * throws ERROR if URL doesnt exist / wrong, NULL if url NOT pic (to iterate through dateArray)
+   * throws ERROR if URL doesnt exist / wrosng, NULL if url NOT pic (to iterate through dateArray)
    * @params requires url, kcnaId, dateString as input params
    * @returns finished picObj
    */
-  async buildPicObj() {
+  async buildPicObj(picParams) {
     //call picURL here to avoid confusion
-    const { url, kcnaId, dateString } = this.dataObject;
+    const { url, kcnaId, dateString } = picParams;
 
     // const res = await fetch(url);
     const res = await fetch(url, {
@@ -70,51 +123,6 @@ class Pic {
     console.log(picObj);
 
     return picObj;
-  }
-
-  /**
-   * Builds and returns articlePicObj, extracts params from articlePic input, passes to buildPicObj to lookup pic / get headers
-   * @function getItemPicObj
-   * @params raw articlePicObj html data
-   * @returns finished articlePicObj
-   */
-  async handlePicData() {
-    const picURL = this.dataObject;
-    if (!picURL) return null;
-
-    const picParams = await this.parsePicParams(picURL);
-
-    //build pic OBJ from PIC URL file (checks if new AND stores it)
-    try {
-      const picObjModel = new Pic(picParams);
-      const picObj = await picObjModel.buildPicObj();
-
-      //store PIC obj
-      const storeModel = new dbModel(picObj, CONFIG.pics);
-      const storeData = await storeModel.storeUniqueURL();
-      console.log(storeData);
-
-      //return for tracking
-      return picObj;
-    } catch (e) {
-      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-    }
-  }
-
-  async parsePicParams(picURL) {
-    //extract kcnaId
-    const kcnaId = +picURL.substring(picURL.length - 11, picURL.length - 4);
-
-    //extract out stupid date string
-    const dateString = picURL.substring(picURL.indexOf("/photo/") + "/photo/".length, picURL.indexOf("/PIC", picURL.indexOf("/photo/")));
-
-    const picParams = {
-      url: picURL,
-      kcnaId: kcnaId,
-      dateString: dateString,
-    };
-
-    return picParams;
   }
 
   //---------------------
@@ -264,20 +272,6 @@ class Pic {
   }
 
   //-----------------------------------
-
-  //GET NEW PICS
-  // async getNewPics() {
-  //   const articleModel = new dbModel("", CONFIG.articlesDownloaded);
-  //   const articleArray = await articleModel.getAll();
-
-  //   for (let i = 0; i <articleArray.length; i++){
-  //     const articleItem = articleArray[i]
-  //     const articlePicArray = await this.extractArticlePics(articleItem)
-  //   }
-
-  // }
-
-  // async extractArticlePics()
 }
 
 export default Pic;
