@@ -153,13 +153,15 @@ class Vid {
     const vidPageModel = new KCNA(inputObj);
     const vidPageHTML = await vidPageModel.getHTML();
 
-    const dom = new JSDOM(vidPageHTML);
-    const document = dom.window.document;
-    const ballfucker = document.querySelector(".content source");
-    const ballfucker1 = ballfucker.getAttribute("src");
-    console.log("AHHHHHHHHHH");
-    console.log(ballfucker);
-    console.log(ballfucker1);
+    console.log(vidPageHTML)
+
+    // const dom = new JSDOM(vidPageHTML);
+    // const document = dom.window.document;
+    // const ballfucker = document.querySelector(".content source");
+    // const ballfucker1 = ballfucker.getAttribute("src");
+    // console.log("AHHHHHHHHHH");
+    // console.log(ballfucker);
+    // console.log(ballfucker1);
 
     // return parseObj;
   }
