@@ -272,11 +272,9 @@ class Article {
 
     //save data to pic db, but NOT here
     const picObjModel = new Pic(picURL);
-    const articlePicObj = await picObjModel.handlePicData();
+    await picObjModel.handlePicData();
 
-    console.log("ARTICLE PIC OBJ");
-    console.log(articlePicObj);
-
+    //return PICURL (not picObj)
     return picURL;
   }
 

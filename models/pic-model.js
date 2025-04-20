@@ -66,6 +66,7 @@ class Pic {
       picEditDate: picEditDate,
     };
 
+    console.log("PIC OBJECT")
     console.log(picObj);
 
     return picObj;
@@ -103,9 +104,6 @@ class Pic {
   async parsePicParams(picURL) {
     //extract kcnaId
     const kcnaId = +picURL.substring(picURL.length - 11, picURL.length - 4);
-
-    console.log("KCNA ID CHECK");
-    console.log(kcnaId);
 
     //extract out stupid date string
     const dateString = picURL.substring(picURL.indexOf("/photo/") + "/photo/".length, picURL.indexOf("/PIC", picURL.indexOf("/photo/")));
@@ -221,8 +219,8 @@ class Pic {
     const picSetPageHTML = await htmlModel.getHTML();
 
     //add in picArray
-    const picArray = await this.buildPicSetArray(picSetPageHTML);
-    picSetObj.picArray = picArray;
+    const picSetArray = await this.buildPicSetArray(picSetPageHTML);
+    picSetObj.picArray = picSetArray;
 
     //store it
     const storePicSetModel = new dbModel(picSetObj, CONFIG.picSetsDownloaded);
@@ -242,6 +240,9 @@ class Pic {
       try {
         const picURL = await this.parsePicElement(picElementArray[i]);
         if (!picURL) continue;
+
+        console.log("PIC URL")
+        console.log(picURL)
 
         picSetArray.push(picURL);
       } catch (e) {
