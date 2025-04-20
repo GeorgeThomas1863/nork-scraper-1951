@@ -52,17 +52,17 @@ class Vid {
     const vidWrapperArray = document.querySelectorAll(".video-wrapper");
     if (!vidWrapperArray || !vidWrapperArray.length) return null;
 
-    const vidListArray = await this.parseVidWrapperArray(vidWrapperArray);
+    const vidListArray = await this.parseWrapperArray(vidWrapperArray);
     return vidListArray;
   }
 
-  async parseVidWrapperArray(inputArray) {
+  async parseWrapperArray(inputArray) {
     const vidListArray = [];
 
     for (let i = 0; i < inputArray.length; i++) {
       try {
         const vidElement = inputArray[i];
-        const vidListObj = await this.buildVidListObj(vidElement);
+        const vidListObj = await this.getVidListObj(vidElement);
         if (!vidListObj) return null;
 
         //store data
@@ -81,7 +81,7 @@ class Vid {
     return vidListArray;
   }
 
-  async buildVidListObj(vidElement) {
+  async getVidListObj(vidElement) {
     const urlConstant = "http://www.kcna.kp";
 
     //extract vid link
@@ -130,12 +130,12 @@ class Vid {
     const vidPageArray = [];
     for (let i = 0; i < downloadArray.length; i++) {
       try {
-        const inputObj = downloadArray[i];
-        const vidPageObj = await this.buildVidPageObj(inputObj);
+        const vidPageObj = await this.getVidPageObj(downloadArray[i]);
 
-        const storePicSetModel = new dbModel(vidPageObj, CONFIG.vidPages);
-        const storePicSetData = await storePicSetModel.storeUniqueURL();
-        console.log(storePicSetData);
+        //store it
+        const storeVidPageModel = new dbModel(vidPageObj, CONFIG.vidPages);
+        const storeVidPage = await storeVidPageModel.storeUniqueURL();
+        console.log(storeVidPage);
 
         //add to array
         vidPageArray.push(vidPageObj);
@@ -148,15 +148,17 @@ class Vid {
     return vidPageArray;
   }
 
-  async buildVidPageObj(inputObj) {
-    console.log(inputObj);
+  async getVidPageObj(inputObj) {
     const vidPageObj = { ...inputObj };
     const vidPageModel = new KCNA(inputObj);
     const vidPageHTML = await vidPageModel.getHTML();
 
-    //extract vidURL as string
     const vidURL = await this.extractVidStr(vidPageHTML);
     vidPageObj.vidURL = vidURL;
+
+    const vidModel = new Vid(vidURL);
+    const vidData = await vidModel.handleVidData();
+    console.log(vidData);
 
     return vidPageObj;
   }
