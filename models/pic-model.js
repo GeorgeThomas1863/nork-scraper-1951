@@ -77,7 +77,7 @@ class Pic {
    * @params raw articlePicObj html data
    * @returns finished articlePicObj
    */
-  async getItemPicObj() {
+  async handlePicData() {
     const picURL = this.dataObject;
     if (!picURL) return null;
 
@@ -260,7 +260,7 @@ class Pic {
 
     //Save pic (and picObj) to separate pic db, but dont return that here
     const picModel = new Pic(picURL);
-    const picObjData = await picModel.handlePicData();
+    const picObjData = await picModel.getItemPicObj();
     console.log("PIC OBJ DATA ");
     console.log(picObjData);
 
