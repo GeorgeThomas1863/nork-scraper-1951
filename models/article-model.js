@@ -249,7 +249,7 @@ class Article {
         articlePicArray.push(articlePicURL);
 
         //save data to pic db, but NOT here
-        const picDataModel = new Pic(picURL);
+        const picDataModel = new Pic(articlePicURL);
         await picDataModel.handlePicData();
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
