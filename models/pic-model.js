@@ -45,12 +45,7 @@ class Pic {
   }
 
   async getPicData(picURL) {
-    console.log("PIC URL");
-    console.log(picURL);
     const picParams = await this.getPicParams(picURL);
-
-    console.log("FAGGOT PIC PARAMS");
-    console.log(picParams);
 
     const picObj = await this.buildPicObj(picParams);
     if (!picObj) return null;
@@ -88,6 +83,9 @@ class Pic {
   async buildPicObj(picParams) {
     //call picURL here to avoid confusion
     const { url, kcnaId, dateString } = picParams;
+
+    console.log("AHHHHHHHHHHHHHHHHH");
+    console.log(url);
 
     // const res = await fetch(url);
     const res = await fetch(url, {
