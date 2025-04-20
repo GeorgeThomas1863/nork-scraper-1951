@@ -155,9 +155,9 @@ class Vid {
 
     const dom = new JSDOM(vidPageHTML);
     const document = dom.window.document;
-    const ballfucker = document.querySelector(".main span");
+    const ballfucker = document.querySelector(".content video");
     console.log("AHHHHHHHHHH");
-    console.log(ballfucker.textContent);
+    console.log(ballfucker);
 
     // return parseObj;
   }
