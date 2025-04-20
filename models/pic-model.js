@@ -204,17 +204,13 @@ class Pic {
       try {
         const picSetObj = this.buildPicSetObj(downloadArray[i]);
 
-        //store it
-        const storePicSetModel = new dbModel(picSetObj, CONFIG.picSetsDownloaded);
-        const storePicSetData = await storePicSetModel.storeUniqueURL();
-        console.log(storePicSetData);
-
         picSetArray.push(picSetObj);
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       }
     }
 
+    //for tracking
     return picSetArray;
   }
 
@@ -227,6 +223,11 @@ class Pic {
     //add in picArray
     const picArray = await this.buildPicSetArray(picSetPageHTML);
     picSetObj.picArray = picArray;
+
+    //store it
+    const storePicSetModel = new dbModel(picSetObj, CONFIG.picSetsDownloaded);
+    const storePicSetData = await storePicSetModel.storeUniqueURL();
+    console.log(storePicSetData);
 
     return picSetObj;
   }

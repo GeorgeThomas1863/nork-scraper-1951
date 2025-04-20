@@ -44,7 +44,7 @@ class KCNA {
   async getNewListArray() {
     //get html
     const type = this.dataObject;
-    console.log("GETTING LIST DATA FOR " + type.toUpperCase() + "S");
+    console.log("GETTING LIST DATA FOR " + type.toUpperCase());
     const newListHTML = await this.getNewListHTML(type);
     if (!newListHTML) return "FETCH FUCKED";
 
@@ -93,6 +93,7 @@ class KCNA {
    */
   async getNewObjArray() {
     const type = this.dataObject;
+    console.log("GETTING OBJECT DATA FOR " + type.toUpperCase());
     const downloadArray = await this.getDownloadArray(type);
 
     //return on null
