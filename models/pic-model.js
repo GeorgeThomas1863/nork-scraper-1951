@@ -85,12 +85,10 @@ class Pic {
     //call picURL here to avoid confusion
     const { url, kcnaId, dateString } = picParams;
 
-    // const res = await fetch(url);
-    // const res = await fetch(url, {
-    //   headers: { Range: "bytes=0-1" },
-    // });
 
-    const res = await axios.get(url, {
+    const res = await axios({
+      method: "get",
+      url: url,
       headers: { Range: "bytes=0-1" },
       timeout: 30000,
     });

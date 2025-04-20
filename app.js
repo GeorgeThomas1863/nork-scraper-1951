@@ -1,6 +1,8 @@
 //TO DO:
 
-//fuckers hiding it in the script tag. extract from script tag with one of geminis answers
+//KEEP DEBUGGING THE FUCKING URL SCRAPING
+
+//GET THE FUCKING VID DATA
 
 //work on downloading
 

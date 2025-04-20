@@ -40,7 +40,7 @@ class KCNA {
       const res = await axios({
         method: "get",
         url: this.dataObject.url,
-        timeout: 30000,
+        timeout: 60000,
         responseType: "text",
       });
 
