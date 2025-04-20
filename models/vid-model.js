@@ -150,6 +150,9 @@ class Vid {
 
   async buildVidPageObj(inputObj) {
     const vidPageHTML = await this.getVidPageHTML(inputObj);
+    console.log("FUCK MY BITCH FACE");
+    console.log(vidPageHTML);
+
     const parseObj = await this.parseVidPage(vidPageHTML);
 
     return parseObj;
