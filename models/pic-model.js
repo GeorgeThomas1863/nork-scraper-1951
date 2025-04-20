@@ -84,6 +84,10 @@ class Pic {
     //call picURL here to avoid confusion
     const { url, kcnaId, dateString } = picParams;
 
+    console.log("REACHING THE END OF MY ROPE");
+    console.log(url);
+    console.log(kcnaId);
+
     // const res = await fetch(url);
     const res = await fetch(url, {
       headers: { Range: "bytes=0-1" },
