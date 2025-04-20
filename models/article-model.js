@@ -22,10 +22,10 @@ class Article {
 
   /**
    * Extracts articleListPage data items, sorts / normalizes them, then stores them
-   * @function parseArticleList
+   * @function buildArticleList
    * @returns {array} ARRAY of sorted OBJECTs (for tracking)
    */
-  async parseArticleList() {
+  async buildArticleList() {
     // Parse the HTML using JSDOM
     const dom = new JSDOM(this.dataObject);
     const document = dom.window.document;
@@ -67,7 +67,7 @@ class Article {
     const articleListArray = [];
     for (let i = 0; i < inputArray.length; i++) {
       const listItem = inputArray[i];
-      const articleListObj = await this.buildArticleListObj(listItem);
+      const articleListObj = await this.getArticleListObj(listItem);
 
       articleListArray.push(articleListObj); //add to array
     }
@@ -77,11 +77,11 @@ class Article {
 
   /**
    * Parses individual article link item, builds / returns single articleListObj
-   * @function buildArticleListObj
+   * @function getArticleListObj
    * @param {*} listItem article link item
    * @returns articleListObj (with url / date extracted)
    */
-  async buildArticleListObj(listItem) {
+  async getArticleListObj(listItem) {
     const href = listItem.getAttribute("href");
     if (!href) return;
 
@@ -102,22 +102,19 @@ class Article {
       date: articleDate,
     };
 
-    console.log("ArticleListObj RAW");
-    console.log(articleListObj);
-
     return articleListObj;
   }
 
   //--------------------------
 
-  //ARTICLE OBJECT SECTION
+  //ARTICLE DATA ITEM SECTION
 
   /**
    * GETs and buils array of NEW articleObjs by looping through download array (which ONLY contains new items)
    * @function getNewArticleObjArray
    * @returns array of articleObjs (for tracking)
    */
-  async getNewArticleObjArray() {
+  async buildArticleData() {
     const inputArray = this.dataObject;
     if (!inputArray || !inputArray.length) return null;
 
@@ -126,7 +123,7 @@ class Article {
     for (let i = 0; i < inputArray.length; i++) {
       try {
         const inputObj = inputArray[i];
-        const articleObj = await this.buildArticleObj(inputObj);
+        const articleObj = await this.getArticleObj(inputObj);
         if (!articleObj) return null;
 
         articleObjArray.push(articleObj);
@@ -145,7 +142,7 @@ class Article {
    * @param {*} inputObj articleItem to download from downloadArray
    * @returns
    */
-  async buildArticleObj(inputObj) {
+  async getArticleObj(inputObj) {
     //get html for new article
     const htmlModel = new KCNA(inputObj);
     const articleHTML = await htmlModel.getHTML();
@@ -196,7 +193,7 @@ class Article {
 
     //otherwise build pic / pic array
     const picPageURL = "http://www.kcna.kp" + picPageHref;
-    const articlePicArray = await this.buildArticlePicArray(picPageURL);
+    const articlePicArray = await this.getArticlePicArray(picPageURL);
 
     //add to object and return
     parseObj.picPageURL = picPageURL;
@@ -227,7 +224,7 @@ class Article {
    * @param {} picPageURL url for article pic page
    * @returns array of articlePicObjs
    */
-  async buildArticlePicArray(picPageURL) {
+  async getArticlePicArray(picPageURL) {
     //get the html, build dom
     const htmlModel = new KCNA({ url: picPageURL });
     const html = await htmlModel.getHTML();
@@ -250,6 +247,10 @@ class Article {
         if (!articlePicURL) continue;
 
         articlePicArray.push(articlePicURL);
+
+        //save data to pic db, but NOT here
+        const picDataModel = new Pic(picURL);
+        await picDataModel.handlePicData();
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       }
@@ -266,15 +267,11 @@ class Article {
   async getArticlePicURL(imgItem) {
     if (!imgItem) return null;
 
+    //build picURL
     const imgSrc = imgItem.getAttribute("src");
     const urlConstant = "http://www.kcna.kp";
+
     const picURL = urlConstant + imgSrc;
-
-    //save data to pic db, but NOT here
-    const picObjModel = new Pic(picURL);
-    await picObjModel.handlePicData();
-
-    //return PICURL (not picObj)
     return picURL;
   }
 

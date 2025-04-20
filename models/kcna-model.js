@@ -52,19 +52,19 @@ class KCNA {
       case "articles":
         //pass to article model for parsing
         const articleListModel = new Article(newListHTML);
-        const articleListArray = await articleListModel.parseArticleList();
+        const articleListArray = await articleListModel.buildArticleList();
         console.log(articleListArray);
         return articleListArray;
 
       case "pics":
         const picSetModel = new Pic(newListHTML);
-        const picSetListArray = await picSetModel.parsePicSetList();
+        const picSetListArray = await picSetModel.buildPicSetList();
         console.log(picSetListArray);
         return picSetListArray;
 
       case "vids":
         const vidModel = new Vid(newListHTML);
-        const vidListArray = await vidModel.parseVidList();
+        const vidListArray = await vidModel.buildVidList();
         console.log(vidListArray);
         return vidListArray;
     }
@@ -103,17 +103,17 @@ class KCNA {
     switch (type) {
       case "articles":
         const articleObjModel = new Article(downloadArray);
-        const articleObjArray = await articleObjModel.getNewArticleObjArray();
+        const articleObjArray = await articleObjModel.buildArticleData();
         return articleObjArray;
 
       case "pics":
         const picSetPageModel = new Pic(downloadArray);
-        const picSetPageArray = await picSetPageModel.parsePicSetPage();
+        const picSetPageArray = await picSetPageModel.buildPicSetData();
         return picSetPageArray;
 
       case "vids":
         const vidObjModel = new Vid(downloadArray);
-        const vidObjArray = vidObjModel.getNewVidPageArray();
+        const vidObjArray = vidObjModel.buildVidData();
         return vidObjArray;
     }
   }

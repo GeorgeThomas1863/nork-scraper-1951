@@ -43,7 +43,7 @@ class Vid {
    * @function parseVidList
    * @returns {array} ARRAY of sorted OBJECTs (for tracking)
    */
-  async parseVidList() {
+  async buildVidList() {
     // Parse the HTML using JSDOM
     const dom = new JSDOM(this.dataObject);
     const document = dom.window.document;
@@ -124,7 +124,7 @@ class Vid {
   //----------------------
 
   //VID OBJ SECTION
-  async getNewVidPageArray() {
+  async buildVidData() {
     const downloadArray = this.dataObject;
 
     const vidPageArray = [];

@@ -122,7 +122,7 @@ class Pic {
   //PARSE DATA
 
   //PICSET LIST
-  async parsePicSetList() {
+  async buildPicSetList() {
     const dom = new JSDOM(this.dataObject);
     const document = dom.window.document;
 
@@ -141,7 +141,6 @@ class Pic {
 
     const storeDataModel = new dbModel(picSetListNormal, CONFIG.picSets);
     const storeData = await storeDataModel.storeArray();
-    console.log("STORING PIC SET");
     console.log(storeData);
 
     return picSetListNormal;
@@ -151,7 +150,7 @@ class Pic {
     const picSetListArray = [];
     for (let i = 0; i < inputArray.length; i++) {
       const photoWrapper = inputArray[i];
-      const picSetListObj = await this.buildPicSetListObj(photoWrapper);
+      const picSetListObj = await this.getPicSetListObj(photoWrapper);
 
       picSetListArray.push(picSetListObj);
     }
@@ -159,7 +158,7 @@ class Pic {
     return picSetListArray;
   }
 
-  async buildPicSetListObj(inputItem) {
+  async getPicSetListObj(inputItem) {
     const titleWrapper = inputItem.querySelector(".title a");
 
     //get PicSetURL
@@ -194,13 +193,13 @@ class Pic {
 
   //PIC SET PAGE (page where multiple pics in set are displayed)
 
-  async parsePicSetPage() {
+  async buildPicSetData() {
     const downloadArray = this.dataObject;
 
     const picSetArray = [];
     for (let i = 0; i < downloadArray.length; i++) {
       try {
-        const picSetObj = await this.buildPicSetObj(downloadArray[i]);
+        const picSetObj = await this.getPicSetObj(downloadArray[i]);
 
         picSetArray.push(picSetObj);
       } catch (e) {
@@ -212,14 +211,14 @@ class Pic {
     return picSetArray;
   }
 
-  async buildPicSetObj(inputObj) {
+  async getPicSetObj(inputObj) {
     const picSetObj = { ...inputObj };
     //get HTML
     const htmlModel = new KCNA(picSetObj);
     const picSetPageHTML = await htmlModel.getHTML();
 
     //add in picArray
-    const picSetArray = await this.buildPicSetArray(picSetPageHTML);
+    const picSetArray = await this.parsePicSetHTML(picSetPageHTML);
     picSetObj.picArray = picSetArray;
 
     //store it
@@ -230,7 +229,7 @@ class Pic {
     return picSetObj;
   }
 
-  async buildPicSetArray(html) {
+  async parsePicSetHTML(html) {
     const dom = new JSDOM(html);
     const document = dom.window.document;
     const picElementArray = document.querySelectorAll(".content img");
@@ -238,13 +237,14 @@ class Pic {
     const picSetArray = [];
     for (let i = 0; i < picElementArray.length; i++) {
       try {
-        const picURL = await this.parsePicElement(picElementArray[i]);
+        const picURL = await this.getPicURL(picElementArray[i]);
         if (!picURL) continue;
 
-        console.log("PIC URL");
-        console.log(picURL);
-
         picSetArray.push(picURL);
+
+        //handle pic OBJ HERE (gets pic data stores in pic)
+        const picDataModel = new Pic(picURL);
+        await picDataModel.handlePicData();
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       }
@@ -252,47 +252,16 @@ class Pic {
     return picSetArray;
   }
 
-  async parsePicElement(picElement) {
+  async getPicURL(picElement) {
     if (!picElement) return null;
     const urlConstant = "http://www.kcna.kp";
-    const imgSrc = picElement.getAttribute("src");
 
     //build picURL
+    const imgSrc = picElement.getAttribute("src");
     const picURL = urlConstant + imgSrc;
-
-    //Save pic (and picObj) to separate pic db, but dont return that here
-    const picModel = new Pic(picURL);
-    const picObjData = await picModel.handlePicData();
-    console.log("PIC OBJ DATA ");
-    console.log(picObjData);
 
     return picURL;
   }
 }
 
 export default Pic;
-
-// async getPicSetPageHTML(inputObj) {
-//   const htmlModel = new KCNA(inputObj);
-//   const html = await htmlModel.getHTML();
-//   return html;
-// }
-
-// async buildPicSetArray(html) {
-//   const dom = new JSDOM(html);
-//   const document = dom.window.document;
-//   const picElementArray = document.querySelectorAll(".content img");
-
-//   const picArray = [];
-//   for (let i = 0; i < picElementArray.length; i++) {
-//     try {
-//       const picURL = await this.parsePicElement(picElementArray[i]);
-//       if (!picURL) continue;
-//       picArray.push(picURL);
-//     } catch (e) {
-//       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-//     }
-//   }
-
-//   return picArray;
-// }
