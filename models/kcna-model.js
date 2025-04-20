@@ -5,7 +5,7 @@ import Article from "./article-model.js";
 import Pic from "./pic-model.js";
 import Vid from "./vid-model.js";
 
-import { newListMap, newDownloadMap } from "../config/map.js";
+import { newListMap, newContentMap } from "../config/map.js";
 
 /**
  * @class KCNA
