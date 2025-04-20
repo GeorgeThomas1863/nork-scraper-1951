@@ -249,6 +249,9 @@ class Article {
         const articlePicURL = await this.getArticlePicURL(imgArray[i]);
         if (!articlePicURL) continue;
 
+        console.log("AHHHHHHHHHHHHHH");
+        console.log(articlePicURL);
+
         articlePicArray.push(articlePicURL);
 
         //store url to picDB (so dont have to do again)
