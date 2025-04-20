@@ -84,9 +84,6 @@ class Pic {
     //call picURL here to avoid confusion
     const { url, kcnaId, dateString } = picParams;
 
-    console.log("AHHHHHHHHHHHHHHHHH");
-    console.log(url);
-
     // const res = await fetch(url);
     const res = await fetch(url, {
       headers: { Range: "bytes=0-1" },
@@ -102,6 +99,7 @@ class Pic {
 
     //get pic headers
     const headerData = res.headers;
+    console.log(headerData);
     const dataType = headerData.get("content-type");
 
     //if not pic RETURN NULL [KEY FOR PROPER DATE ARRAY ITERATION]

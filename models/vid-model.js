@@ -24,24 +24,24 @@ class Vid {
     }
   }
 
-  async buildVidObj() {
-    const { url, kcnaId, dateString } = this.dataObject;
+  // async buildVidObj() {
+  //   const { url, kcnaId, dateString } = this.dataObject;
 
-    const res = await fetch(url);
+  //   const res = await fetch(url);
 
-    //if URL doesnt exist / return headers throw error
-    if (!res || !res.headers) {
-      const error = new Error("URL DOESNT EXIST");
-      error.url = url;
-      error.function = "getPicData KCNA MODEL";
-      throw error;
-    }
+  //   //if URL doesnt exist / return headers throw error
+  //   if (!res || !res.headers) {
+  //     const error = new Error("URL DOESNT EXIST");
+  //     error.url = url;
+  //     error.function = "getPicData KCNA MODEL";
+  //     throw error;
+  //   }
 
-    //get pic headers
-    const headerData = res.headers;
-    // console.log("VID HEADER DATA");
-    // console.log(headerData);
-  }
+  //   //get pic headers
+  //   const headerData = res.headers;
+  //   // console.log("VID HEADER DATA");
+  //   // console.log(headerData);
+  // }
 
   //------------
   //PARSE DATA
