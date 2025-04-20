@@ -32,9 +32,6 @@ class Pic {
       try {
         const picItem = picArray[i];
 
-        console.log("FUCKING PIC ITEM");
-        console.log(picItem);
-
         const picData = await this.getPicData(picItem.url);
         if (!picData) continue;
 
@@ -49,6 +46,10 @@ class Pic {
 
   async getPicData(picURL) {
     const picParams = await this.getPicParams(picURL);
+
+    console.log("FAGGOT PIC PARAMS");
+    console.log(picParams);
+
     const picObj = await this.buildPicObj(picParams);
     if (!picObj) return null;
 
