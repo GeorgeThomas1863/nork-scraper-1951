@@ -240,6 +240,8 @@ class Pic {
     for (let i = 0; i < picElementArray.length; i++) {
       try {
         const picURL = await this.parsePicElement(picElementArray[i]);
+        if (!picURL) continue;
+
         picSetArray.push(picURL);
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);

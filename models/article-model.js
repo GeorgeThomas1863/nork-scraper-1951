@@ -246,15 +246,10 @@ class Article {
     const imgArray = document.querySelectorAll("img");
     for (let i = 0; i < imgArray.length; i++) {
       try {
-        const articlePicObj = await this.getArticlePicObj(imgArray[i]);
-        if (!articlePicObj) continue;
+        const articlePicURL = await this.getArticlePicURL(imgArray[i]);
+        if (!articlePicURL) continue;
 
-        articlePicArray.push(articlePicObj);
-
-        //store to PIC DB HERE (if unique) for pulling later (after everything done / added to array)
-        const storeModel = new dbModel(articlePicObj, CONFIG.pics);
-        const storePic = await storeModel.storeUniqueURL();
-        console.log(storePic);
+        articlePicArray.push(articlePicURL);
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       }
@@ -268,14 +263,21 @@ class Article {
    * @param {*} imgItem image element with link to pic
    * @returns returns articlePicObj
    */
-  async getArticlePicObj(imgItem) {
+  async getArticlePicURL(imgItem) {
     if (!imgItem) return null;
 
     const imgSrc = imgItem.getAttribute("src");
-    const picObjModel = new Pic(imgSrc);
-    const articlePicObj = await picObjModel.buildArticlePicObj();
+    const urlConstant = "http://www.kcna.kp";
+    const picURL = urlConstant + imgSrc;
 
-    return articlePicObj;
+    //save data to pic db, but NOT here
+    const picObjModel = new Pic(picURL);
+    const articlePicObj = await picObjModel.getItemPicObj();
+
+    console.log("ARTICLE PIC OBJ");
+    console.log(articlePicObj);
+
+    return picURL;
   }
 
   //-----------------
