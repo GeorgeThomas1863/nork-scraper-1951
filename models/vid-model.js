@@ -84,10 +84,11 @@ class Vid {
   async getVidListObj(vidElement) {
     const urlConstant = "http://www.kcna.kp";
 
-    //extract vid link
+    //extract vid linl
     const vidLinkElement = vidElement.querySelector(".img a");
     const href = vidLinkElement.getAttribute("href");
     const vidURL = urlConstant + href;
+    await this.storeVidURL(vidURL);
 
     //thumbnail
     const thumbnailElement = vidElement.querySelector(".img img");
@@ -125,6 +126,16 @@ class Vid {
   async storeVidThumbnail(picURL) {
     try {
       const picModel = new dbModel({ url: picURL }, CONFIG.picURLs);
+      const storeData = await picModel.storeUniqueURL();
+      console.log(storeData);
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
+  }
+
+  async storeVidURL(vidURL) {
+    try {
+      const picModel = new dbModel({ url: vidURL }, CONFIG.vidURLs);
       const storeData = await picModel.storeUniqueURL();
       console.log(storeData);
     } catch (e) {

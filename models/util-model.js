@@ -57,7 +57,7 @@ class UTIL {
       const normalObj = { ...inputObj };
 
       //add in articleId
-      normalObj.inputType = i + currentItemId;
+      normalObj[inputType] = i + currentItemId;
 
       console.log("ARTICLE LIST OBJ");
       console.log(normalObj);
