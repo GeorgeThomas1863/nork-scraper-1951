@@ -155,9 +155,11 @@ class Vid {
 
     const dom = new JSDOM(vidPageHTML);
     const document = dom.window.document;
-    const ballfucker = document.querySelector(".content video");
+    const ballfucker = document.querySelector(".content source");
+    const ballfucker1 = ballfucker.getAttribute("src");
     console.log("AHHHHHHHHHH");
     console.log(ballfucker);
+    console.log(ballfucker1);
 
     // return parseObj;
   }
