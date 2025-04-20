@@ -149,6 +149,7 @@ class Vid {
   }
 
   async buildVidPageObj(inputObj) {
+    console.log(inputObj);
     const vidPageHTML = await this.getVidPageHTML(inputObj);
     const parseObj = await this.parseVidPage(vidPageHTML);
 
@@ -168,8 +169,8 @@ class Vid {
     const document = dom.window.document;
 
     //get vid mp4 url
-    const vidElement = document.querySelector("source");
-    console.log(vidElement)
+    const vidElement = document.querySelector("video");
+    console.log(vidElement);
     // console.log("AHHHHHHHH")
     // console.log(vidElementRaw.textContent);
 
