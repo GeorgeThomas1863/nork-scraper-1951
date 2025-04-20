@@ -95,10 +95,10 @@ class KCNA {
    */
   async getNewListHTML(type) {
     const newListParam = await newListMap(type);
-    console.log("WHAT THE FUCK");
-    console.log(newListParam);
     const newListModel = new KCNA({ url: CONFIG[newListParam] });
     const newListHTML = await newListModel.getHTML();
+    console.log("FUCK ME");
+    console.log(newListHTML);
     return newListHTML;
   }
 
