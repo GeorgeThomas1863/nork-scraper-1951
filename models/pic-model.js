@@ -28,7 +28,10 @@ class Pic {
     //call picURL here to avoid confusion
     const { url, kcnaId, dateString } = this.dataObject;
 
-    const res = await fetch(url, { method: "HEAD" });
+    // const res = await fetch(url);
+    const res = await fetch(url, {
+      headers: { Range: "bytes=0-1" },
+    });
 
     //if URL doesnt exist / return headers throw error
     if (!res || !res.headers) {
