@@ -8,35 +8,24 @@ import KCNA from "../models/kcna-model.js";
  */
 export const scrapeKCNA = async () => {
   const { typeArr } = CONFIG;
+  const dataModel = new KCNA(type);
   //loop through types
   for (let i = 0; i < typeArr.length; i++) {
-    const type = typeArr[i];
-    const newDataKCNA = await getNewDataKCNA(type);
+    console.log("GETTING LIST DATA FOR " + type.toUpperCase());
+    const newListArray = await dataModel.getNewListData();
+    console.log(newListArray);
 
-    console.log(newDataKCNA);
+    console.log("GETTING NEW CONTENT FOR " + type.toUpperCase());
+    const newContentArray = await dataModel.getNewContentData();
+    console.log(newContentArray);
+  }
+
+  //get pic / vid media (articles index 0)
+  for (let i = 1; i < typeArr.length; i++) {
+    console.log("GETTING NEW MEDIA FOR " + type.toUpperCase());
+    const newMediaArray = await dataModel.getNewMediaData();
+    console.log(newMediaArray);
   }
 
   console.log("FINSIHED FUCKER");
-};
-
-/**
- * Gets new data from KCNA based on input type (article, picSet, vid)
- * @function getNewDataKCNA
- * @param {} type (article, picSet, vid)
- * @returns array of finished data for tracking
- */
-export const getNewDataKCNA = async (type) => {
-  console.log("STARTING SCRAPE OF " + type.toUpperCase());
-  const dataModel = new KCNA(type);
-  const newListArray = await dataModel.getNewListArray();
-  console.log(newListArray);
-
-  console.log("GETTING NEW CONTENT FOR " + type.toUpperCase());
-  const newContentArray = await dataModel.getNewContentData();
-  console.log(newContentArray);
-
-  console.log("GETTING NEW MEDIA FOR " + type.toUpperCase());
-  const newMediaData = await dataModel.getNewMediaData();
-  console.log(newMediaData);
-  return newMediaData;
 };

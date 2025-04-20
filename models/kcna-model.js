@@ -41,7 +41,7 @@ class KCNA {
    * @function getNewListArray
    * @returns arrray of listObjs (item url / date / id etc)
    */
-  async getNewListArray() {
+  async getNewListData() {
     //get html
     const type = this.dataObject;
     console.log("GETTING LIST DATA FOR " + type.toUpperCase());
