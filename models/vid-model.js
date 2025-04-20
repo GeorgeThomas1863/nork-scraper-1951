@@ -198,6 +198,7 @@ class Vid {
     //claude regex that extracts anythng starting with '/siteFiles/video AND ending with .mp4'
     const regex = /'\/siteFiles\/video[^']*?\.mp4'/;
     const match = str.match(regex);
+    if (!match) return null;
     const vidStr = match[0].substring(1, match[0].length - 1); //get rid of leading / trailing quotes
 
     const urlConstant = "http://www.kcna.kp";

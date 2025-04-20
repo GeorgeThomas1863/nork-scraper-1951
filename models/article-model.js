@@ -39,6 +39,7 @@ class Article {
     // get array of article list (from link elements)
     const linkElementArray = articleLinkElement.querySelectorAll("a");
     const articleListArray = await this.parseLinkArray(linkElementArray);
+    console.log("GOT " + articleListArray.length + "ARTICLES");
 
     //sort the array
     const sortModel = new UTIL(articleListArray);
@@ -117,6 +118,9 @@ class Article {
   async buildArticleContent() {
     const inputArray = this.dataObject;
     if (!inputArray || !inputArray.length) return null;
+
+    console.log("ARTICLE CONTENT ARRAY");
+    console.log(inputArray);
 
     //loop (dont check if stored since inputArray based on mongo compare earlier)
     const articleObjArray = [];
