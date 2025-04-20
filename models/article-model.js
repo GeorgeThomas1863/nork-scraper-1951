@@ -33,6 +33,9 @@ class Article {
     // Find the element with class "article-link"
     const articleLinkElement = document.querySelector(".article-link");
 
+    console.log("FUCK MUY BITCH FACE")
+    console.log(articleLinkElement.length);
+
     //if no article links (shouldnt happen)
     if (!articleLinkElement) return null;
 
