@@ -102,7 +102,7 @@ class Pic {
 
   async parsePicParams(picURL) {
     //extract kcnaId
-    const kcnaId = picURL.substring(picURL.length - 11, picURL.length - 4);
+    const kcnaId = +picURL.substring(picURL.length - 11, picURL.length - 4);
 
     console.log("KCNA ID CHECK");
     console.log(kcnaId);
