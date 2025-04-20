@@ -5,7 +5,7 @@ import Article from "./article-model.js";
 import Pic from "./pic-model.js";
 import Vid from "./vid-model.js";
 
-import { newListMap, newContentMap } from "../config/map.js";
+import { newListMap, newContentMap, newMediaMap } from "../config/map.js";
 
 /**
  * @class KCNA
@@ -139,26 +139,33 @@ class KCNA {
   async getNewMediaData() {
     const type = this.dataObject;
     console.log("GETTING MEDIA FOR " + type.toUpperCase());
+    const downloadArray = await this.getMediaToDownloadArray(type);
 
-    switch (type) {
-      case "articles":
-        return null;
-
-      // case "pics":
-      //   const picModel = new Pic(type);
-      //   const picArray = await picModel.getNewPics();
-      //   const picData = await picModel.downloadNewPics(picArray);
-      //   console.log(picData);
-      //   return picData;
-
-      // case "vids":
-      //   const vidModel = new Pic(type);
-      //   const vidArray = await vidModel.getNewPics();
-      //   const vidData = await vidModel.downloadNewPics(vidArray);
-      //   console.log(vidData);
-      //   return picData;
-    }
+    console.log("DOWNLOAD ARRAY FAGGOT");
+    console.log(downloadArray);
   }
+
+  async getMediaToDownloadArray(type) {
+    //uses map to lookup params, params contain correct collections
+    const newDataParams = await newMediaMap(type);
+    const downloadModel = new dbModel(newDataParams, "");
+    const downloadArray = await downloadModel.findNewURLs();
+    return downloadArray;
+  }
+
+  // case "pics":
+  //   const picModel = new Pic(type);
+  //   const picArray = await picModel.getNewPics();
+  //   const picData = await picModel.downloadNewPics(picArray);
+  //   console.log(picData);
+  //   return picData;
+
+  // case "vids":
+  //   const vidModel = new Pic(type);
+  //   const vidArray = await vidModel.getNewPics();
+  //   const vidData = await vidModel.downloadNewPics(vidArray);
+  //   console.log(vidData);
+  //   return picData;
 }
 
 export default KCNA;
