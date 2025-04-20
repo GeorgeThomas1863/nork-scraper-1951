@@ -114,7 +114,7 @@ class Article {
    * @function getNewArticleObjArray
    * @returns array of articleObjs (for tracking)
    */
-  async buildArticleData() {
+  async buildArticleContent() {
     const inputArray = this.dataObject;
     if (!inputArray || !inputArray.length) return null;
 
@@ -249,8 +249,8 @@ class Article {
         articlePicArray.push(articlePicURL);
 
         //save data to pic db, but NOT here
-        const picDataModel = new Pic(articlePicURL);
-        await picDataModel.handlePicData();
+        // const picDataModel = new Pic(articlePicURL);
+        // await picDataModel.handlePicData();
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       }

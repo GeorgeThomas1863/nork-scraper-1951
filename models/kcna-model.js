@@ -84,36 +84,36 @@ class KCNA {
 
   //------------------
 
-  //ITEM OBJECT SECTION
+  //ITEM CONTENT SECTION
 
   /**
    * Gets new obj Items for each data type (article, picSet, vid), returns as array (for tracking)
    * @function getNewObjArray
    * @returns array of objs for tracking
    */
-  async getNewObjArray() {
+  async getNewContentArray() {
     const type = this.dataObject;
     console.log("GETTING OBJECT DATA FOR " + type.toUpperCase());
-    const downloadArray = await this.getDownloadArray(type);
+    const newContentArray = await this.getNewContentArray(type);
 
     //return on null
-    if (!downloadArray || !downloadArray.length) return "NOTHING NEW TO DOWNLOAD";
+    if (!newContentArray || !newContentArray.length) return "NOTHING NEW TO DOWNLOAD";
 
     //otherwise pass to each item model to parse
     switch (type) {
       case "articles":
-        const articleObjModel = new Article(downloadArray);
-        const articleObjArray = await articleObjModel.buildArticleData();
+        const articleObjModel = new Article(newContentArray);
+        const articleObjArray = await articleObjModel.buildArticleContent();
         return articleObjArray;
 
       case "pics":
-        const picSetPageModel = new Pic(downloadArray);
-        const picSetPageArray = await picSetPageModel.buildPicSetData();
+        const picSetPageModel = new Pic(newContentArray);
+        const picSetPageArray = await picSetPageModel.buildPicSetContent();
         return picSetPageArray;
 
       case "vids":
-        const vidObjModel = new Vid(downloadArray);
-        const vidObjArray = vidObjModel.buildVidData();
+        const vidObjModel = new Vid(newContentArray);
+        const vidObjArray = vidObjModel.buildVidContent();
         return vidObjArray;
     }
   }
@@ -124,12 +124,20 @@ class KCNA {
    * @param {*} type (data item type: article, picSet, vid)
    * @returns array of data objs for tracking
    */
-  async getDownloadArray(type) {
+  async getNewContentArray(type) {
     //uses map to lookup params, params contain correct collections
-    const newDataParams = await newDownloadMap(type);
-    const downloadModel = new dbModel(newDataParams, "");
-    const downloadArray = await downloadModel.findNewURLs();
-    return downloadArray;
+    const newDataParams = await newContentMap(type);
+    const newContentModel = new dbModel(newDataParams, "");
+    const newContentArray = await newContentModel.findNewURLs();
+    return newContentArray;
+  }
+
+  //-------------------
+
+  //NEW MEDIA SECTION
+
+  async getNewMediaData() {
+    console.log("BUILD FAGGOT");
   }
 }
 

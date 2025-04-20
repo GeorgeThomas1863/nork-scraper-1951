@@ -193,7 +193,7 @@ class Pic {
 
   //PIC SET PAGE (page where multiple pics in set are displayed)
 
-  async buildPicSetData() {
+  async buildPicSetContent() {
     const downloadArray = this.dataObject;
 
     const picSetArray = [];
@@ -243,8 +243,8 @@ class Pic {
         picSetArray.push(picURL);
 
         //handle pic OBJ HERE (gets pic data stores in pic)
-        const picDataModel = new Pic(picURL);
-        await picDataModel.handlePicData();
+        // const picDataModel = new Pic(picURL);
+        // await picDataModel.handlePicData();
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       }

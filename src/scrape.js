@@ -14,8 +14,9 @@ export const scrapeKCNA = async () => {
     const newDataKCNA = await getNewDataKCNA(type);
 
     console.log(newDataKCNA);
-    console.log("FINSIHED FUCKER");
   }
+
+  console.log("FINSIHED FUCKER");
 };
 
 /**
@@ -30,7 +31,12 @@ export const getNewDataKCNA = async (type) => {
   const newListArray = await dataModel.getNewListArray();
   console.log(newListArray);
 
-  console.log("GETTING OBJECTS FOR " + type.toUpperCase());
-  const newObjArray = await dataModel.getNewObjArray();
-  return newObjArray;
+  console.log("GETTING NEW CONTENT FOR " + type.toUpperCase());
+  const newContentArray = await dataModel.getNewContentArray();
+  console.log(newContentArray);
+
+  console.log("GETTING NEW MEDIA FOR " + type.toUpperCase());
+  const newMediaData = await dataModel.getNewMediaData();
+  console.log(newMediaData);
+  return newMediaData;
 };

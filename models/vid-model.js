@@ -124,13 +124,15 @@ class Vid {
   //----------------------
 
   //VID OBJ SECTION
-  async buildVidData() {
+  async buildVidContent() {
     const downloadArray = this.dataObject;
 
     const vidPageArray = [];
     for (let i = 0; i < downloadArray.length; i++) {
       try {
-        const vidPageObj = await this.getVidPageObj(downloadArray[i]);
+        const vidPageObj = downloadArray[i];
+        const vidURL = await this.getVidURL(vidPageObj);
+        vidPageObj.vidURL = vidURL;
 
         //store it
         const storeVidPageModel = new dbModel(vidPageObj, CONFIG.vidPages);
@@ -148,19 +150,12 @@ class Vid {
     return vidPageArray;
   }
 
-  async getVidPageObj(inputObj) {
-    const vidPageObj = { ...inputObj };
+  async getVidURL(inputObj) {
     const vidPageModel = new KCNA(inputObj);
     const vidPageHTML = await vidPageModel.getHTML();
 
     const vidURL = await this.extractVidStr(vidPageHTML);
-    vidPageObj.vidURL = vidURL;
-
-    const vidModel = new Vid(vidURL);
-    const vidData = await vidModel.handleVidData();
-    console.log(vidData);
-
-    return vidPageObj;
+    return vidURL;
   }
 
   //extract vid URL as String
