@@ -65,7 +65,7 @@ class Vid {
         const vidListObj = await this.buildVidListObj(vidElement);
         if (!vidListObj) return null;
 
-        console.log("HERE FUCKER")
+        console.log("HERE FUCKER");
 
         //store data
         const storeVidModel = new dbModel(vidListObj, CONFIG.vidPages);
@@ -135,9 +135,9 @@ class Vid {
         const inputObj = downloadArray[i];
         const vidPageObj = await this.buildVidPageObj(inputObj);
 
-        const storePicSetModel = new dbModel(vidPageObj, CONFIG.vidPagesDownloaded);
-        const storePicSetData = await storePicSetModel.storeUniqueURL();
-        console.log(storePicSetData);
+        // const storePicSetModel = new dbModel(vidPageObj, CONFIG.vidPagesDownloaded);
+        // const storePicSetData = await storePicSetModel.storeUniqueURL();
+        // console.log(storePicSetData);
 
         //add to array
         vidPageArray.push(vidPageObj);
@@ -153,6 +153,8 @@ class Vid {
   async buildVidPageObj(inputObj) {
     const vidPageHTML = await this.getVidPageHTML(inputObj);
     const parseObj = await this.parseVidPage(vidPageHTML);
+
+    return parseObj;
   }
 
   async getVidPageHTML(inputObj) {
@@ -171,6 +173,7 @@ class Vid {
     const vidElement = document.querySelector(".content video");
     const vidSrc = vidElement.getAttribute("src");
 
+    console.log("AHHHHHHHHHHH");
     console.log("REAL FUCKING VID LINK");
     console.log(vidSrc);
   }
