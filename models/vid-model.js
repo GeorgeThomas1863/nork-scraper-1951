@@ -150,37 +150,43 @@ class Vid {
 
   async buildVidPageObj(inputObj) {
     console.log(inputObj);
-    const vidPageHTML = await this.getVidPageHTML(inputObj);
-    const parseObj = await this.parseVidPage(vidPageHTML);
+    const vidPageModel = new KCNA(inputObj);
+    const vidPageHTML = await vidPageModel.getHTML();
 
-    return parseObj;
-  }
-
-  async getVidPageHTML(inputObj) {
-    if (!inputObj) return null;
-
-    const htmlModel = new KCNA(inputObj);
-    const html = await htmlModel.getHTML();
-    return html;
-  }
-
-  async parseVidPage(html) {
-    const dom = new JSDOM(html);
+    const dom = new JSDOM(vidPageHTML);
     const document = dom.window.document;
+    const ballfucker = document.querySelector(".main span");
+    console.log("AHHHHHHHHHH");
+    console.log(ballfucker.textContent);
 
-    //get vid mp4 url
-    const vidElement = document.querySelector("video");
-    console.log(vidElement);
-    // console.log("AHHHHHHHH")
-    // console.log(vidElementRaw.textContent);
-
-    // const vidElement = vidElement.querySelector('source[type="video/mp4"]');
-    // const vidSrc = vidElement.getAttribute("src");
-
-    // console.log("AHHHHHHHHHHH");
-    // console.log("REAL FUCKING VID LINK");
-    // console.log(vidSrc);
+    // return parseObj;
   }
+
+  // async getVidPageHTML(inputObj) {
+  //   if (!inputObj) return null;
+
+  //   const htmlModel = new KCNA(inputObj);
+  //   const html = await htmlModel.getHTML();
+  //   return html;
+  // }
+
+  // async parseVidPage(html) {
+  //   const dom = new JSDOM(html);
+  //   const document = dom.window.document;
+
+  //   //get vid mp4 url
+  //   const vidElement = document.querySelector("video");
+  //   console.log(vidElement);
+  //   // console.log("AHHHHHHHH")
+  //   // console.log(vidElementRaw.textContent);
+
+  //   // const vidElement = vidElement.querySelector('source[type="video/mp4"]');
+  //   // const vidSrc = vidElement.getAttribute("src");
+
+  //   // console.log("AHHHHHHHHHHH");
+  //   // console.log("REAL FUCKING VID LINK");
+  //   // console.log(vidSrc);
+  // }
 }
 
 export default Vid;
