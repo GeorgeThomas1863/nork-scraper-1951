@@ -32,6 +32,9 @@ class Pic {
       try {
         const picItem = picArray[i];
 
+        console.log("FUCKING PIC ITEM");
+        console.log(picItem);
+
         const picData = await this.getPicData(picItem.url);
         if (!picData) continue;
 

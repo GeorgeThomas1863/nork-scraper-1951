@@ -166,9 +166,6 @@ class KCNA {
 
     const downloadModel = new dbModel(newDataParams, "");
     const downloadArray = await downloadModel.findNewURLs();
-
-    console.log(downloadArray);
-    console.log("DOWNLOAD ARRAY ABOVE");
     return downloadArray;
   }
 
