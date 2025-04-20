@@ -168,16 +168,17 @@ class Vid {
     const document = dom.window.document;
 
     //get vid mp4 url
-    const vidElement = document.querySelector('source[type="video/mp4"]');
+    const vidElement = document.querySelector("source");
+    console.log(vidElement)
     // console.log("AHHHHHHHH")
     // console.log(vidElementRaw.textContent);
 
     // const vidElement = vidElement.querySelector('source[type="video/mp4"]');
-    const vidSrc = vidElement.getAttribute("src");
+    // const vidSrc = vidElement.getAttribute("src");
 
-    console.log("AHHHHHHHHHHH");
-    console.log("REAL FUCKING VID LINK");
-    console.log(vidSrc);
+    // console.log("AHHHHHHHHHHH");
+    // console.log("REAL FUCKING VID LINK");
+    // console.log(vidSrc);
   }
 }
 
