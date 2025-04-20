@@ -153,6 +153,9 @@ class Article {
     if (!parseObj) return null;
 
     const articleObj = { ...inputObj, ...parseObj };
+    console.log("FUCKING ARTICLE OBJ");
+    console.log(articleObj);
+
     const storeModel = new dbModel(articleObj, CONFIG.articlesDownloaded);
     const storeData = await storeModel.storeUniqueURL();
     console.log(storeData);

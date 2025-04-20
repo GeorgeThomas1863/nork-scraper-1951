@@ -59,9 +59,6 @@ class UTIL {
       //add in articleId
       normalObj[inputType] = i + currentItemId;
 
-      console.log("ARTICLE LIST OBJ");
-      console.log(normalObj);
-
       // Add to the output array
       returnArray.push(normalObj);
     }
