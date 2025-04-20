@@ -65,8 +65,6 @@ class Vid {
         const vidListObj = await this.buildVidListObj(vidElement);
         if (!vidListObj) return null;
 
-        console.log("HERE FUCKER");
-
         //store data
         const storeVidModel = new dbModel(vidListObj, CONFIG.vidPages);
         const storeData = await storeVidModel.storeUniqueURL();
@@ -170,7 +168,8 @@ class Vid {
     const document = dom.window.document;
 
     //get vid mp4 url
-    const vidElement = document.querySelector(".content video");
+    const vidElementRaw = document.querySelector("video");
+    const vidElement = vidElementRaw.querySelector('source[type="video/mp4"]');
     const vidSrc = vidElement.getAttribute("src");
 
     console.log("AHHHHHHHHHHH");
