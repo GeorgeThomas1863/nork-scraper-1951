@@ -1,6 +1,8 @@
 //TO DO:
 
-//UNFUCK / FINISH VID LINK DOWNLOAD
+//fuckers hiding it in the script tag. extract from script tag with one of geminis answers
+
+//work on downloading
 
 //refactor some names, work with gemini / your ppt
 //Get vid set working
