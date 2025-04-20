@@ -11,7 +11,9 @@ export const scrapeKCNA = async () => {
 
   //loop through types
   for (let i = 0; i < typeArr.length; i++) {
-    const dataModel = new KCNA(typeArr[i]);
+    const type = typeArr[i];
+
+    const dataModel = new KCNA(type);
     console.log("GETTING LIST DATA FOR " + type.toUpperCase());
     const newListArray = await dataModel.getNewListData();
     console.log(newListArray);
@@ -23,7 +25,9 @@ export const scrapeKCNA = async () => {
 
   //get pic / vid media (articles index 0)
   for (let i = 1; i < typeArr.length; i++) {
-    const dataModel = new KCNA(typeArr[i]);
+    const type = typeArr[i];
+
+    const dataModel = new KCNA(type);
     console.log("GETTING NEW MEDIA FOR " + type.toUpperCase());
     const newMediaArray = await dataModel.getNewMediaData();
     console.log(newMediaArray);
