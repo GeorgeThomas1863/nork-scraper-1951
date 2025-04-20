@@ -14,6 +14,16 @@ class Vid {
     this.dataObject = dataObject;
   }
 
+  async getVidDataArray() {
+    const vidArray = this.dataObject;
+
+    for (let i = 0; i < vidArray.length; i++) {
+      const vidItem = vidArray[i];
+      console.log("VID ITEM FAGGOT");
+      console.log(vidItem);
+    }
+  }
+
   async buildVidObj() {
     const { url, kcnaId, dateString } = this.dataObject;
 

@@ -102,7 +102,6 @@ class Pic {
     if (!dataType || dataType !== "image/jpeg") return null;
 
     //otherwise get data about pic and add to obj //TEST
-    const picSize = headerData.get("content-length");
     const serverData = headerData.get("server");
     const eTag = headerData.get("etag");
     const picEditDate = new Date(headerData.get("last-modified"));
@@ -115,7 +114,6 @@ class Pic {
       dataType: dataType,
       serverData: serverData,
       eTag: eTag,
-      picSize: picSize,
       picEditDate: picEditDate,
     };
 

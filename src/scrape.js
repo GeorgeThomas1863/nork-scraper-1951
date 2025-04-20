@@ -31,6 +31,8 @@ export const scrapeKCNA = async () => {
     console.log("GETTING NEW MEDIA FOR " + type.toUpperCase());
     const newMediaArray = await dataModel.getNewMediaData();
     console.log(newMediaArray);
+    const downloadData = await dataModel.downloadNewMedia();
+    console.log(downloadData);
   }
 
   console.log("FINSIHED FUCKER");

@@ -134,7 +134,7 @@ class KCNA {
 
   //-------------------
 
-  //NEW MEDIA SECTION
+  //GET NEW MEDIA URLS section
 
   async getNewMediaData() {
     const type = this.dataObject;
@@ -148,6 +148,12 @@ class KCNA {
       case "pics":
         const picModel = new Pic(downloadArray);
         const picData = await picModel.getPicDataArray();
+        return picData;
+
+      case "vids":
+        const vidModel = new Vid(downloadArray);
+        const vidData = await vidModel.getVidDataArray();
+        return vidData;
     }
 
     // console.log("DOWNLOAD ARRAY FAGGOT");
@@ -162,19 +168,11 @@ class KCNA {
     return downloadArray;
   }
 
-  // case "pics":
-  //   const picModel = new Pic(type);
-  //   const picArray = await picModel.getNewPics();
-  //   const picData = await picModel.downloadNewPics(picArray);
-  //   console.log(picData);
-  //   return picData;
+  //----------
 
-  // case "vids":
-  //   const vidModel = new Pic(type);
-  //   const vidArray = await vidModel.getNewPics();
-  //   const vidData = await vidModel.downloadNewPics(vidArray);
-  //   console.log(vidData);
-  //   return picData;
+  //DOWNLOAD MEDIA SECTION
+
+  async downloadNewMedia() {}
 }
 
 export default KCNA;
