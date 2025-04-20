@@ -225,27 +225,27 @@ class Pic {
     const picSetPageHTML = await htmlModel.getHTML();
 
     //add in picArray
-    const picArray = await this.buildPicArray(picSetPageHTML);
+    const picArray = await this.buildPicSetArray(picSetPageHTML);
     picSetObj.picArray = picArray;
 
     return picSetObj;
   }
 
-  async buildPicArray(html) {
+  async buildPicSetArray(html) {
     const dom = new JSDOM(html);
     const document = dom.window.document;
     const picElementArray = document.querySelectorAll(".content img");
 
-    const picArray = [];
+    const picSetArray = [];
     for (let i = 0; i < picElementArray.length; i++) {
       try {
         const picURL = await this.parsePicElement(picElementArray[i]);
-        picArray.push(picURL);
+        picSetArray.push(picURL);
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       }
     }
-    return picArray;
+    return picSetArray;
   }
 
   async parsePicElement(picElement) {
