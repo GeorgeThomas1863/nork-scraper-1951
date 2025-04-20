@@ -168,7 +168,7 @@ class Vid {
     const document = dom.window.document;
 
     //get vid mp4 url
-    const vidElement = document.querySelector(".content video source");
+    const vidElement = document.querySelector('source[type="video/mp4"]');
     // console.log("AHHHHHHHH")
     // console.log(vidElementRaw.textContent);
 
