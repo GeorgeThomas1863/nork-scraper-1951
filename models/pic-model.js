@@ -30,7 +30,11 @@ class Pic {
     const picDataArray = [];
     for (let i = 0; i < picArray.length; i++) {
       try {
-        const picData = await this.getPicData(picArray[i].url);
+        const picItem = picArray[i];
+
+        console.log("PIC CHECK");
+        console.log(picItem);
+        const picData = await this.getPicData(picItem.url);
         if (!picData) continue;
 
         picDataArray.push(picData);
