@@ -164,14 +164,12 @@ class Vid {
   }
 
   async parseVidPage(html) {
-    console.log("GIVE UP")
-    console.log(html);
-
     const dom = new JSDOM(html);
     const document = dom.window.document;
 
     //get vid mp4 url
-    const vidElementRaw = document.querySelector("video");
+    const vidElementRaw = document.querySelector(".content");
+    console.log("AHHHHHHHH")
     console.log(vidElementRaw.textContent);
 
     const vidElement = vidElementRaw.querySelector('source[type="video/mp4"]');
