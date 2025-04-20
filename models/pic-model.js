@@ -45,6 +45,8 @@ class Pic {
   }
 
   async getPicData(picURL) {
+    console.log("PIC URL");
+    console.log(picURL);
     const picParams = await this.getPicParams(picURL);
 
     console.log("FAGGOT PIC PARAMS");
