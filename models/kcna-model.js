@@ -37,7 +37,8 @@ class KCNA {
   //FUCKING SWITCHING TO AXIOS
   async getHTML() {
     try {
-      const res = await axios.get({
+      const res = await axios({
+        method: "get",
         url: this.dataObject.url,
         timeout: 30000,
         responseType: "text",
