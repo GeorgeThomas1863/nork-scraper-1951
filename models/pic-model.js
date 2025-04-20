@@ -66,7 +66,7 @@ class Pic {
       picEditDate: picEditDate,
     };
 
-    console.log("PIC OBJECT")
+    console.log("PIC OBJECT");
     console.log(picObj);
 
     return picObj;
@@ -200,7 +200,7 @@ class Pic {
     const picSetArray = [];
     for (let i = 0; i < downloadArray.length; i++) {
       try {
-        const picSetObj = this.buildPicSetObj(downloadArray[i]);
+        const picSetObj = await this.buildPicSetObj(downloadArray[i]);
 
         picSetArray.push(picSetObj);
       } catch (e) {
@@ -241,8 +241,8 @@ class Pic {
         const picURL = await this.parsePicElement(picElementArray[i]);
         if (!picURL) continue;
 
-        console.log("PIC URL")
-        console.log(picURL)
+        console.log("PIC URL");
+        console.log(picURL);
 
         picSetArray.push(picURL);
       } catch (e) {
