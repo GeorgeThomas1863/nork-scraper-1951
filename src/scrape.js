@@ -32,7 +32,7 @@ export const getNewDataKCNA = async (type) => {
   console.log(newListArray);
 
   console.log("GETTING NEW CONTENT FOR " + type.toUpperCase());
-  const newContentArray = await dataModel.getNewContentArray();
+  const newContentArray = await dataModel.getNewContentData();
   console.log(newContentArray);
 
   console.log("GETTING NEW MEDIA FOR " + type.toUpperCase());

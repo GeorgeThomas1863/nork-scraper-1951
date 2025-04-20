@@ -91,28 +91,28 @@ class KCNA {
    * @function getNewObjArray
    * @returns array of objs for tracking
    */
-  async getNewContentArray() {
+  async getNewContentData() {
     const type = this.dataObject;
     console.log("GETTING OBJECT DATA FOR " + type.toUpperCase());
-    const newContentArray = await this.getNewContentArray(type);
+    const downloadArray = await this.getContentToDownloadArray(type);
 
     //return on null
-    if (!newContentArray || !newContentArray.length) return "NOTHING NEW TO DOWNLOAD";
+    if (!downloadArray || !downloadArray.length) return "NOTHING NEW TO DOWNLOAD";
 
     //otherwise pass to each item model to parse
     switch (type) {
       case "articles":
-        const articleObjModel = new Article(newContentArray);
+        const articleObjModel = new Article(downloadArray);
         const articleObjArray = await articleObjModel.buildArticleContent();
         return articleObjArray;
 
       case "pics":
-        const picSetPageModel = new Pic(newContentArray);
+        const picSetPageModel = new Pic(downloadArray);
         const picSetPageArray = await picSetPageModel.buildPicSetContent();
         return picSetPageArray;
 
       case "vids":
-        const vidObjModel = new Vid(newContentArray);
+        const vidObjModel = new Vid(downloadArray);
         const vidObjArray = vidObjModel.buildVidContent();
         return vidObjArray;
     }
@@ -124,12 +124,12 @@ class KCNA {
    * @param {*} type (data item type: article, picSet, vid)
    * @returns array of data objs for tracking
    */
-  async getNewContentArray(type) {
+  async getContentToDownloadArray(type) {
     //uses map to lookup params, params contain correct collections
     const newDataParams = await newContentMap(type);
-    const newContentModel = new dbModel(newDataParams, "");
-    const newContentArray = await newContentModel.findNewURLs();
-    return newContentArray;
+    const downloadModel = new dbModel(newDataParams, "");
+    const downloadArray = await downloadModel.findNewURLs();
+    return downloadArray;
   }
 
   //-------------------

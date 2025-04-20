@@ -45,7 +45,7 @@ class UTIL {
    * @function addArticleId
    * @returns current article Id
    */
-  async addArticleId(collection, type) {
+  async addArticleId(collection, inputType) {
     const inputArray = this.dataObject;
     if (!inputArray || !inputArray.length) return null;
 
@@ -57,7 +57,8 @@ class UTIL {
       const normalObj = { ...inputObj };
 
       //add in articleId
-      normalObj.type = i + currentItemId;
+      normalObj.id = i + currentItemId;
+      normalObj.type = inputType;
 
       console.log("ARTICLE LIST OBJ");
       console.log(normalObj);
@@ -79,8 +80,6 @@ class UTIL {
     //otherwise return stored value +1
     return articleIdStored + 1;
   }
-
-
 
   async getDateArray() {
     const currentDate = new Date();
@@ -123,7 +122,7 @@ class UTIL {
    * @returns date as standard JS date obj (for storing in Mongo)
    */
   async parseDateElement() {
-    const dateText = this.dataObject
+    const dateText = this.dataObject;
     //return null if empty
     if (!dateText) return null;
 
