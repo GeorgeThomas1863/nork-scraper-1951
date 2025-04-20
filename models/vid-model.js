@@ -87,8 +87,7 @@ class Vid {
     //extract vid linl
     const vidLinkElement = vidElement.querySelector(".img a");
     const href = vidLinkElement.getAttribute("href");
-    const vidURL = urlConstant + href;
-    await this.storeVidURL(vidURL);
+    const vidPageURL = urlConstant + href;
 
     //thumbnail
     const thumbnailElement = vidElement.querySelector(".img img");
@@ -112,7 +111,7 @@ class Vid {
     const title = titleRaw.replace(dateElement.textContent, "").trim();
 
     const vidListObj = {
-      url: vidURL,
+      url: vidPageURL,
       thumbnail: thumbnailURL,
       kcnaId: kcnaId,
       dateString: dateString,
@@ -133,15 +132,15 @@ class Vid {
     }
   }
 
-  async storeVidURL(vidURL) {
-    try {
-      const picModel = new dbModel({ url: vidURL }, CONFIG.vidURLs);
-      const storeData = await picModel.storeUniqueURL();
-      console.log(storeData);
-    } catch (e) {
-      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-    }
-  }
+  // async storeVidURL(vidURL) {
+  //   try {
+  //     const picModel = new dbModel({ url: vidURL }, CONFIG.vidURLs);
+  //     const storeData = await picModel.storeUniqueURL();
+  //     console.log(storeData);
+  //   } catch (e) {
+  //     console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+  //   }
+  // }
 
   //----------------------
 
@@ -157,12 +156,16 @@ class Vid {
         vidPageObj.vidURL = vidURL;
 
         //store it
-        const storeVidPageModel = new dbModel(vidPageObj, CONFIG.vidPages);
+        const storeVidPageModel = new dbModel(vidPageObj, CONFIG.vidPagesDownloaded);
         const storeVidPage = await storeVidPageModel.storeUniqueURL();
         console.log(storeVidPage);
 
         //add to array
         vidPageArray.push(vidPageObj);
+
+        //store to vidURLs
+        const vidURLModel = new dbModel({ url: vidURL }, CONFIG.vidURLs);
+        await vidURLModel.storeUniqueURL();
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       }
