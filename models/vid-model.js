@@ -150,9 +150,6 @@ class Vid {
 
   async buildVidPageObj(inputObj) {
     const vidPageHTML = await this.getVidPageHTML(inputObj);
-    console.log("FUCK MY BITCH FACE");
-    console.log(vidPageHTML);
-
     const parseObj = await this.parseVidPage(vidPageHTML);
 
     return parseObj;
@@ -167,6 +164,9 @@ class Vid {
   }
 
   async parseVidPage(html) {
+    console.log("GIVE UP")
+    console.log(html);
+
     const dom = new JSDOM(html);
     const document = dom.window.document;
 
