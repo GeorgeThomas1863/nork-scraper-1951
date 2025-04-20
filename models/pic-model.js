@@ -260,7 +260,7 @@ class Pic {
 
     //Save pic (and picObj) to separate pic db, but dont return that here
     const picModel = new Pic(picURL);
-    const picObjData = await picModel.getItemPicObj();
+    const picObjData = await picModel.handlePicData();
     console.log("PIC OBJ DATA ");
     console.log(picObjData);
 
