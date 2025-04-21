@@ -1,5 +1,7 @@
 //TO DO:
 
+//UNFUCK THE TESTS (comment out ones that arent working if needed)
+
 //KEEP DEBUGGING THE FUCKING URL SCRAPING
 
 //GET THE FUCKING VID DATA
