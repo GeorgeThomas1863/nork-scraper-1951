@@ -7,6 +7,10 @@ import Article from "./article-model.js";
 import Pic from "./pic-model.js";
 import Vid from "./vid-model.js";
 
+import { buildArticleList, buildArticleContent } from "../src/articles.js";
+import { buildPicSetList, buildPicSetContent, getPicDataArray } from "../src/pics.js";
+import { buildVidList, buildVidContent, getVidDataArray } from "../src/vids.js";
+
 import { newListMap, newContentMap, newMediaMap } from "../config/map.js";
 
 /**
@@ -68,6 +72,8 @@ class KCNA {
 
   //LIST PAGE
 
+  //MAYBE MOVE TO SCRAPE FILE?
+
   /**
    * get NEWEST LIST PAGE data [predefined PAGE with urls for articles, pics, vids]
    * @function getNewListArray
@@ -83,21 +89,17 @@ class KCNA {
 
     switch (type) {
       case "articles":
-        //pass to article model for parsing
-        const articleListModel = new Article(newListHTML);
-        const articleListArray = await articleListModel.buildArticleList();
+        const articleListArray = await buildArticleList(newListHTML);
         // console.log(articleListArray);
         return articleListArray;
 
       case "pics":
-        const picSetModel = new Pic(newListHTML);
-        const picSetListArray = await picSetModel.buildPicSetList();
+        const picSetListArray = await buildPicSetList(newListHTML);
         // console.log(picSetListArray);
         return picSetListArray;
 
       case "vids":
-        const vidModel = new Vid(newListHTML);
-        const vidListArray = await vidModel.buildVidList();
+        const vidListArray = await buildVidList(newListHTML);
         // console.log(vidListArray);
         return vidListArray;
     }
@@ -142,18 +144,15 @@ class KCNA {
     //otherwise pass to each item model to parse
     switch (type) {
       case "articles":
-        const articleObjModel = new Article(downloadArray);
-        const articleObjArray = await articleObjModel.buildArticleContent();
+        const articleObjArray = await buildArticleContent(downloadArray);
         return articleObjArray;
 
       case "pics":
-        const picSetPageModel = new Pic(downloadArray);
-        const picSetPageArray = await picSetPageModel.buildPicSetContent();
+        const picSetPageArray = await buildPicSetContent(downloadArray);
         return picSetPageArray;
 
       case "vids":
-        const vidObjModel = new Vid(downloadArray);
-        const vidObjArray = vidObjModel.buildVidContent();
+        const vidObjArray = await buildVidContent(downloadArray);
         return vidObjArray;
     }
   }
@@ -186,13 +185,11 @@ class KCNA {
         return null;
 
       case "pics":
-        const picModel = new Pic(downloadArray);
-        const picData = await picModel.getPicDataArray();
+        const picData = await getPicDataArray(downloadArray);
         return picData;
 
       case "vids":
-        const vidModel = new Vid(downloadArray);
-        const vidData = await vidModel.getVidDataArray();
+        const vidData = await vidModel.getVidDataArray(downloadArray);
         return vidData;
     }
   }

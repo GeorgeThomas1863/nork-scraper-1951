@@ -1,3 +1,5 @@
+import { JSDOM } from "jsdom";
+
 //FOR VID LIST PAGE SECTION
 
 /**
@@ -5,9 +7,9 @@
  * @function parseVidList
  * @returns {array} ARRAY of sorted OBJECTs (for tracking)
  */
-export const buildVidList = async () => {
+export const buildVidList = async (html) => {
   // Parse the HTML using JSDOM
-  const dom = new JSDOM(this.dataObject);
+  const dom = new JSDOM(html);
   const document = dom.window.document;
 
   // Select all the elements that contain individual video data
@@ -19,13 +21,11 @@ export const buildVidList = async () => {
 };
 
 //VID OBJ SECTION
-export const buildVidContent = async () => {
-  const downloadArray = this.dataObject;
-
+export const buildVidContent = async (inputArray) => {
   const vidPageArray = [];
-  for (let i = 0; i < downloadArray.length; i++) {
+  for (let i = 0; i < inputArray.length; i++) {
     try {
-      const vidPageObj = downloadArray[i];
+      const vidPageObj = inputArray[i];
       const vidURL = await this.getVidURL(vidPageObj);
       vidPageObj.vidURL = vidURL;
 
@@ -47,4 +47,13 @@ export const buildVidContent = async () => {
 
   //return for tracking
   return vidPageArray;
+};
+
+//IN PROGRESS
+export const getVidDataArray = async (inputArray) => {
+  for (let i = 0; i < inputArray.length; i++) {
+    const vidItem = inputArray[i];
+    console.log("VID ITEM FAGGOT");
+    console.log(vidItem);
+  }
 };

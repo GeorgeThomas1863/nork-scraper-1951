@@ -1,11 +1,15 @@
+import { JSDOM } from "jsdom";
+
+//FIX MODELS
+
 /**
  * Extracts articleListPage data items, sorts / normalizes them, then stores them
  * @function buildArticleList
  * @returns {array} ARRAY of sorted OBJECTs (for tracking)
  */
-export const buildArticleList = async () => {
+export const buildArticleList = async (html) => {
   // Parse the HTML using JSDOM
-  const dom = new JSDOM(this.dataObject);
+  const dom = new JSDOM(html);
   const document = dom.window.document;
 
   // Find the element with class "article-link"
@@ -40,8 +44,7 @@ export const buildArticleList = async () => {
  * @function getNewArticleObjArray
  * @returns array of articleObjs (for tracking)
  */
-export const buildArticleContent = async () => {
-  const inputArray = this.dataObject;
+export const buildArticleContent = async (inputArray) => {
   if (!inputArray || !inputArray.length) return null;
 
   console.log("ARTICLE CONTENT ARRAY");

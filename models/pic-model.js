@@ -19,32 +19,6 @@ class Pic {
 
   //GET PIC DATA
 
-  /**
-   * Builds and returns articlePicObj, extracts params from articlePic input, passes to buildPicObj to lookup pic / get headers
-   * @function getItemPicObj
-   * @params raw articlePicObj html data
-   * @returns finished articlePicObj
-   */
-  async getPicDataArray() {
-    const picArray = this.dataObject;
-
-    const picDataArray = [];
-    for (let i = 0; i < picArray.length; i++) {
-      try {
-        const picItem = picArray[i];
-
-        const picData = await this.getPicData(picItem.url);
-        if (!picData) continue;
-
-        picDataArray.push(picData);
-      } catch (e) {
-        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-      }
-    }
-
-    return picDataArray;
-  }
-
   async getPicData(picURL) {
     const picParams = await this.getPicParams(picURL);
 
