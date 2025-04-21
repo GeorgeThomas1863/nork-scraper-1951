@@ -19,8 +19,9 @@ class Pic {
 
   //GET PIC DATA
 
-  async getPicData(picURL) {
-    const picParams = await this.getPicParams(picURL);
+  async getPicData() {
+    const { url } = this.dataObject;
+    const picParams = await this.getPicParams(url);
 
     const picObj = await this.buildPicObj(picParams);
     if (!picObj) return null;
@@ -59,20 +60,9 @@ class Pic {
     //call picURL here to avoid confusion
     const { url, kcnaId, dateString } = picParams;
 
-    const res = await axios({
-      method: "get",
-      url: url,
-      headers: { Range: "bytes=0-1" },
-      timeout: 30000,
-    });
-
-    //if URL doesnt exist / return headers throw error
-    if (!res || !res.headers) {
-      const error = new Error("URL DOESNT EXIST");
-      error.url = url;
-      error.function = "getPicData KCNA MODEL";
-      throw error;
-    }
+    //throws error on fail
+    const htmlModel = new KCNA(picParams);
+    const res = await htmlModel.getPicHeaders();
 
     //get pic headers
     const headerData = res.headers;
@@ -156,7 +146,8 @@ class Pic {
 
   //PIC SET PAGE (page where multiple pics in set are displayed)
 
-  async getPicSetObj(inputObj) {
+  async getPicSetObj() {
+    const { inputObj } = this.dataObject;
     const picSetObj = { ...inputObj };
     //get HTML
     const htmlModel = new KCNA(picSetObj);

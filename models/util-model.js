@@ -21,7 +21,7 @@ class UTIL {
    * @returns sorted Array of article OBJECTS (sorted by date oldest to newest)
    */
   async sortArrayByDate() {
-    const inputArray = this.dataObject;
+    const { inputArray } = this.dataObject;
     //return null on blank input
     if (!inputArray || !inputArray.length) return null;
 
@@ -46,7 +46,7 @@ class UTIL {
    * @returns current article Id
    */
   async addArticleId(collection, inputType) {
-    const inputArray = this.dataObject;
+    const { inputArray } = this.dataObject;
     if (!inputArray || !inputArray.length) return null;
 
     const currentItemId = await this.getArticleId(collection);
@@ -77,6 +77,17 @@ class UTIL {
     return articleIdStored + 1;
   }
 
+  async getCurrentKCNAId() {
+    const dataModel = new dbModel(this.dataObject, CONFIG.pics);
+    const maxId = await dataModel.findMaxId();
+
+    //no id on first lookup
+    if (!maxId || CONFIG.currentId > maxId) return CONFIG.currentId;
+
+    //otherwise calculate it
+    return maxId;
+  }
+
   async getDateArray() {
     const currentDate = new Date();
     const dateArray = [];
@@ -98,17 +109,6 @@ class UTIL {
     }
 
     return dateArray;
-  }
-
-  async getCurrentKCNAId() {
-    const dataModel = new dbModel(this.dataObject, CONFIG.pics);
-    const maxId = await dataModel.findMaxId();
-
-    //no id on first lookup
-    if (!maxId || CONFIG.currentId > maxId) return CONFIG.currentId;
-
-    //otherwise calculate it
-    return maxId;
   }
 
   /**

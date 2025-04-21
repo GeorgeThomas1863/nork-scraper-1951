@@ -118,28 +118,23 @@ class Vid {
       const vidModel = new dbModel({ url: vidURL }, CONFIG.vidURLs);
       const storeData = await vidModel.storeUniqueURL();
       console.log(storeData);
+      return storeData;
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
   }
 
-  // async storeVidURL(vidURL) {
-  //   try {
-  //     const picModel = new dbModel({ url: vidURL }, CONFIG.vidURLs);
-  //     const storeData = await picModel.storeUniqueURL();
-  //     console.log(storeData);
-  //   } catch (e) {
-  //     console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-  //   }
-  // }
-
   //----------------------
 
-  async getVidURL(inputObj) {
+  async getVidURL() {
+    const { inputObj } = this.dataObject;
     const vidPageModel = new KCNA(inputObj);
     const vidPageHTML = await vidPageModel.getHTML();
 
+    //extract vidURL and store it
     const vidURL = await this.extractVidStr(vidPageHTML);
+    await this.storeVidURL(vidURL);
+
     return vidURL;
   }
 

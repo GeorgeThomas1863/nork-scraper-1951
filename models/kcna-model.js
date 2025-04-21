@@ -68,6 +68,27 @@ class KCNA {
     }
   }
 
+  async getPicHeaders() {
+    const inputURL = this.dataObject.url;
+
+    const res = await axios({
+      method: "get",
+      url: inputURL,
+      headers: { Range: "bytes=0-1" },
+      timeout: 30000,
+    });
+
+    //if URL doesnt exist / return headers throw error
+    if (!res || !res.headers) {
+      const error = new Error("URL DOESNT EXIST");
+      error.url = url;
+      error.function = "getPicData KCNA MODEL";
+      throw error;
+    }
+
+    return res;
+  }
+
   //----------------------
 
   //LIST PAGE

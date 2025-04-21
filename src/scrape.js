@@ -109,6 +109,7 @@ export const getNewContentData = async (type) => {
 //GET NEW MEDIA URLS section
 
 export const getNewMediaData = async (type) => {
+  if (type === "articles") return null;
   console.log("GETTING MEDIA FOR " + type.toUpperCase());
   const downloadModel = new KCNA({ type: type });
   const downloadArray = await downloadModel.getMediaToDownloadArray();

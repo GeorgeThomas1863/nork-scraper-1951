@@ -1,6 +1,8 @@
 import { JSDOM } from "jsdom";
 
 import Pic from "../models/pic-model.js";
+import dbModel from "../models/db-model.js";
+import UTIL from "../models/util-model.js";
 
 //PICSET LIST
 export const buildPicSetList = async (html) => {
@@ -14,11 +16,11 @@ export const buildPicSetList = async (html) => {
   const picSetListArray = await picSetModel.getPicSetListArray();
 
   //sort the array
-  const sortModel = new UTIL(picSetListArray);
+  const sortModel = new UTIL({ inputArray: picSetListArray });
   const picSetListSort = await sortModel.sortArrayByDate();
 
   //add picSetId ID
-  const idModel = new UTIL(picSetListSort);
+  const idModel = new UTIL({ inputArray: picSetListSort });
   const picSetListNormal = await idModel.addArticleId(CONFIG.picSets, "picSetId");
 
   const storeDataModel = new dbModel(picSetListNormal, CONFIG.picSets);
@@ -32,7 +34,8 @@ export const buildPicSetContent = async (inputArray) => {
   const picSetArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     try {
-      const picSetObj = await this.getPicSetObj(inputArray[i]);
+      const picSetModel = new Pic({ inputObj: inputArray[i] });
+      const picSetObj = await picSetModel.getPicSetObj();
 
       picSetArray.push(picSetObj);
     } catch (e) {
@@ -44,19 +47,14 @@ export const buildPicSetContent = async (inputArray) => {
   return picSetArray;
 };
 
-/**
- * Builds and returns articlePicObj, extracts params from articlePic input, passes to buildPicObj to lookup pic / get headers
- * @function getItemPicObj
- * @params raw articlePicObj html data
- * @returns finished articlePicObj
- */
 export const getPicDataArray = async (inputArray) => {
   const picDataArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     try {
-      const picItem = inputArray[i];
+      const picObj = inputArray[i];
+      const picDataModel = new Pic(picObj);
 
-      const picData = await this.getPicData(picItem.url);
+      const picData = await picDataModel.getPicData();
       if (!picData) continue;
 
       picDataArray.push(picData);

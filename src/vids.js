@@ -1,6 +1,8 @@
 import { JSDOM } from "jsdom";
 
+import CONFIG from "../config/scrape-config.js";
 import Vid from "../models/vid-model.js";
+import dbModel from "../models/db-model.js";
 
 //FOR VID LIST PAGE SECTION
 
@@ -29,7 +31,8 @@ export const buildVidContent = async (inputArray) => {
   for (let i = 0; i < inputArray.length; i++) {
     try {
       const vidPageObj = inputArray[i];
-      const vidURL = await this.getVidURL(vidPageObj);
+      const vidPageModel = new Vid({ inputObj: vidPageObj });
+      const vidURL = await vidPageModel.getVidURL();
       vidPageObj.vidURL = vidURL;
 
       //store it
@@ -39,10 +42,6 @@ export const buildVidContent = async (inputArray) => {
 
       //add to array
       vidPageArray.push(vidPageObj);
-
-      //store to vidURLs
-      const vidURLModel = new dbModel({ url: vidURL }, CONFIG.vidURLs);
-      await vidURLModel.storeUniqueURL();
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
