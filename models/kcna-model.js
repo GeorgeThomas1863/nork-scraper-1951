@@ -78,7 +78,7 @@ class KCNA {
     const type = this.dataObject;
     // console.log("GETTING LIST DATA FOR " + type.toUpperCase());
     const newListHTML = await this.getNewListHTML(type);
-    if (!newListHTML) return null
+    if (!newListHTML) return null;
     console.log(newListHTML);
 
     switch (type) {
@@ -195,9 +195,6 @@ class KCNA {
         const vidData = await vidModel.getVidDataArray();
         return vidData;
     }
-
-    // console.log("DOWNLOAD ARRAY FAGGOT");
-    // console.log(downloadArray);
   }
 
   async getMediaToDownloadArray(type) {

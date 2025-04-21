@@ -38,12 +38,8 @@ class Article {
 
     // get array of article list (from link elements)
     const linkElementArray = articleLinkElement.querySelectorAll("a");
-
-    console.log("FUCK MUY BITCH FACE");
-    console.log(linkElementArray.length);
-
     const articleListArray = await this.parseLinkArray(linkElementArray);
-    console.log("GOT " + articleListArray.length + "ARTICLES");
+    console.log("GOT " + articleListArray.length + " ARTICLES");
 
     //sort the array
     const sortModel = new UTIL(articleListArray);
@@ -73,9 +69,6 @@ class Article {
     for (let i = 0; i < inputArray.length; i++) {
       const listItem = inputArray[i];
       const articleListObj = await this.getArticleListObj(listItem);
-
-      console.log("ARTICLE LIST OBJ FAGGOT");
-      console.log(articleListObj);
 
       articleListArray.push(articleListObj); //add to array
     }
