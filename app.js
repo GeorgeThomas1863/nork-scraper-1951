@@ -1,6 +1,8 @@
 //TO DO:
 
-//UNFUCK THE TESTS (comment out ones that arent working if needed)
+//FIX / IMPLEMENT CONFIG NAME CHANGES
+
+//UNFUCK / REDO THE TESTS (comment out ones that arent working if needed)
 
 //KEEP DEBUGGING THE FUCKING URL SCRAPING
 
