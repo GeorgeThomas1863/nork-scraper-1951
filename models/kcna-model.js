@@ -46,10 +46,10 @@ class KCNA {
     }
   }
 
-  async getHTML(url) {
+  async getHTML(inputURL) {
     const res = await axios({
       method: "get",
-      url: url,
+      url: inputURL,
       timeout: 60000,
       responseType: "text",
     });
@@ -112,7 +112,7 @@ class KCNA {
     const newListParam = await newListMap(type);
     try {
       const newListModel = new KCNA({ url: CONFIG[newListParam] });
-      const newListHTML = await newListModel.getHTML();
+      const newListHTML = await newListModel.getHTMLAxios();
       console.log(newListHTML);
 
       return newListHTML;

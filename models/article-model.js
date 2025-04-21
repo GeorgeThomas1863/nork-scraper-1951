@@ -156,7 +156,7 @@ class Article {
   async getArticleObj(inputObj) {
     //get html for new article
     const htmlModel = new KCNA(inputObj);
-    const articleHTML = await htmlModel.getHTML();
+    const articleHTML = await htmlModel.getHTMLAxios();
     if (!articleHTML) return null;
 
     //parse the data from the html
@@ -242,7 +242,7 @@ class Article {
   async getArticlePicArray(picPageURL) {
     //get the html, build dom
     const htmlModel = new KCNA({ url: picPageURL });
-    const html = await htmlModel.getHTML();
+    const html = await htmlModel.getHTMLAxios();
 
     //if fails return null
     if (!html) return null;

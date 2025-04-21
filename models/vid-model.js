@@ -187,7 +187,7 @@ class Vid {
 
   async getVidURL(inputObj) {
     const vidPageModel = new KCNA(inputObj);
-    const vidPageHTML = await vidPageModel.getHTML();
+    const vidPageHTML = await vidPageModel.getHTMLAxios();
 
     const vidURL = await this.extractVidStr(vidPageHTML);
     return vidURL;
