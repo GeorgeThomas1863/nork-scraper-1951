@@ -85,7 +85,6 @@ class Pic {
     //call picURL here to avoid confusion
     const { url, kcnaId, dateString } = picParams;
 
-
     const res = await axios({
       method: "get",
       url: url,
@@ -135,31 +134,6 @@ class Pic {
 
   //PARSE DATA
 
-  //PICSET LIST
-  async buildPicSetList() {
-    const dom = new JSDOM(this.dataObject);
-    const document = dom.window.document;
-
-    const photoWrapperArray = document.querySelectorAll(".photo-wrapper");
-    if (!photoWrapperArray || !photoWrapperArray.length) return null;
-
-    const picSetListArray = await this.parsePhotoWrapperArray(photoWrapperArray);
-
-    //sort the array
-    const sortModel = new UTIL(picSetListArray);
-    const picSetListSort = await sortModel.sortArrayByDate();
-
-    //add picSetId ID
-    const idModel = new UTIL(picSetListSort);
-    const picSetListNormal = await idModel.addArticleId(CONFIG.picSets, "picSetId");
-
-    const storeDataModel = new dbModel(picSetListNormal, CONFIG.picSets);
-    const storeData = await storeDataModel.storeArray();
-    console.log(storeData);
-
-    return picSetListNormal;
-  }
-
   async parsePhotoWrapperArray(inputArray) {
     const picSetListArray = [];
     for (let i = 0; i < inputArray.length; i++) {
@@ -206,24 +180,6 @@ class Pic {
   //----------------------
 
   //PIC SET PAGE (page where multiple pics in set are displayed)
-
-  async buildPicSetContent() {
-    const downloadArray = this.dataObject;
-
-    const picSetArray = [];
-    for (let i = 0; i < downloadArray.length; i++) {
-      try {
-        const picSetObj = await this.getPicSetObj(downloadArray[i]);
-
-        picSetArray.push(picSetObj);
-      } catch (e) {
-        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-      }
-    }
-
-    //for tracking
-    return picSetArray;
-  }
 
   async getPicSetObj(inputObj) {
     const picSetObj = { ...inputObj };
