@@ -95,11 +95,16 @@ class KCNA {
    */
   async getNewListHTML(type) {
     const newListParam = await newListMap(type);
-    const newListModel = new KCNA({ url: CONFIG[newListParam] });
-    const newListHTML = await newListModel.getHTML();
-    console.log(newListHTML);
+    try {
+      const newListModel = new KCNA({ url: CONFIG[newListParam] });
+      const newListHTML = await newListModel.getHTML();
+      console.log(newListHTML);
 
-    return newListHTML;
+      return newListHTML;
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      return null;
+    }
   }
 
   //------------------
