@@ -25,12 +25,13 @@ export const getNewContentKCNA = async () => {
     const dataModel = new KCNA(type);
     console.log("GETTING LIST DATA FOR " + type.toUpperCase());
     const newListArray = await dataModel.getNewListData();
-    if (!newListArray) return "FETCH FUCKED";
+    if (!newListArray) continue;
 
     console.log("GETTING NEW CONTENT FOR " + type.toUpperCase());
     const newContentArray = await dataModel.getNewContentData();
-    return newContentArray;
+    console.log(newContentArray);
   }
+  return "FINISHED GETTING NEW CONTENT";
 };
 
 export const getNewMediaKCNA = async () => {
@@ -45,7 +46,8 @@ export const getNewMediaKCNA = async () => {
     const newMediaArray = await dataModel.getNewMediaData();
     console.log(newMediaArray);
     const downloadData = await dataModel.downloadNewMedia();
-
-    return downloadData;
+    console.log(downloadData);
   }
+
+  return "FINISHED GETTING NEW MEDIA";
 };

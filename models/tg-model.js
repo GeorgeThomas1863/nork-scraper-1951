@@ -1,3 +1,5 @@
+//PROB SHOULD SWITCH EVERYTHING TO AXIOS RATHER THAN FETCH
+
 /**
  * @fileoverview Self build TG API request handler
  * Has GET, POST [Edit Caption / Send Message], POST Pic, handles TG bot rate limiting
