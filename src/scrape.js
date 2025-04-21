@@ -10,7 +10,7 @@ export const scrapeKCNA = async () => {
   const newContentKCNA = await getNewContentKCNA();
   console.log(newContentKCNA);
   const newMediaKCNA = await getNewMediaKCNA();
-  console.olog(newMediaKCNA);
+  console.log(newMediaKCNA);
 
   console.log("FINSIHED FUCKER");
 };
