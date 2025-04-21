@@ -83,7 +83,7 @@ class Vid {
     //get date
     const dateElement = vidElement.querySelector(".publish-time");
     const dateText = dateElement.textContent.trim();
-    const dateModel = new UTIL(dateText);
+    const dateModel = new UTIL({dateText: dateText});
     const vidDate = await dateModel.parseDateElement();
 
     //get title

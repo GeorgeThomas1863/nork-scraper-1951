@@ -118,7 +118,7 @@ class UTIL {
    * @returns date as standard JS date obj (for storing in Mongo)
    */
   async parseDateElement() {
-    const dateText = this.dataObject;
+    const { dateText } = this.dataObject;
     //return null if empty
     if (!dateText) return null;
 

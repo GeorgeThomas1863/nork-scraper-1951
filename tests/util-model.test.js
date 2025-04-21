@@ -187,7 +187,7 @@ describe("UTIL Model", () => {
   it("should parse date text in the format [YYYY.MM.DD]", async () => {
     // Setup
     const dateText = "[2023.05.15]";
-    const util = new UTIL(dateText);
+    const util = new UTIL({dateText: dateText});
 
     // Act
     const result = await util.parseDateElement();

@@ -124,7 +124,7 @@ class Pic {
     //get date
     const dateElement = inputItem.querySelector(".publish-time");
     const dateText = dateElement.textContent.trim();
-    const dateModel = new UTIL(dateText);
+    const dateModel = new UTIL({dateText: dateText});
     const picSetDate = await dateModel.parseDateElement();
 
     //get title

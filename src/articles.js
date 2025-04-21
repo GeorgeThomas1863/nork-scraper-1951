@@ -30,11 +30,11 @@ export const buildArticleList = async (html) => {
   console.log("GOT " + articleListArray.length + " ARTICLES");
 
   //sort the array
-  const sortModel = new UTIL(articleListArray);
+  const sortModel = new UTIL({ inputArray: articleListArray });
   const articleListSort = await sortModel.sortArrayByDate();
 
   //add article ID
-  const idModel = new UTIL(articleListSort);
+  const idModel = new UTIL({ inputArray: articleListSort });
   const articleListNormal = await idModel.addArticleId(CONFIG.articles, "articleId");
 
   const storeDataModel = new dbModel(articleListNormal, CONFIG.articles);
@@ -61,7 +61,7 @@ export const buildArticleContent = async (inputArray) => {
   for (let i = 0; i < inputArray.length; i++) {
     try {
       const inputObj = inputArray[i];
-      const articleObjModel = new Article({obj: inputObj});
+      const articleObjModel = new Article({ inputObj: inputObj });
       const articleObj = await articleObjModel.getArticleObj();
       if (!articleObj) return null;
 

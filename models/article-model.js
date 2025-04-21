@@ -59,7 +59,7 @@ class Article {
     const dateElement = listItem.querySelector(".publish-time");
     if (!dateElement) return;
     const dateText = dateElement.textContent.trim();
-    const dateModel = new UTIL(dateText);
+    const dateModel = new UTIL({ dateText: dateText });
     const articleDate = await dateModel.parseDateElement();
 
     //build obj
@@ -84,7 +84,7 @@ class Article {
    */
   async getArticleObj() {
     //get html for new article
-    const inputObj = this.dataObject.obj;
+    const { inputObj } = this.dataObject;
 
     //get html
 
