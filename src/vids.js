@@ -1,5 +1,7 @@
 import { JSDOM } from "jsdom";
 
+import Vid from "../models/vid-model.js";
+
 //FOR VID LIST PAGE SECTION
 
 /**
@@ -16,7 +18,8 @@ export const buildVidList = async (html) => {
   const vidWrapperArray = document.querySelectorAll(".video-wrapper");
   if (!vidWrapperArray || !vidWrapperArray.length) return null;
 
-  const vidListArray = await this.parseWrapperArray(vidWrapperArray);
+  const vidListModel = new Vid({ inputArray: vidWrapperArray });
+  const vidListArray = await vidListModel.getVidListArray();
   return vidListArray;
 };
 

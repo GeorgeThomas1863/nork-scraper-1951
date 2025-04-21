@@ -107,8 +107,9 @@ class Pic {
   //---------------------
 
   //PARSE DATA
+  async getPicSetListArray() {
+    const { inputArray } = this.dataObject;
 
-  async parsePhotoWrapperArray(inputArray) {
     const picSetListArray = [];
     for (let i = 0; i < inputArray.length; i++) {
       const photoWrapper = inputArray[i];

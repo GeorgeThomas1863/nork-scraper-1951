@@ -39,78 +39,54 @@ class KCNA {
   // }
 
   //FUCKING SWITCHING TO AXIOS
-  async getHTMLAxios() {
-    const url = this.dataObject.url;
+  // async getHTMLAxios() {
+  //   const url = this.dataObject.url;
+  //   try {
+  //     const html = await this.getHTML(url);
+  //     return html;
+  //   } catch (e) {
+  //     console.log(this.dataObject.url + "; " + e.message + "; F BREAK: " + e.function);
+  //     return null;
+  //   }
+  // }
+
+  //confirm try catch works
+  async getHTML() {
+    const inputURL = this.dataObject.url;
+
     try {
-      const html = await this.getHTML(url);
-      return html;
+      const res = await axios({
+        method: "get",
+        url: inputURL,
+        timeout: 60000,
+        responseType: "text",
+      });
+
+      if (!res || !res.data) {
+        const error = new Error("FETCH FUCKED");
+        error.url = url;
+        error.fucntion = "GET HTML AXIOS";
+        throw ReferenceError;
+      }
+
+      return res.data;
     } catch (e) {
       console.log(this.dataObject.url + "; " + e.message + "; F BREAK: " + e.function);
       return null;
     }
   }
 
-  async getHTML(inputURL) {
-    const res = await axios({
-      method: "get",
-      url: inputURL,
-      timeout: 60000,
-      responseType: "text",
-    });
-
-    if (!res || !res.data) {
-      const error = new Error("FETCH FUCKED");
-      error.url = url;
-      error.fucntion = "GET HTML AXIOS";
-      throw ReferenceError;
-    }
-
-    return res.data;
-  }
-
   //----------------------
 
   //LIST PAGE
-
-  //MAYBE MOVE TO SCRAPE FILE?
-
-  /**
-   * get NEWEST LIST PAGE data [predefined PAGE with urls for articles, pics, vids]
-   * @function getNewListArray
-   * @returns arrray of listObjs (item url / date / id etc)
-   */
-  async getNewListData() {
-    //get html
-    const type = this.dataObject;
-    // console.log("GETTING LIST DATA FOR " + type.toUpperCase());
-    const newListHTML = await this.getNewListHTML(type);
-    if (!newListHTML) return null;
-    console.log(newListHTML);
-
-    switch (type) {
-      case "articles":
-        const articleListArray = await buildArticleList(newListHTML);
-        // console.log(articleListArray);
-        return articleListArray;
-
-      case "pics":
-        const picSetListArray = await buildPicSetList(newListHTML);
-        // console.log(picSetListArray);
-        return picSetListArray;
-
-      case "vids":
-        const vidListArray = await buildVidList(newListHTML);
-        // console.log(vidListArray);
-        return vidListArray;
-    }
-  }
 
   /**
    * Gets LIST PAGE HTML for latest (predefined) item location
    * @param {} type (article, picSet, vid)
    * @returns
    */
-  async getNewListHTML(type) {
+  async getNewListHTML() {
+    const type = this.dataObject.type;
     const newListParam = await newListMap(type);
     try {
       const newListModel = new KCNA({ url: CONFIG[newListParam] });
@@ -129,70 +105,22 @@ class KCNA {
   //ITEM CONTENT SECTION
 
   /**
-   * Gets new obj Items for each data type (article, picSet, vid), returns as array (for tracking)
-   * @function getNewObjArray
-   * @returns array of objs for tracking
-   */
-  async getNewContentData() {
-    const type = this.dataObject;
-    // console.log("GETTING OBJECT DATA FOR " + type.toUpperCase());
-    const downloadArray = await this.getContentToDownloadArray(type);
-
-    //return on null
-    if (!downloadArray || !downloadArray.length) return "NOTHING NEW TO DOWNLOAD";
-
-    //otherwise pass to each item model to parse
-    switch (type) {
-      case "articles":
-        const articleObjArray = await buildArticleContent(downloadArray);
-        return articleObjArray;
-
-      case "pics":
-        const picSetPageArray = await buildPicSetContent(downloadArray);
-        return picSetPageArray;
-
-      case "vids":
-        const vidObjArray = await buildVidContent(downloadArray);
-        return vidObjArray;
-    }
-  }
-
-  /**
    * Gets Obj items to download using MONGO (to pull those not downloaded)
    * @function getDownloadArray
    * @param {*} type (data item type: article, picSet, vid)
    * @returns array of data objs for tracking
    */
-  async getContentToDownloadArray(type) {
+  async getContentToDownloadArray() {
     //uses map to lookup params, params contain correct collections
+    const type = this.dataObject.type;
     const newDataParams = await newContentMap(type);
+
     const downloadModel = new dbModel(newDataParams, "");
     const downloadArray = await downloadModel.findNewURLs();
     return downloadArray;
   }
 
   //-------------------
-
-  //GET NEW MEDIA URLS section
-
-  async getNewMediaData() {
-    const type = this.dataObject;
-    console.log("GETTING MEDIA FOR " + type.toUpperCase());
-    const downloadArray = await this.getMediaToDownloadArray(type);
-
-    switch (type) {
-      case "articles":
-        return null;
-
-      case "pics":
-        const picData = await getPicDataArray(downloadArray);
-        return picData;
-
-      case "vids":
-        const vidData = await vidModel.getVidDataArray(downloadArray);
-        return vidData;
-    }
-  }
 
   async getMediaToDownloadArray(type) {
     //uses map to lookup params, params contain correct collections
@@ -206,8 +134,6 @@ class KCNA {
   //----------
 
   //DOWNLOAD MEDIA SECTION
-
-  async downloadNewMedia() {}
 }
 
 export default KCNA;

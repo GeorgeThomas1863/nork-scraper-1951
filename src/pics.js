@@ -1,5 +1,7 @@
 import { JSDOM } from "jsdom";
 
+import Pic from "../models/pic-model.js";
+
 //PICSET LIST
 export const buildPicSetList = async (html) => {
   const dom = new JSDOM(html);
@@ -8,7 +10,8 @@ export const buildPicSetList = async (html) => {
   const photoWrapperArray = document.querySelectorAll(".photo-wrapper");
   if (!photoWrapperArray || !photoWrapperArray.length) return null;
 
-  const picSetListArray = await this.parsePhotoWrapperArray(photoWrapperArray);
+  const picSetModel = new Pic({ inputArray: photoWrapperArray });
+  const picSetListArray = await picSetModel.getPicSetListArray();
 
   //sort the array
   const sortModel = new UTIL(picSetListArray);

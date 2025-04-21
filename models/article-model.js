@@ -26,7 +26,9 @@ class Article {
    * @param {*} inputArray (array of article link items)
    * @returns //array of (unsorted) articleListObjs
    */
-  async parseLinkArray(inputArray) {
+  async getArticleListArray() {
+    const { inputArray } = this.dataObject;
+
     //loop through a tags and pull out hrefs
     const articleListArray = [];
     for (let i = 0; i < inputArray.length; i++) {
@@ -80,8 +82,11 @@ class Article {
    * @param {*} inputObj articleItem to download from downloadArray
    * @returns
    */
-  async getArticleObj(inputObj) {
+  async getArticleObj() {
     //get html for new article
+    const inputObj = this.dataObject.obj
+
+    //get html
     const htmlModel = new KCNA(inputObj);
     const articleHTML = await htmlModel.getHTMLAxios();
     if (!articleHTML) return null;

@@ -36,7 +36,8 @@ class Vid {
   //------------
   //PARSE DATA
 
-  async parseWrapperArray(inputArray) {
+  async getVidListArray() {
+    const inputArray = this.dataObject.inputArray;
     const vidListArray = [];
 
     for (let i = 0; i < inputArray.length; i++) {
@@ -64,12 +65,12 @@ class Vid {
   async getVidListObj(vidElement) {
     const urlConstant = "http://www.kcna.kp";
 
-    //extract vid linl
+    //extract vid link and store it
     const vidLinkElement = vidElement.querySelector(".img a");
     const href = vidLinkElement.getAttribute("href");
     const vidPageURL = urlConstant + href;
 
-    //thumbnail
+    //extract thmubnail and store it
     const thumbnailElement = vidElement.querySelector(".img img");
     const thumbSrc = thumbnailElement.getAttribute("src");
     const thumbnailURL = urlConstant + thumbSrc;
@@ -106,6 +107,16 @@ class Vid {
     try {
       const picModel = new dbModel({ url: picURL }, CONFIG.picURLs);
       const storeData = await picModel.storeUniqueURL();
+      console.log(storeData);
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
+  }
+
+  async storeVidURL(vidURL) {
+    try {
+      const vidModel = new dbModel({ url: vidURL }, CONFIG.vidURLs);
+      const storeData = await vidModel.storeUniqueURL();
       console.log(storeData);
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);

@@ -1,5 +1,10 @@
 import { JSDOM } from "jsdom";
 
+import CONFIG from "../config/scrape-config.js";
+import Article from "../models/article-model.js";
+import UTIL from "../models/util-model.js";
+import dbModel from "../models/db-model.js";
+
 //FIX MODELS
 
 /**
@@ -20,7 +25,8 @@ export const buildArticleList = async (html) => {
 
   // get array of article list (from link elements)
   const linkElementArray = articleLinkElement.querySelectorAll("a");
-  const articleListArray = await this.parseLinkArray(linkElementArray);
+  const parseModel = new Article({ inputArray: linkElementArray });
+  const articleListArray = await parseModel.getArticleListArray();
   console.log("GOT " + articleListArray.length + " ARTICLES");
 
   //sort the array
@@ -41,21 +47,22 @@ export const buildArticleList = async (html) => {
 
 /**
  * GETs and buils array of NEW articleObjs by looping through download array (which ONLY contains new items)
- * @function getNewArticleObjArray
+ * @function buildArticleContent
  * @returns array of articleObjs (for tracking)
  */
 export const buildArticleContent = async (inputArray) => {
   if (!inputArray || !inputArray.length) return null;
 
-  console.log("ARTICLE CONTENT ARRAY");
-  console.log(inputArray);
+  // console.log("ARTICLE CONTENT ARRAY");
+  // console.log(inputArray);
 
   //loop (dont check if stored since inputArray based on mongo compare earlier)
   const articleObjArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     try {
       const inputObj = inputArray[i];
-      const articleObj = await this.getArticleObj(inputObj);
+      const articleObjModel = new Article({obj: inputObj});
+      const articleObj = await articleObjModel.getArticleObj();
       if (!articleObj) return null;
 
       articleObjArray.push(articleObj);

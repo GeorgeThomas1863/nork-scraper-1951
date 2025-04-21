@@ -17,36 +17,118 @@ export const scrapeKCNA = async () => {
   //loop through types
   for (let i = 0; i < typeArr.length; i++) {
     const type = typeArr[i];
-    const scrapeData = await scrapeItem(type);
+    const scrapeData = await scrapeEach(type);
     console.log(scrapeData);
   }
   return "FINISHED GETTING NEW CONTENT";
 };
 
-export const scrapeItem = async (type) => {
-  const dataModel = new KCNA(type);
-  const type = typeArr[i];
-
+export const scrapeEach = async (type) => {
   //data list
   console.log("GETTING LIST DATA FOR " + type.toUpperCase());
-  const newListArray = await dataModel.getNewListData();
+  const newListArray = await getNewListData(type);
   console.log(newListArray);
 
   //content [combine with media?]
   console.log("GETTING NEW CONTENT FOR " + type.toUpperCase());
-  const newContentArray = await dataModel.getNewContentData();
+  const newContentArray = await getNewContentData(type);
   console.log(newContentArray);
 
   //media
   console.log("GETTING NEW MEDIA FOR " + type.toUpperCase());
-  const newMediaArray = await dataModel.getNewMediaData();
+  const newMediaArray = await getNewMediaData(type);
   console.log(newMediaArray);
 
   //download
   console.log("DOWNLOADING NEW MEDIA FOR " + type.toUpperCase());
-  const downloadData = await dataModel.downloadNewMedia();
+  const downloadData = await downloadNewMedia(type);
+  console.log(downloadData);
 
   return newListArray.length;
+};
+
+/**
+ * get NEWEST LIST PAGE data [predefined PAGE with urls for articles, pics, vids]
+ * @function getNewListData
+ * @returns arrray of listObjs (item url / date / id etc)
+ */
+export const getNewListData = async (type) => {
+  //get html
+  const htmlModel = new KCNA({ type: type });
+  const newListHTML = await htmlModel.getNewListHTML();
+  if (!newListHTML) return null;
+  console.log(newListHTML);
+
+  switch (type) {
+    case "articles":
+      const articleListArray = await buildArticleList(newListHTML);
+      // console.log(articleListArray);
+      return articleListArray;
+
+    case "pics":
+      const picSetListArray = await buildPicSetList(newListHTML);
+      // console.log(picSetListArray);
+      return picSetListArray;
+
+    case "vids":
+      const vidListArray = await buildVidList(newListHTML);
+      // console.log(vidListArray);
+      return vidListArray;
+  }
+};
+
+/**
+ * Gets new obj Items for each data type (article, picSet, vid), returns as array (for tracking)
+ * @function getNewObjArray
+ * @returns array of objs for tracking
+ */
+export const getNewContentData = async (type) => {
+  // console.log("GETTING OBJECT DATA FOR " + type.toUpperCase());
+  const downloadModel = new KCNA({ type: type });
+  const downloadArray = await downloadModel.getContentToDownloadArray();
+
+  //return on null
+  if (!downloadArray || !downloadArray.length) return "NOTHING NEW TO DOWNLOAD";
+
+  //otherwise pass to each item model to parse
+  switch (type) {
+    case "articles":
+      const articleObjArray = await buildArticleContent(downloadArray);
+      return articleObjArray;
+
+    case "pics":
+      const picSetPageArray = await buildPicSetContent(downloadArray);
+      return picSetPageArray;
+
+    case "vids":
+      const vidObjArray = await buildVidContent(downloadArray);
+      return vidObjArray;
+  }
+};
+
+//GET NEW MEDIA URLS section
+
+export const getNewMediaData = async (type) => {
+  console.log("GETTING MEDIA FOR " + type.toUpperCase());
+  const downloadArray = await this.getMediaToDownloadArray(type);
+
+  switch (type) {
+    case "articles":
+      return null;
+
+    case "pics":
+      const picData = await getPicDataArray(downloadArray);
+      return picData;
+
+    case "vids":
+      const vidData = await vidModel.getVidDataArray(downloadArray);
+      return vidData;
+  }
+};
+
+//download new shit
+export const downloadNewMedia = async (type) => {
+  console.log("FUCKING BUILD");
 };
 
 // export const scrapeKCNA = async () => {
