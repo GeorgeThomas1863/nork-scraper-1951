@@ -3,7 +3,7 @@ import { JSDOM } from "jsdom";
 import CONFIG from "../config/scrape-config.js";
 import KCNA from "./kcna-model.js";
 import dbModel from "./db-model.js";
-import Pic from "./pic-model.js";
+// import Pic from "./pic-model.js";
 import UTIL from "./util-model.js";
 
 /**
