@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import fs from "fs";
 import axios from "axios";
 import FormData from "form-data";
-import TgReq from "../models/tg-req.js";
+import TgReq from "../models/tg-model.js";
 import tokenArray from "../config/tg-bot.js";
 
 // Mock the dependencies

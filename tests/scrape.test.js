@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { scrapeKCNA, getNewContentKCNA, getNewMediaKCNA } from "../scrape.js";
+import { scrapeKCNA, getNewContentKCNA, getNewMediaKCNA } from "../src/scrape.js";
 import KCNA from "../models/kcna-model.js";
 import CONFIG from "../config/scrape-config.js";
 
