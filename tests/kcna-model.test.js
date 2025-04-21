@@ -38,7 +38,7 @@ describe("KCNA", () => {
   });
 
   // Test HTML retrieval
-  it("should return HTML from getHTMLAxios when axios succeeds", async () => {
+  it("should return HTML from getHTML when axios succeeds", async () => {
     // Setup
     const testUrl = "http://example.com";
     const testHTML = "<html><body>Test HTML</body></html>";
@@ -47,13 +47,13 @@ describe("KCNA", () => {
     const kcna = new KCNA({ url: testUrl });
 
     // Act
-    const result = await kcna.getHTMLAxios();
+    const result = await kcna.getHTML();
 
     // Assert
     expect(result).toBe(testHTML);
   });
 
-  it("should return null from getHTMLAxios when axios fails", async () => {
+  it("should return null from getHTML when axios fails", async () => {
     // Setup
     const testUrl = "http://example.com";
     axios.mockRejectedValue(new Error("Network error"));
@@ -64,7 +64,7 @@ describe("KCNA", () => {
     const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
     // Act
-    const result = await kcna.getHTMLAxios();
+    const result = await kcna.getHTML();
 
     // Assert
     expect(result).toBeNull();

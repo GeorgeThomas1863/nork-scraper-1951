@@ -175,9 +175,9 @@ describe("Vid Model", () => {
     const mockHtml = "some text with '/siteFiles/video/path/to/video.mp4' embedded";
     const mockVidUrl = "http://www.kcna.kp/siteFiles/video/path/to/video.mp4";
 
-    // Mock KCNA.getHTMLAxios
+    // Mock KCNA.getHTML
     KCNA.mockImplementation(() => ({
-      getHTMLAxios: vi.fn().mockResolvedValue(mockHtml),
+      getHTML: vi.fn().mockResolvedValue(mockHtml),
     }));
 
     const vid = new Vid();

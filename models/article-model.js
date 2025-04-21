@@ -84,23 +84,29 @@ class Article {
    */
   async getArticleObj() {
     //get html for new article
-    const inputObj = this.dataObject.obj
+    const inputObj = this.dataObject.obj;
 
     //get html
-    const htmlModel = new KCNA(inputObj);
-    const articleHTML = await htmlModel.getHTMLAxios();
-    if (!articleHTML) return null;
 
-    //parse the data from the html
-    const parseObj = await this.parseArticleHMTL(articleHTML);
-    if (!parseObj) return null;
+    try {
+      const htmlModel = new KCNA(inputObj);
+      const articleHTML = await htmlModel.getHTML();
+      if (!articleHTML) return null;
 
-    const articleObj = { ...inputObj, ...parseObj };
+      //parse the data from the html
+      const parseObj = await this.parseArticleHMTL(articleHTML);
+      if (!parseObj) return null;
 
-    const storeModel = new dbModel(articleObj, CONFIG.articlesDownloaded);
-    const storeData = await storeModel.storeUniqueURL();
-    console.log(storeData);
-    return articleObj;
+      const articleObj = { ...inputObj, ...parseObj };
+
+      const storeModel = new dbModel(articleObj, CONFIG.articlesDownloaded);
+      const storeData = await storeModel.storeUniqueURL();
+      console.log(storeData);
+      return articleObj;
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      return null;
+    }
   }
 
   /**
@@ -137,7 +143,8 @@ class Article {
 
     //otherwise build pic / pic array
     const picPageURL = "http://www.kcna.kp" + picPageHref;
-    const articlePicArray = await this.getArticlePicArray(picPageURL);
+    const articlePicModel = new Article({ url: picPageURL });
+    const articlePicArray = await articlePicModel.getArticlePicArray();
 
     //if articlePicArray fails to return (load) return null (to download again later)
     if (!articlePicArray || !articlePicArray.length) return null;
@@ -171,10 +178,10 @@ class Article {
    * @param {} picPageURL url for article pic page
    * @returns array of articlePicObjs
    */
-  async getArticlePicArray(picPageURL) {
+  async getArticlePicArray() {
     //get the html, build dom
-    const htmlModel = new KCNA({ url: picPageURL });
-    const html = await htmlModel.getHTMLAxios();
+    const htmlModel = new KCNA(this.dataObject);
+    const html = await htmlModel.getHTML();
 
     //if fails return null
     if (!html) return null;
@@ -190,7 +197,8 @@ class Article {
     const imgArray = document.querySelectorAll("img");
     for (let i = 0; i < imgArray.length; i++) {
       try {
-        const articlePicURL = await this.getArticlePicURL(imgArray[i]);
+        const urlModel = new Article({ imgItem: imgArray[i] });
+        const articlePicURL = await urlModel.getArticlePicURL();
         if (!articlePicURL) continue;
 
         articlePicArray.push(articlePicURL);
@@ -211,7 +219,8 @@ class Article {
    * @param {*} imgItem image element with link to pic
    * @returns returns articlePicObj
    */
-  async getArticlePicURL(imgItem) {
+  async getArticlePicURL() {
+    const { imgItem } = this.dataObject;
     if (!imgItem) return null;
 
     //build picURL

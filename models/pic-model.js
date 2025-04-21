@@ -160,7 +160,7 @@ class Pic {
     const picSetObj = { ...inputObj };
     //get HTML
     const htmlModel = new KCNA(picSetObj);
-    const picSetPageHTML = await htmlModel.getHTMLAxios();
+    const picSetPageHTML = await htmlModel.getHTML();
 
     //add in picArray
     const picSetArray = await this.parsePicSetHTML(picSetPageHTML);

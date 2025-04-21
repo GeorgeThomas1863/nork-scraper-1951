@@ -1,9 +1,9 @@
 import CONFIG from "../config/scrape-config.js";
 import KCNA from "../models/kcna-model.js";
 
-// import { buildArticleList, buildArticleContent } from "./articles.js";
-// import { buildPicSetList, buildPicSetContent } from "./pics.js";
-// import
+import { buildArticleList, buildArticleContent } from "./articles.js";
+import { buildPicSetList, buildPicSetContent, getPicDataArray } from "./pics.js";
+import { buildVidList, buildVidContent, getVidDataArray } from "./vids.js";
 
 /**
  * Gets / checks for new KCNA data, downloads it AND uploads it to TG
@@ -20,7 +20,7 @@ export const scrapeKCNA = async () => {
     const scrapeData = await scrapeEach(type);
     console.log(scrapeData);
   }
-  return "FINISHED GETTING NEW CONTENT";
+  return "FINISHED SCRAPING NEW DATA";
 };
 
 export const scrapeEach = async (type) => {
@@ -39,7 +39,7 @@ export const scrapeEach = async (type) => {
   const newMediaArray = await getNewMediaData(type);
   console.log(newMediaArray);
 
-  //download
+  //download [MIGHT MOVE UP ONE LEVEL]
   console.log("DOWNLOADING NEW MEDIA FOR " + type.toUpperCase());
   const downloadData = await downloadNewMedia(type);
   console.log(downloadData);
@@ -110,7 +110,8 @@ export const getNewContentData = async (type) => {
 
 export const getNewMediaData = async (type) => {
   console.log("GETTING MEDIA FOR " + type.toUpperCase());
-  const downloadArray = await this.getMediaToDownloadArray(type);
+  const downloadModel = new KCNA({ type: type });
+  const downloadArray = await downloadModel.getMediaToDownloadArray();
 
   switch (type) {
     case "articles":
@@ -121,7 +122,7 @@ export const getNewMediaData = async (type) => {
       return picData;
 
     case "vids":
-      const vidData = await vidModel.getVidDataArray(downloadArray);
+      const vidData = await getVidDataArray(downloadArray);
       return vidData;
   }
 };

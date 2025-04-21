@@ -3,14 +3,6 @@ import axios from "axios";
 import CONFIG from "../config/scrape-config.js";
 import dbModel from "./db-model.js";
 
-import Article from "./article-model.js";
-import Pic from "./pic-model.js";
-import Vid from "./vid-model.js";
-
-import { buildArticleList, buildArticleContent } from "../src/articles.js";
-import { buildPicSetList, buildPicSetContent, getPicDataArray } from "../src/pics.js";
-import { buildVidList, buildVidContent, getVidDataArray } from "../src/vids.js";
-
 import { newListMap, newContentMap, newMediaMap } from "../config/map.js";
 
 /**
@@ -86,11 +78,11 @@ class KCNA {
    * @returns
    */
   async getNewListHTML() {
-    const type = this.dataObject.type;
+    const { type } = this.dataObject;
     const newListParam = await newListMap(type);
     try {
       const newListModel = new KCNA({ url: CONFIG[newListParam] });
-      const newListHTML = await newListModel.getHTMLAxios();
+      const newListHTML = await newListModel.getHTML();
       console.log(newListHTML);
 
       return newListHTML;
@@ -112,7 +104,7 @@ class KCNA {
    */
   async getContentToDownloadArray() {
     //uses map to lookup params, params contain correct collections
-    const type = this.dataObject.type;
+    const { type } = this.dataObject;
     const newDataParams = await newContentMap(type);
 
     const downloadModel = new dbModel(newDataParams, "");
@@ -122,8 +114,9 @@ class KCNA {
 
   //-------------------
 
-  async getMediaToDownloadArray(type) {
+  async getMediaToDownloadArray() {
     //uses map to lookup params, params contain correct collections
+    const { type } = this.dataObject;
     const newDataParams = await newMediaMap(type);
 
     const downloadModel = new dbModel(newDataParams, "");
