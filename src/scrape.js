@@ -7,6 +7,15 @@ import KCNA from "../models/kcna-model.js";
  * @returns array for tracking
  */
 export const scrapeKCNA = async () => {
+  const newContentKCNA = await getNewContentKCNA();
+  console.log(newContentKCNA);
+  const newMediaKCNA = await getNewMediaKCNA();
+  console.olog(newMediaKCNA);
+
+  console.log("FINSIHED FUCKER");
+};
+
+export const getNewContentKCNA = async () => {
   const { typeArr } = CONFIG;
 
   //loop through types
@@ -16,12 +25,16 @@ export const scrapeKCNA = async () => {
     const dataModel = new KCNA(type);
     console.log("GETTING LIST DATA FOR " + type.toUpperCase());
     const newListArray = await dataModel.getNewListData();
-    // console.log(newListArray);
+    if (!newListArray) return "FETCH FUCKED";
 
     console.log("GETTING NEW CONTENT FOR " + type.toUpperCase());
     const newContentArray = await dataModel.getNewContentData();
-  //   console.log(newContentArray);
+    return newContentArray;
   }
+};
+
+export const getNewMediaKCNA = async () => {
+  const { typeArr } = CONFIG;
 
   //get pic / vid media (articles index 0)
   for (let i = 1; i < typeArr.length; i++) {
@@ -30,10 +43,9 @@ export const scrapeKCNA = async () => {
     const dataModel = new KCNA(type);
     console.log("GETTING NEW MEDIA FOR " + type.toUpperCase());
     const newMediaArray = await dataModel.getNewMediaData();
-    // console.log(newMediaArray);
+    console.log(newMediaArray);
     const downloadData = await dataModel.downloadNewMedia();
-    // console.log(downloadData);
-  }
 
-  console.log("FINSIHED FUCKER");
+    return downloadData;
+  }
 };

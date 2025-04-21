@@ -35,19 +35,33 @@ class KCNA {
   // }
 
   //FUCKING SWITCHING TO AXIOS
-  async getHTML() {
+  async getHTMLAxios() {
+    const url = this.dataObject.url;
     try {
-      const res = await axios({
-        method: "get",
-        url: this.dataObject.url,
-        timeout: 60000,
-        responseType: "text",
-      });
-
-      return res.data;
+      const html = await this.getHTML(url);
+      return html;
     } catch (e) {
       console.log(this.dataObject.url + "; " + e.message + "; F BREAK: " + e.function);
+      return null;
     }
+  }
+
+  async getHTML(url) {
+    const res = await axios({
+      method: "get",
+      url: url,
+      timeout: 60000,
+      responseType: "text",
+    });
+
+    if (!res || !res.data) {
+      const error = new Error("FETCH FUCKED");
+      error.url = url;
+      error.fucntion = "GET HTML AXIOS";
+      throw ReferenceError;
+    }
+
+    return res.data;
   }
 
   //----------------------
@@ -64,7 +78,8 @@ class KCNA {
     const type = this.dataObject;
     // console.log("GETTING LIST DATA FOR " + type.toUpperCase());
     const newListHTML = await this.getNewListHTML(type);
-    if (!newListHTML) return "FETCH FUCKED";
+    if (!newListHTML) return null
+    console.log(newListHTML);
 
     switch (type) {
       case "articles":
