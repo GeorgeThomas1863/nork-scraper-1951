@@ -33,14 +33,15 @@ class Article {
     // Find the element with class "article-link"
     const articleLinkElement = document.querySelector(".article-link");
 
-    console.log("FUCK MUY BITCH FACE")
-    console.log(articleLinkElement.length);
-
     //if no article links (shouldnt happen)
     if (!articleLinkElement) return null;
 
     // get array of article list (from link elements)
     const linkElementArray = articleLinkElement.querySelectorAll("a");
+
+    console.log("FUCK MUY BITCH FACE");
+    console.log(linkElementArray.length);
+
     const articleListArray = await this.parseLinkArray(linkElementArray);
     console.log("GOT " + articleListArray.length + "ARTICLES");
 

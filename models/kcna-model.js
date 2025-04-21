@@ -97,8 +97,7 @@ class KCNA {
     const newListParam = await newListMap(type);
     const newListModel = new KCNA({ url: CONFIG[newListParam] });
     const newListHTML = await newListModel.getHTML();
-    console.log("FUCK ME");
-    console.log(newListHTML);
+
     return newListHTML;
   }
 
