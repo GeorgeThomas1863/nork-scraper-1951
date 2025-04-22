@@ -1,6 +1,8 @@
 import { JSDOM } from "jsdom";
 
 import CONFIG from "../config/scrape-config.js";
+import KCNA from "../models/kcna-model.js";
+
 import Article from "../models/article-model.js";
 import UTIL from "../models/util-model.js";
 import dbModel from "../models/db-model.js";
@@ -25,8 +27,8 @@ export const buildArticleList = async (html) => {
 
   // get array of article list (from link elements)
   const linkElementArray = articleLinkElement.querySelectorAll("a");
-  const parseModel = new Article({ inputArray: linkElementArray });
-  const articleListArray = await parseModel.getArticleListArray();
+  const articleLinkModel = new Article({ inputArray: linkElementArray });
+  const articleListArray = await articleLinkModel.parseArticleLinks();
   console.log("GOT " + articleListArray.length + " ARTICLES");
 
   //sort the array
@@ -35,7 +37,7 @@ export const buildArticleList = async (html) => {
 
   //add article ID
   const idModel = new UTIL({ inputArray: articleListSort });
-  const articleListNormal = await idModel.addArticleId(CONFIG.articleList, "articleId");
+  const articleListNormal = await idModel.addListId(CONFIG.articleList, "articleId");
 
   const storeDataModel = new dbModel(articleListNormal, CONFIG.articleList);
   await storeDataModel.storeArray();
@@ -46,30 +48,17 @@ export const buildArticleList = async (html) => {
 };
 
 /**
- * GETs and buils array of NEW articleObjs by looping through download array (which ONLY contains new items)
+ * GETs and builds array of NEW articleObjs by looping through download array (which ONLY contains new items)
  * @function buildArticleContent
+ * @params downloadArray (new articles to download)
  * @returns array of articleObjs (for tracking)
  */
 export const buildArticleContent = async (inputArray) => {
   if (!inputArray || !inputArray.length) return null;
 
-  // console.log("ARTICLE CONTENT ARRAY");
-  // console.log(inputArray);
-
   //loop (dont check if stored since inputArray based on mongo compare earlier)
-  const articleObjArray = [];
-  for (let i = 0; i < inputArray.length; i++) {
-    try {
-      const inputObj = inputArray[i];
-      const articleObjModel = new Article({ inputObj: inputObj });
-      const articleObj = await articleObjModel.getArticleObj();
-      if (!articleObj) return null;
+  const articleModel = new Article({ inputArray: inputArray });
+  const articleArray = await articleModel.parseArticleArray();
 
-      articleObjArray.push(articleObj);
-    } catch (e) {
-      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-    }
-  }
-
-  return articleObjArray;
+  return articleArray;
 };

@@ -187,7 +187,7 @@ describe("Pic Model", () => {
     // Mock UTIL methods
     UTIL.mockImplementation((data) => ({
       sortArrayByDate: vi.fn().mockResolvedValue(mockSortedList),
-      addArticleId: vi.fn().mockResolvedValue(mockNormalizedList),
+      addListId: vi.fn().mockResolvedValue(mockNormalizedList),
     }));
 
     // Mock dbModel

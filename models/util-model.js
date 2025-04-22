@@ -42,10 +42,10 @@ class UTIL {
 
   /**
    * Adds current article Id to array (by looping through / getting current article ID)
-   * @function addArticleId
+   * @function addListId
    * @returns current article Id
    */
-  async addArticleId(collection, inputType) {
+  async addListId(collection, inputType) {
     const { inputArray } = this.dataObject;
     if (!inputArray || !inputArray.length) return null;
 
@@ -111,6 +111,38 @@ class UTIL {
     return dateArray;
   }
 
+  /**
+   * Parses date element for article list item format (MIGHT be able to use elsewhere; move to UTIL)
+   * @function parseDateElement
+   * @param {*} dateText raw date text from article list format
+   * @returns date as standard JS date obj (for storing in Mongo)
+   */
+  async parseListDate() {
+    const { inputItem } = this.dataObject;
+
+    const dateElement = inputItem.querySelector(".publish-time");
+    if (!dateElement) return null;
+
+    //extract dateText
+    const dateRaw = dateElement.textContent.trim();
+    if (!dateRaw) return null;
+    const dateText = dateRaw.replace(/[\[\]]/g, "");
+
+    // Convert the date string (YYYY.MM.DD) to a JavaScript Date object, then split to arr
+    const dateArr = dateText.split(".");
+    const year = parseInt(dateArr[0]);
+    // JS months are 0-based (subtract 1 at end)
+    const month = parseInt(dateArr[1]);
+    const day = parseInt(dateArr[2]);
+
+    // Validate the date; if fucked return null
+    if (isNaN(year) || isNaN(month) || isNaN(day)) return null;
+
+    const normalDate = new Date(year, month - 1, day);
+    return normalDate;
+  }
+
+  //BELOW SHOULDNT BE NECESSARY
   /**
    * Parses date element for article list item format (MIGHT be able to use elsewhere; move to UTIL)
    * @function parseDateElement

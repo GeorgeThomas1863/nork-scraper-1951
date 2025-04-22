@@ -59,7 +59,7 @@ describe("UTIL Model", () => {
     expect(result).toBeNull();
   });
 
-  // Test addArticleId method
+  // Test addListId method
   it("should add article IDs to each object in the array", async () => {
     // Setup
     const inputArray = [
@@ -73,7 +73,7 @@ describe("UTIL Model", () => {
     util.getArticleId = vi.fn().mockResolvedValue(mockStartId);
 
     // Act
-    const result = await util.addArticleId("articles-collection", "articleId");
+    const result = await util.addListId("articles-collection", "articleId");
 
     // Assert
     expect(result.length).toBe(2);
@@ -82,12 +82,12 @@ describe("UTIL Model", () => {
     expect(util.getArticleId).toHaveBeenCalledWith("articles-collection");
   });
 
-  it("should return null from addArticleId when input array is empty", async () => {
+  it("should return null from addListId when input array is empty", async () => {
     // Setup
     const util = new UTIL([]);
 
     // Act
-    const result = await util.addArticleId("articles-collection", "articleId");
+    const result = await util.addListId("articles-collection", "articleId");
 
     // Assert
     expect(result).toBeNull();

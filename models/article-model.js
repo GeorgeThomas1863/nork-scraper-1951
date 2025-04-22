@@ -15,10 +15,9 @@ class Article {
     this.dataObject = dataObject;
   }
 
-  //------------
-  //PARSE DATA
+  //-----------
 
-  //FOR ARTICLE LIST PAGE SECTION
+  //PARSE ARTICLE LIST PAGE SECTION
 
   /**
    * Parses array of article link items (loops through), returns array of (unsorted) articleListObjs
@@ -26,14 +25,14 @@ class Article {
    * @param {*} inputArray (array of article link items)
    * @returns //array of (unsorted) articleListObjs
    */
-  async getArticleListArray() {
+  async parseArticleLinks() {
     const { inputArray } = this.dataObject;
 
     //loop through a tags and pull out hrefs
     const articleListArray = [];
     for (let i = 0; i < inputArray.length; i++) {
-      const listItem = inputArray[i];
-      const articleListObj = await this.getArticleListObj(listItem);
+      const articleListItem = inputArray[i];
+      const articleListObj = await this.parseArticleListItem(articleListItem);
 
       articleListArray.push(articleListObj); //add to array
     }
@@ -43,12 +42,12 @@ class Article {
 
   /**
    * Parses individual article link item, builds / returns single articleListObj
-   * @function getArticleListObj
+   * @function parseArticleListItem
    * @param {*} listItem article link item
    * @returns articleListObj (with url / date extracted)
    */
-  async getArticleListObj(listItem) {
-    const href = listItem.getAttribute("href");
+  async parseArticleListItem(articleListItem) {
+    const href = articleListItem.getAttribute("href");
     if (!href) return;
 
     //build full url
@@ -56,11 +55,8 @@ class Article {
     const url = urlConstant + href;
 
     //GET DATE
-    const dateElement = listItem.querySelector(".publish-time");
-    if (!dateElement) return;
-    const dateText = dateElement.textContent.trim();
-    const dateModel = new UTIL({ dateText: dateText });
-    const articleDate = await dateModel.parseDateElement();
+    const dateModel = new UTIL({ inputItem: articleListItem });
+    const articleDate = await dateModel.parseListDate();
 
     //build obj
     const articleListObj = {
@@ -74,6 +70,25 @@ class Article {
   //--------------------------
 
   //ARTICLE DATA ITEM SECTION
+
+  async parseArticleArray() {
+    const { inputArray } = this.dataObject;
+
+    const articleObjArray = [];
+    for (let i = 0; i < inputArray.length; i++) {
+      try {
+        const articleObjModel = new Article({ inputObj: inputArray[i] });
+        const articleObj = await articleObjModel.getArticleObj();
+        if (!articleObj) return null;
+
+        articleObjArray.push(articleObj);
+      } catch (e) {
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      }
+    }
+
+    return articleObjArray;
+  }
 
   /**
    * Builds articleObj by parsing articleHTML, combining with inputObj then storing it

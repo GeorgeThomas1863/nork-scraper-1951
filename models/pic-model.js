@@ -122,10 +122,12 @@ class Pic {
     // build url const url =
 
     //get date
-    const dateElement = inputItem.querySelector(".publish-time");
-    const dateText = dateElement.textContent.trim();
-    const dateModel = new UTIL({ dateText: dateText });
-    const picSetDate = await dateModel.parseDateElement();
+    const dateModel = new UTIL({ inputItem: inputItem });
+    const picSetDate = await dateModel.parseListDate();
+    // const dateElement = inputItem.querySelector(".publish-time");
+    // const dateText = dateElement.textContent.trim();
+    // const dateModel = new UTIL({ dateText: dateText });
+    // const picSetDate = await dateModel.parseDateElement();
 
     //get title
     const titleRaw = titleWrapper.textContent.trim();

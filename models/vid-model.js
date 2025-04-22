@@ -125,10 +125,12 @@ class Vid {
     const dateString = thumbSrc.substring(thumbSrc.indexOf("video/kp/") + 9, thumbSrc.indexOf("/V"));
 
     //get date
-    const dateElement = vidElement.querySelector(".publish-time");
-    const dateText = dateElement.textContent.trim();
-    const dateModel = new UTIL({ dateText: dateText });
-    const vidDate = await dateModel.parseDateElement();
+    const dateModel = new UTIL({ inputItem: vidElement });
+    const vidDate = await dateModel.parseListDate();
+    // const dateElement = vidElement.querySelector(".publish-time");
+    // const dateText = dateElement.textContent.trim();
+    // const dateModel = new UTIL({ dateText: dateText });
+    // const vidDate = await dateModel.parseDateElement();
 
     //get title
     const titleElement = vidElement.querySelector(".title a");

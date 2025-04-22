@@ -22,7 +22,7 @@ export const buildPicSetList = async (html) => {
 
   //add picSetId ID
   const idModel = new UTIL({ inputArray: picSetListSort });
-  const picSetListNormal = await idModel.addArticleId(CONFIG.picSetList, "picSetId");
+  const picSetListNormal = await idModel.addListId(CONFIG.picSetList, "picSetId");
 
   const storeDataModel = new dbModel(picSetListNormal, CONFIG.picSetList);
   const storeData = await storeDataModel.storeArray();
