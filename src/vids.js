@@ -51,13 +51,19 @@ export const buildVidContent = async (inputArray) => {
   return vidPageArray;
 };
 
-//IN PROGRESS
+//----------------
+
+//VID DATA
 export const getVidDataArray = async (inputArray) => {
+  const vidDataArray = [];
   for (let i = 0; i < inputArray.length; i++) {
-   
-    const vidModel = new Vid(inputArray[i])
-    const vidDataObj  = await vidModel.getVidData()
-    // console.log("VID ITEM FAGGOT");
-    // console.log(vidItem);
+    try {
+      const vidModel = new Vid(inputArray[i]);
+      const vidDataObj = await vidModel.getVidData();
+      vidDataArray.push(vidDataObj);
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
   }
+  return vidDataArray;
 };

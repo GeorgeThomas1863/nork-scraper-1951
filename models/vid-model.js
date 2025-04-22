@@ -19,6 +19,13 @@ class Vid {
     const vidParams = await this.getVidParams(url);
 
     const vidObj = await this.buildVidObj(vidParams);
+    if (!vidObj) return null;
+
+    const storeModel = new dbModel(vidObj, CONFIG.vids);
+    const storeData = await storeModel.storeUniqueURL();
+    console.log(storeData);
+
+    return vidObj;
   }
 
   async getVidParams(vidURL) {
@@ -41,14 +48,33 @@ class Vid {
   async buildVidObj(vidParams) {
     const { url, kcnaId, dateString } = vidParams;
 
-    const htmlModel = new KCNA(vidParams)
-    const res = await htmlModel.getMediaHeaders()
+    const htmlModel = new KCNA(vidParams);
+    const res = await htmlModel.getMediaHeaders();
 
     //get pic headers
     const headerData = res.headers;
 
-    console.log("VID HEADER DATA YOU FUCKING FAGGOT");
-    console.log(headerData);
+    const serverData = headerData.server;
+    const eTag = headerData.etag;
+    const vidEditDate = new Date(headerData["last-modified"]);
+    const contentRange = headerData["content-range"];
+    const vidSize = contentRange.substring(contentRange.lastIndexOf("/") + 1, contentRange.length - 1);
+
+    const vidObj = {
+      url: url,
+      kcnaId: kcnaId,
+      dateString: dateString,
+      scrapeDate: new Date(),
+      vidSize: vidSize,
+      serverData: serverData,
+      eTag: eTag,
+      vidEditDate: vidEditDate,
+    };
+
+    console.log("VID OBJECT YOU FUCKING FAGGOT");
+    console.log(vidObj);
+
+    return vidObj;
   }
 
   //------------
