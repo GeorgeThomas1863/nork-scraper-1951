@@ -1,5 +1,9 @@
 //TO DO:
 
+//REMOVE THIS from models as much as possible.
+
+//MAKE EVERTYING LIKE ARTICLE MODEL
+
 //UNFUCK / REDO THE TESTS
 
 //ON TO MEDIA DOWNLOADING
