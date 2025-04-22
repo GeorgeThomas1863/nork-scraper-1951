@@ -1,12 +1,8 @@
 //TO DO:
 
-//FIX / IMPLEMENT CONFIG NAME CHANGES
+//UNFUCK / REDO THE TESTS
 
-//UNFUCK / REDO THE TESTS (comment out ones that arent working if needed)
-
-//KEEP DEBUGGING THE FUCKING URL SCRAPING
-
-//GET THE FUCKING VID DATA
+//ON TO MEDIA DOWNLOADING
 
 //work on downloading
 
