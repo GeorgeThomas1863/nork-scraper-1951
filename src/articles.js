@@ -14,37 +14,29 @@ import dbModel from "../models/db-model.js";
  * @function buildArticleList
  * @returns {array} ARRAY of sorted OBJECTs (for tracking)
  */
-export const buildArticleList = async (html) => {
-  // Parse the HTML using JSDOM
-  const dom = new JSDOM(html);
-  const document = dom.window.document;
+export const buildArticleList = async (inputHTML) => {
+  try {
+    const articleListModel = new Article({ html: inputHTML });
+    const articleListArray = await articleListModel.getArticleListArray();
+    console.log("GOT " + articleListArray.length + " ARTICLES");
 
-  // Find the element with class "article-link"
-  const articleLinkElement = document.querySelector(".article-link");
+    //sort the array
+    const sortModel = new UTIL({ inputArray: articleListArray });
+    const articleListSort = await sortModel.sortArrayByDate();
 
-  //if no article links (shouldnt happen)
-  if (!articleLinkElement) return null;
+    //add article ID
+    const idModel = new UTIL({ inputArray: articleListSort });
+    const articleListNormal = await idModel.addListId(CONFIG.articleList, "articleId");
 
-  // get array of article list (from link elements)
-  const linkElementArray = articleLinkElement.querySelectorAll("a");
-  const articleLinkModel = new Article({ inputArray: linkElementArray });
-  const articleListArray = await articleLinkModel.parseArticleLinks();
-  console.log("GOT " + articleListArray.length + " ARTICLES");
+    //store the sorted array
+    const storeDataModel = new dbModel(articleListNormal, CONFIG.articleList);
+    await storeDataModel.storeArray();
 
-  //sort the array
-  const sortModel = new UTIL({ inputArray: articleListArray });
-  const articleListSort = await sortModel.sortArrayByDate();
-
-  //add article ID
-  const idModel = new UTIL({ inputArray: articleListSort });
-  const articleListNormal = await idModel.addListId(CONFIG.articleList, "articleId");
-
-  const storeDataModel = new dbModel(articleListNormal, CONFIG.articleList);
-  await storeDataModel.storeArray();
-  // console.log(storeData);
-
-  //for tracking
-  return articleListNormal;
+    //for tracking
+    return articleListNormal;
+  } catch (e) {
+    console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+  }
 };
 
 /**

@@ -19,6 +19,32 @@ class Article {
 
   //PARSE ARTICLE LIST PAGE SECTION
 
+  async getArticleListArray() {
+    const { html } = this.dataObject;
+
+    // Parse the HTML using JSDOM
+    const dom = new JSDOM(html);
+    const document = dom.window.document;
+
+    // Find article-link (wrapper element) extract out all links
+    const articleLinkElement = document.querySelector(".article-link");
+    const linkElementArray = articleLinkElement?.querySelectorAll("a");
+
+    //throw error if no links found
+    if (!linkElementArray || !linkElementArray.length) {
+      const error = new Error("CANT EXTRACT ARTICLE LIST");
+      error.url = CONFIG.articleListURL;
+      error.function = "getArticleListArray (MODEL)";
+      throw error;
+    }
+
+    //extract out the articleListObjs
+    const articleLinkModel = new Article({ inputArray: linkElementArray });
+    const articleListArray = await articleLinkModel.parseArticleLinks();
+
+    return articleListArray;
+  }
+
   /**
    * Parses array of article link items (loops through), returns array of (unsorted) articleListObjs
    * @function parseLinkArray
