@@ -68,7 +68,7 @@ class KCNA {
     }
   }
 
-  async getPicHeaders() {
+  async getMediaHeaders() {
     const inputURL = this.dataObject.url;
 
     const res = await axios({

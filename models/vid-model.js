@@ -14,24 +14,42 @@ class Vid {
     this.dataObject = dataObject;
   }
 
-  // async buildVidObj() {
-  //   const { url, kcnaId, dateString } = this.dataObject;
+  async getVidData() {
+    const { url } = this.dataObject;
+    const vidParams = await this.getVidParams(url);
 
-  //   const res = await fetch(url);
+    const vidObj = await this.buildVidObj(vidParams);
+  }
 
-  //   //if URL doesnt exist / return headers throw error
-  //   if (!res || !res.headers) {
-  //     const error = new Error("URL DOESNT EXIST");
-  //     error.url = url;
-  //     error.function = "getPicData KCNA MODEL";
-  //     throw error;
-  //   }
+  async getVidParams(vidURL) {
+    const kcnaId = +vidURL.substring(vidURL.length - 11, vidURL.length - 4);
 
-  //   //get pic headers
-  //   const headerData = res.headers;
-  //   // console.log("VID HEADER DATA");
-  //   // console.log(headerData);
-  // }
+    const dateString = vidURL.substring(vidURL.indexOf("/video/") + "/video/".length, vidURL.indexOf("/VID", vidURL.indexOf("/video/")));
+
+    const vidParams = {
+      url: vidURL,
+      kcnaId: kcnaId,
+      dateString: dateString,
+    };
+
+    console.log("FUCKING VID PARAMS");
+    console.log(vidParams);
+
+    return vidParams;
+  }
+
+  async buildVidObj(vidParams) {
+    const { url, kcnaId, dateString } = vidParams;
+
+    const htmlModel = new KCNA(vidParams)
+    const res = await htmlModel.getMediaHeaders()
+
+    //get pic headers
+    const headerData = res.headers;
+
+    console.log("VID HEADER DATA YOU FUCKING FAGGOT");
+    console.log(headerData);
+  }
 
   //------------
   //PARSE DATA
@@ -83,7 +101,7 @@ class Vid {
     //get date
     const dateElement = vidElement.querySelector(".publish-time");
     const dateText = dateElement.textContent.trim();
-    const dateModel = new UTIL({dateText: dateText});
+    const dateModel = new UTIL({ dateText: dateText });
     const vidDate = await dateModel.parseDateElement();
 
     //get title

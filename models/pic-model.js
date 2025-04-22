@@ -62,7 +62,7 @@ class Pic {
 
     //throws error on fail
     const htmlModel = new KCNA(picParams);
-    const res = await htmlModel.getPicHeaders();
+    const res = await htmlModel.getMediaHeaders();
 
     //get pic headers
     const headerData = res.headers;
