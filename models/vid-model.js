@@ -135,6 +135,7 @@ class Vid {
     //get title
     const titleElement = vidElement.querySelector(".title a");
     const titleRaw = titleElement.textContent.trim();
+    const dateElement = vidElement.querySelector(".publish-time");
     const title = titleRaw.replace(dateElement.textContent, "").trim();
 
     const vidListObj = {
