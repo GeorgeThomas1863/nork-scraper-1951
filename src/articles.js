@@ -35,9 +35,9 @@ export const buildArticleList = async (html) => {
 
   //add article ID
   const idModel = new UTIL({ inputArray: articleListSort });
-  const articleListNormal = await idModel.addArticleId(CONFIG.articles, "articleId");
+  const articleListNormal = await idModel.addArticleId(CONFIG.articleList, "articleId");
 
-  const storeDataModel = new dbModel(articleListNormal, CONFIG.articles);
+  const storeDataModel = new dbModel(articleListNormal, CONFIG.articleList);
   await storeDataModel.storeArray();
   // console.log(storeData);
 

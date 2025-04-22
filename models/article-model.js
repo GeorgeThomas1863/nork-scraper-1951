@@ -99,7 +99,7 @@ class Article {
 
       const articleObj = { ...inputObj, ...parseObj };
 
-      const storeModel = new dbModel(articleObj, CONFIG.articlesDownloaded);
+      const storeModel = new dbModel(articleObj, CONFIG.articles);
       const storeData = await storeModel.storeUniqueURL();
       console.log(storeData);
       return articleObj;

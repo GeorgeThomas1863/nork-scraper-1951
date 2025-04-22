@@ -36,7 +36,7 @@ export const buildVidContent = async (inputArray) => {
       vidPageObj.vidURL = vidURL;
 
       //store it
-      const storeVidPageModel = new dbModel(vidPageObj, CONFIG.vidPagesDownloaded);
+      const storeVidPageModel = new dbModel(vidPageObj, CONFIG.vidPageContent);
       const storeVidPage = await storeVidPageModel.storeUniqueURL();
       console.log(storeVidPage);
 

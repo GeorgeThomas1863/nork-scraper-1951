@@ -124,7 +124,7 @@ class Pic {
     //get date
     const dateElement = inputItem.querySelector(".publish-time");
     const dateText = dateElement.textContent.trim();
-    const dateModel = new UTIL({dateText: dateText});
+    const dateModel = new UTIL({ dateText: dateText });
     const picSetDate = await dateModel.parseDateElement();
 
     //get title
@@ -158,7 +158,7 @@ class Pic {
     picSetObj.picArray = picSetArray;
 
     //store it
-    const storePicSetModel = new dbModel(picSetObj, CONFIG.picSetsDownloaded);
+    const storePicSetModel = new dbModel(picSetObj, CONFIG.picSetContent);
     const storePicSetData = await storePicSetModel.storeUniqueURL();
     console.log(storePicSetData);
 

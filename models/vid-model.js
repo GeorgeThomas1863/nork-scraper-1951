@@ -47,7 +47,7 @@ class Vid {
         if (!vidListObj) return null;
 
         //store data
-        const storeVidModel = new dbModel(vidListObj, CONFIG.vidPages);
+        const storeVidModel = new dbModel(vidListObj, CONFIG.vidPageList);
         const storeData = await storeVidModel.storeUniqueURL();
         console.log(storeData);
 
