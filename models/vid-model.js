@@ -24,7 +24,7 @@ class Vid {
   async getVidParams(vidURL) {
     const kcnaId = +vidURL.substring(vidURL.length - 11, vidURL.length - 4);
 
-    const dateString = vidURL.substring(vidURL.indexOf("/video/") + "/video/".length, vidURL.indexOf("/VID", vidURL.indexOf("/video/")));
+    const dateString = vidURL.substring(vidURL.indexOf("/video/") + "/video/kp/".length, vidURL.indexOf("/VID", vidURL.indexOf("/video/")));
 
     const vidParams = {
       url: vidURL,

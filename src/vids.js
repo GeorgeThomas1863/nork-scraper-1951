@@ -56,8 +56,8 @@ export const getVidDataArray = async (inputArray) => {
   for (let i = 0; i < inputArray.length; i++) {
    
     const vidModel = new Vid(inputArray[i])
-    const vidData  = await vidModel.getVidData()
-    console.log("VID ITEM FAGGOT");
-    console.log(vidItem);
+    const vidDataObj  = await vidModel.getVidData()
+    // console.log("VID ITEM FAGGOT");
+    // console.log(vidItem);
   }
 };
