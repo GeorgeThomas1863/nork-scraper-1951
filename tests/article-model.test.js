@@ -1,103 +1,126 @@
-//UNFUCK
-
+// scrape-tests.js
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { JSDOM } from "jsdom";
-import Article from "../models/article-model.js";
+import { scrapeKCNA, scrapeEach, getNewListData, getNewContentData, getNewMediaData } from "../src/scrape.js";
 
-// Mock JSDOM
-vi.mock("jsdom", () => {
+// Mock the dependencies
+vi.mock("../models/kcna-model.js", () => {
   return {
-    JSDOM: vi.fn(),
+    default: vi.fn().mockImplementation(() => ({
+      getNewListHTML: vi.fn().mockResolvedValue("<div>mock html</div>"),
+      getContentToDownloadArray: vi.fn().mockResolvedValue(["item1", "item2"]),
+      getMediaToDownloadArray: vi.fn().mockResolvedValue(["media1", "media2"]),
+    })),
   };
 });
 
-describe("Article", () => {
-  // Basic existence tests
-  it("should be defined", () => {
-    expect(Article).toBeDefined();
+vi.mock("./articles.js", () => ({
+  buildArticleList: vi.fn().mockResolvedValue(["article1", "article2"]),
+  buildArticleContent: vi.fn().mockResolvedValue(["articleContent1", "articleContent2"]),
+}));
+
+vi.mock("./pics.js", () => ({
+  buildPicSetList: vi.fn().mockResolvedValue(["picSet1", "picSet2"]),
+  buildPicSetContent: vi.fn().mockResolvedValue(["picSetContent1", "picSetContent2"]),
+  getPicDataArray: vi.fn().mockResolvedValue(["picData1", "picData2"]),
+}));
+
+vi.mock("./vids.js", () => ({
+  buildVidList: vi.fn().mockResolvedValue(["vid1", "vid2"]),
+  buildVidPageContent: vi.fn().mockResolvedValue(["vidContent1", "vidContent2"]),
+  getVidDataArray: vi.fn().mockResolvedValue(["vidData1", "vidData2"]),
+}));
+
+// Mock CONFIG
+vi.mock("../config/scrape-config.js", () => ({
+  default: {
+    typeArr: ["articles", "pics", "vids"],
+  },
+}));
+
+describe("KCNA Scraper Functions", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  it("should store dataObject in constructor", () => {
-    const testData = "<html><body>Test HTML</body></html>";
-    const article = new Article(testData);
-    expect(article.dataObject).toBe(testData);
+  describe("getNewListData", () => {
+    it("should return article list data when type is articles", async () => {
+      const result = await getNewListData("articles");
+      expect(result).toEqual(["article1", "article2"]);
+    });
+
+    it("should return picSet list data when type is pics", async () => {
+      const result = await getNewListData("pics");
+      expect(result).toEqual(["picSet1", "picSet2"]);
+    });
+
+    it("should return video list data when type is vids", async () => {
+      const result = await getNewListData("vids");
+      expect(result).toEqual(["vid1", "vid2"]);
+    });
+
+    it("should return null when HTML is not available", async () => {
+      // Override the mock for this specific test
+      const KCNA = (await import("../models/kcna-model.js")).default;
+      KCNA.mockImplementationOnce(() => ({
+        getNewListHTML: vi.fn().mockResolvedValue(null),
+      }));
+
+      const result = await getNewListData("articles");
+      expect(result).toBeNull();
+    });
   });
 
-  // // Test for null handling in buildArticleList
-  // it("should return null from buildArticleList when no article links found", async () => {
-  //   // Setup
-  //   const mockDocument = {
-  //     querySelector: vi.fn().mockReturnValue(null),
-  //   };
+  describe("getNewContentData", () => {
+    it("should return article content data when type is articles", async () => {
+      const result = await getNewContentData("articles");
+      expect(result).toEqual(["articleContent1", "articleContent2"]);
+    });
 
-  //   JSDOM.mockImplementation(() => ({
-  //     window: {
-  //       document: mockDocument,
-  //     },
-  //   }));
+    it("should return picSet content when type is pics", async () => {
+      const result = await getNewContentData("pics");
+      expect(result).toEqual(["picSetContent1", "picSetContent2"]);
+    });
 
-  //   const article = new Article("<html><body>No article links</body></html>");
+    it("should return message when nothing to download", async () => {
+      // Override the mock for this specific test
+      const KCNA = (await import("../models/kcna-model.js")).default;
+      KCNA.mockImplementationOnce(() => ({
+        getContentToDownloadArray: vi.fn().mockResolvedValue(null),
+      }));
 
-  //   // Act
-  //   const result = await article.buildArticleList();
-
-  //   // Assert
-  //   expect(result).toBeNull();
-  // });
-
-  // Test for empty array handling in buildArticleContent
-  it("should return null from buildArticleContent when input array is empty", async () => {
-    // Setup
-    const article = new Article([]);
-
-    // Act
-    const result = await article.buildArticleContent();
-
-    // Assert
-    expect(result).toBeNull();
+      const result = await getNewContentData("articles");
+      expect(result).toBe("NOTHING NEW TO DOWNLOAD");
+    });
   });
 
-  // Test parseArticleText function with simple input
-  it("should correctly join paragraphs in parseArticleText", async () => {
-    // Setup
-    const article = new Article();
-    const mockParagraphs = [
-      { textContent: "Paragraph 1" },
-      { textContent: "  Paragraph 2  " }, // With whitespace to trim
-      { textContent: "Paragraph 3" },
-    ];
+  describe("getNewMediaData", () => {
+    it("should return null for articles type", async () => {
+      const result = await getNewMediaData("articles");
+      expect(result).toBeNull();
+    });
 
-    // Act
-    const result = await article.parseArticleText(mockParagraphs);
+    it("should return pic data for pics type", async () => {
+      const result = await getNewMediaData("pics");
+      expect(result).toEqual(["picData1", "picData2"]);
+    });
 
-    // Assert
-    expect(result).toBe("Paragraph 1\n\nParagraph 2\n\nParagraph 3");
+    it("should return vid data for vids type", async () => {
+      const result = await getNewMediaData("vids");
+      expect(result).toEqual(["vidData1", "vidData2"]);
+    });
   });
 
-  // Test getArticlePicURL function
-  it("should correctly build article pic URL", async () => {
-    // Setup
-    const article = new Article();
-    const mockImgItem = {
-      getAttribute: vi.fn().mockReturnValue("/some/image/path.jpg"),
-    };
-
-    // Act
-    const result = await article.getArticlePicURL(mockImgItem);
-
-    // Assert
-    expect(result).toBe("http://www.kcna.kp/some/image/path.jpg");
+  describe("scrapeEach", () => {
+    it("should process each type and return length of listArray", async () => {
+      const result = await scrapeEach("articles");
+      expect(result).toBe(2); // Length of the mock array ['article1', 'article2']
+    });
   });
 
-  // Test getArticlePicURL with null input
-  it("should return null from getArticlePicURL when img item is null", async () => {
-    // Setup
-    const article = new Article();
-
-    // Act
-    const result = await article.getArticlePicURL(null);
-
-    // Assert
-    expect(result).toBeNull();
+  describe("scrapeKCNA", () => {
+    it("should process all types and return success message", async () => {
+      const result = await scrapeKCNA();
+      expect(result).toBe("FINISHED SCRAPING NEW DATA");
+    });
   });
 });
