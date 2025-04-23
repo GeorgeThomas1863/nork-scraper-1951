@@ -18,7 +18,7 @@ export const scrapeKCNA = async () => {
   for (let i = 0; i < typeArr.length; i++) {
     const type = typeArr[i];
     const scrapeData = await scrapeEach(type);
-    console.log(scrapeData);
+    // console.log(scrapeData);
   }
   return "FINISHED SCRAPING NEW DATA";
 };
@@ -57,7 +57,7 @@ export const getNewListData = async (type) => {
   const htmlModel = new KCNA({ type: type });
   const newListHTML = await htmlModel.getNewListHTML();
   if (!newListHTML) return null;
-  console.log(newListHTML);
+  // console.log(newListHTML);
 
   switch (type) {
     case "articles":

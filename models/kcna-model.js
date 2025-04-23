@@ -19,28 +19,6 @@ class KCNA {
    * @function getHTML
    * @returns  HTML content as text
    */
-  // async getHTML() {
-  //   try {
-  //     const res = await fetch(this.dataObject.url);
-  //     // console.log(res);
-  //     const data = await res.text();
-  //     return data;
-  //   } catch (e) {
-  //     console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-  //   }
-  // }
-
-  //FUCKING SWITCHING TO AXIOS
-  // async getHTMLAxios() {
-  //   const url = this.dataObject.url;
-  //   try {
-  //     const html = await this.getHTML(url);
-  //     return html;
-  //   } catch (e) {
-  //     console.log(this.dataObject.url + "; " + e.message + "; F BREAK: " + e.function);
-  //     return null;
-  //   }
-  // }
 
   //confirm try catch works
   async getHTML() {
