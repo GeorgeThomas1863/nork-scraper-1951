@@ -46,6 +46,7 @@ class Pic {
       try {
         const picSetModel = new Pic({ listItem: inputArray[i] });
         const picSetListObj = await picSetModel.parsePicSetListItem();
+        if (!picSetListObj) return null;
 
         picSetListArray.push(picSetListObj);
       } catch (e) {
@@ -81,6 +82,7 @@ class Pic {
       throw error;
     }
 
+    //build URL
     const urlConstant = "http://www.kcna.kp";
     const picSetURL = urlConstant + href;
 
@@ -107,7 +109,7 @@ class Pic {
 
     //throw error if cant get html
     if (!picSetPageHTML) {
-      const error = new Error("FAILED TO GET ARTICLE HTML");
+      const error = new Error("FAILED TO GET PICSET HTML");
       error.url = inputObj.url;
       error.function = "getPicSetObj (MODEL)";
       throw error;
@@ -232,6 +234,7 @@ class Pic {
     //throws error on fail
     const htmlModel = new KCNA(picParams);
     const res = await htmlModel.getMediaHeaders();
+    if (!res) return null;
 
     //get pic headers
     const headerData = res.headers;

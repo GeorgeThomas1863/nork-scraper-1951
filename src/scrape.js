@@ -3,7 +3,7 @@ import KCNA from "../models/kcna-model.js";
 
 import { buildArticleList, buildArticleContent } from "./articles.js";
 import { buildPicSetList, buildPicSetContent, getPicDataArray } from "./pics.js";
-import { buildVidList, buildVidContent, getVidDataArray } from "./vids.js";
+import { buildVidList, buildVidPageContent, getVidDataArray } from "./vids.js";
 
 /**
  * Gets / checks for new KCNA data, downloads it AND uploads it to TG
@@ -101,7 +101,7 @@ export const getNewContentData = async (type) => {
       return picSetPageArray;
 
     case "vids":
-      const vidObjArray = await buildVidContent(downloadArray);
+      const vidObjArray = await buildVidPageContent(downloadArray);
       return vidObjArray;
   }
 };

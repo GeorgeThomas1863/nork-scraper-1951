@@ -3,6 +3,7 @@ import { JSDOM } from "jsdom";
 import CONFIG from "../config/scrape-config.js";
 import Vid from "../models/vid-model.js";
 import dbModel from "../models/db-model.js";
+import UTIL from "../models/util-model.js";
 
 //FOR VID LIST PAGE SECTION
 
@@ -11,34 +12,38 @@ import dbModel from "../models/db-model.js";
  * @function parseVidList
  * @returns {array} ARRAY of sorted OBJECTs (for tracking)
  */
-export const buildVidList = async (html) => {
-  // Parse the HTML using JSDOM
-  const dom = new JSDOM(html);
-  const document = dom.window.document;
+export const buildVidList = async (inputHTML) => {
+  try {
+    // Parse the HTML using JSDOM
+    const vidListModel = new Vid({ html: inputHTML });
+    const vidListArray = await vidListModel.getVidListArray();
 
-  // Select all the elements that contain individual video data
-  const vidWrapperArray = document.querySelectorAll(".video-wrapper");
-  if (!vidWrapperArray || !vidWrapperArray.length) return null;
+    //sort and add id to vidPage
+    const sortModel = new UTIL({ inputArray: vidListArray });
+    const vidListSort = await sortModel.sortArrayByDate();
 
-  const vidListModel = new Vid({ inputArray: vidWrapperArray });
-  const vidListArray = await vidListModel.getVidListArray();
-  return vidListArray;
+    //add vidPageId
+    const idModel = new UTIL({ inputArray: vidListSort });
+    const vidListNormal = await idModel.addListId(CONFIG.vidPageList, "vidPageId");
+
+    //store it
+    const storeDataModel = new dbModel(vidListNormal, CONFIG.vidPageList);
+    await storeDataModel.storeArray();
+
+    //(added sorting)
+    return vidListArray;
+  } catch (e) {
+    console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+  }
 };
 
 //VID OBJ SECTION
-export const buildVidContent = async (inputArray) => {
+export const buildVidPageContent = async (inputArray) => {
   const vidPageArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     try {
-      const vidPageObj = inputArray[i];
-      const vidPageModel = new Vid({ inputObj: vidPageObj });
-      const vidURL = await vidPageModel.getVidURL();
-      vidPageObj.vidURL = vidURL;
-
-      //store it
-      const storeVidPageModel = new dbModel(vidPageObj, CONFIG.vidPageContent);
-      const storeVidPage = await storeVidPageModel.storeUniqueURL();
-      console.log(storeVidPage);
+      const vidPageModel = new Vid({ inputObj: inputArray[i] });
+      const vidPageObj = await vidPageModel.getVidPageObj();
 
       //add to array
       vidPageArray.push(vidPageObj);
@@ -60,6 +65,8 @@ export const getVidDataArray = async (inputArray) => {
     try {
       const vidModel = new Vid(inputArray[i]);
       const vidDataObj = await vidModel.getVidData();
+      if (!vidDataObj) continue;
+
       vidDataArray.push(vidDataObj);
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
