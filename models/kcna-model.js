@@ -26,6 +26,7 @@ class KCNA {
     const inputURL = this.dataObject.url;
 
     try {
+      await randomDelay(1);
       const res = await axios({
         method: "get",
         url: inputURL,
@@ -57,7 +58,8 @@ class KCNA {
 
       return res;
     } catch (e) {
-      console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + e.response + "; REQUEST: " + e.request);
+      console.log("AXIOS ERROR, for " + inputURL);
+      // console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + e.response + "; REQUEST: " + e.request);
       const res = await this.getRawHTML(inputURL);
       return res;
     }
