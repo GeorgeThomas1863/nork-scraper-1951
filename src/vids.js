@@ -76,4 +76,4 @@ export const getVidDataArray = async (inputArray) => {
 //----------------------------
 
 //DOWNLOAD VID SECTION
-export const downloadVidArray = async (inputArray) => {};
+export const downloadNewVids = async (inputArray) => {};

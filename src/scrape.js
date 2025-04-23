@@ -2,8 +2,8 @@ import CONFIG from "../config/scrape-config.js";
 import KCNA from "../models/kcna-model.js";
 
 import { buildArticleList, buildArticleContent } from "./articles.js";
-import { buildPicSetList, buildPicSetContent, getPicDataArray, downloadPicArray } from "./pics.js";
-import { buildVidList, buildVidPageContent, getVidDataArray, downloadVidArray } from "./vids.js";
+import { buildPicSetList, buildPicSetContent, getPicDataArray, downloadNewPics } from "./pics.js";
+import { buildVidList, buildVidPageContent, getVidDataArray, downloadNewVids } from "./vids.js";
 
 /**
  * Gets / checks for new KCNA data, downloads it AND uploads it to TG
@@ -137,11 +137,11 @@ export const downloadNewMedia = async (type) => {
 
   switch (type) {
     case "pics":
-      const downloadPicData = await downloadPicArray(downloadArray);
+      const downloadPicData = await downloadNewPics(downloadArray);
       return downloadPicData;
 
     case "vids":
-      const downloadVidData = await downloadVidArray(downloadArray);
+      const downloadVidData = await downloadNewVids(downloadArray);
       return downloadVidData;
   }
 };
