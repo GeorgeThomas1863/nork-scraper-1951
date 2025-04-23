@@ -38,7 +38,7 @@ class KCNA {
         const error = new Error("FETCH FUCKED");
         error.url = url;
         error.fucntion = "GET HTML AXIOS";
-        throw ReferenceError;
+        throw error;
       }
 
       return res.data;
@@ -68,6 +68,34 @@ class KCNA {
         const error = new Error("URL DOESNT EXIST");
         error.url = inputURL;
         error.function = "getMediaHeaders KCNA MODEL";
+        throw error;
+      }
+
+      return res;
+    } catch (e) {
+      console.log(inputURL + "; " + e.message + "; F BREAK: " + e.function);
+      const res = await this.getRawHTML(inputURL);
+      return res;
+    }
+  }
+
+  //returns just data, for the pic header fail
+  async getRawHTML(inputURL) {
+    // const inputURL = this.dataObject.url;
+
+    try {
+      // await randomDelay(1);
+      const res = await axios({
+        method: "get",
+        url: inputURL,
+        timeout: 60000,
+        responseType: "text",
+      });
+
+      if (!res || !res.data) {
+        const error = new Error("FETCH FUCKED");
+        error.url = url;
+        error.fucntion = "GET HTML AXIOS";
         throw error;
       }
 
