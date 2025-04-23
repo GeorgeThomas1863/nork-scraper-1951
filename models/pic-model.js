@@ -320,54 +320,59 @@ class Pic {
 
     //check if new (not possible in most situations, but adding check to be sure)
     const checkModel = new dbModel(picObj, CONFIG.picDownloaded);
-    await checkModel.urlNewCheck(); //throws error if not new
+    //throws error if not new (keep out of try block to propogate error)
+    await checkModel.urlNewCheck();
 
-    await randomDelay();
+    try {
+      await randomDelay();
+      const res = await axios({
+        method: "get",
+        url: url,
+        timeout: 120000, //2 minutes
+        responseType: "stream",
+      });
 
-    const res = await axios({
-      method: "get",
-      url: url,
-      timeout: 120000, //2 minutes
-      responseType: "stream",
-    });
-
-    if (!res || !res.data) {
-      const error = new Error("FETCH FUCKED");
-      error.url = url;
-      error.fucntion = "GET HTML AXIOS";
-      throw ReferenceError;
-    }
-
-    const writer = fs.createWriteStream(savePath);
-    const stream = res.data.pipe(writer);
-    const totalSize = parseInt(res.headers["content-length"], 10);
-    let downloadedSize = 0;
-
-    console.log("DOWNLOADING PIC " + totalSize + "B");
-    console.log(totalSize);
-
-    //download shit
-    res.data.on("data", (chunk) => {
-      downloadedSize += chunk.length;
-      if (downloadedSize >= totalSize) {
-        // console.log("All data chunks downloaded.");
-        // console.log(picURL);
+      if (!res || !res.data) {
+        const error = new Error("FETCH FUCKED");
+        error.url = url;
+        error.fucntion = "GET HTML AXIOS";
+        throw ReferenceError;
       }
-    });
 
-    await new Promise((resolve, reject) => {
-      stream.on("finish", resolve);
-      stream.on("error", reject);
-    });
+      const writer = fs.createWriteStream(savePath);
+      const stream = res.data.pipe(writer);
+      const totalSize = parseInt(res.headers["content-length"], 10);
+      let downloadedSize = 0;
 
-    //store downloadedPicData
-    downloadPicObj = { ...picObj };
-    downloadPicObj.downloadedSize = downloadedSize;
-    downloadPicObj.totalSize = totalSize;
-    const storeModel = new dbModel(downloadPicObj, CONFIG.picDownloaded);
-    await storeModel.storeUniqueURL();
+      console.log("DOWNLOADING PIC " + totalSize + "B");
+      console.log(totalSize);
 
-    return downloadPicObj;
+      //download shit
+      res.data.on("data", (chunk) => {
+        downloadedSize += chunk.length;
+        if (downloadedSize >= totalSize) {
+          // console.log("All data chunks downloaded.");
+          // console.log(picURL);
+        }
+      });
+
+      await new Promise((resolve, reject) => {
+        stream.on("finish", resolve);
+        stream.on("error", reject);
+      });
+
+      //store downloadedPicData
+      downloadPicObj = { ...picObj };
+      downloadPicObj.downloadedSize = downloadedSize;
+      downloadPicObj.totalSize = totalSize;
+      const storeModel = new dbModel(downloadPicObj, CONFIG.picDownloaded);
+      await storeModel.storeUniqueURL();
+
+      return downloadPicObj;
+    } catch (e) {
+      console.log(inputURL + "; " + e.message + "; F BREAK: " + e.function);
+      return null;
+    }
   }
 }
 

@@ -25,9 +25,8 @@ class KCNA {
   async getHTML() {
     const inputURL = this.dataObject.url;
 
-    await randomDelay(2);
-
     try {
+      await randomDelay(1);
       const res = await axios({
         method: "get",
         url: inputURL,
@@ -52,26 +51,31 @@ class KCNA {
   async getMediaHeaders() {
     const inputURL = this.dataObject.url;
 
-    const delay = await randomDelay(3);
-    console.log("AHHHHHHHHHHHHHHHHHHHH");
-    console.log(delay);
+    try {
+      const delay = await randomDelay(3);
+      console.log("AHHHHHHHHHHHHHHHHHHHH");
+      console.log(delay);
 
-    const res = await axios({
-      method: "get",
-      url: inputURL,
-      headers: { Range: "bytes=0-1" },
-      timeout: 30000,
-    });
+      const res = await axios({
+        method: "get",
+        url: inputURL,
+        headers: { Range: "bytes=0-1" },
+        timeout: 30000,
+      });
 
-    //if URL doesnt exist / return headers throw error
-    if (!res || !res.headers) {
-      const error = new Error("URL DOESNT EXIST");
-      error.url = inputURL;
-      error.function = "getMediaHeaders KCNA MODEL";
-      throw error;
+      //if URL doesnt exist / return headers throw error
+      if (!res || !res.headers) {
+        const error = new Error("URL DOESNT EXIST");
+        error.url = inputURL;
+        error.function = "getMediaHeaders KCNA MODEL";
+        throw error;
+      }
+
+      return res;
+    } catch (e) {
+      console.log(inputURL + "; " + e.message + "; F BREAK: " + e.function);
+      return null;
     }
-
-    return res;
   }
 
   //----------------------
