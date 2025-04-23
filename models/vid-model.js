@@ -210,7 +210,7 @@ class Vid {
     console.log(storeData);
 
     return vidObj;
-  } 
+  }
 
   async getVidParams() {
     const { vidURL } = this.dataObject;
@@ -269,6 +269,37 @@ class Vid {
     };
 
     return headerObj;
+  }
+
+  //----------------------
+
+  //DOWNLOAD VID SECTION
+
+  async downloadVidArray() {
+    const { inputArray } = this.dataObject;
+
+    if (!inputArray || !inputArray.length) return null;
+
+    const downloadVidDataArray = [];
+    for (let i = 0; i < inputArray.length; i++) {
+      try {
+        //add save path to picObj
+        const vidObj = inputArray[i];
+        const savePath = CONFIG.vidPath + vidObj.kcnaId + ".jpg";
+        vidObj.savePath = savePath;
+        const picModel = new Vid({ vidObj: vidObj });
+
+        //download the vid
+        const downloadVidData = await picModel.downloadVidFS();
+        if (!downloadVidData) continue;
+
+        downloadVidDataArray.push(downloadVidData);
+      } catch (e) {
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      }
+    }
+
+    return downloadVidDataArray;
   }
 }
 

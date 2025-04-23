@@ -14,12 +14,17 @@ import { buildVidList, buildVidPageContent, getVidDataArray, downloadNewVids } f
 export const scrapeKCNA = async () => {
   const { typeArr } = CONFIG;
 
-  //loop through types
+  //loop through types for content data
   for (let i = 0; i < typeArr.length; i++) {
     const type = typeArr[i];
     const scrapeData = await scrapeEach(type);
-    // console.log(scrapeData);
+    console.log(scrapeData);
   }
+
+  //new media items, will check for / DOWNLOAD both
+  await getNewMediaData();
+  await downloadNewMedia();
+
   return "FINISHED SCRAPING NEW DATA";
 };
 
@@ -27,17 +32,11 @@ export const scrapeEach = async (type) => {
   //data list
   console.log("GETTING LIST DATA FOR " + type.toUpperCase());
   const newListArray = await getNewListData(type);
-  console.log(newListArray);
+  console.log("FOUND " + newListArray?.length + " LIST ITEMS");
 
   //new article items / media pages
   const newContentArray = await getNewContentData(type);
-
-  //new media items
-  const newMediaArray = await getNewMediaData(type);
-
-  //download new media
-  const downloadData = await downloadNewMedia(type);
-  console.log(downloadData);
+  console.log("GOT CONTENT FOR " + newContentArray?.length + " " + type.toUpperCase());
 
   return newListArray;
 };
@@ -103,23 +102,26 @@ export const getNewContentData = async (type) => {
   }
 };
 
+//------------------
+
 //GET NEW MEDIA URLS section
 
-export const getNewMediaData = async (type) => {
-  if (type === "articles") return null;
-  console.log("GETTING MEDIA DATA FOR " + type.toUpperCase());
-  const downloadModel = new KCNA({ type: type });
-  const downloadArray = await downloadModel.getMediaToDownloadArray();
+export const getNewMediaData = async () => {
+  //PIC URLS
+  const picModel = new KCNA({ type: "pics" });
+  const picDownloadArray = await picModel.getMediaToDownloadArray();
+  console.log("GETTING DATA FOR " + picDownloadArray?.length + " PICS");
+  const picData = await getPicDataArray(picDownloadArray);
+  console.log("FOUND " + picData?.length + " PICS");
 
-  switch (type) {
-    case "pics":
-      const picData = await getPicDataArray(downloadArray);
-      return picData;
+  //VID URLS
+  const vidModel = new KCNA({ type: "vids" });
+  const vidDownloadArray = await vidModel.getMediaToDownloadArray();
+  console.log("GETTING DATA FOR " + vidDownloadArray?.length + " VIDS");
+  const vidData = await getVidDataArray(vidDownloadArray);
+  console.log("FOUND " + vidData?.length + " VIDS");
 
-    case "vids":
-      const vidData = await getVidDataArray(downloadArray);
-      return vidData;
-  }
+  return vidData;
 };
 
 //DOWNLOAD SHIT

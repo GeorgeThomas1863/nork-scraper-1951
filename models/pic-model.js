@@ -313,6 +313,8 @@ class Pic {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       }
     }
+
+    return downloadPicDataArray;
   }
 
   async downloadPicFS() {
