@@ -188,8 +188,8 @@ class Article {
     if (!picPageHref) return null;
 
     //otherwise build pic / pic array
-    const picURL = "http://www.kcna.kp" + picPageHref;
-    const articlePicModel = new Article({ url: picURL });
+    const picPageURL = "http://www.kcna.kp" + picPageHref;
+    const articlePicModel = new Article({ url: picPageURL });
     const articlePicArray = await articlePicModel.getArticlePicArray();
 
     //if articlePicArray fails to return (load) return null (to download again later)
