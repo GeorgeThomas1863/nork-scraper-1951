@@ -26,7 +26,6 @@ class KCNA {
     const inputURL = this.dataObject.url;
 
     try {
-      // await randomDelay(1);
       const res = await axios({
         method: "get",
         url: inputURL,
@@ -34,16 +33,10 @@ class KCNA {
         responseType: "text",
       });
 
-      if (!res || !res.data) {
-        const error = new Error("FETCH FUCKED");
-        error.url = url;
-        error.fucntion = "GET HTML AXIOS";
-        throw error;
-      }
-
       return res.data;
     } catch (e) {
-      console.log(inputURL + "; " + e.message + "; F BREAK: " + e.function);
+      //AXIOS PRODUCES OWN CUSTOM ERROR
+      console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + e.response + "; REQUEST: " + e.request);
       return null;
     }
   }
@@ -52,9 +45,8 @@ class KCNA {
     const inputURL = this.dataObject.url;
 
     try {
-      // const delay = await randomDelay(3);
-      // console.log("AHHHHHHHHHHHHHHHHHHHH");
-      // console.log(delay);
+      const delay = await randomDelay(5);
+      console.log(delay);
 
       const res = await axios({
         method: "get",
@@ -63,17 +55,9 @@ class KCNA {
         timeout: 30000,
       });
 
-      //if URL doesnt exist / return headers throw error
-      if (!res || !res.headers) {
-        const error = new Error("URL DOESNT EXIST");
-        error.url = inputURL;
-        error.function = "getMediaHeaders KCNA MODEL";
-        throw error;
-      }
-
       return res;
     } catch (e) {
-      console.log(inputURL + "; " + e.message + "; F BREAK: " + e.function);
+      console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + e.response + "; REQUEST: " + e.request);
       const res = await this.getRawHTML(inputURL);
       return res;
     }
@@ -92,16 +76,9 @@ class KCNA {
         responseType: "text",
       });
 
-      if (!res || !res.data) {
-        const error = new Error("FETCH FUCKED");
-        error.url = url;
-        error.fucntion = "GET HTML AXIOS";
-        throw error;
-      }
-
       return res;
     } catch (e) {
-      console.log(inputURL + "; " + e.message + "; F BREAK: " + e.function);
+      console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + e.response + "; REQUEST: " + e.request);
       return null;
     }
   }
