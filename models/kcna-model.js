@@ -88,7 +88,7 @@ class KCNA {
       const res = await axios({
         method: "get",
         url: inputURL,
-        timeout: 60000,
+        timeout: 20000,
         responseType: "text",
       });
 
