@@ -82,8 +82,8 @@ class Vid {
     const thumbnailURL = await thumbnailModel.getVidThumbnail();
 
     //parse vidId / dateString
-    const kcnaId = +thumbSrc.substring(thumbSrc.lastIndexOf("/") + 2, thumbSrc.lastIndexOf("."));
-    const dateString = thumbSrc.substring(thumbSrc.indexOf("video/kp/") + 9, thumbSrc.indexOf("/V"));
+    const kcnaId = +thumbnailURL.substring(thumbnailURL.lastIndexOf("/") + 2, thumbnailURL.lastIndexOf("."));
+    const dateString = thumbnailURL.substring(thumbnailURL.indexOf("video/kp/") + 9, thumbnailURL.indexOf("/V"));
 
     //get date
     const dateModel = new UTIL({ inputItem: listItem });
