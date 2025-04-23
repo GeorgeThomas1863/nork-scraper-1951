@@ -29,18 +29,15 @@ export const scrapeEach = async (type) => {
   const newListArray = await getNewListData(type);
   console.log(newListArray);
 
-  //content [combine with media?]
-  console.log("GETTING NEW CONTENT FOR " + type.toUpperCase());
+  //new article items / media pages
   const newContentArray = await getNewContentData(type);
   console.log(newContentArray);
 
-  //media
-  console.log("FINDING NEW MEDIA FOR " + type.toUpperCase());
+  //new media items
   const newMediaArray = await getNewMediaData(type);
   console.log(newMediaArray);
 
-  //download [MIGHT MOVE UP ONE LEVEL]
-  console.log("DOWNLOADING NEW MEDIA FOR " + type.toUpperCase());
+  //download new media
   const downloadData = await downloadNewMedia(type);
   console.log(downloadData);
 
@@ -85,7 +82,7 @@ export const getNewListData = async (type) => {
  * @returns array of objs for tracking
  */
 export const getNewContentData = async (type) => {
-  // console.log("GETTING OBJECT DATA FOR " + type.toUpperCase());
+  console.log("GETTING CONTENT FOR " + type.toUpperCase());
   const downloadModel = new KCNA({ type: type });
   const downloadArray = await downloadModel.getContentToDownloadArray();
 
@@ -112,7 +109,7 @@ export const getNewContentData = async (type) => {
 
 export const getNewMediaData = async (type) => {
   if (type === "articles") return null;
-  console.log("GETTING MEDIA FOR " + type.toUpperCase());
+  console.log("GETTING MEDIA DATA FOR " + type.toUpperCase());
   const downloadModel = new KCNA({ type: type });
   const downloadArray = await downloadModel.getMediaToDownloadArray();
 
@@ -131,9 +128,8 @@ export const getNewMediaData = async (type) => {
 export const downloadNewMedia = async (type) => {
   if (type === "articles") return null;
 
-  console.log("AHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
-
-  console.log("DOWNLOADING " + type.toUpperCase());
+  console.log("AHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+  console.log("DOWNLOADING FUCKING" + type.toUpperCase());
   const downloadModel = new KCNA({ type: type });
   const downloadArray = await downloadModel.getMediaToScrapeFS();
 
