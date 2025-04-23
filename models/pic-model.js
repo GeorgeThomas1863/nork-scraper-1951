@@ -60,6 +60,11 @@ class Pic {
     const { listItem } = this.dataObject;
     if (!listItem) return null;
 
+    //get date
+    const dateModel = new UTIL({ inputItem: listItem });
+    const picSetDate = await dateModel.parseListDate();
+    const dateElement = listItem.querySelector(".publish-time");
+
     //get title
     const titleWrapper = listItem.querySelector(".title a");
     const titleRaw = titleWrapper.textContent.trim();
@@ -78,11 +83,6 @@ class Pic {
 
     const urlConstant = "http://www.kcna.kp";
     const picSetURL = urlConstant + href;
-
-    //get date
-    const dateModel = new UTIL({ inputItem: listItem });
-    const picSetDate = await dateModel.parseListDate();
-    const dateElement = inputItem.querySelector(".publish-time");
 
     //build picSetListObj
     const picSetListObj = {

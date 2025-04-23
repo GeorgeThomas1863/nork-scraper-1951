@@ -63,7 +63,7 @@ class KCNA {
 
       return res.data;
     } catch (e) {
-      console.log(this.dataObject.url + "; " + e.message + "; F BREAK: " + e.function);
+      console.log(inputURL + "; " + e.message + "; F BREAK: " + e.function);
       return null;
     }
   }
@@ -104,7 +104,7 @@ class KCNA {
     try {
       const newListModel = new KCNA({ url: CONFIG[newListParam] });
       const newListHTML = await newListModel.getHTML();
-      console.log(newListHTML);
+      // console.log(newListHTML);
 
       return newListHTML;
     } catch (e) {
