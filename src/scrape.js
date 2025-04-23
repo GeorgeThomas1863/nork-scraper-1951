@@ -35,7 +35,7 @@ export const scrapeEach = async (type) => {
   console.log(newContentArray);
 
   //media
-  console.log("GETTING NEW MEDIA FOR " + type.toUpperCase());
+  console.log("FINDING NEW MEDIA FOR " + type.toUpperCase());
   const newMediaArray = await getNewMediaData(type);
   console.log(newMediaArray);
 
@@ -130,6 +130,8 @@ export const getNewMediaData = async (type) => {
 //DOWNLOAD SHIT
 export const downloadNewMedia = async (type) => {
   if (type === "articles") return null;
+
+  console.log("AHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
 
   console.log("DOWNLOADING " + type.toUpperCase());
   const downloadModel = new KCNA({ type: type });
