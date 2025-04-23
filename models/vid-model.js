@@ -210,7 +210,7 @@ class Vid {
     console.log(storeData);
 
     return vidObj;
-  }
+  } 
 
   async getVidParams() {
     const { vidURL } = this.dataObject;

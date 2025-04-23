@@ -104,7 +104,7 @@ class Pic {
     const { inputObj } = this.dataObject;
 
     //get HTML
-    const htmlModel = new KCNA(picSetObj);
+    const htmlModel = new KCNA(inputObj);
     const picSetPageHTML = await htmlModel.getHTML();
 
     //throw error if cant get html
