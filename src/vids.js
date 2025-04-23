@@ -76,4 +76,6 @@ export const getVidDataArray = async (inputArray) => {
 //----------------------------
 
 //DOWNLOAD VID SECTION
-export const downloadNewVids = async (inputArray) => {};
+export const downloadNewVids = async (inputArray) => {
+  console.log("DOWNLOADING " + inputArray.length + " FUCKING VIDS");
+};

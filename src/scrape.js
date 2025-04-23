@@ -126,7 +126,6 @@ export const getNewMediaData = async (type) => {
 export const downloadNewMedia = async (type) => {
   if (type === "articles") return null;
 
-  console.log("DOWNLOADING FUCKING " + type.toUpperCase());
   const downloadModel = new KCNA({ type: type });
   const downloadArray = await downloadModel.getMediaToScrapeFS();
 

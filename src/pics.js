@@ -73,6 +73,7 @@ export const getPicDataArray = async (inputArray) => {
 
 //DOWNLOAD PIC SECTION
 export const downloadNewPics = async (inputArray) => {
+  console.log("DOWNLOADING " + inputArray.length + " FUCKING PICS");
   //easier to do all in model
   const picModel = new Pic({ inputArray: inputArray });
   const downloadPicArray = await picModel.downloadPicArray();
