@@ -39,7 +39,7 @@ class KCNA {
       return res.data;
     } catch (e) {
       //AXIOS PRODUCES OWN CUSTOM ERROR
-      // console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + e.response + "; REQUEST: " + e.request);
+      console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + e.response + "; REQUEST: " + e.request);
       return null;
     }
   }
@@ -86,7 +86,7 @@ class KCNA {
 
       return res;
     } catch (e) {
-      // console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + e.response + "; REQUEST: " + e.request);
+      console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + e.response + "; REQUEST: " + e.request);
       return null;
     }
   }

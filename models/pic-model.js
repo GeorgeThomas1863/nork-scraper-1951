@@ -363,7 +363,7 @@ class Pic {
       });
 
       //store downloadedPicData
-      downloadPicObj = { ...picObj };
+      const downloadPicObj = { ...picObj };
       downloadPicObj.downloadedSize = downloadedSize;
       downloadPicObj.totalSize = totalSize;
       const storeModel = new dbModel(downloadPicObj, CONFIG.picDownloaded);
