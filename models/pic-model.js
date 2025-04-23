@@ -300,7 +300,8 @@ class Pic {
       try {
         //add save path to picObj
         const picObj = inputArray[i];
-        picObj.savePath = CONFIG.picPath;
+        const savePath = CONFIG.picPath + picObj.kcnaId + ".jpg";
+        picObj.savePath = savePath;
         const picModel = new Pic({ picObj: picObj });
 
         //download the pic
