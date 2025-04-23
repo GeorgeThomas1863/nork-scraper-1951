@@ -148,7 +148,8 @@ class Article {
     const contentObj = await parseObjModel.getContentObj();
     const articlePicObj = await parseObjModel.getArticlePicObj();
 
-    if (!articlePicObj) return parseObj;
+    //if no pics return just content
+    if (!articlePicObj) return contentObj;
 
     //otherwise combine into one obj and return
     const returnObj = { ...contentObj, ...articlePicObj };
