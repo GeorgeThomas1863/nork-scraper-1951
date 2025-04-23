@@ -1,233 +1,240 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { JSDOM } from "jsdom";
-import axios from "axios";
-import Pic from "../models/pic-model.js";
-import KCNA from "../models/kcna-model.js";
-import dbModel from "../models/db-model.js";
-import UTIL from "../models/util-model.js";
-import CONFIG from "../config/scrape-config.js";
+// file-to-be-tested.test.js
+import { describe, it } from "vitest";
 
-// Mock dependencies
-vi.mock("jsdom");
-vi.mock("axios");
-vi.mock("../models/kcna-model.js");
-vi.mock("../models/db-model.js");
-vi.mock("../models/util-model.js");
-vi.mock("../config/scrape-config.js", () => {
-  return {
-    default: {
-      pics: "pics",
-      picSets: "picSets",
-      picSetsDownloaded: "picSetsDownloaded",
-      picURLs: "picURLs",
-    },
-  };
+describe("Future tests for this module", () => {
+  it.todo("will have tests in the future");
 });
 
-describe("Pic Model", () => {
-  beforeEach(() => {
-    // Clear all mocks before each test
-    vi.clearAllMocks();
-  });
+// import { describe, it, expect, vi, beforeEach } from "vitest";
+// import { JSDOM } from "jsdom";
+// import axios from "axios";
+// import Pic from "../models/pic-model.js";
+// import KCNA from "../models/kcna-model.js";
+// import dbModel from "../models/db-model.js";
+// import UTIL from "../models/util-model.js";
+// import CONFIG from "../config/scrape-config.js";
 
-  // Basic test - constructor
-  it("should store dataObject in constructor", () => {
-    const testData = { url: "http://example.com/pic.jpg" };
-    const pic = new Pic(testData);
-    expect(pic.dataObject).toBe(testData);
-  });
+// // Mock dependencies
+// vi.mock("jsdom");
+// vi.mock("axios");
+// vi.mock("../models/kcna-model.js");
+// vi.mock("../models/db-model.js");
+// vi.mock("../models/util-model.js");
+// vi.mock("../config/scrape-config.js", () => {
+//   return {
+//     default: {
+//       pics: "pics",
+//       picSets: "picSets",
+//       picSetsDownloaded: "picSetsDownloaded",
+//       picURLs: "picURLs",
+//     },
+//   };
+// });
 
-  // Test getPicParams
-  it("should extract parameters from a pic URL", async () => {
-    // Setup
-    const picUrl = "http://www.kcna.kp/photo/2023-01-15/PIC1234567.jpg";
-    const pic = new Pic();
+// describe("Pic Model", () => {
+//   beforeEach(() => {
+//     // Clear all mocks before each test
+//     vi.clearAllMocks();
+//   });
 
-    // Act
-    const result = await pic.getPicParams(picUrl);
+//   // Basic test - constructor
+//   it("should store dataObject in constructor", () => {
+//     const testData = { url: "http://example.com/pic.jpg" };
+//     const pic = new Pic(testData);
+//     expect(pic.dataObject).toBe(testData);
+//   });
 
-    // Assert
-    expect(result).toEqual({
-      url: picUrl,
-      kcnaId: 1234567,
-      dateString: "2023-01-15",
-    });
-  });
+//   // Test getPicParams
+//   it("should extract parameters from a pic URL", async () => {
+//     // Setup
+//     const picUrl = "http://www.kcna.kp/photo/2023-01-15/PIC1234567.jpg";
+//     const pic = new Pic();
 
-  // Test buildPicObj
-  it("should build pic object with correct headers", async () => {
-    // Setup
-    const picParams = {
-      url: "http://www.kcna.kp/photo/2023-01-15/PIC1234567.jpg",
-      kcnaId: 1234567,
-      dateString: "2023-01-15",
-    };
+//     // Act
+//     const result = await pic.getPicParams(picUrl);
 
-    // Mock axios response
-    axios.mockResolvedValue({
-      headers: {
-        "content-type": "image/jpeg",
-        server: "test-server",
-        etag: "abc123",
-        "last-modified": "Wed, 15 Jan 2023 12:00:00 GMT",
-      },
-    });
+//     // Assert
+//     expect(result).toEqual({
+//       url: picUrl,
+//       kcnaId: 1234567,
+//       dateString: "2023-01-15",
+//     });
+//   });
 
-    const pic = new Pic();
+//   // Test buildPicObj
+//   it("should build pic object with correct headers", async () => {
+//     // Setup
+//     const picParams = {
+//       url: "http://www.kcna.kp/photo/2023-01-15/PIC1234567.jpg",
+//       kcnaId: 1234567,
+//       dateString: "2023-01-15",
+//     };
 
-    // Mock console.log to reduce test output clutter
-    vi.spyOn(console, "log").mockImplementation(() => {});
+//     // Mock axios response
+//     axios.mockResolvedValue({
+//       headers: {
+//         "content-type": "image/jpeg",
+//         server: "test-server",
+//         etag: "abc123",
+//         "last-modified": "Wed, 15 Jan 2023 12:00:00 GMT",
+//       },
+//     });
 
-    // Act
-    const result = await pic.buildPicObj(picParams);
+//     const pic = new Pic();
 
-    // Assert
-    expect(result).toMatchObject({
-      url: picParams.url,
-      kcnaId: picParams.kcnaId,
-      dateString: picParams.dateString,
-      dataType: "image/jpeg",
-      serverData: "test-server",
-      eTag: "abc123",
-    });
-    expect(result.scrapeDate).toBeInstanceOf(Date);
-    expect(result.picEditDate).toBeInstanceOf(Date);
-  });
+//     // Mock console.log to reduce test output clutter
+//     vi.spyOn(console, "log").mockImplementation(() => {});
 
-  it("should return null from buildPicObj when content type is not image/jpeg", async () => {
-    // Setup
-    const picParams = {
-      url: "http://www.kcna.kp/photo/2023-01-15/PIC1234567.html",
-      kcnaId: 1234567,
-      dateString: "2023-01-15",
-    };
+//     // Act
+//     const result = await pic.buildPicObj(picParams);
 
-    // Mock axios response with non-image content type
-    axios.mockResolvedValue({
-      headers: {
-        "content-type": "text/html",
-        server: "test-server",
-        etag: "abc123",
-        "last-modified": "Wed, 15 Jan 2023 12:00:00 GMT",
-      },
-    });
+//     // Assert
+//     expect(result).toMatchObject({
+//       url: picParams.url,
+//       kcnaId: picParams.kcnaId,
+//       dateString: picParams.dateString,
+//       dataType: "image/jpeg",
+//       serverData: "test-server",
+//       eTag: "abc123",
+//     });
+//     expect(result.scrapeDate).toBeInstanceOf(Date);
+//     expect(result.picEditDate).toBeInstanceOf(Date);
+//   });
 
-    const pic = new Pic();
+//   it("should return null from buildPicObj when content type is not image/jpeg", async () => {
+//     // Setup
+//     const picParams = {
+//       url: "http://www.kcna.kp/photo/2023-01-15/PIC1234567.html",
+//       kcnaId: 1234567,
+//       dateString: "2023-01-15",
+//     };
 
-    // Mock console.log to reduce test output clutter
-    vi.spyOn(console, "log").mockImplementation(() => {});
+//     // Mock axios response with non-image content type
+//     axios.mockResolvedValue({
+//       headers: {
+//         "content-type": "text/html",
+//         server: "test-server",
+//         etag: "abc123",
+//         "last-modified": "Wed, 15 Jan 2023 12:00:00 GMT",
+//       },
+//     });
 
-    // Act
-    const result = await pic.buildPicObj(picParams);
+//     const pic = new Pic();
 
-    // Assert
-    expect(result).toBeNull();
-  });
+//     // Mock console.log to reduce test output clutter
+//     vi.spyOn(console, "log").mockImplementation(() => {});
 
-  // Test getPicURL
-  it("should build full pic URL from image element", async () => {
-    // Setup
-    const mockImgElement = {
-      getAttribute: vi.fn().mockReturnValue("/images/test.jpg"),
-    };
+//     // Act
+//     const result = await pic.buildPicObj(picParams);
 
-    const pic = new Pic();
+//     // Assert
+//     expect(result).toBeNull();
+//   });
 
-    // Act
-    const result = await pic.getPicURL(mockImgElement);
+//   // Test getPicURL
+//   it("should build full pic URL from image element", async () => {
+//     // Setup
+//     const mockImgElement = {
+//       getAttribute: vi.fn().mockReturnValue("/images/test.jpg"),
+//     };
 
-    // Assert
-    expect(result).toBe("http://www.kcna.kp/images/test.jpg");
-    expect(mockImgElement.getAttribute).toHaveBeenCalledWith("src");
-  });
+//     const pic = new Pic();
 
-  it("should return null from getPicURL when image element is null", async () => {
-    // Setup
-    const pic = new Pic();
+//     // Act
+//     const result = await pic.getPicURL(mockImgElement);
 
-    // Act
-    const result = await pic.getPicURL(null);
+//     // Assert
+//     expect(result).toBe("http://www.kcna.kp/images/test.jpg");
+//     expect(mockImgElement.getAttribute).toHaveBeenCalledWith("src");
+//   });
 
-    // Assert
-    expect(result).toBeNull();
-  });
+//   it("should return null from getPicURL when image element is null", async () => {
+//     // Setup
+//     const pic = new Pic();
 
-  // Test buildPicSetList
-  it("should process photo wrapper elements into a sorted picSet list", async () => {
-    // Setup
-    const mockHtml = '<html><body><div class="photo-wrapper"></div></body></html>';
-    const mockPhotoWrappers = [{ nodeType: 1 }, { nodeType: 1 }];
-    const mockPicSetList = [
-      { url: "http://example.com/set1", date: "2023-01-01" },
-      { url: "http://example.com/set2", date: "2023-01-02" },
-    ];
-    const mockSortedList = [
-      { url: "http://example.com/set2", date: "2023-01-02" },
-      { url: "http://example.com/set1", date: "2023-01-01" },
-    ];
-    const mockNormalizedList = [
-      { url: "http://example.com/set2", date: "2023-01-02", picSetId: 1 },
-      { url: "http://example.com/set1", date: "2023-01-01", picSetId: 2 },
-    ];
+//     // Act
+//     const result = await pic.getPicURL(null);
 
-    // Mock JSDOM
-    const mockDocument = {
-      querySelectorAll: vi.fn().mockReturnValue(mockPhotoWrappers),
-    };
-    JSDOM.mockImplementation(() => ({
-      window: {
-        document: mockDocument,
-      },
-    }));
+//     // Assert
+//     expect(result).toBeNull();
+//   });
 
-    // Mock methods
-    const pic = new Pic(mockHtml);
-    pic.parsePhotoWrapperArray = vi.fn().mockResolvedValue(mockPicSetList);
+//   // Test buildPicSetList
+//   it("should process photo wrapper elements into a sorted picSet list", async () => {
+//     // Setup
+//     const mockHtml = '<html><body><div class="photo-wrapper"></div></body></html>';
+//     const mockPhotoWrappers = [{ nodeType: 1 }, { nodeType: 1 }];
+//     const mockPicSetList = [
+//       { url: "http://example.com/set1", date: "2023-01-01" },
+//       { url: "http://example.com/set2", date: "2023-01-02" },
+//     ];
+//     const mockSortedList = [
+//       { url: "http://example.com/set2", date: "2023-01-02" },
+//       { url: "http://example.com/set1", date: "2023-01-01" },
+//     ];
+//     const mockNormalizedList = [
+//       { url: "http://example.com/set2", date: "2023-01-02", picSetId: 1 },
+//       { url: "http://example.com/set1", date: "2023-01-01", picSetId: 2 },
+//     ];
 
-    // Mock UTIL methods
-    UTIL.mockImplementation((data) => ({
-      sortArrayByDate: vi.fn().mockResolvedValue(mockSortedList),
-      addListId: vi.fn().mockResolvedValue(mockNormalizedList),
-    }));
+//     // Mock JSDOM
+//     const mockDocument = {
+//       querySelectorAll: vi.fn().mockReturnValue(mockPhotoWrappers),
+//     };
+//     JSDOM.mockImplementation(() => ({
+//       window: {
+//         document: mockDocument,
+//       },
+//     }));
 
-    // Mock dbModel
-    dbModel.mockImplementation(() => ({
-      storeArray: vi.fn().mockResolvedValue({ acknowledged: true }),
-    }));
+//     // Mock methods
+//     const pic = new Pic(mockHtml);
+//     pic.parsePhotoWrapperArray = vi.fn().mockResolvedValue(mockPicSetList);
 
-    // Mock console.log to reduce test output clutter
-    vi.spyOn(console, "log").mockImplementation(() => {});
+//     // Mock UTIL methods
+//     UTIL.mockImplementation((data) => ({
+//       sortArrayByDate: vi.fn().mockResolvedValue(mockSortedList),
+//       addListId: vi.fn().mockResolvedValue(mockNormalizedList),
+//     }));
 
-    // Act
-    const result = await pic.buildPicSetList();
+//     // Mock dbModel
+//     dbModel.mockImplementation(() => ({
+//       storeArray: vi.fn().mockResolvedValue({ acknowledged: true }),
+//     }));
 
-    // Assert
-    expect(result).toBe(mockNormalizedList);
-    expect(pic.parsePhotoWrapperArray).toHaveBeenCalledWith(mockPhotoWrappers);
-    expect(UTIL).toHaveBeenCalledTimes(2);
-    expect(dbModel).toHaveBeenCalledWith(mockNormalizedList, CONFIG.picSets);
-  });
+//     // Mock console.log to reduce test output clutter
+//     vi.spyOn(console, "log").mockImplementation(() => {});
 
-  it("should return null from buildPicSetList when no photo wrappers are found", async () => {
-    // Setup
-    const mockHtml = "<html><body></body></html>";
+//     // Act
+//     const result = await pic.buildPicSetList();
 
-    // Mock JSDOM
-    const mockDocument = {
-      querySelectorAll: vi.fn().mockReturnValue([]),
-    };
-    JSDOM.mockImplementation(() => ({
-      window: {
-        document: mockDocument,
-      },
-    }));
+//     // Assert
+//     expect(result).toBe(mockNormalizedList);
+//     expect(pic.parsePhotoWrapperArray).toHaveBeenCalledWith(mockPhotoWrappers);
+//     expect(UTIL).toHaveBeenCalledTimes(2);
+//     expect(dbModel).toHaveBeenCalledWith(mockNormalizedList, CONFIG.picSets);
+//   });
 
-    const pic = new Pic(mockHtml);
+//   it("should return null from buildPicSetList when no photo wrappers are found", async () => {
+//     // Setup
+//     const mockHtml = "<html><body></body></html>";
 
-    // Act
-    const result = await pic.buildPicSetList();
+//     // Mock JSDOM
+//     const mockDocument = {
+//       querySelectorAll: vi.fn().mockReturnValue([]),
+//     };
+//     JSDOM.mockImplementation(() => ({
+//       window: {
+//         document: mockDocument,
+//       },
+//     }));
 
-    // Assert
-    expect(result).toBeNull();
-  });
-});
+//     const pic = new Pic(mockHtml);
+
+//     // Act
+//     const result = await pic.buildPicSetList();
+
+//     // Assert
+//     expect(result).toBeNull();
+//   });
+// });

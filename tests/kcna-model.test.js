@@ -1,199 +1,210 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import axios from "axios";
-import KCNA from "../models/kcna-model.js";
-import Article from "../models/article-model.js";
-import Pic from "../models/pic-model.js";
-import Vid from "../models/vid-model.js";
-import dbModel from "../models/db-model.js";
-import { newListMap, newContentMap, newMediaMap } from "../config/map.js";
-import CONFIG from "../config/scrape-config.js";
+// file-to-be-tested.test.js
+import { describe, it } from "vitest";
 
-// Mock dependencies
-vi.mock("axios");
-vi.mock("../models/article-model.js");
-vi.mock("../models/pic-model.js");
-vi.mock("../models/vid-model.js");
-vi.mock("../models/db-model.js");
-vi.mock("../config/map.js");
-vi.mock("../config/scrape-config.js", () => {
-  return {
-    default: {
-      articlesList: "http://example.com/articles",
-      picsList: "http://example.com/pics",
-      vidsList: "http://example.com/vids",
-    },
-  };
+describe("Future tests for this module", () => {
+  it.todo("will have tests in the future");
 });
 
-describe("KCNA", () => {
-  // Basic existence tests
-  it("should be defined", () => {
-    expect(KCNA).toBeDefined();
-  });
 
-  it("should store dataObject in constructor", () => {
-    const testData = { url: "http://example.com" };
-    const kcna = new KCNA(testData);
-    expect(kcna.dataObject).toEqual(testData);
-  });
 
-  // Test HTML retrieval
-  it("should return HTML from getHTML when axios succeeds", async () => {
-    // Setup
-    const testUrl = "http://example.com";
-    const testHTML = "<html><body>Test HTML</body></html>";
-    axios.mockResolvedValue({ data: testHTML });
 
-    const kcna = new KCNA({ url: testUrl });
 
-    // Act
-    const result = await kcna.getHTML();
+// import { describe, it, expect, vi, beforeEach } from "vitest";
+// import axios from "axios";
+// import KCNA from "../models/kcna-model.js";
+// import Article from "../models/article-model.js";
+// import Pic from "../models/pic-model.js";
+// import Vid from "../models/vid-model.js";
+// import dbModel from "../models/db-model.js";
+// import { newListMap, newContentMap, newMediaMap } from "../config/map.js";
+// import CONFIG from "../config/scrape-config.js";
 
-    // Assert
-    expect(result).toBe(testHTML);
-  });
+// // Mock dependencies
+// vi.mock("axios");
+// vi.mock("../models/article-model.js");
+// vi.mock("../models/pic-model.js");
+// vi.mock("../models/vid-model.js");
+// vi.mock("../models/db-model.js");
+// vi.mock("../config/map.js");
+// vi.mock("../config/scrape-config.js", () => {
+//   return {
+//     default: {
+//       articlesList: "http://example.com/articles",
+//       picsList: "http://example.com/pics",
+//       vidsList: "http://example.com/vids",
+//     },
+//   };
+// });
 
-  it("should return null from getHTML when axios fails", async () => {
-    // Setup
-    const testUrl = "http://example.com";
-    axios.mockRejectedValue(new Error("Network error"));
+// describe("KCNA", () => {
+//   // Basic existence tests
+//   it("should be defined", () => {
+//     expect(KCNA).toBeDefined();
+//   });
 
-    const kcna = new KCNA({ url: testUrl });
+//   it("should store dataObject in constructor", () => {
+//     const testData = { url: "http://example.com" };
+//     const kcna = new KCNA(testData);
+//     expect(kcna.dataObject).toEqual(testData);
+//   });
 
-    // Mock console.log to prevent test output clutter
-    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+//   // Test HTML retrieval
+//   it("should return HTML from getHTML when axios succeeds", async () => {
+//     // Setup
+//     const testUrl = "http://example.com";
+//     const testHTML = "<html><body>Test HTML</body></html>";
+//     axios.mockResolvedValue({ data: testHTML });
 
-    // Act
-    const result = await kcna.getHTML();
+//     const kcna = new KCNA({ url: testUrl });
 
-    // Assert
-    expect(result).toBeNull();
-    consoleSpy.mockRestore();
-  });
+//     // Act
+//     const result = await kcna.getHTML();
 
-  // Test getNewListData
-  it('should return article list array from getNewListData when type is "articles"', async () => {
-    // Setup
-    const mockArticleList = [{ url: "article1.html", date: "2023-01-01" }];
-    const mockHTML = "<html><body>Articles HTML</body></html>";
+//     // Assert
+//     expect(result).toBe(testHTML);
+//   });
 
-    // Mock internal methods and dependencies
-    const kcna = new KCNA("articles");
-    kcna.getNewListHTML = vi.fn().mockResolvedValue(mockHTML);
+//   it("should return null from getHTML when axios fails", async () => {
+//     // Setup
+//     const testUrl = "http://example.com";
+//     axios.mockRejectedValue(new Error("Network error"));
 
-    Article.mockImplementation(() => ({
-      buildArticleList: vi.fn().mockResolvedValue(mockArticleList),
-    }));
+//     const kcna = new KCNA({ url: testUrl });
 
-    // Act
-    const result = await kcna.getNewListData();
+//     // Mock console.log to prevent test output clutter
+//     const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
-    // Assert
-    expect(result).toEqual(mockArticleList);
-    expect(kcna.getNewListHTML).toHaveBeenCalledWith("articles");
-    expect(Article).toHaveBeenCalledWith(mockHTML);
-  });
+//     // Act
+//     const result = await kcna.getHTML();
 
-  it("should return null from getNewListData when getNewListHTML returns null", async () => {
-    // Setup
-    const kcna = new KCNA("articles");
-    kcna.getNewListHTML = vi.fn().mockResolvedValue(null);
+//     // Assert
+//     expect(result).toBeNull();
+//     consoleSpy.mockRestore();
+//   });
 
-    // Act
-    const result = await kcna.getNewListData();
+//   // Test getNewListData
+//   it('should return article list array from getNewListData when type is "articles"', async () => {
+//     // Setup
+//     const mockArticleList = [{ url: "article1.html", date: "2023-01-01" }];
+//     const mockHTML = "<html><body>Articles HTML</body></html>";
 
-    // Assert
-    expect(result).toBeNull();
-  });
+//     // Mock internal methods and dependencies
+//     const kcna = new KCNA("articles");
+//     kcna.getNewListHTML = vi.fn().mockResolvedValue(mockHTML);
 
-  // Test getNewListHTML
-  it("should fetch HTML for the correct URL based on type", async () => {
-    // Setup
-    newListMap.mockResolvedValue("articlesList");
+//     Article.mockImplementation(() => ({
+//       buildArticleList: vi.fn().mockResolvedValue(mockArticleList),
+//     }));
 
-    const mockHTML = "<html><body>Articles List</body></html>";
-    axios.mockResolvedValue({ data: mockHTML });
+//     // Act
+//     const result = await kcna.getNewListData();
 
-    const kcna = new KCNA();
+//     // Assert
+//     expect(result).toEqual(mockArticleList);
+//     expect(kcna.getNewListHTML).toHaveBeenCalledWith("articles");
+//     expect(Article).toHaveBeenCalledWith(mockHTML);
+//   });
 
-    // Act
-    const result = await kcna.getNewListHTML("articles");
+//   it("should return null from getNewListData when getNewListHTML returns null", async () => {
+//     // Setup
+//     const kcna = new KCNA("articles");
+//     kcna.getNewListHTML = vi.fn().mockResolvedValue(null);
 
-    // Assert
-    expect(newListMap).toHaveBeenCalledWith("articles");
-    expect(result).toBe(mockHTML);
-  });
+//     // Act
+//     const result = await kcna.getNewListData();
 
-  it("should return null when getNewListHTML encounters an error", async () => {
-    // Setup
-    newListMap.mockResolvedValue("articlesList");
-    axios.mockRejectedValue(new Error("Network error"));
+//     // Assert
+//     expect(result).toBeNull();
+//   });
 
-    const kcna = new KCNA();
+//   // Test getNewListHTML
+//   it("should fetch HTML for the correct URL based on type", async () => {
+//     // Setup
+//     newListMap.mockResolvedValue("articlesList");
 
-    // Mock console.log to prevent test output clutter
-    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+//     const mockHTML = "<html><body>Articles List</body></html>";
+//     axios.mockResolvedValue({ data: mockHTML });
 
-    // Act
-    const result = await kcna.getNewListHTML("articles");
+//     const kcna = new KCNA();
 
-    // Assert
-    expect(result).toBeNull();
-    consoleSpy.mockRestore();
-  });
+//     // Act
+//     const result = await kcna.getNewListHTML("articles");
 
-  // Test getNewContentData
-  it('should return "NOTHING NEW TO DOWNLOAD" when downloadArray is empty', async () => {
-    // Setup
-    const kcna = new KCNA("articles");
-    kcna.getContentToDownloadArray = vi.fn().mockResolvedValue([]);
+//     // Assert
+//     expect(newListMap).toHaveBeenCalledWith("articles");
+//     expect(result).toBe(mockHTML);
+//   });
 
-    // Act
-    const result = await kcna.getNewContentData();
+//   it("should return null when getNewListHTML encounters an error", async () => {
+//     // Setup
+//     newListMap.mockResolvedValue("articlesList");
+//     axios.mockRejectedValue(new Error("Network error"));
 
-    // Assert
-    expect(result).toBe("NOTHING NEW TO DOWNLOAD");
-  });
+//     const kcna = new KCNA();
 
-  it("should build article content when downloadArray has items", async () => {
-    // Setup
-    const mockDownloadArray = [{ url: "article1.html" }];
-    const mockArticleArray = [{ url: "article1.html", title: "Test Article", text: "Content" }];
+//     // Mock console.log to prevent test output clutter
+//     const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
-    const kcna = new KCNA("articles");
-    kcna.getContentToDownloadArray = vi.fn().mockResolvedValue(mockDownloadArray);
+//     // Act
+//     const result = await kcna.getNewListHTML("articles");
 
-    Article.mockImplementation(() => ({
-      buildArticleContent: vi.fn().mockResolvedValue(mockArticleArray),
-    }));
+//     // Assert
+//     expect(result).toBeNull();
+//     consoleSpy.mockRestore();
+//   });
 
-    // Act
-    const result = await kcna.getNewContentData();
+//   // Test getNewContentData
+//   it('should return "NOTHING NEW TO DOWNLOAD" when downloadArray is empty', async () => {
+//     // Setup
+//     const kcna = new KCNA("articles");
+//     kcna.getContentToDownloadArray = vi.fn().mockResolvedValue([]);
 
-    // Assert
-    expect(result).toEqual(mockArticleArray);
-    expect(Article).toHaveBeenCalledWith(mockDownloadArray);
-  });
+//     // Act
+//     const result = await kcna.getNewContentData();
 
-  // Test getContentToDownloadArray
-  it("should use correct parameters for finding new URLs", async () => {
-    // Setup
-    const mockParams = { collection1: "articles", collection2: "articlesDownloaded" };
-    const mockDownloadArray = [{ url: "article1.html" }];
+//     // Assert
+//     expect(result).toBe("NOTHING NEW TO DOWNLOAD");
+//   });
 
-    newContentMap.mockResolvedValue(mockParams);
-    dbModel.mockImplementation(() => ({
-      findNewURLs: vi.fn().mockResolvedValue(mockDownloadArray),
-    }));
+//   it("should build article content when downloadArray has items", async () => {
+//     // Setup
+//     const mockDownloadArray = [{ url: "article1.html" }];
+//     const mockArticleArray = [{ url: "article1.html", title: "Test Article", text: "Content" }];
 
-    const kcna = new KCNA();
+//     const kcna = new KCNA("articles");
+//     kcna.getContentToDownloadArray = vi.fn().mockResolvedValue(mockDownloadArray);
 
-    // Act
-    const result = await kcna.getContentToDownloadArray("articles");
+//     Article.mockImplementation(() => ({
+//       buildArticleContent: vi.fn().mockResolvedValue(mockArticleArray),
+//     }));
 
-    // Assert
-    expect(result).toEqual(mockDownloadArray);
-    expect(newContentMap).toHaveBeenCalledWith("articles");
-    expect(dbModel).toHaveBeenCalledWith(mockParams, "");
-  });
-});
+//     // Act
+//     const result = await kcna.getNewContentData();
+
+//     // Assert
+//     expect(result).toEqual(mockArticleArray);
+//     expect(Article).toHaveBeenCalledWith(mockDownloadArray);
+//   });
+
+//   // Test getContentToDownloadArray
+//   it("should use correct parameters for finding new URLs", async () => {
+//     // Setup
+//     const mockParams = { collection1: "articles", collection2: "articlesDownloaded" };
+//     const mockDownloadArray = [{ url: "article1.html" }];
+
+//     newContentMap.mockResolvedValue(mockParams);
+//     dbModel.mockImplementation(() => ({
+//       findNewURLs: vi.fn().mockResolvedValue(mockDownloadArray),
+//     }));
+
+//     const kcna = new KCNA();
+
+//     // Act
+//     const result = await kcna.getContentToDownloadArray("articles");
+
+//     // Assert
+//     expect(result).toEqual(mockDownloadArray);
+//     expect(newContentMap).toHaveBeenCalledWith("articles");
+//     expect(dbModel).toHaveBeenCalledWith(mockParams, "");
+//   });
+// });

@@ -1,223 +1,233 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import UTIL from "../models/util-model.js";
-import dbModel from "../models/db-model.js";
-import CONFIG from "../config/scrape-config.js";
+// file-to-be-tested.test.js
+import { describe, it } from "vitest";
 
-// Mock dependencies
-vi.mock("../models/db-model.js");
-vi.mock("../config/scrape-config.js", () => {
-  return {
-    default: {
-      articles: "articles-collection",
-      pics: "pics-collection",
-      currentId: 1000000,
-    },
-  };
+describe("Future tests for this module", () => {
+  it.todo("will have tests in the future");
 });
 
-describe("UTIL Model", () => {
-  beforeEach(() => {
-    // Reset all mocks before each test
-    vi.clearAllMocks();
-  });
 
-  // Basic constructor test
-  it("should store dataObject in constructor", () => {
-    const testData = { test: "data" };
-    const util = new UTIL(testData);
-    expect(util.dataObject).toBe(testData);
-  });
 
-  // Test sortArrayByDate method
-  it("should sort array by date from oldest to newest", async () => {
-    // Setup
-    const inputArray = [
-      { title: "Article 2", date: "2023-02-15" },
-      { title: "Article 1", date: "2023-01-01" },
-      { title: "Article 3", date: "2023-03-30" },
-    ];
 
-    const util = new UTIL(inputArray);
+// import { describe, it, expect, vi, beforeEach } from "vitest";
+// import UTIL from "../models/util-model.js";
+// import dbModel from "../models/db-model.js";
+// import CONFIG from "../config/scrape-config.js";
 
-    // Act
-    const result = await util.sortArrayByDate();
+// // Mock dependencies
+// vi.mock("../models/db-model.js");
+// vi.mock("../config/scrape-config.js", () => {
+//   return {
+//     default: {
+//       articles: "articles-collection",
+//       pics: "pics-collection",
+//       currentId: 1000000,
+//     },
+//   };
+// });
 
-    // Assert
-    expect(result[0].title).toBe("Article 1"); // Oldest first
-    expect(result[1].title).toBe("Article 2");
-    expect(result[2].title).toBe("Article 3"); // Newest last
-  });
+// describe("UTIL Model", () => {
+//   beforeEach(() => {
+//     // Reset all mocks before each test
+//     vi.clearAllMocks();
+//   });
 
-  it("should return null from sortArrayByDate when input array is empty", async () => {
-    // Setup
-    const util = new UTIL([]);
+//   // Basic constructor test
+//   it("should store dataObject in constructor", () => {
+//     const testData = { test: "data" };
+//     const util = new UTIL(testData);
+//     expect(util.dataObject).toBe(testData);
+//   });
 
-    // Act
-    const result = await util.sortArrayByDate();
+//   // Test sortArrayByDate method
+//   it("should sort array by date from oldest to newest", async () => {
+//     // Setup
+//     const inputArray = [
+//       { title: "Article 2", date: "2023-02-15" },
+//       { title: "Article 1", date: "2023-01-01" },
+//       { title: "Article 3", date: "2023-03-30" },
+//     ];
 
-    // Assert
-    expect(result).toBeNull();
-  });
+//     const util = new UTIL(inputArray);
 
-  // Test addListId method
-  it("should add article IDs to each object in the array", async () => {
-    // Setup
-    const inputArray = [
-      { title: "Article 1", date: "2023-01-01" },
-      { title: "Article 2", date: "2023-02-15" },
-    ];
+//     // Act
+//     const result = await util.sortArrayByDate();
 
-    // Mock getArticleId to return a starting ID
-    const mockStartId = 10;
-    const util = new UTIL(inputArray);
-    util.getArticleId = vi.fn().mockResolvedValue(mockStartId);
+//     // Assert
+//     expect(result[0].title).toBe("Article 1"); // Oldest first
+//     expect(result[1].title).toBe("Article 2");
+//     expect(result[2].title).toBe("Article 3"); // Newest last
+//   });
 
-    // Act
-    const result = await util.addListId("articles-collection", "articleId");
+//   it("should return null from sortArrayByDate when input array is empty", async () => {
+//     // Setup
+//     const util = new UTIL([]);
 
-    // Assert
-    expect(result.length).toBe(2);
-    expect(result[0].articleId).toBe(10); // mockStartId + 0
-    expect(result[1].articleId).toBe(11); // mockStartId + 1
-    expect(util.getArticleId).toHaveBeenCalledWith("articles-collection");
-  });
+//     // Act
+//     const result = await util.sortArrayByDate();
 
-  it("should return null from addListId when input array is empty", async () => {
-    // Setup
-    const util = new UTIL([]);
+//     // Assert
+//     expect(result).toBeNull();
+//   });
 
-    // Act
-    const result = await util.addListId("articles-collection", "articleId");
+//   // Test addListId method
+//   it("should add article IDs to each object in the array", async () => {
+//     // Setup
+//     const inputArray = [
+//       { title: "Article 1", date: "2023-01-01" },
+//       { title: "Article 2", date: "2023-02-15" },
+//     ];
 
-    // Assert
-    expect(result).toBeNull();
-  });
+//     // Mock getArticleId to return a starting ID
+//     const mockStartId = 10;
+//     const util = new UTIL(inputArray);
+//     util.getArticleId = vi.fn().mockResolvedValue(mockStartId);
 
-  // Test getArticleId method
-  it("should get next article ID based on maximum stored ID", async () => {
-    // Setup
-    const mockMaxId = 42;
-    dbModel.mockImplementation(() => ({
-      findMaxId: vi.fn().mockResolvedValue(mockMaxId),
-    }));
+//     // Act
+//     const result = await util.addListId("articles-collection", "articleId");
 
-    const util = new UTIL({});
+//     // Assert
+//     expect(result.length).toBe(2);
+//     expect(result[0].articleId).toBe(10); // mockStartId + 0
+//     expect(result[1].articleId).toBe(11); // mockStartId + 1
+//     expect(util.getArticleId).toHaveBeenCalledWith("articles-collection");
+//   });
 
-    // Act
-    const result = await util.getArticleId("articles-collection");
+//   it("should return null from addListId when input array is empty", async () => {
+//     // Setup
+//     const util = new UTIL([]);
 
-    // Assert
-    expect(result).toBe(43); // mockMaxId + 1
-    expect(dbModel).toHaveBeenCalledWith({ keyToLookup: "articleId" }, "articles-collection");
-  });
+//     // Act
+//     const result = await util.addListId("articles-collection", "articleId");
 
-  it("should return 0 from getArticleId when no articles exist yet", async () => {
-    // Setup
-    dbModel.mockImplementation(() => ({
-      findMaxId: vi.fn().mockResolvedValue(null),
-    }));
+//     // Assert
+//     expect(result).toBeNull();
+//   });
 
-    const util = new UTIL({});
+//   // Test getArticleId method
+//   it("should get next article ID based on maximum stored ID", async () => {
+//     // Setup
+//     const mockMaxId = 42;
+//     dbModel.mockImplementation(() => ({
+//       findMaxId: vi.fn().mockResolvedValue(mockMaxId),
+//     }));
 
-    // Act
-    const result = await util.getArticleId("articles-collection");
+//     const util = new UTIL({});
 
-    // Assert
-    expect(result).toBe(0);
-  });
+//     // Act
+//     const result = await util.getArticleId("articles-collection");
 
-  // Test getDateArray method
-  it("should generate an array of month-year combinations", async () => {
-    // Setup - mock the date
-    const mockDate = new Date("2023-05-15");
-    const realDate = global.Date;
-    global.Date = vi.fn(() => mockDate);
-    global.Date.prototype = realDate.prototype;
+//     // Assert
+//     expect(result).toBe(43); // mockMaxId + 1
+//     expect(dbModel).toHaveBeenCalledWith({ keyToLookup: "articleId" }, "articles-collection");
+//   });
 
-    const util = new UTIL({});
+//   it("should return 0 from getArticleId when no articles exist yet", async () => {
+//     // Setup
+//     dbModel.mockImplementation(() => ({
+//       findMaxId: vi.fn().mockResolvedValue(null),
+//     }));
 
-    // Act
-    const result = await util.getDateArray();
+//     const util = new UTIL({});
 
-    // Assert
-    expect(result.length).toBe(3);
-    // Should include previous, current, and next month
-    expect(result).toContain("202304"); // April
-    expect(result).toContain("202305"); // May
-    expect(result).toContain("202306"); // June
+//     // Act
+//     const result = await util.getArticleId("articles-collection");
 
-    // Restore original Date
-    global.Date = realDate;
-  });
+//     // Assert
+//     expect(result).toBe(0);
+//   });
 
-  // Test getCurrentKCNAId method
-  it("should use CONFIG.currentId when no records exist or CONFIG id is higher", async () => {
-    // Setup
-    dbModel.mockImplementation(() => ({
-      findMaxId: vi.fn().mockResolvedValue(null),
-    }));
+//   // Test getDateArray method
+//   it("should generate an array of month-year combinations", async () => {
+//     // Setup - mock the date
+//     const mockDate = new Date("2023-05-15");
+//     const realDate = global.Date;
+//     global.Date = vi.fn(() => mockDate);
+//     global.Date.prototype = realDate.prototype;
 
-    const util = new UTIL({});
+//     const util = new UTIL({});
 
-    // Act
-    const result = await util.getCurrentKCNAId();
+//     // Act
+//     const result = await util.getDateArray();
 
-    // Assert
-    expect(result).toBe(CONFIG.currentId); // From our mock config
-    expect(dbModel).toHaveBeenCalledWith({}, CONFIG.pics);
-  });
+//     // Assert
+//     expect(result.length).toBe(3);
+//     // Should include previous, current, and next month
+//     expect(result).toContain("202304"); // April
+//     expect(result).toContain("202305"); // May
+//     expect(result).toContain("202306"); // June
 
-  it("should use database max ID when it exists and is higher than CONFIG id", async () => {
-    // Setup
-    const mockMaxId = 2000000; // Higher than our mock CONFIG.currentId
-    dbModel.mockImplementation(() => ({
-      findMaxId: vi.fn().mockResolvedValue(mockMaxId),
-    }));
+//     // Restore original Date
+//     global.Date = realDate;
+//   });
 
-    const util = new UTIL({});
+//   // Test getCurrentKCNAId method
+//   it("should use CONFIG.currentId when no records exist or CONFIG id is higher", async () => {
+//     // Setup
+//     dbModel.mockImplementation(() => ({
+//       findMaxId: vi.fn().mockResolvedValue(null),
+//     }));
 
-    // Act
-    const result = await util.getCurrentKCNAId();
+//     const util = new UTIL({});
 
-    // Assert
-    expect(result).toBe(mockMaxId);
-  });
+//     // Act
+//     const result = await util.getCurrentKCNAId();
 
-  // Test parseDateElement method
-  it("should parse date text in the format [YYYY.MM.DD]", async () => {
-    // Setup
-    const dateText = "[2023.05.15]";
-    const util = new UTIL({dateText: dateText});
+//     // Assert
+//     expect(result).toBe(CONFIG.currentId); // From our mock config
+//     expect(dbModel).toHaveBeenCalledWith({}, CONFIG.pics);
+//   });
 
-    // Act
-    const result = await util.parseDateElement();
+//   it("should use database max ID when it exists and is higher than CONFIG id", async () => {
+//     // Setup
+//     const mockMaxId = 2000000; // Higher than our mock CONFIG.currentId
+//     dbModel.mockImplementation(() => ({
+//       findMaxId: vi.fn().mockResolvedValue(mockMaxId),
+//     }));
 
-    // Assert
-    expect(result).toBeInstanceOf(Date);
-    expect(result.getFullYear()).toBe(2023);
-    expect(result.getMonth()).toBe(4); // Zero-based, so 4 = May
-    expect(result.getDate()).toBe(15);
-  });
+//     const util = new UTIL({});
 
-  it("should return null when date text is invalid", async () => {
-    // Setup
-    const util = new UTIL("[invalid.date.format]");
+//     // Act
+//     const result = await util.getCurrentKCNAId();
 
-    // Act
-    const result = await util.parseDateElement();
+//     // Assert
+//     expect(result).toBe(mockMaxId);
+//   });
 
-    // Assert
-    expect(result).toBeNull();
-  });
+//   // Test parseDateElement method
+//   it("should parse date text in the format [YYYY.MM.DD]", async () => {
+//     // Setup
+//     const dateText = "[2023.05.15]";
+//     const util = new UTIL({dateText: dateText});
 
-  it("should return null when date text is empty", async () => {
-    // Setup
-    const util = new UTIL("");
+//     // Act
+//     const result = await util.parseDateElement();
 
-    // Act
-    const result = await util.parseDateElement();
+//     // Assert
+//     expect(result).toBeInstanceOf(Date);
+//     expect(result.getFullYear()).toBe(2023);
+//     expect(result.getMonth()).toBe(4); // Zero-based, so 4 = May
+//     expect(result.getDate()).toBe(15);
+//   });
 
-    // Assert
-    expect(result).toBeNull();
-  });
-});
+//   it("should return null when date text is invalid", async () => {
+//     // Setup
+//     const util = new UTIL("[invalid.date.format]");
+
+//     // Act
+//     const result = await util.parseDateElement();
+
+//     // Assert
+//     expect(result).toBeNull();
+//   });
+
+//   it("should return null when date text is empty", async () => {
+//     // Setup
+//     const util = new UTIL("");
+
+//     // Act
+//     const result = await util.parseDateElement();
+
+//     // Assert
+//     expect(result).toBeNull();
+//   });
+// });

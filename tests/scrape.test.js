@@ -1,198 +1,126 @@
-//UNFUCK
+// scrape-tests.js
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { scrapeKCNA, scrapeEach, getNewListData, getNewContentData, getNewMediaData } from "../src/scrape.js";
 
-// file-to-be-tested.test.js
-import { describe, it } from 'vitest';
-
-describe('Future tests for this module', () => {
-  it.todo('will have tests in the future');
+// Mock the dependencies
+vi.mock("../models/kcna-model.js", () => {
+  return {
+    default: vi.fn().mockImplementation(() => ({
+      getNewListHTML: vi.fn().mockResolvedValue("<div>mock html</div>"),
+      getContentToDownloadArray: vi.fn().mockResolvedValue(["item1", "item2"]),
+      getMediaToDownloadArray: vi.fn().mockResolvedValue(["media1", "media2"]),
+    })),
+  };
 });
 
-// import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-// import { scrapeKCNA, getNewContentKCNA, getNewMediaKCNA } from "../src/scrape.js";
-// import KCNA from "../models/kcna-model.js";
-// import CONFIG from "../config/scrape-config.js";
+vi.mock("./articles.js", () => ({
+  buildArticleList: vi.fn().mockResolvedValue(["article1", "article2"]),
+  buildArticleContent: vi.fn().mockResolvedValue(["articleContent1", "articleContent2"]),
+}));
 
-// // Mock dependencies
-// vi.mock("../models/kcna-model.js");
-// vi.mock("../config/scrape-config.js", () => {
-//   return {
-//     default: {
-//       typeArr: ["articles", "pics", "vids"],
-//     },
-//   };
-// });
+vi.mock("./pics.js", () => ({
+  buildPicSetList: vi.fn().mockResolvedValue(["picSet1", "picSet2"]),
+  buildPicSetContent: vi.fn().mockResolvedValue(["picSetContent1", "picSetContent2"]),
+  getPicDataArray: vi.fn().mockResolvedValue(["picData1", "picData2"]),
+}));
 
-// describe("Main Scrape Functions", () => {
-//   beforeEach(() => {
-//     // Reset mocks before each test
-//     vi.clearAllMocks();
+vi.mock("./vids.js", () => ({
+  buildVidList: vi.fn().mockResolvedValue(["vid1", "vid2"]),
+  buildVidPageContent: vi.fn().mockResolvedValue(["vidContent1", "vidContent2"]),
+  getVidDataArray: vi.fn().mockResolvedValue(["vidData1", "vidData2"]),
+}));
 
-//     // Mock console.log to reduce test output clutter
-//     vi.spyOn(console, "log").mockImplementation(() => {});
-//   });
+// Mock CONFIG
+vi.mock("../config/scrape-config.js", () => ({
+  default: {
+    typeArr: ["articles", "pics", "vids"],
+  },
+}));
 
-//   afterEach(() => {
-//     // Restore console.log
-//     vi.restoreAllMocks();
-//   });
+describe("KCNA Scraper Functions", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-//   // Test scrapeKCNA function
-//   it("should call getNewContentKCNA and getNewMediaKCNA", async () => {
-//     // Setup
-//     const mockContentResult = "FINISHED GETTING NEW CONTENT CONTENT";
-//     const mockMediaResult = "FINISHED GETTING NEW MEDIA";
+  describe("getNewListData", () => {
+    it("should return article list data when type is articles", async () => {
+      const result = await getNewListData("articles");
+      expect(result).toEqual(["article1", "article2"]);
+    });
 
-//     // Creating spy functions that we can track
-//     const getContentSpy = vi.fn().mockResolvedValue(mockContentResult);
-//     const getMediaSpy = vi.fn().mockResolvedValue(mockMediaResult);
+    it("should return picSet list data when type is pics", async () => {
+      const result = await getNewListData("pics");
+      expect(result).toEqual(["picSet1", "picSet2"]);
+    });
 
-//     // Replace the actual functions with our spies
-//     const originalGetContent = getNewContentKCNA;
-//     const originalGetMedia = getNewMediaKCNA;
+    it("should return video list data when type is vids", async () => {
+      const result = await getNewListData("vids");
+      expect(result).toEqual(["vid1", "vid2"]);
+    });
 
-//     global.getNewContentKCNA = getContentSpy;
-//     global.getNewMediaKCNA = getMediaSpy;
+    it("should return null when HTML is not available", async () => {
+      // Override the mock for this specific test
+      const KCNA = (await import("../models/kcna-model.js")).default;
+      KCNA.mockImplementationOnce(() => ({
+        getNewListHTML: vi.fn().mockResolvedValue(null),
+      }));
 
-//     // Act
-//     await scrapeKCNA();
+      const result = await getNewListData("articles");
+      expect(result).toBeNull();
+    });
+  });
 
-//     // Assert
-//     expect(getContentSpy).toHaveBeenCalledTimes(1);
-//     expect(getMediaSpy).toHaveBeenCalledTimes(1);
+  describe("getNewContentData", () => {
+    it("should return article content data when type is articles", async () => {
+      const result = await getNewContentData("articles");
+      expect(result).toEqual(["articleContent1", "articleContent2"]);
+    });
 
-//     // Restore original functions
-//     global.getNewContentKCNA = originalGetContent;
-//     global.getNewMediaKCNA = originalGetMedia;
-//   });
+    it("should return picSet content when type is pics", async () => {
+      const result = await getNewContentData("pics");
+      expect(result).toEqual(["picSetContent1", "picSetContent2"]);
+    });
 
-//   // Test getNewContentKCNA function //prob disable
-//   it('should return "FETCH FUCKED" if newListArray is null', async () => {
-//     // Setup
-//     KCNA.mockImplementation(() => ({
-//       getNewListData: vi.fn().mockResolvedValue(null),
-//       getNewContentData: vi.fn(),
-//     }));
+    it("should return message when nothing to download", async () => {
+      // Override the mock for this specific test
+      const KCNA = (await import("../models/kcna-model.js")).default;
+      KCNA.mockImplementationOnce(() => ({
+        getContentToDownloadArray: vi.fn().mockResolvedValue(null),
+      }));
 
-//     // Act
-//     const result = await getNewContentKCNA();
+      const result = await getNewContentData("articles");
+      expect(result).toBe("NOTHING NEW TO DOWNLOAD");
+    });
+  });
 
-//     // Assert
-//     expect(result).toBe("FETCH FUCKED");
-//     expect(KCNA.prototype.getNewContentData).not.toHaveBeenCalled();
-//   });
+  describe("getNewMediaData", () => {
+    it("should return null for articles type", async () => {
+      const result = await getNewMediaData("articles");
+      expect(result).toBeNull();
+    });
 
-//   it("should process all types in typeArr for getNewContentKCNA", async () => {
-//     // Setup
-//     const mockListArray = ["item1", "item2"];
-//     const mockContentArray = ["content1", "content2"];
+    it("should return pic data for pics type", async () => {
+      const result = await getNewMediaData("pics");
+      expect(result).toEqual(["picData1", "picData2"]);
+    });
 
-//     KCNA.mockImplementation(() => ({
-//       getNewListData: vi.fn().mockResolvedValue(mockListArray),
-//       getNewContentData: vi.fn().mockResolvedValue(mockContentArray),
-//     }));
+    it("should return vid data for vids type", async () => {
+      const result = await getNewMediaData("vids");
+      expect(result).toEqual(["vidData1", "vidData2"]);
+    });
+  });
 
-//     // Act
-//     const result = await getNewContentKCNA();
+  describe("scrapeEach", () => {
+    it("should process each type and return length of listArray", async () => {
+      const result = await scrapeEach("articles");
+      expect(result).toBe(2); // Length of the mock array ['article1', 'article2']
+    });
+  });
 
-//     // Assert
-//     expect(result).toBe("FINISHED GETTING NEW CONTENT CONTENT");
-
-//     // Should have called KCNA constructor once for each type
-//     expect(KCNA).toHaveBeenCalledTimes(3);
-//     expect(KCNA).toHaveBeenCalledWith("articles");
-//     expect(KCNA).toHaveBeenCalledWith("pics");
-//     expect(KCNA).toHaveBeenCalledWith("vids");
-
-//     // Should have called getNewListData and getNewContentData for each type
-//     expect(KCNA.prototype.getNewListData).toHaveBeenCalledTimes(3);
-//     expect(KCNA.prototype.getNewContentData).toHaveBeenCalledTimes(3);
-//   });
-
-//   it("should skip processing that TYPE when newListArray is null moving on to next types", async () => {
-//     // Setup - first call succeeds, second fails, third succeeds
-//     let callCount = 0;
-
-//     KCNA.mockImplementation(() => ({
-//       getNewListData: vi.fn().mockImplementation(() => {
-//         callCount++;
-//         // Return null for the second call only
-//         return callCount === 2 ? null : ["item1", "item2"];
-//       }),
-//       getNewContentData: vi.fn().mockResolvedValue(["content1", "content2"]),
-//     }));
-
-//     // Act
-//     const result = await getNewContentKCNA();
-
-//     // Assert
-//     expect(result).toBe("FINISHED GETTING NEW CONTENT");
-
-//     // Should have called KCNA constructor for all three types
-//     expect(KCNA).toHaveBeenCalledTimes(3);
-//     expect(KCNA).toHaveBeenCalledWith("articles");
-//     expect(KCNA).toHaveBeenCalledWith("pics");
-//     expect(KCNA).toHaveBeenCalledWith("vids");
-
-//     // Should have called getNewListData for all three types
-//     expect(KCNA.prototype.getNewListData).toHaveBeenCalledTimes(3);
-
-//     // Should have called getNewContentData only for the first and third types (where newListArray is not null)
-//     expect(KCNA.prototype.getNewContentData).toHaveBeenCalledTimes(2);
-//   });
-
-//   // Test getNewMediaKCNA function
-//   it("should only process non-article types in getNewMediaKCNA", async () => {
-//     // Setup
-//     const mockMediaArray = ["media1", "media2"];
-//     const mockDownloadData = { downloaded: 2 };
-
-//     KCNA.mockImplementation(() => ({
-//       getNewMediaData: vi.fn().mockResolvedValue(mockMediaArray),
-//       downloadNewMedia: vi.fn().mockResolvedValue(mockDownloadData),
-//     }));
-
-//     // Act
-//     const result = await getNewMediaKCNA();
-
-//     // Assert
-//     expect(result).toBe("FINISHED GETTING NEW MEDIA");
-
-//     // Should have called KCNA constructor only for non-article types
-//     expect(KCNA).toHaveBeenCalledTimes(2); // 'pics' and 'vids'
-//     expect(KCNA).toHaveBeenCalledWith("pics");
-//     expect(KCNA).toHaveBeenCalledWith("vids");
-//     expect(KCNA).not.toHaveBeenCalledWith("articles");
-
-//     // Should have called methods for each non-article type
-//     expect(KCNA.prototype.getNewMediaData).toHaveBeenCalledTimes(2);
-//     expect(KCNA.prototype.downloadNewMedia).toHaveBeenCalledTimes(2);
-//   });
-
-//   it("should handle errors gracefully in getNewMediaKCNA", async () => {
-//     // Setup - second type causes an error
-//     let callCount = 0;
-
-//     KCNA.mockImplementation(() => ({
-//       getNewMediaData: vi.fn().mockImplementation(() => {
-//         callCount++;
-//         if (callCount === 2) {
-//           throw new Error("Network error");
-//         }
-//         return ["media1", "media2"];
-//       }),
-//       downloadNewMedia: vi.fn().mockResolvedValue({ downloaded: 2 }),
-//     }));
-
-//     // Act & Assert
-//     await expect(getNewMediaKCNA()).rejects.toThrow("Network error");
-
-//     // Should have called KCNA constructor for both non-article typess
-//     expect(KCNA).toHaveBeenCalledTimes(2);
-//     expect(KCNA).toHaveBeenCalledWith("pics");
-//     expect(KCNA).toHaveBeenCalledWith("vids");
-
-//     // Should have called getNewMediaData twice but downloadNewMedia only once
-//     expect(KCNA.prototype.getNewMediaData).toHaveBeenCalledTimes(2);
-//     expect(KCNA.prototype.downloadNewMedia).toHaveBeenCalledTimes(1);
-//   });
-// });
+  describe("scrapeKCNA", () => {
+    it("should process all types and return success message", async () => {
+      const result = await scrapeKCNA();
+      expect(result).toBe("FINISHED SCRAPING NEW DATA");
+    });
+  });
+});
