@@ -324,7 +324,7 @@ class Pic {
     await checkModel.urlNewCheck();
 
     try {
-      // await randomDelay();
+      await randomDelay(1);
       const res = await axios({
         method: "get",
         url: url,
@@ -370,7 +370,7 @@ class Pic {
 
       return downloadPicObj;
     } catch (e) {
-      console.log(inputURL + "; " + e.message + "; F BREAK: " + e.function);
+      console.log(url + "; " + e.message + "; F BREAK: " + e.function);
       return null;
     }
   }
