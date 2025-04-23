@@ -5,9 +5,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "start": "nodemon app.js"
   },
   "author": "GeorgeThomas1863",
   "license": "ISC",
@@ -16,7 +14,6 @@
     "express": "^5.1.0",
     "jsdom": "^26.1.0",
     "mongodb": "^6.15.0",
-    "nodemon": "^3.1.9",
-    "vitest": "^3.1.1"
+    "nodemon": "^3.1.9"
   }
 }
