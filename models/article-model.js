@@ -57,8 +57,8 @@ class Article {
     //loop through a tags and pull out hrefs
     const articleListArray = [];
     for (let i = 0; i < inputArray.length; i++) {
-      const articleListItem = inputArray[i];
-      const articleListObj = await this.parseArticleListItem(articleListItem);
+      const articleListModel = new Article({ listItem: inputArray[i] });
+      const articleListObj = await articleListModel.parseArticleListItem();
 
       articleListArray.push(articleListObj); //add to array
     }
@@ -72,8 +72,9 @@ class Article {
    * @param {*} listItem article link item
    * @returns articleListObj (with url / date extracted)
    */
-  async parseArticleListItem(articleListItem) {
-    const href = articleListItem.getAttribute("href");
+  async parseArticleListItem() {
+    const { listItem } = this.dataObject;
+    const href = listItem.getAttribute("href");
     if (!href) return;
 
     //build full url
@@ -81,7 +82,7 @@ class Article {
     const url = urlConstant + href;
 
     //GET DATE
-    const dateModel = new UTIL({ inputItem: articleListItem });
+    const dateModel = new UTIL({ inputItem: listItem });
     const articleDate = await dateModel.parseListDate();
 
     //build obj
@@ -97,25 +98,6 @@ class Article {
 
   //ARTICLE DATA ITEM SECTION
 
-  async parseArticleArray() {
-    const { inputArray } = this.dataObject;
-
-    const articleObjArray = [];
-    for (let i = 0; i < inputArray.length; i++) {
-      try {
-        const articleObjModel = new Article({ inputObj: inputArray[i] });
-        const articleObj = await articleObjModel.getArticleObj();
-        if (!articleObj) return null;
-
-        articleObjArray.push(articleObj);
-      } catch (e) {
-        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-      }
-    }
-
-    return articleObjArray;
-  }
-
   /**
    * Builds articleObj by parsing articleHTML, combining with inputObj then storing it
    * [new check NOT necessary bc way download array generated]
@@ -127,27 +109,28 @@ class Article {
     //get html for new article
     const { inputObj } = this.dataObject;
 
-    //get html
+    const htmlModel = new KCNA(inputObj);
+    const articleHTML = await htmlModel.getHTML();
 
-    try {
-      const htmlModel = new KCNA(inputObj);
-      const articleHTML = await htmlModel.getHTML();
-      if (!articleHTML) return null;
-
-      //parse the data from the html
-      const parseObj = await this.parseArticleHMTL(articleHTML);
-      if (!parseObj) return null;
-
-      const articleObj = { ...inputObj, ...parseObj };
-
-      const storeModel = new dbModel(articleObj, CONFIG.articles);
-      const storeData = await storeModel.storeUniqueURL();
-      console.log(storeData);
-      return articleObj;
-    } catch (e) {
-      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-      return null;
+    //throw error if cant get html
+    if (!articleHTML) {
+      const error = new Error("FAILED TO GET ARTICLE HTML");
+      error.url = inputObj.url;
+      error.function = "getArticleObj (MODEL)";
+      throw error;
     }
+
+    //parse the data from the html
+    const parseModel = new Article({ html: articleHTML });
+    const parseObj = await parseModel.parseArticleHMTL();
+    if (!parseObj) return null;
+
+    const articleObj = { ...inputObj, ...parseObj };
+
+    const storeModel = new dbModel(articleObj, CONFIG.articles);
+    const storeData = await storeModel.storeUniqueURL();
+    console.log(storeData);
+    return articleObj;
   }
 
   /**
@@ -156,18 +139,33 @@ class Article {
    * @param {*} html for article
    * @returns obj of data extracted from html (including pics if present)
    */
-  async parseArticleHMTL(html) {
+  async parseArticleHMTL() {
+    const { html } = this.dataObject;
     const dom = new JSDOM(html);
     const document = dom.window.document;
 
+    const parseObjModel = new Article({ document: document });
+    const contentObj = await parseObjModel.getContentObj();
+    const articlePicObj = await parseObjModel.getArticlePicObj();
+
+    if (!articlePicObj) return parseObj;
+
+    //otherwise combine into one obj and return
+    const returnObj = { ...contentObj, ...articlePicObj };
+
+    return returnObj;
+  }
+
+  async getContentObj() {
+    const { document } = this.dataObject;
     // Extract the title
     const titleElement = document.querySelector(".article-main-title");
     const articleTitle = titleElement?.textContent?.replace(/\s+/g, " ").trim();
 
     //extract content text
     const textElement = document.querySelector(".content-wrapper");
-    const textArray = textElement.querySelectorAll("p"); //array of paragraph elements
-    const articleText = await this.parseArticleText(textArray);
+    const textModel = new Article({ textElement: textElement });
+    const articleText = await textModel.parseArticleText();
 
     //build obj
     const parseObj = {
@@ -175,25 +173,33 @@ class Article {
       text: articleText,
     };
 
+    return parseObj;
+  }
+
+  async getArticlePicObj() {
+    const { document } = this.dataObject;
+
     //get article PAGE (if exists) where all pics are displayed
     const mediaIconElement = document.querySelector(".media-icon");
     const picPageHref = mediaIconElement?.firstElementChild?.getAttribute("href");
 
-    //return article obj if no pic
-    if (!picPageHref) return parseObj;
+    //return null if  pic doesnt exist
+    if (!picPageHref) return null;
 
     //otherwise build pic / pic array
-    const picPageURL = "http://www.kcna.kp" + picPageHref;
-    const articlePicModel = new Article({ url: picPageURL });
+    const picURL = "http://www.kcna.kp" + picPageHref;
+    const articlePicModel = new Article({ url: picURL });
     const articlePicArray = await articlePicModel.getArticlePicArray();
 
     //if articlePicArray fails to return (load) return null (to download again later)
     if (!articlePicArray || !articlePicArray.length) return null;
 
-    //add to object and return
-    parseObj.picPageURL = picPageURL;
-    parseObj.articlePicArray = articlePicArray;
-    return parseObj;
+    const articlePicObj = {
+      picPageURL: picPageURL,
+      articlePicArray: articlePicArray,
+    };
+
+    return articlePicObj;
   }
 
   /**
@@ -202,10 +208,13 @@ class Article {
    * @param {*} inputArray array of paragraph items containing article text
    * @returns article text as a joined string
    */
-  async parseArticleText(inputArray) {
+  async parseArticleText() {
+    const { textElement } = this.dataObject;
+    const textArray = textElement.querySelectorAll("p"); //array of paragraph elements
+
     const paragraphArray = [];
-    for (let i = 0; i < inputArray.length; i++) {
-      paragraphArray.push(inputArray[i].textContent.trim());
+    for (let i = 0; i < textArray.length; i++) {
+      paragraphArray.push(textArray[i].textContent.trim());
     }
 
     // Join paragraphs with double newlines for better readability
@@ -220,7 +229,7 @@ class Article {
    * @returns array of articlePicObjs
    */
   async getArticlePicArray() {
-    //get the html, build dom
+    //get article pic html
     const htmlModel = new KCNA(this.dataObject);
     const html = await htmlModel.getHTML();
 

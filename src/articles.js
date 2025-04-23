@@ -49,8 +49,18 @@ export const buildArticleContent = async (inputArray) => {
   if (!inputArray || !inputArray.length) return null;
 
   //loop (dont check if stored since inputArray based on mongo compare earlier)
-  const articleModel = new Article({ inputArray: inputArray });
-  const articleArray = await articleModel.parseArticleArray();
+  const articleObjArray = [];
+  for (let i = 0; i < inputArray.length; i++) {
+    try {
+      const articleObjModel = new Article({ inputObj: inputArray[i] });
+      const articleObj = await articleObjModel.getArticleObj();
+      if (!articleObj) return null;
 
-  return articleArray;
+      articleObjArray.push(articleObj);
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
+  }
+
+  return articleObjArray;
 };
