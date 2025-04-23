@@ -3,6 +3,7 @@ import axios from "axios";
 import { JSDOM } from "jsdom";
 
 import CONFIG from "../config/scrape-config.js";
+import {randomDelay} from "../config/scrape-config.js"
 import KCNA from "./kcna-model.js";
 import dbModel from "./db-model.js";
 import UTIL from "./util-model.js";
@@ -320,6 +321,8 @@ class Pic {
     //check if new (not possible in most situations, but adding check to be sure)
     const checkModel = new dbModel(picObj, CONFIG.picDownloaded);
     await checkModel.urlNewCheck(); //throws error if not new
+
+    await randomDelay()
 
     const res = await axios({
       method: "get",

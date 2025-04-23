@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import CONFIG from "../config/scrape-config.js";
+import { randomDelay } from "../config/util.js";
 import dbModel from "./db-model.js";
 
 import { newListMap, newContentMap, newMediaMap, downloadMediaMap } from "../config/map.js";
@@ -23,6 +24,8 @@ class KCNA {
   //confirm try catch works
   async getHTML() {
     const inputURL = this.dataObject.url;
+
+    await randomDelay();
 
     try {
       const res = await axios({
@@ -49,7 +52,9 @@ class KCNA {
   async getMediaHeaders() {
     const inputURL = this.dataObject.url;
 
-    console.log("WTFFFFFFFFFF")
+    await randomDelay();
+
+    console.log("WTFFFFFFFFFF");
     console.log(inputURL);
 
     const res = await axios({
