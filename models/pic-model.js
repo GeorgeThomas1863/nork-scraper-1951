@@ -185,13 +185,15 @@ class Pic {
   //GET PIC DATA
 
   async getPicData() {
-    const { url } = this.dataObject;
-    if (!url) return null;
+    const { inputObj } = this.dataObject;
 
     //get picParams
-    const paramModel = new Pic({ picURL: url });
+    const paramModel = new Pic({ picURL: inputObj.url });
     const picParams = await paramModel.getPicParams();
     if (!picParams) return null;
+
+    console.log("PIC PARAMS");
+    console.log(picParams);
 
     //build picObj
     const picObjModel = new Pic({ picParams: picParams });

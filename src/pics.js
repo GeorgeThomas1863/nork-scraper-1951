@@ -54,8 +54,7 @@ export const getPicDataArray = async (inputArray) => {
   const picDataArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     try {
-      const picObj = inputArray[i];
-      const picDataModel = new Pic(picObj);
+      const picDataModel = new Pic({ inputObj: inputArray[i] });
 
       const picData = await picDataModel.getPicData();
       if (!picData) continue;
@@ -73,7 +72,6 @@ export const getPicDataArray = async (inputArray) => {
 
 //DOWNLOAD PIC SECTION
 export const downloadNewPics = async (inputArray) => {
-  
   //easier to do all in model
   const picModel = new Pic({ inputArray: inputArray });
   const downloadPicArray = await picModel.downloadPicArray();

@@ -49,6 +49,9 @@ class KCNA {
   async getMediaHeaders() {
     const inputURL = this.dataObject.url;
 
+    console.log("WTFFFFFFFFFF")
+    console.log(inputURL);
+
     const res = await axios({
       method: "get",
       url: inputURL,
@@ -56,11 +59,14 @@ class KCNA {
       timeout: 30000,
     });
 
+    console.log("AHHHHHHHHHHHHHHh");
+    console.log(res);
+
     //if URL doesnt exist / return headers throw error
     if (!res || !res.headers) {
       const error = new Error("URL DOESNT EXIST");
       error.url = url;
-      error.function = "getPicData KCNA MODEL";
+      error.function = "getMediaHeaders KCNA MODEL";
       throw error;
     }
 

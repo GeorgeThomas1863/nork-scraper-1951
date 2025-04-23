@@ -31,17 +31,15 @@ export const scrapeEach = async (type) => {
 
   //new article items / media pages
   const newContentArray = await getNewContentData(type);
-  console.log(newContentArray);
 
   //new media items
   const newMediaArray = await getNewMediaData(type);
-  console.log(newMediaArray);
 
   //download new media
   const downloadData = await downloadNewMedia(type);
   console.log(downloadData);
 
-  return newListArray.length;
+  return newListArray;
 };
 
 //-------------------------
