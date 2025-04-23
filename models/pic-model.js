@@ -324,7 +324,7 @@ class Pic {
     await checkModel.urlNewCheck();
 
     try {
-      await randomDelay();
+      // await randomDelay();
       const res = await axios({
         method: "get",
         url: url,
