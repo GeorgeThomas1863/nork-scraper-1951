@@ -15,7 +15,63 @@ class Pic {
     this.dataObject = dataObject;
   }
 
-  //------------
+  //PARSE PIC LIST DATA
+
+  async getPicSetListArray() {
+    const { html } = this.dataObject;
+    const dom = new JSDOM(html);
+    const document = dom.window.document;
+
+    const photoWrapperArray = document.querySelectorAll(".photo-wrapper");
+
+    //throw error if no pic Pages found
+    if (!photoWrapperArray || !photoWrapperArray.length) {
+      const error = new Error("CANT EXTRACT PICSET LIST");
+      error.url = CONFIG.picListURL;
+      error.function = "getPicListArray (MODEL)";
+      throw error;
+    }
+
+    const picSetListArray = [];
+    for (let i = 0; i < photoWrapperArray.length; i++) {
+      const picSetModel = new Pic({ inputItem: photoWrapperArray[i] });
+      const picSetListObj = await picSetModel.getPicSetListObj();
+
+      picSetListArray.push(picSetListObj);
+    }
+
+    return picSetListArray;
+  }
+
+  async getPicSetListObj(inputItem) {
+    const { inputItem } = this.dataObject;
+
+    //get date
+    const dateModel = new UTIL({ inputItem: inputItem });
+    const picSetDate = await dateModel.parseListDate();
+    const dateElement = inputItem.querySelector(".publish-time");
+
+    //get title
+    const titleWrapper = inputItem.querySelector(".title a");
+    const titleRaw = titleWrapper.textContent.trim();
+    const title = titleRaw.replace(dateElement.textContent, "").trim();
+
+    //get PicSetURL
+    const href = titleWrapper.getAttribute("href");
+    const urlConstant = "http://www.kcna.kp";
+    const picSetURL = urlConstant + href;
+
+    //build picSetListObj
+    const picSetListObj = {
+      url: picSetURL,
+      title: title,
+      date: picSetDate,
+    };
+
+    return picSetListObj;
+  }
+
+  //------------------------------
 
   //GET PIC DATA
 
@@ -92,57 +148,6 @@ class Pic {
     console.log(picObj);
 
     return picObj;
-  }
-
-  //---------------------
-
-  //PARSE DATA
-  async getPicSetListArray() {
-    const { inputArray } = this.dataObject;
-
-    const picSetListArray = [];
-    for (let i = 0; i < inputArray.length; i++) {
-      const photoWrapper = inputArray[i];
-      const picSetListObj = await this.getPicSetListObj(photoWrapper);
-
-      picSetListArray.push(picSetListObj);
-    }
-
-    return picSetListArray;
-  }
-
-  async getPicSetListObj(inputItem) {
-    const titleWrapper = inputItem.querySelector(".title a");
-
-    //get PicSetURL
-    const href = titleWrapper.getAttribute("href");
-    const urlConstant = "http://www.kcna.kp";
-    const picSetURL = urlConstant + href;
-
-    // build url const url =
-
-    //get date
-    const dateModel = new UTIL({ inputItem: inputItem });
-    const picSetDate = await dateModel.parseListDate();
-    
-    // const dateText = dateElement.textContent.trim();
-    // const dateModel = new UTIL({ dateText: dateText });
-    // const picSetDate = await dateModel.parseDateElement();
-
-    //get title
-    const titleRaw = titleWrapper.textContent.trim();
-    const dateElement = inputItem.querySelector(".publish-time");
-    const title = titleRaw.replace(dateElement.textContent, "").trim();
-
-    const picSetListObj = {
-      url: picSetURL,
-      title: title,
-      date: picSetDate,
-    };
-
-    // console.log("PIC SET LIST OBJ");
-    // console.log(picSetListObj);
-    return picSetListObj;
   }
 
   //----------------------

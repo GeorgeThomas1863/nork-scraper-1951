@@ -6,29 +6,27 @@ import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
 
 //PICSET LIST
-export const buildPicSetList = async (html) => {
-  const dom = new JSDOM(html);
-  const document = dom.window.document;
+export const buildPicSetList = async (inputHTML) => {
+  try {
+    const picSetModel = new Pic({ html: inputHTML });
+    const picSetListArray = await picSetModel.getPicSetListArray();
 
-  const photoWrapperArray = document.querySelectorAll(".photo-wrapper");
-  if (!photoWrapperArray || !photoWrapperArray.length) return null;
+    //sort the array
+    const sortModel = new UTIL({ inputArray: picSetListArray });
+    const picSetListSort = await sortModel.sortArrayByDate();
 
-  const picSetModel = new Pic({ inputArray: photoWrapperArray });
-  const picSetListArray = await picSetModel.getPicSetListArray();
+    //add picSetId ID
+    const idModel = new UTIL({ inputArray: picSetListSort });
+    const picSetListNormal = await idModel.addListId(CONFIG.picSetList, "picSetId");
 
-  //sort the array
-  const sortModel = new UTIL({ inputArray: picSetListArray });
-  const picSetListSort = await sortModel.sortArrayByDate();
+    //store it
+    const storeDataModel = new dbModel(picSetListNormal, CONFIG.picSetList);
+    await storeDataModel.storeArray();
 
-  //add picSetId ID
-  const idModel = new UTIL({ inputArray: picSetListSort });
-  const picSetListNormal = await idModel.addListId(CONFIG.picSetList, "picSetId");
-
-  const storeDataModel = new dbModel(picSetListNormal, CONFIG.picSetList);
-  const storeData = await storeDataModel.storeArray();
-  console.log(storeData);
-
-  return picSetListNormal;
+    return picSetListNormal;
+  } catch (e) {
+    console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+  }
 };
 
 export const buildPicSetContent = async (inputArray) => {
