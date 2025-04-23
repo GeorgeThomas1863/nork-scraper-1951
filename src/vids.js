@@ -5,7 +5,7 @@ import Vid from "../models/vid-model.js";
 import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
 
-//FOR VID LIST PAGE SECTION
+//FIND VID PAGES / GET VID URLs SECTION
 
 /**
  * Extracts articleListPage data items, sorts / normalizes them, then stores them
@@ -37,7 +37,7 @@ export const buildVidList = async (inputHTML) => {
   }
 };
 
-//VID OBJ SECTION
+//VID PAGE
 export const buildVidPageContent = async (inputArray) => {
   const vidPageArray = [];
   for (let i = 0; i < inputArray.length; i++) {
@@ -56,9 +56,7 @@ export const buildVidPageContent = async (inputArray) => {
   return vidPageArray;
 };
 
-//----------------
-
-//VID DATA
+//VID ITEM
 export const getVidDataArray = async (inputArray) => {
   const vidDataArray = [];
   for (let i = 0; i < inputArray.length; i++) {
@@ -74,3 +72,8 @@ export const getVidDataArray = async (inputArray) => {
   }
   return vidDataArray;
 };
+
+//----------------------------
+
+//DOWNLOAD VID SECTION
+export const downloadVidArray = async (inputArray) => {};

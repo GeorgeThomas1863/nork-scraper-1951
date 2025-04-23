@@ -5,6 +5,8 @@ import Pic from "../models/pic-model.js";
 import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
 
+//FIND PICS / GET PICURLS SECTION
+
 //PICSET LIST
 export const buildPicSetList = async (inputHTML) => {
   try {
@@ -29,6 +31,7 @@ export const buildPicSetList = async (inputHTML) => {
   }
 };
 
+//PIC SET CONTENT
 export const buildPicSetContent = async (inputArray) => {
   const picSetArray = [];
   for (let i = 0; i < inputArray.length; i++) {
@@ -46,6 +49,7 @@ export const buildPicSetContent = async (inputArray) => {
   return picSetArray;
 };
 
+//GET PIC ITEM DATA
 export const getPicDataArray = async (inputArray) => {
   const picDataArray = [];
   for (let i = 0; i < inputArray.length; i++) {
@@ -63,4 +67,16 @@ export const getPicDataArray = async (inputArray) => {
   }
 
   return picDataArray;
+};
+
+//----------------------
+
+//DOWNLOAD PIC SECTION
+export const downloadNewPics = async (inputArray) => {
+  
+  //easier to do all in model
+  const picModel = new Pic({ inputArray: inputArray });
+  const downloadPicArray = await picModel.downloadPicArray();
+
+  return downloadPicArray;
 };

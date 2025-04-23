@@ -1,5 +1,6 @@
-import { JSDOM } from "jsdom";
+import fs from "fs";
 import axios from "axios";
+import { JSDOM } from "jsdom";
 
 import CONFIG from "../config/scrape-config.js";
 import KCNA from "./kcna-model.js";
@@ -281,6 +282,87 @@ class Pic {
     };
 
     return headerObj;
+  }
+
+  //--------------------
+
+  //DOWNLOAD PIC SECTION
+
+  async downloadPicArray() {
+    const { inputArray } = this.dataObject;
+    if (!inputArray || !inputArray.length) return null;
+
+    const downloadPicDataArray = [];
+    for (let i = 0; i < inputArray.length; i++) {
+      try {
+        //add save path to picObj
+        const picObj = inputArray[i];
+        picObj.savePath = CONFIG.picPath;
+        const picModel = new Pic({ picObj: picObj });
+
+        //download the pic
+        const downloadPicData = await picModel.downloadPicFS();
+        if (!downloadPicData) continue;
+
+        downloadPicDataArray.push(downloadPicData);
+      } catch (e) {
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      }
+    }
+  }
+
+  async downloadPicFS() {
+    const { picObj } = this.dataObject;
+    const { url, savePath } = picObj;
+
+    //check if new (not possible in most situations, but adding check to be sure)
+    const checkModel = new dbModel(picObj, CONFIG.picDownloaded);
+    await checkModel.urlNewCheck(); //throws error if not new
+
+    const res = await axios({
+      method: "get",
+      url: url,
+      timeout: 120000, //2 minutes
+      responseType: "stream",
+    });
+
+    if (!res || !res.data) {
+      const error = new Error("FETCH FUCKED");
+      error.url = url;
+      error.fucntion = "GET HTML AXIOS";
+      throw ReferenceError;
+    }
+
+    const writer = fs.createWriteStream(savePath);
+    const stream = res.data.pipe(writer);
+    const totalSize = parseInt(res.headers["content-length"], 10);
+    let downloadedSize = 0;
+
+    console.log("DOWNLOADING PIC " + totalSize + "B");
+    console.log(totalSize);
+
+    //download shit
+    res.data.on("data", (chunk) => {
+      downloadedSize += chunk.length;
+      if (downloadedSize >= totalSize) {
+        // console.log("All data chunks downloaded.");
+        // console.log(picURL);
+      }
+    });
+
+    await new Promise((resolve, reject) => {
+      stream.on("finish", resolve);
+      stream.on("error", reject);
+    });
+
+    //store downloadedPicData
+    downloadPicObj = { ...picObj };
+    downloadPicObj.downloadedSize = downloadedSize;
+    downloadPicObj.totalSize = totalSize;
+    const storeModel = new dbModel(downloadPicObj, CONFIG.picDownloaded);
+    await storeModel.storeUniqueURL();
+
+    return downloadPicObj;
   }
 }
 

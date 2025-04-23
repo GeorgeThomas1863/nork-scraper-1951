@@ -3,7 +3,7 @@ import axios from "axios";
 import CONFIG from "../config/scrape-config.js";
 import dbModel from "./db-model.js";
 
-import { newListMap, newContentMap, newMediaMap } from "../config/map.js";
+import { newListMap, newContentMap, newMediaMap, downloadMediaMap } from "../config/map.js";
 
 /**
  * @class KCNA
@@ -125,7 +125,16 @@ class KCNA {
 
   //----------
 
-  //DOWNLOAD MEDIA SECTION 
+  //DOWNLOAD MEDIA SECTION
+  async getMediaToScrapeFS() {
+    const { type } = this.dataObject;
+
+    const newDataParams = await downloadMediaMap(type);
+
+    const downloadModel = new dbModel(newDataParams, "");
+    const downloadArray = await downloadModel.findNewURLs();
+    return downloadArray;
+  }
 }
 
 export default KCNA;
