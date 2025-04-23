@@ -193,8 +193,8 @@ class Pic {
     const picParams = await paramModel.getPicParams();
     if (!picParams) return null;
 
-    console.log("PIC PARAMS");
-    console.log(picParams);
+    // console.log("PIC PARAMS");
+    // console.log(picParams);
 
     //build picObj
     const picObjModel = new Pic({ picParams: picParams });

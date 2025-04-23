@@ -57,7 +57,7 @@ class KCNA {
       });
 
       console.log("RES!!!!!!!!!!")
-      console.log(res);
+      console.log(res.data);
 
       return res;
     } catch (e) {
