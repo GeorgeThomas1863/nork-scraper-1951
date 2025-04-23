@@ -32,34 +32,57 @@ class Pic {
       throw error;
     }
 
-    const picSetListArray = [];
-    for (let i = 0; i < photoWrapperArray.length; i++) {
-      const picSetModel = new Pic({ inputItem: photoWrapperArray[i] });
-      const picSetListObj = await picSetModel.getPicSetListObj();
+    const picSetLinkModel = new Pic({ inputArray: photoWrapperArray });
+    const picSetListArray = await picSetLinkModel.parsePicSetLinks();
 
-      picSetListArray.push(picSetListObj);
+    return picSetListArray;
+  }
+
+  async parsePicSetLinks() {
+    const { inputArray } = this.dataObject;
+
+    const picSetListArray = [];
+    for (let i = 0; i < inputArray.length; i++) {
+      try {
+        const picSetModel = new Pic({ listItem: inputArray[i] });
+        const picSetListObj = await picSetModel.parsePicSetListItem();
+
+        picSetListArray.push(picSetListObj);
+      } catch (e) {
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      }
     }
 
     return picSetListArray;
   }
 
-  async getPicSetListObj(inputItem) {
-    const { inputItem } = this.dataObject;
-
-    //get date
-    const dateModel = new UTIL({ inputItem: inputItem });
-    const picSetDate = await dateModel.parseListDate();
-    const dateElement = inputItem.querySelector(".publish-time");
+  async parsePicSetListItem() {
+    const { listItem } = this.dataObject;
+    if (!listItem) return null;
 
     //get title
-    const titleWrapper = inputItem.querySelector(".title a");
+    const titleWrapper = listItem.querySelector(".title a");
     const titleRaw = titleWrapper.textContent.trim();
     const title = titleRaw.replace(dateElement.textContent, "").trim();
 
     //get PicSetURL
     const href = titleWrapper.getAttribute("href");
+
+    //throw error if cant extact pic link
+    if (!href) {
+      const error = new Error("CANT FIND PIC LINK [PIC MODEL]");
+      error.url = listItem.textContent;
+      error.function = "parsePicSetListItem";
+      throw error;
+    }
+
     const urlConstant = "http://www.kcna.kp";
     const picSetURL = urlConstant + href;
+
+    //get date
+    const dateModel = new UTIL({ inputItem: listItem });
+    const picSetDate = await dateModel.parseListDate();
+    const dateElement = inputItem.querySelector(".publish-time");
 
     //build picSetListObj
     const picSetListObj = {
@@ -71,15 +94,105 @@ class Pic {
     return picSetListObj;
   }
 
+  //---------------------------
+
+  //PIC SET PAGE (page where multiple pics in set are displayed)
+
+  async getPicSetObj() {
+    const { inputObj } = this.dataObject;
+
+    //get HTML
+    const htmlModel = new KCNA(picSetObj);
+    const picSetPageHTML = await htmlModel.getHTML();
+
+    //throw error if cant get html
+    if (!picSetPageHTML) {
+      const error = new Error("FAILED TO GET ARTICLE HTML");
+      error.url = inputObj.url;
+      error.function = "getPicSetObj (MODEL)";
+      throw error;
+    }
+
+    //get picSetArray
+    const parseModel = new Pic({ html: picSetPageHTML });
+    const picSetArray = await parseModel.parsePicSetHTML();
+
+    //add to obj
+    const picSetObj = { ...inputObj };
+    picSetObj.picArray = picSetArray;
+
+    //store it
+    const storePicSetModel = new dbModel(picSetObj, CONFIG.picSetContent);
+    const storePicSetData = await storePicSetModel.storeUniqueURL();
+    console.log(storePicSetData);
+
+    return picSetObj;
+  }
+
+  async parsePicSetHTML() {
+    const { html } = this.dataObject;
+    const dom = new JSDOM(html);
+    const document = dom.window.document;
+
+    const picElementArray = document.querySelectorAll(".content img");
+    const parseModel = new Pic({ inputArray: picElementArray });
+    const picSetArray = await parseModel.parsePicElementArray();
+
+    return picSetArray;
+  }
+
+  async parsePicElementArray() {
+    const { inputArray } = this.dataObject;
+
+    const picSetArray = [];
+    for (let i = 0; i < inputArray.length; i++) {
+      try {
+        const picURLModel = new Pic({ picElement: inputArray[i] });
+        const picURL = await picURLModel.parsePicURL();
+        if (!picURL) continue;
+
+        picSetArray.push(picURL);
+
+        //store url to picDB (so dont have to do again)
+        const picDataModel = new dbModel({ url: picURL }, CONFIG.picURLs);
+        await picDataModel.storeUniqueURL();
+      } catch (e) {
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      }
+    }
+
+    return picSetArray;
+  }
+
+  async parsePicURL() {
+    const { picElement } = this.dataObject;
+    if (!picElement) return null;
+
+    const imgSrc = picElement.getAttribute("src");
+
+    //build picURL
+    const urlConstant = "http://www.kcna.kp";
+    const picURL = urlConstant + imgSrc;
+
+    return picURL;
+  }
+
   //------------------------------
 
   //GET PIC DATA
 
   async getPicData() {
     const { url } = this.dataObject;
-    const picParams = await this.getPicParams(url);
+    if (!url) return null;
 
-    const picObj = await this.buildPicObj(picParams);
+    //get picParams
+    const paramModel = new Pic({ picURL: url });
+    const picParams = await paramModel.getPicParams();
+    if (!picParams) return null;
+
+    //build picObj
+    const picObjModel = new Pic({ picParams: picParams });
+    const picObj = await picObjModel.getPicObj();
     if (!picObj) return null;
 
     //store it
@@ -90,7 +203,8 @@ class Pic {
     return picObj;
   }
 
-  async getPicParams(picURL) {
+  async getPicParams() {
+    const { picURL } = this.dataObject;
     //extract kcnaId
     const kcnaId = +picURL.substring(picURL.length - 11, picURL.length - 4);
 
@@ -112,9 +226,8 @@ class Pic {
    * @params requires url, kcnaId, dateString as input params
    * @returns finished picObj
    */
-  async buildPicObj(picParams) {
-    //call picURL here to avoid confusion
-    const { url, kcnaId, dateString } = picParams;
+  async getPicObj() {
+    const { picParams } = this.dataObject;
 
     //throws error on fail
     const htmlModel = new KCNA(picParams);
@@ -128,21 +241,18 @@ class Pic {
     //if not pic RETURN NULL [KEY FOR PROPER DATE ARRAY ITERATION]
     if (!dataType || dataType !== "image/jpeg") return null;
 
-    //otherwise get data about pic and add to obj //TEST
-    const serverData = headerData.server;
-    const eTag = headerData.etag;
-    const picEditDate = new Date(headerData["last-modified"]);
+    const headerModel = new Pic({ headerData: headerData });
+    const headerObj = await headerModel.parsePicHeaders();
 
-    const picObj = {
-      url: url,
-      kcnaId: kcnaId,
-      dateString: dateString,
-      scrapeDate: new Date(),
-      dataType: dataType,
-      serverData: serverData,
-      eTag: eTag,
-      picEditDate: picEditDate,
-    };
+    //throw error if cant extract pic headers
+    if (!headerObj) {
+      const error = new Error("CANT EXTRACT PIC HEADERS");
+      error.url = picParams.url;
+      error.function = "buildPicObj MODEL";
+      throw error;
+    }
+
+    const picObj = { ...picParams, ...headerObj };
 
     console.log("PIC OBJECT");
     console.log(picObj);
@@ -150,64 +260,25 @@ class Pic {
     return picObj;
   }
 
-  //----------------------
+  async parsePicHeaders() {
+    const { headerData } = this.dataObject;
 
-  //PIC SET PAGE (page where multiple pics in set are displayed)
+    //otherwise get data about pic and add to obj //TEST
+    const serverData = headerData.server;
+    const eTag = headerData.etag;
+    const picEditDate = new Date(headerData["last-modified"]);
+    const dataType = headerData["content-type"];
 
-  async getPicSetObj() {
-    const { inputObj } = this.dataObject;
-    const picSetObj = { ...inputObj };
-    //get HTML
-    const htmlModel = new KCNA(picSetObj);
-    const picSetPageHTML = await htmlModel.getHTML();
+    const headerObj = {
+      scrapeDate: new Date(),
+      dataType: dataType,
+      serverData: serverData,
+      eTag: eTag,
+      picEditDate: picEditDate,
+    };
 
-    //add in picArray
-    const picSetArray = await this.parsePicSetHTML(picSetPageHTML);
-    picSetObj.picArray = picSetArray;
-
-    //store it
-    const storePicSetModel = new dbModel(picSetObj, CONFIG.picSetContent);
-    const storePicSetData = await storePicSetModel.storeUniqueURL();
-    console.log(storePicSetData);
-
-    return picSetObj;
+    return headerObj;
   }
-
-  async parsePicSetHTML(html) {
-    const dom = new JSDOM(html);
-    const document = dom.window.document;
-    const picElementArray = document.querySelectorAll(".content img");
-
-    const picSetArray = [];
-    for (let i = 0; i < picElementArray.length; i++) {
-      try {
-        const picURL = await this.getPicURL(picElementArray[i]);
-        if (!picURL) continue;
-
-        picSetArray.push(picURL);
-
-        //store url to picDB (so dont have to do again)
-        const picDataModel = new dbModel({ url: picURL }, CONFIG.picURLs);
-        await picDataModel.storeUniqueURL();
-      } catch (e) {
-        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-      }
-    }
-    return picSetArray;
-  }
-
-  async getPicURL(picElement) {
-    if (!picElement) return null;
-    const urlConstant = "http://www.kcna.kp";
-
-    //build picURL
-    const imgSrc = picElement.getAttribute("src");
-    const picURL = urlConstant + imgSrc;
-
-    return picURL;
-  }
-
-  //-----------------------------------
 }
 
 export default Pic;

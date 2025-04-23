@@ -57,10 +57,14 @@ class Article {
     //loop through a tags and pull out hrefs
     const articleListArray = [];
     for (let i = 0; i < inputArray.length; i++) {
-      const articleListModel = new Article({ listItem: inputArray[i] });
-      const articleListObj = await articleListModel.parseArticleListItem();
+      try {
+        const articleListModel = new Article({ listItem: inputArray[i] });
+        const articleListObj = await articleListModel.parseArticleListItem();
 
-      articleListArray.push(articleListObj); //add to array
+        articleListArray.push(articleListObj); //add to array
+      } catch (e) {
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      }
     }
 
     return articleListArray;
@@ -74,8 +78,18 @@ class Article {
    */
   async parseArticleListItem() {
     const { listItem } = this.dataObject;
+    if (!listItem) return null;
+
+    //get article link
     const href = listItem.getAttribute("href");
-    if (!href) return;
+
+    //throw error if cant extact pic link
+    if (!href) {
+      const error = new Error("CANT FIND ARTICLE LINK [ARTICLE MODEL]");
+      error.url = listItem.textContent;
+      error.function = "parsePicSetListItem";
+      throw error;
+    }
 
     //build full url
     const urlConstant = "http://www.kcna.kp";
@@ -130,6 +144,7 @@ class Article {
     const storeModel = new dbModel(articleObj, CONFIG.articles);
     const storeData = await storeModel.storeUniqueURL();
     console.log(storeData);
+
     return articleObj;
   }
 
@@ -177,6 +192,26 @@ class Article {
     return parseObj;
   }
 
+  /**
+   * Extracts text content from article (array of paragraph items)
+   * @function parseArticleText
+   * @param {*} inputArray array of paragraph items containing article text
+   * @returns article text as a joined string
+   */
+  async parseArticleText() {
+    const { textElement } = this.dataObject;
+    const textArray = textElement.querySelectorAll("p"); //array of paragraph elements
+
+    const paragraphArray = [];
+    for (let i = 0; i < textArray.length; i++) {
+      paragraphArray.push(textArray[i].textContent.trim());
+    }
+
+    // Join paragraphs with double newlines for better readability
+    const articleText = paragraphArray.join("\n\n");
+    return articleText;
+  }
+
   async getArticlePicObj() {
     const { document } = this.dataObject;
 
@@ -201,26 +236,6 @@ class Article {
     };
 
     return articlePicObj;
-  }
-
-  /**
-   * Extracts text content from article (array of paragraph items)
-   * @function parseArticleText
-   * @param {*} inputArray array of paragraph items containing article text
-   * @returns article text as a joined string
-   */
-  async parseArticleText() {
-    const { textElement } = this.dataObject;
-    const textArray = textElement.querySelectorAll("p"); //array of paragraph elements
-
-    const paragraphArray = [];
-    for (let i = 0; i < textArray.length; i++) {
-      paragraphArray.push(textArray[i].textContent.trim());
-    }
-
-    // Join paragraphs with double newlines for better readability
-    const articleText = paragraphArray.join("\n\n");
-    return articleText;
   }
 
   /**
