@@ -65,7 +65,7 @@ class KCNA {
     //if URL doesnt exist / return headers throw error
     if (!res || !res.headers) {
       const error = new Error("URL DOESNT EXIST");
-      error.url = url;
+      error.url = inputURL;
       error.function = "getMediaHeaders KCNA MODEL";
       throw error;
     }
