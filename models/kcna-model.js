@@ -26,9 +26,9 @@ class KCNA {
     const inputURL = this.dataObject.url;
 
     try {
-      const delay = await randomDelay(5);
-      console.log("DELAY");
-      console.log(delay);
+      // const delay = await randomDelay(5);
+      // console.log("DELAY");
+      // console.log(delay);
       const res = await axios({
         method: "get",
         url: inputURL,
@@ -60,7 +60,7 @@ class KCNA {
       });
 
       console.log("RES!!!!!!!!!!");
-      // console.log(res.data);
+      console.log(res);
 
       return res;
     } catch (e) {
