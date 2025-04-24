@@ -321,7 +321,7 @@ class Vid {
       const res = await axios({
         method: "get",
         url: url,
-        timeout: 120000, //2 minutes
+        timeout: 600000, //10 minutes per vid
         responseType: "stream",
       });
 

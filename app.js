@@ -1,14 +1,6 @@
 //TO DO:
 
-//KEEP CLEANING UP PIC AND VID MODELS, REMOVE THIS
-
-//MAKE EVERTYING LIKE ARTICLE MODEL
-
-//UNFUCK / REDO some tests(DONT OVERDO IT)
-
-//ON TO MEDIA DOWNLOADING
-
-//work on downloading
+//ADD MB SIZE TO VIDS / PICS
 
 //refactor some names, work with gemini / your ppt
 //Get vid set working
