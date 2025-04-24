@@ -325,7 +325,7 @@ class Vid {
         responseType: "stream",
       });
 
-      console.log("AHHHHHHHHHHHHHHH");
+      console.log("RES!!!!");
       console.log(res);
 
       const writer = fs.createWriteStream(savePath);

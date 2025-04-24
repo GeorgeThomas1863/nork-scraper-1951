@@ -77,10 +77,8 @@ export const getVidDataArray = async (inputArray) => {
 
 //DOWNLOAD VID SECTION
 export const downloadNewVids = async (inputArray) => {
-  // console.log("DOWNLOADING " + inputArray.length + " FUCKING VIDS");
-
-  //do all in model
-  const vidModel = new Vid({ inputArray: inputArray });
+  //ONLY DOWNLOADING 1 PER ITERATION
+  const vidModel = new Vid({ inputArray: inputArray[0] });
   const downloadVidArray = await vidModel.downloadVidArray();
   return downloadVidArray;
 };

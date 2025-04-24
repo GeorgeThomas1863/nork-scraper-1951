@@ -156,7 +156,7 @@ export const downloadNewMedia = async () => {
           break;
 
         case "vids":
-          console.log("DOWNLOADING " + downloadArray?.length + " FUCKING VIDS");
+          console.log(downloadArray?.length + " VIDS STILL NEED TO BE DOWNLOADED");
           const vidData = await downloadNewVids(downloadArray);
           console.log("FOUND " + vidData?.length + " VIDS");
           break;
@@ -167,17 +167,4 @@ export const downloadNewMedia = async () => {
   }
 
   return "FINISHED DOWNLOADING NEW MEDIA";
-
-  // const downloadModel = new KCNA({ type: type });
-  // const downloadArray = await downloadModel.getMediaToScrapeFS();
-
-  // switch (type) {
-  //   case "pics":
-  //     const downloadPicData = await downloadNewPics(downloadArray);
-  //     return downloadPicData;
-
-  //   case "vids":
-  //     const downloadVidData = await downloadNewVids(downloadArray);
-  //     return downloadVidData;
-  // }
 };
