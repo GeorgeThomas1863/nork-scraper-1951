@@ -288,7 +288,7 @@ class Vid {
       try {
         //add save path to picObj
         const vidObj = inputArray[i];
-        const savePath = CONFIG.vidPath + vidObj.kcnaId + ".jpg";
+        const savePath = CONFIG.vidPath + vidObj.kcnaId + ".mp4";
         vidObj.savePath = savePath;
         const picModel = new Vid({ vidObj: vidObj });
 
