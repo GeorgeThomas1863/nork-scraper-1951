@@ -51,7 +51,7 @@ export const buildPicSetContent = async (inputArray) => {
 
 //GET PIC ITEM DATA
 export const getPicDataArray = async (inputArray) => {
-  console.log("GETTING DATA FOR " + inputArray.length + " NEW PICS");
+  // console.log("GETTING DATA FOR " + inputArray.length + " NEW PICS");
   const picDataArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     try {
@@ -73,7 +73,7 @@ export const getPicDataArray = async (inputArray) => {
 
 //DOWNLOAD PIC SECTION
 export const downloadNewPics = async (inputArray) => {
-  console.log("DOWNLOADING " + inputArray.length + " FUCKING PICS");
+  // console.log("DOWNLOADING " + inputArray.length + " FUCKING PICS");
   //easier to do all in model
   const picModel = new Pic({ inputArray: inputArray });
   const downloadPicArray = await picModel.downloadPicArray();

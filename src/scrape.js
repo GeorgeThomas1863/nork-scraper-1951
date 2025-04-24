@@ -150,13 +150,13 @@ export const downloadNewMedia = async () => {
 
       switch (type) {
         case "pics":
-          console.log("DOWNLOADING " + downloadArray?.length + " PICS");
+          console.log("DOWNLOADING " + downloadArray?.length + " FUCKING PICS");
           const picData = await downloadNewPics(downloadArray);
           console.log("DOWNLOADED " + picData?.length + " PICS");
           break;
 
         case "vids":
-          console.log("DOWNLOADING " + downloadArray?.length + " VIDS");
+          console.log("DOWNLOADING " + downloadArray?.length + " FUCKING VIDS");
           const vidData = await downloadNewVids(downloadArray);
           console.log("FOUND " + vidData?.length + " VIDS");
           break;

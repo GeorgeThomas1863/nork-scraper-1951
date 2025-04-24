@@ -59,8 +59,8 @@ class KCNA {
         timeout: 30000,
       });
 
-      console.log("RES!!!!!!!!!!");
-      console.log(res);
+      // console.log("RES!!!!!!!!!!");
+      // console.log(res);
 
       return res;
     } catch (e) {
