@@ -1,6 +1,7 @@
 import { JSDOM } from "jsdom";
 
 import CONFIG from "../config/scrape-config.js";
+import KCNA from "../models/kcna-model.js";
 import Vid from "../models/vid-model.js";
 import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
@@ -76,11 +77,14 @@ export const getVidDataArray = async (inputArray) => {
 //----------------------------
 
 //DOWNLOAD VID SECTION
-export const downloadNewVids = async (inputArray) => {
+export const downloadNewVidsFS = async () => {
+  const inputModel = new KCNA({ type: "vids" });
+  const downloadArray = await inputModel.getMediaToScrapeFS();
+
   //ONLY DOWNLOADING 1 PER ITERATION
-  const vidModel = new Vid({ inputArray: inputArray[0] });
-  const downloadVidArray = await vidModel.downloadVidArray();
-  return downloadVidArray;
+  const vidModel = new Vid({ inputArray: downloadArray[0] });
+  const downloadVidDataArray = await vidModel.downloadVidArray();
+  return downloadVidDataArray;
 };
 
 //---------------------

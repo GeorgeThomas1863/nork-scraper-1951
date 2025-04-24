@@ -1,6 +1,7 @@
 import { JSDOM } from "jsdom";
 
 import CONFIG from "../config/scrape-config.js";
+import KCNA from "../models/kcna-model.js";
 import Pic from "../models/pic-model.js";
 import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
@@ -72,15 +73,17 @@ export const getPicDataArray = async (inputArray) => {
 //----------------------
 
 //DOWNLOAD PIC SECTION
-export const downloadNewPics = async (inputArray) => {
-  // console.log("DOWNLOADING " + inputArray.length + " FUCKING PICS");
+export const downloadNewPicsFS = async () => {
+  const inputModel = new KCNA({ type: "pics" });
+  const downloadArray = await inputModel.getMediaToScrapeFS();
+  console.log("DOWNLOADING " + downloadArray.length + " FUCKING PICS");
+
   //easier to do all in model
-  const picModel = new Pic({ inputArray: inputArray });
-  const downloadPicArray = await picModel.downloadPicArray();
+  const picModel = new Pic({ inputArray: downloadArray });
+  const downloadPicDataArray = await picModel.downloadPicArray();
 
-  return downloadPicArray;
+  return downloadPicDataArray;
 };
-
 
 //---------------------
 
