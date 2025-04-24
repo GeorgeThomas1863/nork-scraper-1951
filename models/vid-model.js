@@ -353,7 +353,8 @@ class Vid {
       downloadVidObj.downloadedSize = downloadedSize;
       downloadVidObj.totalSize = totalSize;
       const storeModel = new dbModel(downloadVidObj, CONFIG.vidDownloaded);
-      await storeModel.storeUniqueURL();
+      const storeData = await storeModel.storeUniqueURL();
+      console.log(storeData);
 
       return downloadVidObj;
     } catch (e) {
