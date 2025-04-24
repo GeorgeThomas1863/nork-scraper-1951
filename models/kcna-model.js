@@ -143,7 +143,7 @@ class KCNA {
     const newDataParams = await newMediaMap(type);
 
     const downloadModel = new dbModel(newDataParams, "");
-    const downloadArray = await downloadModel.findNewURLs();
+    const downloadArray = await downloadModel.findNewPicsBySize();
     return downloadArray;
   }
 
@@ -156,7 +156,7 @@ class KCNA {
     const newDataParams = await downloadMediaMap(type);
 
     const downloadModel = new dbModel(newDataParams, "");
-    const downloadArray = await downloadModel.findNewURLs();
+    const downloadArray = await downloadModel.findNewPicsBySize();
     return downloadArray;
   }
 }
