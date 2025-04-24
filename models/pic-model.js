@@ -317,6 +317,8 @@ class Pic {
     return downloadPicDataArray;
   }
 
+  //!!!!!!!
+  //CLAUDE CLAIMS I CAN REFACTOR, stream is an object
   async downloadPicFS() {
     const { picObj } = this.dataObject;
     const { url, savePath } = picObj;
@@ -339,7 +341,7 @@ class Pic {
         const error = new Error("FETCH FUCKED");
         error.url = url;
         error.fucntion = "GET HTML AXIOS";
-        throw ReferenceError;
+        throw error;
       }
 
       const writer = fs.createWriteStream(savePath);

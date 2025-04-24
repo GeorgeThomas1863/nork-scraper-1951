@@ -1,9 +1,12 @@
+import fs from "fs";
+import axios from "axios";
 import { JSDOM } from "jsdom";
 
 import CONFIG from "../config/scrape-config.js";
 import KCNA from "./kcna-model.js";
 import dbModel from "./db-model.js";
 import UTIL from "./util-model.js";
+import { downloadNewVids } from "../src/vids.js";
 
 /**
  * @class Vid
@@ -300,6 +303,61 @@ class Vid {
     }
 
     return downloadVidDataArray;
+  }
+
+  //!!!!!!!
+  //CLAUDE CLAIMS I CAN REFACTOR, stream is an object
+  async downloadVidFS() {
+    const { vidObj } = this.dataObject;
+    const { url, savePath } = vidObj;
+
+    //check if new (not possible in most situations, but adding check to be sure)
+    const checkModel = new dbModel(vidObj, CONFIG.vidDownloaded);
+    //throws error if not new (keep out of try block to propogate error)
+    await checkModel.urlNewCheck();
+
+    try {
+      await randomDelay(1);
+      const res = await axios({
+        method: "get",
+        url: url,
+        timeout: 120000, //2 minutes
+        responseType: "stream",
+      });
+
+      const writer = fs.createWriteStream(savePath);
+      const stream = res.data.pipe(writer);
+      const totalSize = parseInt(res.headers["content-length"], 10);
+      let downloadedSize = 0;
+
+      console.log("DOWNLOADING VID " + totalSize + "B");
+      console.log(totalSize);
+
+      //download shit
+      res.data.on("data", (chunk) => {
+        downloadedSize += chunk.length;
+        if (downloadedSize >= totalSize) {
+        }
+      });
+
+      await new Promise((resolve, reject) => {
+        stream.on("finish", resolve);
+        stream.on("error", reject);
+      });
+
+      //store downloadedPicData
+      const downloadVidObj = { ...vidObj };
+      downloadVidObj.downloadedSize = downloadedSize;
+      downloadVidObj.totalSize = totalSize;
+      const storeModel = new dbModel(downloadVidObj, CONFIG.vidDownloaded);
+      await storeModel.storeUniqueURL();
+
+      return downloadVidObj;
+    } catch (e) {
+      //AXIOS PRODUCES OWN CUSTOM ERROR
+      console.log("AXIOS ERROR, for " + url + "\nRESPONSE: " + e.response + "; REQUEST: " + e.request);
+      return null;
+    }
   }
 }
 
