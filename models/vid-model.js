@@ -3,10 +3,10 @@ import axios from "axios";
 import { JSDOM } from "jsdom";
 
 import CONFIG from "../config/scrape-config.js";
+import { randomDelay } from "../config/util.js";
 import KCNA from "./kcna-model.js";
 import dbModel from "./db-model.js";
 import UTIL from "./util-model.js";
-import { downloadNewVids } from "../src/vids.js";
 
 /**
  * @class Vid
