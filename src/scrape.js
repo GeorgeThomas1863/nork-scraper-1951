@@ -25,6 +25,8 @@ export const scrapeKCNA = async () => {
   await getNewMediaData();
   await downloadNewMedia();
 
+  console.log("FINISHED GETTING NEW DATA")
+
   return "FINISHED SCRAPING NEW DATA";
 };
 
