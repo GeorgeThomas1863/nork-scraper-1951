@@ -107,37 +107,77 @@ export const getNewContentData = async (type) => {
 //GET NEW MEDIA URLS section
 
 export const getNewMediaData = async () => {
-  //PIC URLS
-  const picModel = new KCNA({ type: "pics" });
-  const picDownloadArray = await picModel.getMediaToDownloadArray();
-  console.log("GETTING DATA FOR " + picDownloadArray?.length + " PICS");
-  const picData = await getPicDataArray(picDownloadArray);
-  console.log("FOUND " + picData?.length + " PICS");
+  const { typeArr } = CONFIG;
 
-  //VID URLS
-  const vidModel = new KCNA({ type: "vids" });
-  const vidDownloadArray = await vidModel.getMediaToDownloadArray();
-  console.log("GETTING DATA FOR " + vidDownloadArray?.length + " VIDS");
-  const vidData = await getVidDataArray(vidDownloadArray);
-  console.log("FOUND " + vidData?.length + " VIDS");
+  //runs pics and vids
+  for (let i = 1; i < typeArr.length; i++) {
+    try {
+      const type = typeArr[i];
+      const downloadModel = new KCNA({ type: type });
+      const downloadArray = await downloadModel.getMediaToDownloadArray();
 
-  return vidData;
+      switch (type) {
+        case "pics":
+          console.log("GETTING DATA FOR " + downloadArray?.length + " PICS");
+          const picData = await getPicDataArray(downloadArray);
+          console.log("FOUND " + picData?.length + " PICS");
+          break;
+
+        case "vids":
+          console.log("GETTING DATA FOR " + downloadArray?.length + " VIDS");
+          const vidData = await getVidDataArray(downloadArray);
+          console.log("FOUND " + vidData?.length + " VIDS");
+          break;
+      }
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
+  }
+
+  return "FINISHED FINDING NEW MEDIA";
 };
 
 //DOWNLOAD SHIT
-export const downloadNewMedia = async (type) => {
-  if (type === "articles") return null;
+export const downloadNewMedia = async () => {
+  const { typeArr } = CONFIG;
 
-  const downloadModel = new KCNA({ type: type });
-  const downloadArray = await downloadModel.getMediaToScrapeFS();
+  //runs pics and vids
+  for (let i = 1; i < typeArr.length; i++) {
+    try {
+      const type = typeArr[i];
+      const downloadModel = new KCNA({ type: type });
+      const downloadArray = await downloadModel.getMediaToScrapeFS();
 
-  switch (type) {
-    case "pics":
-      const downloadPicData = await downloadNewPics(downloadArray);
-      return downloadPicData;
+      switch (type) {
+        case "pics":
+          console.log("DOWNLOADING " + downloadArray?.length + " PICS");
+          const picData = await downloadNewPics(downloadArray);
+          console.log("DOWNLOADED " + picData?.length + " PICS");
+          break;
 
-    case "vids":
-      const downloadVidData = await downloadNewVids(downloadArray);
-      return downloadVidData;
+        case "vids":
+          console.log("DOWNLOADING " + downloadArray?.length + " VIDS");
+          const vidData = await downloadNewVids(downloadArray);
+          console.log("FOUND " + vidData?.length + " VIDS");
+          break;
+      }
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
   }
+
+  return "FINISHED DOWNLOADING NEW MEDIA";
+
+  // const downloadModel = new KCNA({ type: type });
+  // const downloadArray = await downloadModel.getMediaToScrapeFS();
+
+  // switch (type) {
+  //   case "pics":
+  //     const downloadPicData = await downloadNewPics(downloadArray);
+  //     return downloadPicData;
+
+  //   case "vids":
+  //     const downloadVidData = await downloadNewVids(downloadArray);
+  //     return downloadVidData;
+  // }
 };
