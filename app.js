@@ -2,19 +2,11 @@
 
 //ADD MB SIZE TO VIDS / PICS
 
-//refactor some names, work with gemini / your ppt
-//Get vid set working
-
-//MAKE ARRAY OF PIC SET LIST PAGES (manual)
-//MAKE ARRAY OF VID LIST PAGES
-
-//PULL PIC SET URLs DEFINE THEM SEPARATELY
-//PULL VID URLs
-
-//GET PIC downloading working
-//GET VID downloading working
+//LOOK IN NORK SCRAPER 4000 for upload CODE
 
 //UPLOADING TO TG
+
+//TONS OF REFACTORING NEEDED
 
 //BUILD API [AGAIN THE POINT OF ALL THIS SHIT]
 

@@ -71,5 +71,9 @@ export const buildArticleContent = async (inputArray) => {
 
 export const uploadNewArticlesTG = async (inputArray) => {
   if (!inputArray || !inputArray.length) return null;
-  console.log("BUILD");
+
+  const uploadModel = new Article({ inputArray: inputArray });
+  const uploadArticleData = await uploadModel.uploadArticleArrayTG();
+
+  return uploadArticleData;
 };

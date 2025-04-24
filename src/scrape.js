@@ -26,9 +26,9 @@ export const scrapeKCNA = async () => {
   await downloadNewMedia();
   console.log("FINISHED GETTING NEW DATA");
 
-  // //UPLOAD
-  // const uploadData = await uploadNewTG();
-  // console.log(uploadData);
+  //UPLOAD
+  const uploadData = await uploadNewTG();
+  console.log(uploadData);
 
   return;
 };

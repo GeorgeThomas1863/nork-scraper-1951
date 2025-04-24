@@ -298,6 +298,35 @@ class Article {
   }
 
   //-----------------
+
+  //UPLOAD SECTION
+
+  async uploadArticleArrayTG() {
+    const { inputArray } = this.dataObject;
+
+    const uploadDataArray = [];
+    for (let i = 0; i < inputArray.length; i++) {
+      try {
+        const uploadModel = new Article({ inputObj: inputArray[i] });
+        const uploadArticleData = await uploadModel.uploadArticleObjTG();
+        if (!uploadArticleData) continue;
+
+        uploadDataArray.push(uploadArticleData);
+      } catch (e) {
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      }
+    }
+  }
+
+  //!!!!
+  //HERE (LOOK IN NORK SCRAPER 4000)
+  //!!!!!!
+
+  async uploadArticleObjTG() {
+    const { inputObj } = this.dataObject;
+
+    //FIRST POST TITLE AND DATE
+  }
 }
 
 export default Article;
