@@ -324,7 +324,7 @@ class Pic {
     const { url, savePath } = picObj;
 
     //check if new (not possible in most situations, but adding check to be sure)
-    const checkModel = new dbModel(picObj, CONFIG.picDownloaded);
+    const checkModel = new dbModel(picObj, CONFIG.picsDownloaded);
     //throws error if not new (keep out of try block to propogate error)
     await checkModel.urlNewCheck();
 
@@ -370,7 +370,7 @@ class Pic {
       const downloadPicObj = { ...picObj };
       downloadPicObj.downloadedSize = downloadedSize;
       downloadPicObj.totalSize = totalSize;
-      const storeModel = new dbModel(downloadPicObj, CONFIG.picDownloaded);
+      const storeModel = new dbModel(downloadPicObj, CONFIG.picsDownloaded);
       await storeModel.storeUniqueURL();
 
       return downloadPicObj;

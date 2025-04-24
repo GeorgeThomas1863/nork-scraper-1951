@@ -82,3 +82,11 @@ export const downloadNewVids = async (inputArray) => {
   const downloadVidArray = await vidModel.downloadVidArray();
   return downloadVidArray;
 };
+
+//---------------------
+
+//UPLOAD SHIT
+
+export const uploadNewVidsTG = async (inputArray) => {
+  console.log("BUILD");
+};

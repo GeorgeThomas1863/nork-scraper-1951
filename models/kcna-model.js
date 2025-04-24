@@ -4,7 +4,7 @@ import CONFIG from "../config/scrape-config.js";
 import { randomDelay } from "../config/util.js";
 import dbModel from "./db-model.js";
 
-import { newListMap, newContentMap, newMediaMap, downloadMediaMap } from "../config/map.js";
+import { newListMap, newContentMap, newMediaMap, downloadMediaMap, newUploadMap } from "../config/map.js";
 
 /**
  * @class KCNA
@@ -158,6 +158,19 @@ class KCNA {
     const downloadModel = new dbModel(newDataParams, "");
     const downloadArray = await downloadModel.findNewPicsBySize();
     return downloadArray;
+  }
+
+  //-----------------
+
+  //UPLOAD SHIT SECTION
+  async getUploadArray() {
+    const { type } = this.dataObject;
+
+    const newDataParams = await newUploadMap(type);
+
+    const uploadModel = new dbModel(newDataParams, "");
+    const uploadArray = await uploadModel.findNewPicsBySize();
+    return uploadArray;
   }
 }
 

@@ -64,3 +64,12 @@ export const buildArticleContent = async (inputArray) => {
 
   return articleObjArray;
 };
+
+//---------------------
+
+//UPLOAD SHIT
+
+export const uploadNewArticlesTG = async (inputArray) => {
+  if (!inputArray || !inputArray.length) return null;
+  console.log("BUILD");
+};

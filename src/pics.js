@@ -80,3 +80,12 @@ export const downloadNewPics = async (inputArray) => {
 
   return downloadPicArray;
 };
+
+
+//---------------------
+
+//UPLOAD SHIT
+
+export const uploadNewPicSetsTG = async (inputArray) => {
+  console.log("BUILD");
+};

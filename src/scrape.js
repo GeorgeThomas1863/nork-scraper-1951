@@ -1,9 +1,9 @@
 import CONFIG from "../config/scrape-config.js";
 import KCNA from "../models/kcna-model.js";
 
-import { buildArticleList, buildArticleContent } from "./articles.js";
-import { buildPicSetList, buildPicSetContent, getPicDataArray, downloadNewPics } from "./pics.js";
-import { buildVidList, buildVidPageContent, getVidDataArray, downloadNewVids } from "./vids.js";
+import { buildArticleList, buildArticleContent, uploadNewArticlesTG } from "./articles.js";
+import { buildPicSetList, buildPicSetContent, getPicDataArray, downloadNewPics, uploadNewPicSetsTG } from "./pics.js";
+import { buildVidList, buildVidPageContent, getVidDataArray, downloadNewVids, uploadNewVidsTG } from "./vids.js";
 
 /**
  * Gets / checks for new KCNA data, downloads it AND uploads it to TG
@@ -24,10 +24,13 @@ export const scrapeKCNA = async () => {
   //new media items, will check for / DOWNLOAD both
   await getNewMediaData();
   await downloadNewMedia();
+  console.log("FINISHED GETTING NEW DATA");
 
-  console.log("FINISHED GETTING NEW DATA")
+  // //UPLOAD
+  // const uploadData = await uploadNewTG();
+  // console.log(uploadData);
 
-  return "FINISHED SCRAPING NEW DATA";
+  return;
 };
 
 export const scrapeEach = async (type) => {
@@ -169,4 +172,41 @@ export const downloadNewMedia = async () => {
   }
 
   return "FINISHED DOWNLOADING NEW MEDIA";
+};
+
+//------------------
+
+//UPLOAD SHIT
+export const uploadNewTG = async () => {
+  const { typeArr } = CONFIG;
+
+  for (let i = 0; i < typeArr.length; i++) {
+    try {
+      const type = typeArr[i];
+      const uploadModel = new KCNA({ type: type });
+      const uploadArray = await uploadModel.getUploadArray();
+
+      switch (type) {
+        case "articles":
+          console.log("UPLOADING " + uploadArray?.length + " NEW ARTICLES");
+          const articleData = await uploadNewArticlesTG(uploadArray);
+          console.log("UPLOADED " + articleData?.length + " NEW ARTICLES");
+          break;
+
+        case "pics":
+          console.log("UPLOADING " + uploadArray?.length + " NEW PIC SETS");
+          const picData = await uploadNewPicSetsTG(uploadArray);
+          console.log("UPLOADED " + picData?.length + " NEW PICS SETS");
+          break;
+
+        case "vids":
+          console.log("UPLOADING " + uploadArray?.length + " NEW VIDS");
+          const vidData = await uploadNewVidsTG(uploadArray);
+          console.log("UPLOADED " + vidData?.length + " NEW VIDS");
+          break;
+      }
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
+  }
 };
