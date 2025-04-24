@@ -316,6 +316,9 @@ class Vid {
     //throws error if not new (keep out of try block to propogate error)
     await checkModel.urlNewCheck();
 
+    console.log("AHHHHHHHHHHHHHHH");
+    console.log(savePath);
+
     try {
       await randomDelay(1);
       const res = await axios({
