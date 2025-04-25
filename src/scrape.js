@@ -39,20 +39,19 @@ export const scrapeNewContent = async (type) => {
   const newListInputObj = await newListMap(type);
   const newContentInputObj = await newContentMap(type);
 
-  console.log("AHHHHHHHHHHHHHHHH")
-  console.log(newContentInputObj)
-
   //get list data
   const listModel = new KCNA({ url: CONFIG[newListInputObj.param] });
   const newListHTML = await listModel.getNewListHTML();
 
-  const listArray = await newListInputObj[func](newListHTML);
+  console.log(newListHTML);
+
+  const listArray = await [newListInputObj.func](newListHTML);
 
   //get content
   const contentModel = new KCNA({ url: CONFIG[newContentInputObj.param] });
   const downloadArray = await contentModel.getContentToDownloadArray();
 
-  const contentArray = await newContentInputObj[func](downloadArray);
+  const contentArray = await [newContentInputObj.func](downloadArray);
   console.log(contentArray);
 
   const returnObj = {
