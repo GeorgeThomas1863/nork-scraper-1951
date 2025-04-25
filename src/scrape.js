@@ -42,25 +42,27 @@ export const scrapeNewContent = async (type) => {
   //get list data
   const listModel = new KCNA({ url: CONFIG[newListInputObj.param] });
   const newListHTML = await listModel.getNewListHTML();
+  console.log(newListHTML);
 
-  const listArray = await this[newListInputObj.func](newListHTML);
+  // const listArray = await [newListInputObj.func](newListHTML);
 
-  //get content
-  const contentModel = new KCNA({ url: CONFIG[newContentInputObj.param] });
-  const downloadArray = await contentModel.getContentToDownloadArray();
+  // //get content
+  // const contentModel = new KCNA({ url: CONFIG[newContentInputObj.param] });
+  // const downloadArray = await contentModel.getContentToDownloadArray();
 
-  const contentArray = await [newContentInputObj.func](downloadArray);
-  console.log(contentArray);
+  // const contentArray = await [newContentInputObj.func](downloadArray);
+  // console.log(contentArray);
 
-  const returnObj = {
-    listItems: listArray?.length,
-    pageItems: pageArray?.length,
-  };
+  // const returnObj = {
+  //   listItems: listArray?.length,
+  //   pageItems: pageArray?.length,
+  // };
 
-  const textStr = "FOUND " + returnObj.listItems + " " + type.toUpperCase() + " LIST ITEMS; GOT " + returnObj.pageItems + " " + type.toUpperCase() + " OBJECTS";
-  console.log(textStr);
+  // const textStr = "FOUND " + returnObj.listItems + " " + type.toUpperCase() + " LIST ITEMS; GOT " + returnObj.pageItems + " " + type.toUpperCase() + " OBJECTS";
+  // console.log(textStr);
 
-  return returnObj;
+  // return returnObj;
+  return null;
 
   //run shit
 
