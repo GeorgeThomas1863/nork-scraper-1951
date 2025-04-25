@@ -26,9 +26,6 @@ class KCNA {
     const inputURL = this.dataObject.url;
 
     try {
-      // const delay = await randomDelay(5);
-      // console.log("DELAY");
-      // console.log(delay);
       const res = await axios({
         method: "get",
         url: inputURL,
@@ -100,20 +97,20 @@ class KCNA {
    * @param {} type (article, picSet, vid)
    * @returns
    */
-  async getNewListHTML() {
-    const { type } = this.dataObject;
-    const newListParam = await newListMap(type);
-    try {
-      const newListModel = new KCNA({ url: CONFIG[newListParam] });
-      const newListHTML = await newListModel.getHTML();
-      // console.log(newListHTML);
+  // async getNewListHTML() {
+  //   const { url } = this.dataObject;
 
-      return newListHTML;
-    } catch (e) {
-      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-      return null;
-    }
-  }
+  //   try {
+  //     const newListModel = new KCNA({ url: url });
+  //     const newListHTML = await newListModel.getHTML();
+  //     // console.log(newListHTML);
+
+  //     return newListHTML;
+  //   } catch (e) {
+  //     console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+  //     return null;
+  //   }
+  // }
 
   //------------------
 
