@@ -31,36 +31,47 @@ export const scrapeKCNA = async () => {
   return;
 };
 
+//fucking r slur way of doing it, figure out better way
 export const scrapeNewContent = async (type) => {
   //data list
 
-  const dataModel = new KCNA({ type: type });
-  const newListHTML = await dataModel.getNewListHTML();
-  const downloadArray = await dataModel.getContentToDownloadArray();
+  const listModel = new KCNA({ type: type });
+  const newListHTML = await listModel.getNewListHTML();
   let listArray = [];
-  let pageArray = [];
 
   switch (type) {
     case "articles":
       console.log("GETTING LIST DATA FOR " + type.toUpperCase());
       listArray = await buildArticleList(newListHTML);
-
-      console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
-      pageArray = await buildArticleContent(downloadArray);
       break;
 
     case "pics":
       console.log("GETTING LIST DATA FOR " + type.toUpperCase());
       listArray = await buildPicSetList(newListHTML);
-
-      console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
-      pageArray = await buildPicSetContent(downloadArray);
       break;
 
     case "vids":
       console.log("GETTING LIST DATA FOR " + type.toUpperCase());
       listArray = await buildVidList(newListHTML);
+      break;
+  }
 
+  const contentModel = new KCNA({ type: type });
+  const downloadArray = await contentModel.getContentToDownloadArray();
+  let pageArray = [];
+
+  switch (type) {
+    case "articles":
+      console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
+      pageArray = await buildArticleContent(downloadArray);
+      break;
+
+    case "pics":
+      console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
+      pageArray = await buildPicSetContent(downloadArray);
+      break;
+
+    case "vids":
       console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
       pageArray = await buildVidPageContent(downloadArray);
       break;
