@@ -1,6 +1,8 @@
 import CONFIG from "../config/scrape-config.js";
 import KCNA from "../models/kcna-model.js";
 
+import { newListMap, newContentMap, newMediaMap, downloadMediaMap, newUploadMap } from "../config/map.js";
+
 import { buildArticleList, buildArticleContent, uploadNewArticlesTG } from "./articles.js";
 import { buildPicSetList, buildPicSetContent, getPicDataArray, downloadNewPicsFS, uploadNewPicSetsTG } from "./pics.js";
 import { buildVidList, buildVidPageContent, getVidDataArray, downloadNewVidsFS, uploadNewVidsTG } from "./vids.js";
@@ -33,49 +35,24 @@ export const scrapeKCNA = async () => {
 
 //fucking r slur way of doing it, figure out better way
 export const scrapeNewContent = async (type) => {
-  //data list
+  //get map objs
+  const newListInputObj = await newListMap(type);
+  console.log("AHHHHHHHHH");
+  console.log(newListInputObj);
+  const newContentInputObj = await newContentMap(type);
 
-  const listModel = new KCNA({ type: type });
+  //get list data
+  const listModel = new KCNA({ url: CONFIG[newListInputObj.param] });
   const newListHTML = await listModel.getNewListHTML();
-  let listArray = [];
 
-  switch (type) {
-    case "articles":
-      console.log("GETTING LIST DATA FOR " + type.toUpperCase());
-      listArray = await buildArticleList(newListHTML);
-      break;
+  const listArray = await newListInputObj[func](newListHTML);
 
-    case "pics":
-      console.log("GETTING LIST DATA FOR " + type.toUpperCase());
-      listArray = await buildPicSetList(newListHTML);
-      break;
-
-    case "vids":
-      console.log("GETTING LIST DATA FOR " + type.toUpperCase());
-      listArray = await buildVidList(newListHTML);
-      break;
-  }
-
-  const contentModel = new KCNA({ type: type });
+  //get content
+  const contentModel = new KCNA({ url: CONFIG[newContentInputObj.param] });
   const downloadArray = await contentModel.getContentToDownloadArray();
-  let pageArray = [];
 
-  switch (type) {
-    case "articles":
-      console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
-      pageArray = await buildArticleContent(downloadArray);
-      break;
-
-    case "pics":
-      console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
-      pageArray = await buildPicSetContent(downloadArray);
-      break;
-
-    case "vids":
-      console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
-      pageArray = await buildVidPageContent(downloadArray);
-      break;
-  }
+  const contentArray = await newContentInputObj[func](downloadArray);
+  console.log(contentArray);
 
   const returnObj = {
     listItems: listArray?.length,
@@ -86,6 +63,46 @@ export const scrapeNewContent = async (type) => {
   console.log(textStr);
 
   return returnObj;
+
+  //run shit
+
+  // switch (type) {
+  //   case "articles":
+  //     console.log("GETTING LIST DATA FOR " + type.toUpperCase());
+  //     listArray = await buildArticleList(newListHTML);
+  //     break;
+
+  //   case "pics":
+  //     console.log("GETTING LIST DATA FOR " + type.toUpperCase());
+  //     listArray = await buildPicSetList(newListHTML);
+  //     break;
+
+  //   case "vids":
+  //     console.log("GETTING LIST DATA FOR " + type.toUpperCase());
+  //     listArray = await buildVidList(newListHTML);
+  //     break;
+  // }
+
+  // const contentModel = new KCNA({ type: type });
+  // const downloadArray = await contentModel.getContentToDownloadArray();
+  // let pageArray = [];
+
+  // switch (type) {
+  //   case "articles":
+  //     console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
+  //     pageArray = await buildArticleContent(downloadArray);
+  //     break;
+
+  //   case "pics":
+  //     console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
+  //     pageArray = await buildPicSetContent(downloadArray);
+  //     break;
+
+  //   case "vids":
+  //     console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
+  //     pageArray = await buildVidPageContent(downloadArray);
+  //     break;
+  // }
 };
 
 //------------------
