@@ -21,15 +21,8 @@ export const scrapeKCNA = async () => {
     console.log(scrapeData);
   }
 
-  //!!!! group below into single function??? (donwloadMedia?)
-  //new media items, will check for / DOWNLOAD both
-  await scrapeNewPicData();
-  await scrapeNewVidData();
-
-  //download shit
-  await downloadNewPicsFS();
-  await downloadNewVidsFS();
-  console.log("FINISHED GETTING NEW DATA");
+  const downloadData = await scrapeNewMedia();
+  console.log(downloadData);
 
   //UPLOAD
   const uploadData = await uploadNewTG();
@@ -78,14 +71,24 @@ export const scrapeNewContent = async (type) => {
     pageItems: pageArray?.length,
   };
 
-  const textStr =
-    "FOUND " + returnObj.listItems + " " + type.toUpperCase() + " LIST ITEMS; GOT " + returnObj.pageItems + " " + type.toUpperCase() + " OBJECTS";
+  const textStr = "FOUND " + returnObj.listItems + " " + type.toUpperCase() + " LIST ITEMS; GOT " + returnObj.pageItems + " " + type.toUpperCase() + " OBJECTS";
   console.log(textStr);
 
   return returnObj;
 };
 
 //------------------
+
+//NEW MEDIA SECTION (URLS AND DOWNLOAD)
+export const scrapeNewMedia = async () => {
+  await scrapeNewPicData();
+  await scrapeNewVidData();
+
+  //download shit
+  await downloadNewPicsFS();
+  await downloadNewVidsFS();
+  console.log("FINISHED GETTING NEW MEDIA DATA");
+};
 
 //GET NEW MEDIA URLS section
 export const scrapeNewPicData = async () => {
