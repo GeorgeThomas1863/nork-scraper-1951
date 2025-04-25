@@ -37,9 +37,10 @@ export const scrapeKCNA = async () => {
 export const scrapeNewContent = async (type) => {
   //get map objs
   const newListInputObj = await newListMap(type);
-  console.log("AHHHHHHHHH");
-  console.log(newListInputObj);
   const newContentInputObj = await newContentMap(type);
+
+  console.log("AHHHHHHHHHHHHHHHH")
+  console.log(newContentInputObj)
 
   //get list data
   const listModel = new KCNA({ url: CONFIG[newListInputObj.param] });
