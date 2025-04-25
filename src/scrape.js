@@ -37,15 +37,16 @@ export const scrapeKCNA = async () => {
 export const scrapeNewContent = async (type) => {
   //get map objs
   const newListInputObj = await newListMap(type);
+  const ballfucker = newListInputObj.func 
   // const newContentInputObj = await newContentMap(type);
   console.log("AHHHHHHHHHHHH")
-  console.log(newListInputObj.func);
+  console.log(ballfucker);
 
   //get list data
   const listModel = new KCNA({ url: CONFIG[newListInputObj.param] });
   const newListHTML = await listModel.getHTML();
   //runs function based on type (using map.func)
-  const listArray = await [newListInputObj.func]();
+  const listArray = await [ballfucker](newListHTML);
   console.log(listArray);
 
   // //get content
