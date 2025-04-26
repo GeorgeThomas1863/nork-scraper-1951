@@ -95,6 +95,6 @@ export const downloadNewVidsFS = async (inputArray) => {
 
 //UPLOAD SHIT
 
-export const uploadNewVidsTG = async (inputArray) => {
+export const uploadNewVidPagesTG = async (inputArray) => {
   console.log("BUILD");
 };

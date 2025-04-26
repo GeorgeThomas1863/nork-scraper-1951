@@ -32,6 +32,7 @@ class KCNA {
       return res.data;
     } catch (e) {
       //AXIOS PRODUCES OWN CUSTOM ERROR
+      console.log("FUCK MEEEEEEEEEE");
       console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + (await e.response) + "; REQUEST: " + (await e.request));
       return null;
     }
@@ -52,13 +53,11 @@ class KCNA {
         timeout: 30000,
       });
 
-      // console.log("RES!!!!!!!!!!");
-      // console.log(res);
-
       return res;
     } catch (e) {
-      // console.log("AXIOS ERROR, for " + inputURL);
-      console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + (await e.response) + "; REQUEST: " + (await e.request));
+      console.log("NO FUCK YOU");
+      console.log("AXIOS ERROR, for " + inputURL + "; | RESPONSE: ");
+      console.log(e)
       const res = await this.getRawHTML(inputURL);
       return res;
     }
@@ -79,6 +78,7 @@ class KCNA {
 
       return res;
     } catch (e) {
+      console.log("BALLFUCKER");
       console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + (await e.response) + "; REQUEST: " + (await e.request));
       return null;
     }

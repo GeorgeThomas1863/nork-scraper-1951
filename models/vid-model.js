@@ -264,14 +264,16 @@ class Vid {
     const eTag = headerData.etag;
     const vidEditDate = new Date(headerData["last-modified"]);
     const contentRange = headerData["content-range"];
-    const vidSize = contentRange.substring(contentRange.lastIndexOf("/") + 1, contentRange.length - 1);
+    const vidSizeBytes = contentRange.substring(contentRange.lastIndexOf("/") + 1, contentRange.length - 1);
+    const vidSizeMB = +(vidSizeBytes / 1048576).toFixed(2);
 
     const headerObj = {
       scrapeDate: new Date(),
-      vidSize: vidSize,
       serverData: serverData,
       eTag: eTag,
       vidEditDate: vidEditDate,
+      vidSizeBytes: vidSizeBytes,
+      vidSizeMB: vidSizeMB,
     };
 
     return headerObj;

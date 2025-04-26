@@ -226,6 +226,7 @@ class Pic {
     return picParams;
   }
 
+  //CAN BREAK UP BELOW / REFACTOR
   /**
    * Builds picObj from looking up pic headers (and input)
    * throws ERROR if URL doesnt exist / wrosng, NULL if url NOT pic (to iterate through dateArray)
@@ -270,11 +271,16 @@ class Pic {
   async parsePicHeaders() {
     const { headerData } = this.dataObject;
 
+    console.log("PIC HEADER DATA");
+    console.log(headerData);
+
     //otherwise get data about pic and add to obj //TEST
     const serverData = headerData.server;
     const eTag = headerData.etag;
     const picEditDate = new Date(headerData["last-modified"]);
     const dataType = headerData["content-type"];
+    const picSizeBytes = headerData["content-length"];
+    const picSizeMB = +(picSizeBytes / 1048576).toFixed(2);
 
     const headerObj = {
       scrapeDate: new Date(),
@@ -282,6 +288,8 @@ class Pic {
       serverData: serverData,
       eTag: eTag,
       picEditDate: picEditDate,
+      picSizeBytes: picSizeBytes,
+      picSizeMB: picSizeMB,
     };
 
     return headerObj;
