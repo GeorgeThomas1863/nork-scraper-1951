@@ -46,7 +46,7 @@ export const scrapeNewContent = async (type) => {
   const listModel = new KCNA({ url: CONFIG[newListInputObj.param] });
   const newListHTML = await listModel.getHTML();
   //runs function based on type (using map.func)
-  const listArray = await global[newListInputObj.func](newListHTML);
+  const listArray = await this[newListInputObj.func](newListHTML);
   console.log(listArray);
 
   // //get content
