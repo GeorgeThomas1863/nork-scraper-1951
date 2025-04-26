@@ -6,6 +6,8 @@ import dbModel from "./db-model.js";
 // import Pic from "./pic-model.js";
 import UTIL from "./util-model.js";
 
+import { postTitleTG } from "../src/tg-post.js";
+
 /**
  * @class Article
  * @description Does shit with KCNA Articles (gets them, parses html)
@@ -324,7 +326,7 @@ class Article {
     const normalModel = new UTIL({ inputObj: inputObj });
     const normalObj = await normalModel.normalizeInputsTG();
 
-    const titleData = await postTitleTG(normalObj)
+    const titleData = await postTitleTG(normalObj);
 
     //FIRST POST TITLE AND DATE
   }

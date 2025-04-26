@@ -262,8 +262,8 @@ class Pic {
 
     const picObj = { ...picParams, ...headerObj };
 
-    console.log("PIC OBJECT");
-    console.log(picObj);
+    // console.log("PIC OBJECT");
+    // console.log(picObj);
 
     return picObj;
   }
@@ -302,13 +302,17 @@ class Pic {
 
   async downloadPicArray() {
     const { inputArray } = this.dataObject;
+
+    //checks /sort not necessary but doing anyway
     if (!inputArray || !inputArray.length) return null;
+    const sortModel = new UTIL({ inputArray: inputArray });
+    const sortArray = await sortModel.sortArrayByKcnaId();
 
     const downloadPicDataArray = [];
-    for (let i = 0; i < inputArray.length; i++) {
+    for (let i = 0; i < sortArray.length; i++) {
       try {
         //add save path to picObj
-        const picObj = inputArray[i];
+        const picObj = sortArray[i];
         const savePath = CONFIG.picPath + picObj.kcnaId + ".jpg";
         picObj.savePath = savePath;
         const picModel = new Pic({ picObj: picObj });

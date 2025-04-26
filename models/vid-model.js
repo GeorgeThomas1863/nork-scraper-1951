@@ -204,8 +204,8 @@ class Vid {
     const vidParams = await paramModel.getVidParams();
     if (!vidParams) return null;
 
-    console.log("VID PARAMS");
-    console.log(vidParams);
+    // console.log("VID PARAMS");
+    // console.log(vidParams);
 
     const vidObjModel = new Vid({ vidParams: vidParams });
     const vidObj = await vidObjModel.getVidObj();
@@ -231,8 +231,8 @@ class Vid {
       dateString: dateString,
     };
 
-    console.log("FUCKING VID PARAMS");
-    console.log(vidParams);
+    // console.log("FUCKING VID PARAMS");
+    // console.log(vidParams);
 
     return vidParams;
   }
@@ -251,14 +251,17 @@ class Vid {
 
     const vidObj = { ...vidParams, ...headerObj };
 
-    console.log("VID OBJECT");
-    console.log(vidObj);
+    // console.log("VID OBJECT");
+    // console.log(vidObj);
 
     return vidObj;
   }
 
   async parseVidHeaders() {
     const { headerData } = this.dataObject;
+
+    console.log("VID HEADER DATA");
+    console.log(headerData);
 
     const serverData = headerData.server;
     const eTag = headerData.etag;
@@ -286,17 +289,15 @@ class Vid {
   async downloadVidArray() {
     const { inputArray } = this.dataObject;
 
-    console.log("VID ARRAY LENGTH");
-    console.log(inputArray);
-    console.log(inputArray.length);
-
     if (!inputArray || !inputArray.length) return null;
+    const sortModel = new UTIL({ inputArray: inputArray });
+    const sortArray = await sortModel.sortArrayByKcnaId();
 
     const downloadVidDataArray = [];
-    for (let i = 0; i < inputArray.length; i++) {
+    for (let i = 0; i < sortArray.length; i++) {
       try {
         //add save path to picObj
-        const vidObj = inputArray[i];
+        const vidObj = sortArray[i];
         const savePath = CONFIG.vidPath + vidObj.kcnaId + ".mp4";
         vidObj.savePath = savePath;
         const vidModel = new Vid({ vidObj: vidObj });
@@ -329,7 +330,7 @@ class Vid {
     await checkModel.urlNewCheck();
 
     try {
-      await randomDelay(1);
+      // await randomDelay(1);
       const res = await axios({
         method: "get",
         url: url,
@@ -337,15 +338,16 @@ class Vid {
         responseType: "stream",
       });
 
-      console.log("RES!!!!");
-      console.log(res);
+      // console.log("RES!!!!");
+      // console.log(res);
 
       const writer = fs.createWriteStream(savePath);
       const stream = res.data.pipe(writer);
       const totalSize = parseInt(res.headers["content-length"], 10);
+      const mbSize = +(totalSize / 1048576).toFixed(2);
       let downloadedSize = 0;
 
-      console.log("DOWNLOADING VID " + totalSize + "B");
+      console.log("DOWNLOADING VID " + mbSize + "MB");
       console.log(totalSize);
 
       //download shit
@@ -359,6 +361,8 @@ class Vid {
         stream.on("finish", resolve);
         stream.on("error", reject);
       });
+
+      console.log("VID DOWNLOADED TO " + savePath);
 
       //store downloadedPicData
       const downloadVidObj = { ...vidObj };

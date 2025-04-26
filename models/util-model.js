@@ -20,6 +20,32 @@ class UTIL {
    * @param {} inputArray
    * @returns sorted Array of article OBJECTS (sorted by date oldest to newest)
    */
+  async sortArrayByKcnaId() {
+    const { inputArray } = this.dataObject;
+    //return null on blank input
+    if (!inputArray || !inputArray.length) return null;
+
+    // Create a copy of the array to avoid modifying the original
+    const sortArray = [...inputArray];
+
+    //sort input array by DATE OLDEST to NEWEST
+    sortArray.sort((a, b) => {
+      // Convert datetime strings to Date objects if needed
+      const kcnaA = a.kcnaId;
+      const kcnaB = b.kcnaId;
+
+      return kcnaA - kcnaB;
+    });
+
+    return sortArray;
+  }
+
+  /**
+   * Function that sorts an array of article OBJECTS by DATE
+   * @function sortArrayByDate
+   * @param {} inputArray
+   * @returns sorted Array of article OBJECTS (sorted by date oldest to newest)
+   */
   async sortArrayByDate() {
     const { inputArray } = this.dataObject;
     //return null on blank input
