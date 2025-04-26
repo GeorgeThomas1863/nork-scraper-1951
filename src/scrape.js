@@ -16,7 +16,7 @@ import { buildVidList, buildVidPageContent, getVidDataArray, downloadNewVidsFS, 
 
 export const scrapeKCNA = async () => {
   const { typeArr } = CONFIG;
-  console.log("STARTING KCNA NEW DATA SCRAPE");
+  console.log("STARTING NEW KCNA SCRAPE AT " + new Date());
 
   //loop through types for content data
   for (let i = 0; i < typeArr.length; i++) {
