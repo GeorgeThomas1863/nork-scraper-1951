@@ -43,6 +43,10 @@ export const getNewMediaData = async (type) => {
 
 export const downloadNewMediaFS = async (type) => {
   const downloadObj = await downloadNewMediaMap(type);
+
+  console.log("DOWNLOAD OBJECT");
+  console.log(downloadObj);
+
   const downloadModel = new dbModel(downloadObj.params, "");
   const downloadArray = await downloadModel.findNewURLs();
 
