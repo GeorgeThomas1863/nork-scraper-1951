@@ -60,8 +60,8 @@ export const scrapeNewContent = async (type) => {
 export const scrapeNewMedia = async () => {
   const { typeArr } = CONFIG;
 
-  //retarded loop for getting new media data
-  for (let i = 0; i < typeArr.length; i++) {
+  //retarded loop for getting new media data (start at 1 bc 0 is articles)
+  for (let i = 1; i < typeArr.length; i++) {
     const findType = typeArr[i];
     if (findType === "articles") continue;
     const newMediaModel = new KCNA({ type: findType });
@@ -69,7 +69,7 @@ export const scrapeNewMedia = async () => {
   }
 
   //retarded loop for downloading shit
-  for (let i = 0; i < typeArr.length; i++) {
+  for (let i = 1; i < typeArr.length; i++) {
     const downloadType = typeArr[i];
     if (downloadType === "articles") continue;
     const downloadDataModel = new KCNA({ type: downloadType });
