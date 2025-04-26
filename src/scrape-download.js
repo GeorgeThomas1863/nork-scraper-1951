@@ -3,7 +3,6 @@ import dbModel from "../models/db-model.js";
 
 import { findNewMediaMap, downloadNewMediaMap } from "../config/map.js";
 
-
 //NEW MEDIA SECTION (URLS AND DOWNLOAD)
 export const scrapeNewMedia = async () => {
   const { typeArr } = CONFIG;
@@ -30,9 +29,6 @@ export const getNewMediaData = async (type) => {
   const arrayModel = new dbModel(newMediaObj.params, "");
   const downloadArray = await arrayModel.findNewURLs();
 
-  console.log("NEW MEDIA OBJECT");
-  console.log(newMediaObj);
-
   if (!downloadArray || !downloadArray.length) {
     console.log("NO NEW " + type.toUpperCase());
     return null;
@@ -49,6 +45,9 @@ export const downloadNewMediaFS = async (type) => {
   const downloadObj = await downloadNewMediaMap(type);
   const downloadModel = new dbModel(downloadObj.params, "");
   const downloadArray = await downloadModel.findNewURLs();
+
+  console.log("DOWNLOAD ARRAY");
+  console.log(downloadArray);
 
   if (!downloadArray || !downloadArray.length) {
     console.log("NO NEW " + type.toUpperCase() + " TO DOWNLOAD");
