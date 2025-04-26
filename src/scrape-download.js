@@ -52,8 +52,8 @@ export const downloadNewMediaFS = async (type) => {
   const downloadModel = new dbModel(downloadObj.params, "");
   const downloadArray = await downloadModel.findNewURLs();
 
-  console.log("DOWNLOAD ARRAY");
-  console.log(downloadArray);
+  // console.log("DOWNLOAD ARRAY");
+  // console.log(downloadArray);
 
   if (!downloadArray || !downloadArray.length) {
     console.log("NO NEW " + type.toUpperCase() + " TO DOWNLOAD");
