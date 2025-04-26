@@ -32,6 +32,8 @@ export const buildPicSetList = async (inputHTML) => {
   }
 };
 
+//---------------
+
 //PIC SET CONTENT
 export const buildPicSetContent = async (inputArray) => {
   const picSetArray = [];

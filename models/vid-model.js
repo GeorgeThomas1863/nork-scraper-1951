@@ -24,16 +24,16 @@ class Vid {
     const dom = new JSDOM(html);
     const document = dom.window.document;
 
-    // Select all the elements that contain individual video data
-    const vidWrapperArray = document.querySelectorAll(".video-wrapper");
-
     //throw error if no vid Pages found
-    if (!vidWrapperArray || !vidWrapperArray.length) {
+    if (!document) {
       const error = new Error("CANT EXTRACT VID PAGE LIST");
       error.url = CONFIG.vidListURL;
       error.function = "getVidListArray (MODEL)";
       throw error;
     }
+
+    // Select all the elements that contain individual video data
+    const vidWrapperArray = document.querySelectorAll(".video-wrapper");
 
     const vidListModel = new Vid({ inputArray: vidWrapperArray });
     const vidListArray = await vidListModel.parseVidPageLinks();
