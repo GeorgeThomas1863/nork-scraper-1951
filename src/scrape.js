@@ -51,7 +51,7 @@ export const scrapeNewContent = async (type) => {
   //map obj, new content for scraping
   const newContentInputObj = await newContentMap(type);
   const contentModel = new dbModel(newContentInputObj.params, "");
-  const downloadArray = await contentModel.getContentToDownloadArray();
+  const downloadArray = await contentModel.findNewURLs();
 
   //scrape new content (based on type using map.func)
   console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
