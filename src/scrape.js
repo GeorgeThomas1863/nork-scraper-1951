@@ -35,29 +35,13 @@ export const scrapeKCNA = async () => {
   return;
 };
 
-//MIGHT WANT TO MAKE FUNCTIONS BELOW A PART OF KCNA MODEL (GET WORKING BEFORE DESTROYING AGAIN)
-
 //scrape new content
 export const scrapeNewContent = async (type) => {
-  //get map obj, new list html
-  const newListInputObj = await newListMap(type);
-  const listModel = new KCNA({ url: CONFIG[newListInputObj.param] });
-  const newListHTML = await listModel.getHTML();
+  const listModel = new KCNA({ type: type });
+  const listArray = await listModel.getNewListData();
 
-  //extract list array from html (based on type using map.func)
-  console.log("GETTING LIST DATA FOR " + type.toUpperCase());
-  const listArray = await newListInputObj.func(newListHTML);
-  console.log("FOUND " + listArray.length + " " + type.toUpperCase());
-
-  //map obj, new content for scraping
-  const newContentInputObj = await newContentMap(type);
-  const contentModel = new dbModel(newContentInputObj.params, "");
-  const downloadArray = await contentModel.findNewURLs();
-
-  //scrape new content (based on type using map.func)
-  console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
-  const contentArray = await newContentInputObj.func(downloadArray);
-  console.log("GOT CONTENT FOR " + contentArray.length + " " + type.toUpperCase());
+  const contentModel = new KCNA({ type: type });
+  const contentArray = await contentModel.getNewContentData();
 
   const returnObj = {
     listItems: listArray?.length,
@@ -74,38 +58,29 @@ export const scrapeNewContent = async (type) => {
 
 //NEW MEDIA SECTION (URLS AND DOWNLOAD)
 export const scrapeNewMedia = async () => {
-  await scrapeNewPicData();
-  await scrapeNewVidData();
+  await findNewMediaItems("pics");
+  await findNewMediaItems("vids");
 
   //download shit
-  await downloadNewPicsFS();
-  await downloadNewVidsFS();
+  await downloadNewMediaItems("pics");
+  await downloadNewMediaItems("vids");
   console.log("FINISHED GETTING NEW MEDIA DATA");
 };
 
 //GET NEW MEDIA URLS section
-export const scrapeNewPicData = async () => {
-  const picModel = new KCNA({ type: "pics" });
-  const picArray = await picModel.getMediaToDownloadArray();
-  if (!picArray || !picArray.length) return null;
+export const findNewMediaItems = async (type) => {
+  const mediaModel = new KCNA({ type: type });
+  const mediaArray = await mediaModel.getNewMediaData();
 
-  console.log("GETTING DATA FOR " + picArray?.length + " PICS");
-  const picData = await getPicDataArray(picArray);
-  console.log("FOUND " + picData?.length + " PICS");
-
-  return picData;
+  return mediaArray;
 };
 
-export const scrapeNewVidData = async () => {
-  const vidModel = new KCNA({ type: "vids" });
-  const vidArray = await vidModel.getMediaToDownloadArray();
-  if (!vidArray || !vidArray.length) return null;
+//download media items
+export const downloadNewMediaItems = async (type) => {
+  const downloadModel = new KCNA({ type: type });
+  const downloadDataArray = await downloadModel.downloadNewMediaFS();
 
-  console.log("GETTING DATA FOR " + vidArray?.length + " VIDS");
-  const vidData = await getVidDataArray(vidArray);
-  console.log("FOUND " + vidData?.length + " VIDS");
-
-  return vidData;
+  return downloadDataArray;
 };
 
 //------------------

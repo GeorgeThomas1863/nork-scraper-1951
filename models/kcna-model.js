@@ -90,6 +90,74 @@ class KCNA {
 
   //----------------------
 
+  async getNewListData() {
+    const { type } = this.dataObject;
+
+    const newListInputObj = await newListMap(type);
+    const listModel = new KCNA({ url: CONFIG[newListInputObj.param] });
+    const newListHTML = await listModel.getHTML();
+
+    //extract list array from html (based on type using map.func)
+    console.log("GETTING LIST DATA FOR " + type.toUpperCase());
+    const listArray = await newListInputObj.func(newListHTML);
+    console.log("FOUND " + listArray.length + " " + type.toUpperCase());
+
+    return listArray;
+  }
+
+  //---------------
+
+  //NEW CONTENT SECTION
+
+  async getNewContentData() {
+    const { type } = this.dataObject;
+    //map obj, new content for scraping
+    const newContentInputObj = await newContentMap(type);
+    const contentModel = new dbModel(newContentInputObj.params, "");
+    const downloadArray = await contentModel.findNewURLs();
+
+    //scrape new content (based on type using map.func)
+    console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
+    const contentArray = await newContentInputObj.func(downloadArray);
+    console.log("GOT CONTENT FOR " + contentArray.length + " " + type.toUpperCase());
+  }
+
+  //------------
+
+  //NEW MEDIA SECTION
+
+  async getNewMediaData() {
+    const { type } = this.dataObject;
+
+    const newMediaObj = await findNewMediaMap(type);
+    const arrayModel = new dbModel(newMediaObj.params, "");
+    const downloadArray = await arrayModel.findNewURLs();
+
+    if (!downloadArray || !downloadArray.length) return null;
+
+    console.log("GETTING DATA FOR " + downloadArray?.length + " " + type.toUpperCase());
+    const mediaDataArray = await newMediaObj.func(downloadArray);
+    console.log("FOUND " + mediaDataArray?.length + " " + type.toUpperCase());
+
+    return mediaDataArray;
+  }
+
+  async downloadNewMediaFS() {
+    const { type } = this.dataObject;
+
+    const downloadObj = await downloadNewMediaMap(type);
+    const downloadModel = new dbModel(downloadObj.params, "");
+    const downloadArray = await downloadModel.findNewURLs();
+
+    if (!downloadArray || !downloadArray.length) return null;
+
+    console.log("GETTING DATA FOR " + downloadArray?.length + " " + type.toUpperCase());
+    const downloadDataArray = await downloadObj.func(downloadArray);
+    console.log("FOUND " + downloadDataArray?.length + " " + type.toUpperCase());
+
+    return downloadDataArray;
+  }
+
   //LIST PAGE
 
   // /**
@@ -134,28 +202,28 @@ class KCNA {
 
   //-------------------
 
-  async getMediaToDownloadArray() {
-    //uses map to lookup params, params contain correct collections
-    const { type } = this.dataObject;
-    const newDataParams = await newMediaMap(type);
+  // async getMediaToDownloadArray() {
+  //   //uses map to lookup params, params contain correct collections
+  //   const { type } = this.dataObject;
+  //   const newDataParams = await newMediaMap(type);
 
-    const downloadModel = new dbModel(newDataParams, "");
-    const downloadArray = await downloadModel.findNewPicsBySize();
-    return downloadArray;
-  }
+  //   const downloadModel = new dbModel(newDataParams, "");
+  //   const downloadArray = await downloadModel.findNewPicsBySize();
+  //   return downloadArray;
+  // }
 
-  //----------
+  // //----------
 
-  //DOWNLOAD MEDIA SECTION
-  async getMediaToScrapeFS() {
-    const { type } = this.dataObject;
+  // //DOWNLOAD MEDIA SECTION
+  // async getMediaToScrapeFS() {
+  //   const { type } = this.dataObject;
 
-    const newDataParams = await downloadMediaMap(type);
+  //   const newDataParams = await downloadMediaMap(type);
 
-    const downloadModel = new dbModel(newDataParams, "");
-    const downloadArray = await downloadModel.findNewPicsBySize();
-    return downloadArray;
-  }
+  //   const downloadModel = new dbModel(newDataParams, "");
+  //   const downloadArray = await downloadModel.findNewPicsBySize();
+  //   return downloadArray;
+  // }
 
   //-----------------
 
