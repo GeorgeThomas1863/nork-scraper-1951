@@ -204,6 +204,9 @@ class Vid {
     const vidParams = await paramModel.getVidParams();
     if (!vidParams) return null;
 
+    console.log("VID PARAMS")
+    console.log(vidParams)
+
     const vidObjModel = new Vid({ vidParams: vidParams });
     const vidObj = await vidObjModel.getVidObj();
     if (!vidObj) return null;
