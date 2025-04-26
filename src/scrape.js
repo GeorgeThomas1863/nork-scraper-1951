@@ -1,12 +1,10 @@
 import CONFIG from "../config/scrape-config.js";
 import KCNA from "../models/kcna-model.js";
-import dbModel from "../models/db-model.js";
+// import dbModel from "../models/db-model.js";
 
-import { newListMap, newContentMap, newMediaMap, downloadMediaMap, newUploadMap } from "../config/map.js";
-
-import { buildArticleList, buildArticleContent, uploadNewArticlesTG } from "./articles.js";
-import { buildPicSetList, buildPicSetContent, getPicDataArray, downloadNewPicsFS, uploadNewPicSetsTG } from "./pics.js";
-import { buildVidList, buildVidPageContent, getVidDataArray, downloadNewVidsFS, uploadNewVidsTG } from "./vids.js";
+import { uploadNewArticlesTG } from "./articles.js";
+import { uploadNewPicSetsTG } from "./pics.js";
+import { uploadNewVidsTG } from "./vids.js";
 
 /**
  * Gets / checks for new KCNA data, downloads it AND uploads it to TG
@@ -35,6 +33,10 @@ export const scrapeKCNA = async () => {
   return;
 };
 
+//---------------
+
+//GET URLs / DOWNLOAD SHIT SECTION
+
 //scrape new content
 export const scrapeNewContent = async (type) => {
   const listModel = new KCNA({ type: type });
@@ -54,38 +56,33 @@ export const scrapeNewContent = async (type) => {
   return returnObj;
 };
 
-//------------------
-
 //NEW MEDIA SECTION (URLS AND DOWNLOAD)
 export const scrapeNewMedia = async () => {
-  await findNewMediaItems("pics");
-  await findNewMediaItems("vids");
+  const { typeArr } = CONFIG;
 
-  //download shit
-  await downloadNewMediaItems("pics");
-  await downloadNewMediaItems("vids");
-  console.log("FINISHED GETTING NEW MEDIA DATA");
-};
+  //retarded loop for getting new media data
+  for (let i = 0; i < typeArr.length; i++) {
+    const findType = typeArr[i];
+    if (findType === "articles") continue;
+    const newMediaModel = new KCNA({ type: findType });
+    await newMediaModel.getNewMediaData();
+  }
 
-//GET NEW MEDIA URLS section
-export const findNewMediaItems = async (type) => {
-  const mediaModel = new KCNA({ type: type });
-  const mediaArray = await mediaModel.getNewMediaData();
+  //retarded loop for downloading shit
+  for (let i = 0; i < typeArr.length; i++) {
+    const downloadType = typeArr[i];
+    if (downloadType === "articles") continue;
+    const downloadDataModel = new KCNA({ type: downloadType });
+    await downloadDataModel.downloadNewMediaFS();
+  }
 
-  return mediaArray;
-};
-
-//download media items
-export const downloadNewMediaItems = async (type) => {
-  const downloadModel = new KCNA({ type: type });
-  const downloadDataArray = await downloadModel.downloadNewMediaFS();
-
-  return downloadDataArray;
+  return "FINISHED GETTING NEW MEDIA DATA";
 };
 
 //------------------
 
-//UPLOAD SHIT
+//UPLOAD SHIT SECTION
+
 export const uploadNewTG = async () => {
   const { typeArr } = CONFIG;
 

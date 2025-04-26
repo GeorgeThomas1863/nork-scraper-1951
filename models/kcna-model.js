@@ -4,7 +4,7 @@ import CONFIG from "../config/scrape-config.js";
 import { randomDelay } from "../config/util.js";
 import dbModel from "./db-model.js";
 
-import { newListMap, newContentMap, newMediaMap, downloadMediaMap, newUploadMap } from "../config/map.js";
+import { newListMap, newContentMap, findNewMediaMap, downloadNewMediaMap, newUploadMap } from "../config/map.js";
 
 /**
  * @class KCNA
