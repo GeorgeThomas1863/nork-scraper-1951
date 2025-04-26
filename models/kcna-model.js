@@ -32,7 +32,7 @@ class KCNA {
       return res.data;
     } catch (e) {
       //AXIOS PRODUCES OWN CUSTOM ERROR
-      console.log("FUCK MEEEEEEEEEE");
+      console.log("GET HTML ERROR");
       console.log("ERROR, for " + inputURL);
       console.log(e);
       return null;
@@ -50,9 +50,9 @@ class KCNA {
     const inputURL = this.dataObject.url;
 
     try {
-      const delay = await randomDelay(3);
-      console.log("DELAY");
-      console.log(delay);
+      // const delay = await randomDelay(3);
+      // console.log("DELAY");
+      // console.log(delay);
 
       const res = await axios({
         method: "get",
@@ -63,7 +63,7 @@ class KCNA {
 
       return res;
     } catch (e) {
-      console.log("NO FUCK YOU");
+      console.log("GET HEADERS ERROR");
       console.log("ERROR, for " + inputURL + "; | RESPONSE: ");
       console.log(e);
       const res = await this.getRawHTML(inputURL);
@@ -76,7 +76,7 @@ class KCNA {
     // const inputURL = this.dataObject.url;
 
     try {
-      // await randomDelay(1);
+      await randomDelay(3);
       const res = await axios({
         method: "get",
         url: inputURL,
@@ -86,7 +86,7 @@ class KCNA {
 
       return res;
     } catch (e) {
-      console.log("BALLFUCKER");
+      console.log("GET FULL DATA REQ (ON HEADERS FAIL) ERROR");
       console.log(e);
       return null;
     }

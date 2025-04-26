@@ -70,9 +70,13 @@ export const buildArticleContent = async (inputArray) => {
 //UPLOAD SHIT
 
 export const uploadNewArticlesTG = async (inputArray) => {
+  //null check and sort shouldnt be necessary, doing for redundancy
   if (!inputArray || !inputArray.length) return null;
+  const sortModel = new UTIL({ inputArray: inputArray });
+  const sortArray = await sortModel.sortArrayByDate();
 
-  const uploadModel = new Article({ inputArray: inputArray });
+  //upload the array
+  const uploadModel = new Article({ inputArray: sortArray });
   const uploadArticleData = await uploadModel.uploadArticleArrayTG();
 
   return uploadArticleData;

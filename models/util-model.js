@@ -169,6 +169,31 @@ class UTIL {
     const normalDate = new Date(year, month - 1, day);
     return normalDate;
   }
+
+  /**
+   * Normalizes article data for telegram posting format
+   * @function normalizeInputsTG
+   * @params inputObj wiht raw article data
+   * @returns Normalized object with telegram-friendly formatting
+   */
+  async normalizeInputsTG() {
+    const { inputObj } = this.dataObject;
+
+    const urlRaw = inputObj.url;
+    const urlNormal = urlRaw.replace(/\./g, "[.]").replace(/:/g, "[:]");
+    const dateRaw = inputObj.date;
+    const dateNormal = new Date(dateRaw).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" });
+    const titleNormal = `<b>${inputObj.title}</b>`;
+
+    const outputObj = {
+      url: urlNormal,
+      date: dateNormal,
+      title: titleNormal,
+      content: inputObj.content,
+    };
+
+    return outputObj;
+  }
 }
 
 export default UTIL;

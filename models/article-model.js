@@ -318,12 +318,13 @@ class Article {
     }
   }
 
-  //!!!!
-  //HERE (LOOK IN NORK SCRAPER 4000)
-  //!!!!!!
-
   async uploadArticleObjTG() {
     const { inputObj } = this.dataObject;
+
+    const normalModel = new UTIL({ inputObj: inputObj });
+    const normalObj = await normalModel.normalizeInputsTG();
+
+    const titleData = await postTitleTG(normalObj)
 
     //FIRST POST TITLE AND DATE
   }
