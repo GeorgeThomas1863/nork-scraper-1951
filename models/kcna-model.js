@@ -58,7 +58,7 @@ class KCNA {
       return res;
     } catch (e) {
       // console.log("AXIOS ERROR, for " + inputURL);
-      console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + e.response + "; REQUEST: " + e.request);
+      console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + (await e.response) + "; REQUEST: " + (await e.request));
       const res = await this.getRawHTML(inputURL);
       return res;
     }
@@ -79,7 +79,7 @@ class KCNA {
 
       return res;
     } catch (e) {
-      console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + e.response + "; REQUEST: " + e.request);
+      console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + (await e.response) + "; REQUEST: " + (await e.request));
       return null;
     }
   }
