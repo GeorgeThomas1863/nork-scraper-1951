@@ -34,6 +34,8 @@ export const scrapeKCNA = async () => {
   return;
 };
 
+//MIGHT WANT TO MAKE FUNCTIONS BELOW A PART OF KCNA MODEL (GET WORKING BEFORE DESTROYING AGAIN)
+
 //scrape new content
 export const scrapeNewContent = async (type) => {
   //get map obj, new list html

@@ -92,11 +92,11 @@ class KCNA {
 
   //LIST PAGE
 
-  /**
-   * Gets LIST PAGE HTML for latest (predefined) item location
-   * @param {} type (article, picSet, vid)
-   * @returns
-   */
+  // /**
+  //  * Gets LIST PAGE HTML for latest (predefined) item location
+  //  * @param {} type (article, picSet, vid)
+  //  * @returns
+  //  */
   // async getNewListHTML() {
   //   const { url } = this.dataObject;
 
@@ -116,21 +116,21 @@ class KCNA {
 
   //ITEM CONTENT SECTION
 
-  /**
-   * Gets Obj items to download using MONGO (to pull those not downloaded)
-   * @function getDownloadArray
-   * @param {*} type (data item type: article, picSet, vid)
-   * @returns array of data objs for tracking
-   */
-  async getContentToDownloadArray() {
-    //uses map to lookup params, params contain correct collections
-    const { type } = this.dataObject;
-    const newDataParams = await newContentMap(type);
+  // /**
+  //  * Gets Obj items to download using MONGO (to pull those not downloaded)
+  //  * @function getDownloadArray
+  //  * @param {*} type (data item type: article, picSet, vid)
+  //  * @returns array of data objs for tracking
+  //  */
+  // async getContentToDownloadArray() {
+  //   //uses map to lookup params, params contain correct collections
+  //   const { type } = this.dataObject;
+  //   const newDataParams = await newContentMap(type);
 
-    const downloadModel = new dbModel(newDataParams, "");
-    const downloadArray = await downloadModel.findNewURLs();
-    return downloadArray;
-  }
+  //   const downloadModel = new dbModel(newDataParams, "");
+  //   const downloadArray = await downloadModel.findNewURLs();
+  //   return downloadArray;
+  // }
 
   //-------------------
 
