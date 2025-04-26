@@ -42,6 +42,8 @@ export const getNewMediaData = async (type) => {
 };
 
 export const downloadNewMediaFS = async (type) => {
+  console.log("FUCKING TYPE");
+  console.log(type);
   const downloadObj = await downloadNewMediaMap(type);
 
   console.log("DOWNLOAD OBJECT");
