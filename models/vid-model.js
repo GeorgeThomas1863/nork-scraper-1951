@@ -204,8 +204,8 @@ class Vid {
     const vidParams = await paramModel.getVidParams();
     if (!vidParams) return null;
 
-    console.log("VID PARAMS")
-    console.log(vidParams)
+    console.log("VID PARAMS");
+    console.log(vidParams);
 
     const vidObjModel = new Vid({ vidParams: vidParams });
     const vidObj = await vidObjModel.getVidObj();
@@ -283,6 +283,9 @@ class Vid {
 
   async downloadVidArray() {
     const { inputArray } = this.dataObject;
+
+    console.log("DOWNLOAD VID ARRAY");
+    console.log(inputArray);
 
     if (!inputArray || !inputArray.length) return null;
 
