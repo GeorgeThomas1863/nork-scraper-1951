@@ -81,12 +81,12 @@ export const buildVidData = async (inputArray) => {
 //----------------------------
 
 //DOWNLOAD VID SECTION
-export const downloadNewVidsFS = async (inputArray) => {
+export const downloadNewVidsFS = async (vidInputArray) => {
   // const inputModel = new KCNA({ type: "vids" });
   // const downloadArray = await inputModel.getMediaToScrapeFS();
 
   //ONLY DOWNLOADING 1 PER ITERATION
-  const vidModel = new Vid({ inputArray: inputArray[0] });
+  const vidModel = new Vid({ inputArray: vidInputArray[0] });
   const downloadVidDataArray = await vidModel.downloadVidArray();
   return downloadVidDataArray;
 };

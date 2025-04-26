@@ -285,6 +285,7 @@ class Vid {
     const { inputArray } = this.dataObject;
 
     console.log("VID ARRAY LENGTH");
+    console.log(inputArray);
     console.log(inputArray.length);
 
     if (!inputArray || !inputArray.length) return null;
