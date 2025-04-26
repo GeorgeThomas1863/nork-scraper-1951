@@ -82,6 +82,9 @@ export const downloadNewPicsFS = async (inputArray) => {
   // const downloadArray = await inputModel.getMediaToScrapeFS();
   // console.log("DOWNLOADING " + downloadArray.length + " FUCKING PICS");
 
+  console.log("PIC INPUT ARRAY")
+  console.log(inputArray?.length)
+
   //easier to do all in model
   const picModel = new Pic({ inputArray: inputArray });
   const downloadPicDataArray = await picModel.downloadPicArray();
