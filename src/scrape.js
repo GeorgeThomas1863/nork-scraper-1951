@@ -45,6 +45,8 @@ export const scrapeNewContent = async (type) => {
   const contentModel = new KCNA({ type: type });
   const contentArray = await contentModel.getNewContentData();
 
+  if (!contentArray || !contentArray.length) return null;
+
   const returnObj = {
     listItems: listArray?.length,
     contentItems: contentArray?.length,
@@ -62,17 +64,15 @@ export const scrapeNewMedia = async () => {
 
   //retarded loop for getting new media data (start at 1 bc 0 is articles)
   for (let i = 1; i < typeArr.length; i++) {
-    const findType = typeArr[i];
-    if (findType === "articles") continue;
-    const newMediaModel = new KCNA({ type: findType });
+    if (typeArr[i] === "articles") continue;
+    const newMediaModel = new KCNA({ type: typeArr[i] });
     await newMediaModel.getNewMediaData();
   }
 
   //retarded loop for downloading shit
   for (let i = 1; i < typeArr.length; i++) {
-    const downloadType = typeArr[i];
-    if (downloadType === "articles") continue;
-    const downloadDataModel = new KCNA({ type: downloadType });
+    if (typeArr[i] === "articles") continue;
+    const downloadDataModel = new KCNA({ type: typeArr[i] });
     await downloadDataModel.downloadNewMediaFS();
   }
 
