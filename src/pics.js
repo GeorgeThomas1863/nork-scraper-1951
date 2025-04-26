@@ -77,13 +77,13 @@ export const buildPicData = async (inputArray) => {
 //----------------------
 
 //DOWNLOAD PIC SECTION
-export const downloadNewPicsFS = async () => {
-  const inputModel = new KCNA({ type: "pics" });
-  const downloadArray = await inputModel.getMediaToScrapeFS();
-  console.log("DOWNLOADING " + downloadArray.length + " FUCKING PICS");
+export const downloadNewPicsFS = async (inputArray) => {
+  // const inputModel = new KCNA({ type: "pics" });
+  // const downloadArray = await inputModel.getMediaToScrapeFS();
+  // console.log("DOWNLOADING " + downloadArray.length + " FUCKING PICS");
 
   //easier to do all in model
-  const picModel = new Pic({ inputArray: downloadArray });
+  const picModel = new Pic({ inputArray: inputArray });
   const downloadPicDataArray = await picModel.downloadPicArray();
 
   return downloadPicDataArray;
