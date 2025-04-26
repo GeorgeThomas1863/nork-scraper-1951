@@ -18,7 +18,7 @@ export const scrapeNewMedia = async () => {
   for (let i = 1; i < typeArr.length; i++) {
     const downloadType = typeArr[i];
     if (downloadType === "articles") continue;
-    await downloadNewMediaFS();
+    await downloadNewMediaFS(downloadType);
   }
 
   return "FINISHED GETTING NEW MEDIA DATA";
