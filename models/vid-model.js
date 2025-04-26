@@ -284,9 +284,6 @@ class Vid {
   async downloadVidArray() {
     const { inputArray } = this.dataObject;
 
-    console.log("DOWNLOAD VID ARRAY");
-    console.log(inputArray);
-
     if (!inputArray || !inputArray.length) return null;
 
     const downloadVidDataArray = [];
@@ -296,10 +293,10 @@ class Vid {
         const vidObj = inputArray[i];
         const savePath = CONFIG.vidPath + vidObj.kcnaId + ".mp4";
         vidObj.savePath = savePath;
-        const picModel = new Vid({ vidObj: vidObj });
+        const vidModel = new Vid({ vidObj: vidObj });
 
         //download the vid
-        const downloadVidData = await picModel.downloadVidFS();
+        const downloadVidData = await vidModel.downloadVidFS();
         if (!downloadVidData) continue;
 
         downloadVidDataArray.push(downloadVidData);
@@ -316,6 +313,9 @@ class Vid {
   async downloadVidFS() {
     const { vidObj } = this.dataObject;
     const { url, savePath } = vidObj;
+
+    console.log("DOWNLOAD VID FS");
+    console.log(vidObj);
 
     //check if new (not possible in most situations, but adding check to be sure)
     const checkModel = new dbModel(vidObj, CONFIG.vidsDownloaded);
