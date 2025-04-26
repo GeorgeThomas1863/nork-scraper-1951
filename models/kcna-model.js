@@ -133,6 +133,9 @@ class KCNA {
     const arrayModel = new dbModel(newMediaObj.params, "");
     const downloadArray = await arrayModel.findNewURLs();
 
+    console.log("NEW MEDIA OBJECT");
+    console.log(newMediaObj);
+
     if (!downloadArray || !downloadArray.length) return null;
 
     console.log("GETTING DATA FOR " + downloadArray?.length + " " + type.toUpperCase());
