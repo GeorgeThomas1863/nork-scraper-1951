@@ -1,5 +1,6 @@
 import CONFIG from "../config/scrape-config.js";
 import KCNA from "../models/kcna-model.js";
+import dbModel from "../models/db-model.js";
 
 import { newListMap, newContentMap, newMediaMap, downloadMediaMap, newUploadMap } from "../config/map.js";
 
@@ -33,45 +34,43 @@ export const scrapeKCNA = async () => {
   return;
 };
 
-//fucking r slur way of doing it, figure out better way
+//scrape new content
 export const scrapeNewContent = async (type) => {
-  //get map objs
+  //get map obj, new list html
   const newListInputObj = await newListMap(type);
-  // const ballfucker = newListInputObj.func 
-  // const newContentInputObj = await newContentMap(type);
-  console.log("AHHHHHHHHHHHH")
-  console.log(newListInputObj.func);
-
-  //get list data
   const listModel = new KCNA({ url: CONFIG[newListInputObj.param] });
   const newListHTML = await listModel.getHTML();
-  //runs function based on type (using map.func)
+
+  //extract list array from html (based on type using map.func)
+  console.log("GETTING LIST DATA FOR " + type.toUpperCase());
   const listArray = await newListInputObj.func(newListHTML);
-  console.log(listArray);
+  console.log("FOUND " + listArray.length + " " + type.toUpperCase());
 
-  // //get content
-  // const contentModel = new KCNA({ url: CONFIG[newContentInputObj.param] });
-  // const downloadArray = await contentModel.getContentToDownloadArray();
+  //map obj, new content for scraping
+  const newContentInputObj = await newContentMap(type);
+  const contentModel = new dbModel(newContentInputObj.params, "");
+  const downloadArray = await contentModel.getContentToDownloadArray();
 
-  // const contentArray = await [newContentInputObj.func](downloadArray);
-  // console.log(contentArray);
+  //scrape new content (based on type using map.func)
+  console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
+  const contentArray = await newContentInputObj.func(downloadArray);
+  console.log("GOT CONTENT FOR " + contentArray.length + " " + type.toUpperCase());
 
-  // const returnObj = {
-  //   listItems: listArray?.length,
-  //   pageItems: pageArray?.length,
-  // };
+  const returnObj = {
+    listItems: listArray?.length,
+    contentItems: contentArray?.length,
+  };
 
-  // const textStr = "FOUND " + returnObj.listItems + " " + type.toUpperCase() + " LIST ITEMS; GOT " + returnObj.pageItems + " " + type.toUpperCase() + " OBJECTS";
-  // console.log(textStr);
+  const textStr = "FOUND " + returnObj.listItems + " " + type.toUpperCase() + " LIST ITEMS; GOT " + returnObj.pageItems + " " + type.toUpperCase() + " OBJECTS";
+  console.log(textStr);
 
-  // return returnObj;
-  return null;
+  return returnObj;
 
   //run shit
 
   // switch (type) {
   //   case "articles":
-  //     console.log("GETTING LIST DATA FOR " + type.toUpperCase());
+  //
   //     listArray = await buildArticleList(newListHTML);
   //     break;
 
@@ -92,7 +91,7 @@ export const scrapeNewContent = async (type) => {
 
   // switch (type) {
   //   case "articles":
-  //     console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
+  //
   //     pageArray = await buildArticleContent(downloadArray);
   //     break;
 
