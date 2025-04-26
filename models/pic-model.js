@@ -279,7 +279,8 @@ class Pic {
     const eTag = headerData.etag;
     const picEditDate = new Date(headerData["last-modified"]);
     const dataType = headerData["content-type"];
-    const picSizeBytes = headerData["content-length"];
+    const contentRange = headerData["content-range"];
+    const picSizeBytes = +contentRange.substring(contentRange.lastIndexOf("/") + 1, contentRange.length);
     const picSizeMB = +(picSizeBytes / 1048576).toFixed(2);
 
     const headerObj = {

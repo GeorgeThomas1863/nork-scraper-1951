@@ -33,31 +33,39 @@ class KCNA {
     } catch (e) {
       //AXIOS PRODUCES OWN CUSTOM ERROR
       console.log("FUCK MEEEEEEEEEE");
-      console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + (await e.response) + "; REQUEST: " + (await e.request));
+      console.log("ERROR, for " + inputURL);
+      console.log(e);
       return null;
     }
   }
+
+  //SIMPLE HEAD REQUEST DOES NOT WORK
+
+  //     const res = await axios({
+  //       method: "head",
+  //       url: inputURL,
+  //     });
 
   async getMediaHeaders() {
     const inputURL = this.dataObject.url;
 
     try {
-      const delay = await randomDelay(5);
+      const delay = await randomDelay(3);
       console.log("DELAY");
       console.log(delay);
 
       const res = await axios({
         method: "get",
         url: inputURL,
-        headers: { Range: "bytes=0-1" },
+        headers: { Range: "bytes=0-100" },
         timeout: 30000,
       });
 
       return res;
     } catch (e) {
       console.log("NO FUCK YOU");
-      console.log("AXIOS ERROR, for " + inputURL + "; | RESPONSE: ");
-      console.log(e)
+      console.log("ERROR, for " + inputURL + "; | RESPONSE: ");
+      console.log(e);
       const res = await this.getRawHTML(inputURL);
       return res;
     }
@@ -79,7 +87,7 @@ class KCNA {
       return res;
     } catch (e) {
       console.log("BALLFUCKER");
-      console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + (await e.response) + "; REQUEST: " + (await e.request));
+      console.log(e);
       return null;
     }
   }
