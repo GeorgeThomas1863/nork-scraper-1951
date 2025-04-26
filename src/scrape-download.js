@@ -46,14 +46,8 @@ export const downloadNewMediaFS = async (type) => {
   console.log(type);
   const downloadObj = await downloadNewMediaMap(type);
 
-  console.log("DOWNLOAD OBJECT");
-  console.log(downloadObj);
-
   const downloadModel = new dbModel(downloadObj.params, "");
   const downloadArray = await downloadModel.findNewURLs();
-
-  // console.log("DOWNLOAD ARRAY");
-  // console.log(downloadArray); 
 
   if (!downloadArray || !downloadArray.length) {
     console.log("NO NEW " + type.toUpperCase() + " TO DOWNLOAD");
@@ -62,7 +56,7 @@ export const downloadNewMediaFS = async (type) => {
 
   console.log("GETTING DATA FOR " + downloadArray?.length + " " + type.toUpperCase());
   const downloadDataArray = await downloadObj.func(downloadArray);
-  console.log("FOUND " + downloadDataArray?.length + " " + type.toUpperCase());
+  console.log("DOWNLOADED " + downloadDataArray?.length + " " + type.toUpperCase());
 
   return downloadDataArray;
 };

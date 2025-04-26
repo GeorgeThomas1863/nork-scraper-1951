@@ -85,6 +85,9 @@ export const downloadNewVidsFS = async (inputArray) => {
   // const inputModel = new KCNA({ type: "vids" });
   // const downloadArray = await inputModel.getMediaToScrapeFS();
 
+  console.log("VID DOWNLOAD");
+  console.log(inputArray);
+
   //ONLY DOWNLOADING 1 PER ITERATION
   const vidModel = new Vid({ inputArray: inputArray[0] });
   const downloadVidDataArray = await vidModel.downloadVidArray();
