@@ -125,6 +125,8 @@ class KCNA {
     console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
     const contentArray = await newContentInputObj.func(downloadArray);
     console.log("GOT CONTENT FOR " + contentArray?.length + " " + type.toUpperCase());
+
+    return contentArray;
   }
 
   //------------
