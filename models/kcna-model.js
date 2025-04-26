@@ -100,7 +100,7 @@ class KCNA {
     //extract list array from html (based on type using map.func)
     console.log("GETTING LIST DATA FOR " + type.toUpperCase());
     const listArray = await newListInputObj.func(newListHTML);
-    console.log("FOUND " + listArray.length + " " + type.toUpperCase());
+    console.log("FOUND " + listArray?.length + " " + type.toUpperCase());
 
     return listArray;
   }
@@ -116,10 +116,15 @@ class KCNA {
     const contentModel = new dbModel(newContentInputObj.params, "");
     const downloadArray = await contentModel.findNewURLs();
 
+    if (!downloadArray || !downloadArray.length) {
+      console.log("NO NEW " + type.toUpperCase());
+      return null;
+    }
+
     //scrape new content (based on type using map.func)
     console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
     const contentArray = await newContentInputObj.func(downloadArray);
-    console.log("GOT CONTENT FOR " + contentArray.length + " " + type.toUpperCase());
+    console.log("GOT CONTENT FOR " + contentArray?.length + " " + type.toUpperCase());
   }
 
   //------------
@@ -136,7 +141,10 @@ class KCNA {
     console.log("NEW MEDIA OBJECT");
     console.log(newMediaObj);
 
-    if (!downloadArray || !downloadArray.length) return null;
+    if (!downloadArray || !downloadArray.length) {
+      console.log("NO NEW " + type.toUpperCase());
+      return null;
+    }
 
     console.log("GETTING DATA FOR " + downloadArray?.length + " " + type.toUpperCase());
     const mediaDataArray = await newMediaObj.func(downloadArray);
@@ -152,7 +160,10 @@ class KCNA {
     const downloadModel = new dbModel(downloadObj.params, "");
     const downloadArray = await downloadModel.findNewURLs();
 
-    if (!downloadArray || !downloadArray.length) return null;
+    if (!downloadArray || !downloadArray.length) {
+      console.log("NO NEW " + type.toUpperCase() + " TO DOWNLOAD");
+      return null;
+    }
 
     console.log("GETTING DATA FOR " + downloadArray?.length + " " + type.toUpperCase());
     const downloadDataArray = await downloadObj.func(downloadArray);
