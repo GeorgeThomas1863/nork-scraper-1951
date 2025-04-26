@@ -36,12 +36,12 @@ class KCNA {
       return res.data;
     } catch (e) {
       //AXIOS PRODUCES OWN CUSTOM ERROR
-      console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + e.response + "; REQUEST: " + e.request);
+      console.log("AXIOS ERROR, for " + inputURL + "\nRESPONSE: " + (await e.response) + "; REQUEST: " + (await e.request));
       return null;
     }
   }
 
-  async getMediaHeaders() {
+  async getMediaHeaders() {s
     const inputURL = this.dataObject.url;
 
     try {
