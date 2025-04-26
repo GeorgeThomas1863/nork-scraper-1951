@@ -59,8 +59,10 @@ export const buildVidPageContent = async (inputArray) => {
   return vidPageArray;
 };
 
+//------------------------
+
 //VID ITEM
-export const getVidDataArray = async (inputArray) => {
+export const buildVidData = async (inputArray) => {
   const vidDataArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     try {

@@ -52,8 +52,10 @@ export const buildPicSetContent = async (inputArray) => {
   return picSetArray;
 };
 
+//----------------
+
 //GET PIC ITEM DATA
-export const getPicDataArray = async (inputArray) => {
+export const buildPicData = async (inputArray) => {
   // console.log("GETTING DATA FOR " + inputArray.length + " NEW PICS");
   const picDataArray = [];
   for (let i = 0; i < inputArray.length; i++) {
