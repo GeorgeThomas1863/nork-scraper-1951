@@ -1,12 +1,6 @@
-// import CONFIG from "../config/scrape-config.js";
-// import KCNA from "../models/kcna-model.js";
-// import dbModel from "../models/db-model.js";
-
-// import { uploadNewArticlesTG } from "./articles.js";
-// import { uploadNewPicSetsTG } from "./pics.js";
-// import { uploadNewVidsTG } from "./vids.js";
-
-// import { newListMap, newContentMap, findNewMediaMap, downloadNewMediaMap, newUploadMap } from "../config/map.js";
+import { scrapeNewURLs } from "./scrape-urls.js";
+import { scrapeNewMedia } from "./scrape-download.js";
+import { uploadNewTG } from "./scrape-upload.js";
 
 /**
  * Gets / checks for new KCNA data, downloads it AND uploads it to TG
@@ -28,19 +22,3 @@ export const scrapeNewKCNA = async () => {
 
   return;
 };
-
-//------------------
-
-//UPLOAD SHIT SECTION
-
-//---------------------
-
-//---------------
-
-//NEW CONTENT SECTION
-
-//------------
-
-//NEW MEDIA SECTION
-
-//----------------------------------
