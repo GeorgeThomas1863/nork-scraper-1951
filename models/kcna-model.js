@@ -41,7 +41,7 @@ class KCNA {
     }
   }
 
-  async getMediaHeaders() {s
+  async getMediaHeaders() {
     const inputURL = this.dataObject.url;
 
     try {
