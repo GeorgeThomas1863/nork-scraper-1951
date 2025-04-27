@@ -335,64 +335,72 @@ class Pic {
   //CLAUDE CLAIMS I CAN REFACTOR, stream is an object
   async downloadPicFS() {
     const { picObj } = this.dataObject;
-    const { url, savePath } = picObj;
 
     //check if new (not possible in most situations, but adding check to be sure)
     const checkModel = new dbModel(picObj, CONFIG.picsDownloaded);
     //throws error if not new (keep out of try block to propogate error)
     await checkModel.urlNewCheck();
 
-    try {
-      await randomDelay(1);
-      const res = await axios({
-        method: "get",
-        url: url,
-        timeout: 120000, //2 minutes
-        responseType: "stream",
-      });
+    const downloadModel = new KCNA(picObj);
+    const returnObj = await downloadModel.getPicReq();
 
-      if (!res || !res.data) {
-        const error = new Error("FETCH FUCKED");
-        error.url = url;
-        error.fucntion = "GET HTML AXIOS";
-        throw error;
-      }
+    const downloadPicObj = { ...picObj, ...returnObj };
+    const storeModel = new dbModel(downloadPicObj, CONFIG.picsDownloaded);
+    await storeModel.storeUniqueURL();
 
-      const writer = fs.createWriteStream(savePath);
-      const stream = res.data.pipe(writer);
-      const totalSize = parseInt(res.headers["content-length"], 10);
-      const mbSize = +(totalSize / 1048576).toFixed(2);
-      let downloadedSize = 0;
-
-      console.log("DOWNLOADING PIC " + mbSize + "MB");
-
-      //download shit
-      res.data.on("data", (chunk) => {
-        downloadedSize += chunk.length;
-        if (downloadedSize >= totalSize) {
-          // console.log("All data chunks downloaded.");
-          // console.log(picURL);
-        }
-      });
-
-      await new Promise((resolve, reject) => {
-        stream.on("finish", resolve);
-        stream.on("error", reject);
-      });
-
-      //store downloadedPicData
-      const downloadPicObj = { ...picObj };
-      downloadPicObj.downloadedSize = downloadedSize;
-      downloadPicObj.totalSize = totalSize;
-      const storeModel = new dbModel(downloadPicObj, CONFIG.picsDownloaded);
-      await storeModel.storeUniqueURL();
-
-      return downloadPicObj;
-    } catch (e) {
-      console.log(url + "; " + e.message + "; F BREAK: " + e.function);
-      return null;
-    }
+    return downloadPicObj;
   }
 }
 
 export default Pic;
+
+// try {
+//   await randomDelay(1);
+//   const res = await axios({
+//     method: "get",
+//     url: url,
+//     timeout: 120000, //2 minutes
+//     responseType: "stream",
+//   });
+
+//   if (!res || !res.data) {
+//     const error = new Error("FETCH FUCKED");
+//     error.url = url;
+//     error.fucntion = "GET HTML AXIOS";
+//     throw error;
+//   }
+
+//   const writer = fs.createWriteStream(savePath);
+//   const stream = res.data.pipe(writer);
+//   const totalSize = parseInt(res.headers["content-length"], 10);
+//   const mbSize = +(totalSize / 1048576).toFixed(2);
+//   let downloadedSize = 0;
+
+//   console.log("DOWNLOADING PIC " + mbSize + "MB");
+
+//   //download shit
+//   res.data.on("data", (chunk) => {
+//     downloadedSize += chunk.length;
+//     if (downloadedSize >= totalSize) {
+//       // console.log("All data chunks downloaded.");
+//       // console.log(picURL);
+//     }
+//   });
+
+//   await new Promise((resolve, reject) => {
+//     stream.on("finish", resolve);
+//     stream.on("error", reject);
+//   });
+
+//   //store downloadedPicData
+//   const downloadPicObj = { ...picObj };
+//   downloadPicObj.downloadedSize = downloadedSize;
+//   downloadPicObj.totalSize = totalSize;
+//   const storeModel = new dbModel(downloadPicObj, CONFIG.picsDownloaded);
+//   await storeModel.storeUniqueURL();
+
+//   return downloadPicObj;
+// } catch (e) {
+//   console.log(url + "; " + e.message + "; F BREAK: " + e.function);
+//   return null;
+// }
