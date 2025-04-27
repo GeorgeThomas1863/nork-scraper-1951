@@ -305,14 +305,15 @@ class Pic {
 
     //checks /sort not necessary but doing anyway
     if (!inputArray || !inputArray.length) return null;
-    const sortModel = new UTIL({ inputArray: inputArray });
-    const sortArray = await sortModel.sortArrayByKcnaId();
+    //SORTING ELSEWHERE
+    // const sortModel = new UTIL({ inputArray: inputArray });
+    // const sortArray = await sortModel.sortArrayByKcnaId();
 
     const downloadPicDataArray = [];
-    for (let i = 0; i < sortArray.length; i++) {
+    for (let i = 0; i < inputArray.length; i++) {
       try {
         //add save path to picObj
-        const picObj = sortArray[i];
+        const picObj = inputArray[i];
         const savePath = CONFIG.picPath + picObj.kcnaId + ".jpg";
         picObj.savePath = savePath;
         const picModel = new Pic({ picObj: picObj });

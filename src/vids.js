@@ -83,8 +83,11 @@ export const buildVidData = async (inputArray) => {
 //DOWNLOAD VID SECTION
 export const downloadNewVidsFS = async (inputArray) => {
   //download just first item (below necessary for obj to be seen as array)
-  const vidDownloadArray = [inputArray[0]];
-  console.log("VID TO DOWNLOAD")
+  const sortModel = new UTIL({ inputArray: inputArray });
+  const sortArray = await sortModel.sortArrayByKcnaId()
+
+  const vidDownloadArray = [sortArray[0]];
+  console.log("VID TO DOWNLOAD");
   console.log(vidDownloadArray);
 
   //ONLY DOWNLOADING 1 PER ITERATION

@@ -290,14 +290,12 @@ class Vid {
     const { inputArray } = this.dataObject;
 
     if (!inputArray || !inputArray.length) return null;
-    const sortModel = new UTIL({ inputArray: inputArray });
-    const sortArray = await sortModel.sortArrayByKcnaId();
 
     const downloadVidDataArray = [];
-    for (let i = 0; i < sortArray.length; i++) {
+    for (let i = 0; i < inputArray.length; i++) {
       try {
         //add save path to picObj
-        const vidObj = sortArray[i];
+        const vidObj = inputArray[i];
         const savePath = CONFIG.vidPath + vidObj.kcnaId + ".mp4";
         vidObj.savePath = savePath;
         const vidModel = new Vid({ vidObj: vidObj });
