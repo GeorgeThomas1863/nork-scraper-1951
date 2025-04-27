@@ -346,16 +346,13 @@ class Article {
       //get full picObj
       const picURL = articlePicArray[i];
       const lookupParams = {
-        keyToLookup: url,
+        keyToLookup: "url",
         itemValue: picURL,
       };
       const picDataModel = new dbModel(lookupParams, CONFIG.picsDownloaded);
       const picObj = await picDataModel.getUniqueItem();
 
-      console.log("PIC OBJECT DATA!!!");
-      console.log(picObj);
-
-      // const postPicData = await postPicTG(articlePicArray[i]);
+      const postPicData = await postPicTG(picObj);
     }
   }
 }

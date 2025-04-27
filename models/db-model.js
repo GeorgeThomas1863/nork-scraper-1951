@@ -89,7 +89,7 @@ class dbModel {
 
   async getUniqueItem() {
     const { keyToLookup, itemValue } = this.dataObject;
-    const dataArray = await db.dbGet().collection(this.collection).findOne({ [keyToLookup]: [itemValue] }); //prettier-ignore
+    const dataArray = await db.dbGet().collection(this.collection).findOne({ [keyToLookup]: itemValue }); //prettier-ignore
     return dataArray;
   }
 

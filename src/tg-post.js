@@ -28,6 +28,6 @@ export const postArticleTitleTG = async (inputObj) => {
 export const postPicTG = async (inputObj) => {
   const { url } = inputObj;
 
-  console.log("POST PIC TG");
+  console.log("POST PIC TG INPUT");
   console.log(inputObj);
 };
