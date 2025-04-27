@@ -169,9 +169,9 @@ class KCNA {
     const totalChunks = Math.ceil(vidSizeBytes / vidChunkSize);
     vidObj.totalChunks = totalChunks;
 
-    // Clean up any existing temp files at the start
-    const cleanupModel = new KCNA(vidObj);
-    await cleanupModel.cleanupTempVidFiles();
+    // DONT RUN BC DELETES PARTIALS to use on retries
+    // const cleanupModel = new KCNA(vidObj);
+    // await cleanupModel.cleanupTempVidFiles();
 
     //find shit already downloaded
     const completedModel = new KCNA(vidObj);
