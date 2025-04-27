@@ -1,11 +1,11 @@
 import CONFIG from "../config/scrape-config.js";
 import TgReq from "../models/tg-model.js";
 
-export const postTitleTG = async (inputObj) => {
+export const postArticleTitleTG = async (inputObj) => {
   if (!inputObj) return null;
 
   const { title, date } = inputObj;
-  const titleText = title + "\nDate: " + date;
+  const titleText = title + "; <i>" + date + "</i>";
 
   const params = {
     chat_id: CONFIG.tgUploadId,
@@ -18,14 +18,16 @@ export const postTitleTG = async (inputObj) => {
     params: params,
   };
 
-  console.log("POST PARAMS");
-  console.log(params);
-
   const tgModel = new TgReq({ inputObj: postObj });
   const tgData = await tgModel.tgPost();
   console.log(tgData);
+
+  return tgData;
 };
 
 export const postPicTG = async (inputObj) => {
   const { url } = inputObj;
+
+  console.log("POST PIC TG");
+  console.log(inputObj);
 };

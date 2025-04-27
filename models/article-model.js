@@ -6,7 +6,7 @@ import dbModel from "./db-model.js";
 // import Pic from "./pic-model.js";
 import UTIL from "./util-model.js";
 
-import { postTitleTG, postPicTG } from "../src/tg-post.js";
+import { postArticleTitleTG, postPicTG } from "../src/tg-post.js";
 
 /**
  * @class Article
@@ -327,8 +327,7 @@ class Article {
     const articleObj = await normalModel.normalizeInputsTG();
 
     //post title
-    const titleData = await postTitleTG(articleObj);
-    console.log(titleData);
+    await postArticleTitleTG(articleObj);
 
     const articlePicModel = new Article({ inputObj: articleObj });
     const articlePicArrayData = await articlePicModel.postArticlePicArrayTG();
@@ -343,7 +342,7 @@ class Article {
     const { picArray } = inputObj;
 
     for (let i = 0; i < picArray.length; i++) {
-      const postPicData = await postPicTG({ inputObj: picArray[i] });
+      const postPicData = await postPicTG(picArray[i]);
     }
   }
 }

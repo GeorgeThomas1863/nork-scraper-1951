@@ -61,6 +61,15 @@ class TgReq {
       });
 
       const data = await response.json();
+      const checkData = await this.checkToken(data);
+
+      //rerun
+      if (checkData) {
+        const retryModel = new TgReq(this.dataObject);
+        await retryModel.tgPost();
+        return "TWO ATTEMPTS FAILED";
+      }
+
       return data;
     } catch (error) {
       console.log(error);
