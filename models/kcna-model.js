@@ -315,7 +315,7 @@ class KCNA {
           method: "get",
           url: url,
           responseType: "arraybuffer",
-          timeout: 1 * 60 * 1000, //1 minute
+          timeout: 15 * 1000, //15 seconds
           headers: { Range: `bytes=${start}-${end}` },
         });
 
