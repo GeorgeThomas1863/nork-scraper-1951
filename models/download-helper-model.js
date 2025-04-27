@@ -41,9 +41,6 @@ class DLHelper {
   async retryVidReq() {
     const { url, savePath, kcnaId } = this.dataObject;
 
-    console.log("VID DOWNLOAD RETRY");
-    console.log(this.dataObject);
-
     try {
       // await randomDelay(1);
       const res = await axios({
@@ -144,7 +141,7 @@ class DLHelper {
   }
 
   async processVidQueue() {
-    const { url, savePath, vidTempPath, completedChunkArray, pendingChunkArray, totalChunks } = this.dataObject;
+    const { completedChunkArray, pendingChunkArray, totalChunks } = this.dataObject;
     const { vidConcurrent, vidRetries } = CONFIG;
     const downloadedChunkArray = [...completedChunkArray];
     let remainingChunkArray = [...pendingChunkArray];
@@ -159,14 +156,11 @@ class DLHelper {
 
         for (let k = 0; k < batch.length; k++) {
           const chunk = batch[k];
-          const downloadObj = {
-            url: url,
-            savePath: savePath, //needed for retry
-            vidTempPath: vidTempPath,
-            chunkIndex: chunk.index,
-            start: chunk.start,
-            end: chunk.end,
-          };
+          const downloadObj = { ...this.dataObject };
+
+          downloadObj.chunkIndex = chunk.index;
+          downloadObj.start = chunk.start;
+          downloadObj.end = chunk.end;
 
           const downloadModel = new DLHelper(downloadObj);
           const downloadPromise = downloadModel.downloadVidChunk();
@@ -216,7 +210,7 @@ class DLHelper {
           method: "get",
           url: url,
           responseType: "arraybuffer",
-          timeout: 15 * 1000, //15 seconds
+          timeout: 30 * 1000, //30 seconds
           headers: { Range: `bytes=${start}-${end}` },
         });
 
@@ -239,16 +233,11 @@ class DLHelper {
         console.error(`Chunk ${chunkIndex} error: ${e.message}`);
 
         if (retry < vidRetries - 1) {
-          const delay = 1000 * Math.pow(2, retry);
-          console.log(`Retry ${retry + 1}/${vidRetries} after ${delay / 1000}s`);
+          const delay = await randomDelay(3)
+          console.log("Retrying after "  + delay + "ms");
           await new Promise((r) => setTimeout(r, delay));
         } else {
-          const backupVidDownloadModel = new DLHelper(this.dataObject);
-          const backupDownloadData = await backupVidDownloadModel.retryVidReq();
-          //wipe all temp shit
-          await backupVidDownloadModel.cleanupTempVidFiles();
-          if (!backupDownloadData) return null;
-          return true;
+          return null;
         }
       }
     }

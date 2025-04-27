@@ -165,6 +165,15 @@ class KCNA {
     const mergeModel = new DLHelper(vidObj);
     await mergeModel.mergeChunks();
 
+    //FIGURE OUT A WAY TO RETRY HERE
+
+    // const backupVidDownloadModel = new DLHelper(this.dataObject);
+    //       const backupDownloadData = await backupVidDownloadModel.retryVidReq();
+    //       //wipe all temp shit
+    //       await backupVidDownloadModel.cleanupTempVidFiles();
+    //       if (!backupDownloadData) return null;
+    //       return true;
+
     return null;
   }
 }
