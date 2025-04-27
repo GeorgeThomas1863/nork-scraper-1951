@@ -26,7 +26,7 @@ class TgReq {
    * @param {number} tokenIndex - Index of the bot token to use from the tokenArray
    * @returns {Promise<Object>} The JSON response from the Telegram API
    */
-  async tgGet(tokenIndex) {
+  async tgGet() {
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/getUpdates?offset=${this.dataObject.offset}`;
 
@@ -46,7 +46,7 @@ class TgReq {
    * @params command (command to send to tg); tokenIndex
    * @returns {Promise<Object>} The JSON response from the Telegram API
    */
-  async tgPost(command, tokenIndex) {
+  async tgPost(command) {
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/${command}`;
 
@@ -71,7 +71,7 @@ class TgReq {
    * @param {number} tokenIndex - Index of the bot token to use from the tokenArray
    * @returns {Promise<Object>} The JSON response from the Telegram API
    */
-  async tgPicFS(tokenIndex) {
+  async tgPicFS() {
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/sendPhoto`;
     //build form

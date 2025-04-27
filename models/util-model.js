@@ -215,7 +215,7 @@ class UTIL {
       url: urlNormal,
       date: dateNormal,
       title: titleNormal,
-      content: inputObj.content,
+      text: inputObj.text,
     };
 
     return outputObj;

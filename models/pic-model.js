@@ -361,10 +361,10 @@ class Pic {
       const writer = fs.createWriteStream(savePath);
       const stream = res.data.pipe(writer);
       const totalSize = parseInt(res.headers["content-length"], 10);
+      const mbSize = +(totalSize / 1048576).toFixed(2);
       let downloadedSize = 0;
 
-      console.log("DOWNLOADING PIC " + totalSize + "B");
-      console.log(totalSize);
+      console.log("DOWNLOADING PIC " + mbSize + "MB");
 
       //download shit
       res.data.on("data", (chunk) => {
