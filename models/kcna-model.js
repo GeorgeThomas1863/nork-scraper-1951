@@ -250,11 +250,11 @@ class KCNA {
     let remainingChunkArray = [...pendingChunkArray];
 
     // Process chunks with retry attempts recursively
-    for (let i = 0; i < vidRetries.length; i++) {
+    for (let i = 0; i < vidRetries; i++) {
       const failedChunkArray = [];
 
-      for (let j = 0; j < remainingChunkArray.length; i += vidConcurrent) {
-        const batch = remainingChunkArray.slice(i, i + vidConcurrent);
+      for (let j = 0; j < remainingChunkArray.length; j += vidConcurrent) {
+        const batch = remainingChunkArray.slice(j, j + vidConcurrent);
         const promises = [];
 
         for (let k = 0; k < batch.length; k++) {
@@ -281,8 +281,8 @@ class KCNA {
           if (resultItem.status === "fulfilled") {
             downloadedChunkArray.push(resultItem.value.chunkIndex);
           } else {
-            console.error(`Failed chunk ${batch[j].index}: ${resultItem.reason}`);
-            failedChunkArray.push(batch[k]);
+            console.error(`Failed chunk ${batch[m].index}: ${resultItem.reason}`);
+            failedChunkArray.push(batch[m]);
           }
         }
 
