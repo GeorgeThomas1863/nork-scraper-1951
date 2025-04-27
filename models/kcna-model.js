@@ -167,55 +167,6 @@ class KCNA {
 
     return null;
   }
-
-  //called from helper mod
-  async downloadVidChunk() {
-    const { url, vidTempPath, chunkIndex, start, end } = this.dataObject;
-    const { vidRetries } = CONFIG;
-
-    for (let retry = 0; retry < vidRetries; retry++) {
-      try {
-        const res = await axios({
-          method: "get",
-          url: url,
-          responseType: "arraybuffer",
-          timeout: 15 * 1000, //15 seconds
-          headers: { Range: `bytes=${start}-${end}` },
-        });
-
-        // Write chunk to temporary file
-        const tempFile = `${vidTempPath}.part${chunkIndex}`;
-        fs.writeFileSync(tempFile, Buffer.from(res.data));
-
-        console.log(`Chunk ${chunkIndex} downloaded (bytes ${start}-${end})`);
-
-        //obv put into obj
-        const returnObj = {
-          chunkIndex: chunkIndex,
-          tempFile: tempFile,
-          start: start,
-          end: end,
-        };
-
-        return returnObj;
-      } catch (e) {
-        console.error(`Chunk ${chunkIndex} error: ${e.message}`);
-
-        if (retry < vidRetries - 1) {
-          const delay = 1000 * Math.pow(2, retry);
-          console.log(`Retry ${retry + 1}/${vidRetries} after ${delay / 1000}s`);
-          await new Promise((r) => setTimeout(r, delay));
-        } else {
-          const backupVidDownloadModel = new DLHelper(this.dataObject);
-          const backupDownloadData = await backupVidDownloadModel.retryVidReq();
-          //wipe all temp shit
-          await backupVidDownloadModel.cleanupTempVidFiles();
-          if (!backupDownloadData) return null;
-          return true;
-        }
-      }
-    }
-  }
 }
 
 export default KCNA;

@@ -41,6 +41,9 @@ class DLHelper {
   async retryVidReq() {
     const { url, savePath, kcnaId } = this.dataObject;
 
+    console.log("VID DOWNLOAD RETRY");
+    console.log(this.dataObject);
+
     try {
       // await randomDelay(1);
       const res = await axios({
@@ -141,7 +144,7 @@ class DLHelper {
   }
 
   async processVidQueue() {
-    const { url, vidTempPath, completedChunkArray, pendingChunkArray, totalChunks } = this.dataObject;
+    const { url, savePath, vidTempPath, completedChunkArray, pendingChunkArray, totalChunks } = this.dataObject;
     const { vidConcurrent, vidRetries } = CONFIG;
     const downloadedChunkArray = [...completedChunkArray];
     let remainingChunkArray = [...pendingChunkArray];
@@ -158,13 +161,14 @@ class DLHelper {
           const chunk = batch[k];
           const downloadObj = {
             url: url,
+            savePath: savePath, //needed for retry
             vidTempPath: vidTempPath,
             chunkIndex: chunk.index,
             start: chunk.start,
             end: chunk.end,
           };
 
-          const downloadModel = new KCNA(downloadObj);
+          const downloadModel = new DLHelper(downloadObj);
           const downloadPromise = downloadModel.downloadVidChunk();
           promises.push(downloadPromise);
         }
@@ -200,6 +204,54 @@ class DLHelper {
     }
 
     return downloadedChunkArray;
+  }
+
+  async downloadVidChunk() {
+    const { url, vidTempPath, chunkIndex, start, end } = this.dataObject;
+    const { vidRetries } = CONFIG;
+
+    for (let retry = 0; retry < vidRetries; retry++) {
+      try {
+        const res = await axios({
+          method: "get",
+          url: url,
+          responseType: "arraybuffer",
+          timeout: 15 * 1000, //15 seconds
+          headers: { Range: `bytes=${start}-${end}` },
+        });
+
+        // Write chunk to temporary file
+        const tempFile = `${vidTempPath}.part${chunkIndex}`;
+        fs.writeFileSync(tempFile, Buffer.from(res.data));
+
+        console.log(`Chunk ${chunkIndex} downloaded (bytes ${start}-${end})`);
+
+        //obv put into obj
+        const returnObj = {
+          chunkIndex: chunkIndex,
+          tempFile: tempFile,
+          start: start,
+          end: end,
+        };
+
+        return returnObj;
+      } catch (e) {
+        console.error(`Chunk ${chunkIndex} error: ${e.message}`);
+
+        if (retry < vidRetries - 1) {
+          const delay = 1000 * Math.pow(2, retry);
+          console.log(`Retry ${retry + 1}/${vidRetries} after ${delay / 1000}s`);
+          await new Promise((r) => setTimeout(r, delay));
+        } else {
+          const backupVidDownloadModel = new DLHelper(this.dataObject);
+          const backupDownloadData = await backupVidDownloadModel.retryVidReq();
+          //wipe all temp shit
+          await backupVidDownloadModel.cleanupTempVidFiles();
+          if (!backupDownloadData) return null;
+          return true;
+        }
+      }
+    }
   }
 
   async mergeChunks() {
