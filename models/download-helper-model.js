@@ -210,7 +210,7 @@ class DLHelper {
           method: "get",
           url: url,
           responseType: "arraybuffer",
-          timeout: 30 * 1000, //30 seconds
+          timeout: 1 * 60 * 1000, //1 minute delay (needed)
           headers: { Range: `bytes=${start}-${end}` },
         });
 
@@ -233,8 +233,8 @@ class DLHelper {
         console.error(`Chunk ${chunkIndex} error: ${e.message}`);
 
         if (retry < vidRetries - 1) {
-          const delay = await randomDelay(3)
-          console.log("Retrying after "  + delay + "ms");
+          const delay = await randomDelay(3);
+          console.log("Retrying after " + delay + "ms");
           await new Promise((r) => setTimeout(r, delay));
         } else {
           return null;

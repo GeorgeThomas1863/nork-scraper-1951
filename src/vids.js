@@ -87,12 +87,10 @@ export const downloadNewVidsFS = async (inputArray) => {
   const sortArray = await sortModel.sortArrayByKcnaId();
 
   // //TURN BACK ON //ONLY DOWNLOADING 1 PER ITERATION
-  // const vidDownloadArray = [sortArray[0]];
-  // console.log("VID TO DOWNLOAD");
-  // console.log(vidDownloadArray);
-  // const vidModel = new Vid({ inputArray: vidDownloadArray });
+  const vidDownloadArray = [sortArray[0]];
+  const vidModel = new Vid({ inputArray: vidDownloadArray });
 
-  const vidModel = new Vid({ inputArray: sortArray }); //for testing
+  // const vidModel = new Vid({ inputArray: sortArray }); //for testing
   const downloadVidDataArray = await vidModel.downloadVidArray();
   return downloadVidDataArray;
 };
