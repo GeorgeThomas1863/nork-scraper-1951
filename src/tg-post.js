@@ -26,8 +26,19 @@ export const postArticleTitleTG = async (inputObj) => {
 };
 
 export const postPicTG = async (inputObj) => {
-  const { url } = inputObj;
+  const { savePath } = inputObj;
 
-  console.log("POST PIC TG INPUT");
-  console.log(inputObj);
+  const params = {
+    chatId: CONFIG.tgUploadId,
+    picPath: savePath
+  }
+
+  const tgModel = new TgReq(params)
+  const tgData = await tgModel.tgPicFS()
+  console.log(tgData)
+
+  //EDIT PIC CAPTION
+
+  //STORE PIC AS UPLOADED
+
 };

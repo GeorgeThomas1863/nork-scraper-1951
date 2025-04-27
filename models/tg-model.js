@@ -83,17 +83,27 @@ class TgReq {
    * @returns {Promise<Object>} The JSON response from the Telegram API
    */
   async tgPicFS() {
+    const { chatId, picPath } = this.dataObject;
+
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/sendPhoto`;
+
     //build form
     const form = new FormData();
-    form.append("chat_id", this.dataObject.chatId), form.append("photo", fs.createReadStream(this.dataObject.picPath));
+    form.append("chat_id", chatId), form.append("photo", fs.createReadStream(picPath));
 
     //upload Pic
     try {
       const response = await axios.post(url, form, {
         headers: form.getHeaders(),
       });
+
+      const checkData = await this.checkToken(response.data);
+      if (checkData) {
+        const retryModel = this.dataObject;
+        await retryModel.tgPicFS();
+      }
+
       return response.data;
     } catch (error) {
       console.log("UPLOAD FUCKED");
