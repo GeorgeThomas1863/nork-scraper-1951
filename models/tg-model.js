@@ -46,7 +46,9 @@ class TgReq {
    * @params command (command to send to tg); tokenIndex
    * @returns {Promise<Object>} The JSON response from the Telegram API
    */
-  async tgPost(command) {
+  async tgPost() {
+    const { inputObj } = this.dataObject;
+    const { command, params } = inputObj;
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/${command}`;
 
@@ -54,7 +56,7 @@ class TgReq {
     try {
       const response = await fetch(url, {
         method: "POST",
-        body: JSON.stringify(this.dataObject),
+        body: JSON.stringify(params),
         headers: { "Content-Type": "application/json" },
       });
 

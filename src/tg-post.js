@@ -13,11 +13,16 @@ export const postTitleTG = async (inputObj) => {
     parse_mode: "HTML",
   };
 
+  const postObj = {
+    command: "sendMessage",
+    params: params,
+  };
+
   console.log("POST PARAMS");
   console.log(params);
 
-  const tgModel = new TgReq(params);
-  const tgData = await tgModel.tgPost("sendMesssage");
+  const tgModel = new TgReq({ inputObj: postObj });
+  const tgData = await tgModel.tgPost();
   console.log(tgData);
 };
 

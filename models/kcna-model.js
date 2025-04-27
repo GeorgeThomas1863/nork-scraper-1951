@@ -174,7 +174,7 @@ class KCNA {
     //       if (!backupDownloadData) return null;
     //       return true;
 
-    return null;
+    return processVidData;
   }
 }
 
