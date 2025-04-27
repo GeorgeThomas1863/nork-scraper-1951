@@ -6,7 +6,7 @@ import dbModel from "./db-model.js";
 // import Pic from "./pic-model.js";
 import UTIL from "./util-model.js";
 
-import { postTitleTG } from "../src/tg-post.js";
+import { postTitleTG, postPicTG } from "../src/tg-post.js";
 
 /**
  * @class Article
@@ -303,14 +303,14 @@ class Article {
 
   //UPLOAD SECTION
 
-  async uploadArticleArrayTG() {
+  async postArticleArrayTG() {
     const { inputArray } = this.dataObject;
 
     const uploadDataArray = [];
     for (let i = 0; i < inputArray.length; i++) {
       try {
         const uploadModel = new Article({ inputObj: inputArray[i] });
-        const uploadArticleData = await uploadModel.uploadArticleObjTG();
+        const uploadArticleData = await uploadModel.postArticleObjTG();
         if (!uploadArticleData) continue;
 
         uploadDataArray.push(uploadArticleData);
@@ -320,15 +320,31 @@ class Article {
     }
   }
 
-  async uploadArticleObjTG() {
+  async postArticleObjTG() {
     const { inputObj } = this.dataObject;
 
     const normalModel = new UTIL({ inputObj: inputObj });
-    const normalObj = await normalModel.normalizeInputsTG();
+    const articleObj = await normalModel.normalizeInputsTG();
 
-    const titleData = await postTitleTG(normalObj);
+    //post title
+    const titleData = await postTitleTG(articleObj);
+    console.log(titleData);
+
+    const articlePicModel = new Article({ inputObj: articleObj });
+    const articlePicArrayData = await articlePicModel.postArticlePicArrayTG();
 
     //FIRST POST TITLE AND DATE
+  }
+
+  async postArticlePicArrayTG() {
+    const { inputObj } = this.dataObject;
+
+    if (!inputObj || !inputObj.picArray || !inputObj.picArray.length) return null;
+    const { picArray } = inputObj;
+
+    for (let i = 0; i < picArray.length; i++) {
+      const postPicData = await postPicTG({ inputObj: picArray[i] });
+    }
   }
 }
 
