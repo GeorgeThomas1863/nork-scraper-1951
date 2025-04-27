@@ -96,9 +96,7 @@ class KCNA {
 
   //maybe refactor
   async getPicReq() {
-    const { url, savePath } = this.dataObject;
-    console.log("PIC DOWNLOAD");
-    console.log(this.dataObject);
+    const { url, savePath, kcnaId } = this.dataObject;
 
     try {
       // await randomDelay(1);
@@ -122,7 +120,7 @@ class KCNA {
       const mbSize = +(totalSize / 1048576).toFixed(2);
       let downloadedSize = 0;
 
-      const consoleStr = "DOWNLOADING PIC: " + url + " | SIZE: " + mbSize + "MB";
+      const consoleStr = "DOWNLOADING PIC: " + kcnaId + ".jpg | SIZE: " + mbSize + "MB";
       console.log(consoleStr);
 
       //download shit
