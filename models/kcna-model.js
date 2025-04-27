@@ -120,7 +120,8 @@ class KCNA {
       const mbSize = +(totalSize / 1048576).toFixed(2);
       let downloadedSize = 0;
 
-      console.log("DOWNLOADING PIC " + mbSize + "MB");
+      const consoleStr = "DOWNLOADING PIC: " + url + " | SIZE: " + mbSize + "MB";
+      console.log(consoleStr);
 
       //download shit
       res.data.on("data", (chunk) => {
