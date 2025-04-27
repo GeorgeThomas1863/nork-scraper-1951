@@ -161,11 +161,15 @@ class KCNA {
 
     //get obj data
     const { inputObj } = this.dataObject;
-    const { vidSizeBytes } = inputObj;
-    const { vidChunkSize } = CONFIG;
-
-    //build vid obj, just to move shit easier
+    const { vidSizeBytes, kcnaId } = inputObj;
+    const { vidChunkSize, tempPath } = CONFIG;
     const vidObj = { ...inputObj };
+
+    //build temp save path
+    const vidTempPath = tempPath + kcnaId + ".mp4";
+    vidObj.vidTempPath = vidTempPath;
+
+    //add total chunks
     const totalChunks = Math.ceil(vidSizeBytes / vidChunkSize);
     vidObj.totalChunks = totalChunks;
 
@@ -179,7 +183,7 @@ class KCNA {
     vidObj.completedChunkArray = completedChunkArray;
 
     if (completedChunkArray.length > 0) {
-      console.log("Resuming Chunk " + completedChunkArray.length + "of " + totalChunks + " total chunks");
+      console.log("Resuming Chunk " + completedChunkArray.length + " of " + totalChunks + " total chunks");
     }
 
     //create vid download queue
@@ -198,13 +202,13 @@ class KCNA {
   }
 
   async getCompletedVidChunks() {
-    const { savePath, totalChunks, vidSizeBytes } = this.dataObject;
+    const { vidTempPath, totalChunks, vidSizeBytes } = this.dataObject;
     const { vidChunkSize } = CONFIG;
 
     const completedChunkArray = [];
 
     for (let i = 0; i < totalChunks; i++) {
-      const tempFile = `${savePath}.part${i}`;
+      const tempFile = `${vidTempPath}.part${i}`;
 
       if (fs.existsSync(tempFile)) {
         const stats = fs.statSync(tempFile);
@@ -306,7 +310,7 @@ class KCNA {
   }
 
   async downloadVidChunk() {
-    const { url, savePath, chunkIndex, start, end } = this.dataObject;
+    const { url, vidTempPath, chunkIndex, start, end } = this.dataObject;
     const { vidRetries } = CONFIG;
 
     for (let retry = 0; retry < vidRetries; retry++) {
@@ -320,7 +324,7 @@ class KCNA {
         });
 
         // Write chunk to temporary file
-        const tempFile = `${savePath}.part${chunkIndex}`;
+        const tempFile = `${vidTempPath}.part${chunkIndex}`;
         fs.writeFileSync(tempFile, Buffer.from(res.data));
 
         console.log(`Chunk ${chunkIndex} downloaded (bytes ${start}-${end})`);
@@ -349,13 +353,13 @@ class KCNA {
   }
 
   async mergeChunks() {
-    const { savePath, totalChunks } = this.dataObject;
+    const { savePath, vidTempPath, totalChunks } = this.dataObject;
 
     console.log("Merging chunks...");
     const writeStream = fs.createWriteStream(savePath);
 
     for (let i = 0; i < totalChunks; i++) {
-      const tempFile = `${savePath}.part${i}`;
+      const tempFile = `${vidTempPath}.part${i}`;
       const chunkData = fs.readFileSync(tempFile);
       writeStream.write(chunkData);
       fs.unlinkSync(tempFile); // Clean up temp file
@@ -366,10 +370,10 @@ class KCNA {
   }
 
   async cleanupTempVidFiles() {
-    const { savePath, totalChunks } = this.dataObject;
+    const { vidTempPath, totalChunks } = this.dataObject;
 
     for (let i = 0; i < totalChunks; i++) {
-      const tempFile = `${savePath}.part${i}`;
+      const tempFile = `${vidTempPath}.part${i}`;
       if (fs.existsSync(tempFile)) {
         fs.unlinkSync(tempFile);
       }
