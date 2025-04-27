@@ -150,158 +150,227 @@ class KCNA {
   async getVidReq() {
     console.log("VID DOWNLOAD!!!");
     console.log(this.dataObject);
+
+    //get obj data
+    const { inputObj } = this.dataObject;
+    const { vidSizeBytes, vidSizeMB, savePath } = inputObj;
+    const { vidChunkSize } = CONFIG;
+
+    //build vid obj, just to move shit easier
+    const vidObj = { ...inputObj };
+
+    const totalChunks = Math.ceil(vidSizeBytes / vidChunkSize);
+    vidObj.totalChunks = totalChunks;
+
+    //find shit already downloaded
+    const completedModel = new KCNA(vidObj);
+    const completedChunkArray = await completedModel.getCompletedVidChunks();
+    vidObj.completedChunkArray = completedChunkArray;
+
+    if (completedChunkArray.length > 0) {
+      console.log("Resuming Chunk " + completedChunkArray.length + "of " + totalChunks + " total chunks");
+    }
+
+    //create vid download queue
+    const pendingModel = new KCNA(vidObj);
+    const pendingChunkArray = await pendingModel.createVidQueue();
+    vidObj.pendingChunkArray = pendingChunkArray;
+
+    const processModel = new KCNA(vidObj);
+    const processVidData = await processModel.processVidQueue();
+    console.log(processVidData);
+
+    const mergeModel = new KCNA(vidObj);
+    await mergeModel.mergeChunks();
+
     return null;
   }
 
-  // async downloadVidChunk() {
-  //   const {} = this.dataObject;
+  async getCompletedVidChunks() {
+    const { savePath, totalChunks, vidSizeBytes } = this.dataObject;
+    const { vidChunkSize } = CONFIG;
 
-  //   for (let retry = 0; retry < CONFIG.vidRetries; retry++) {
-  //     try {
-  //       const res = await axios({
-  //         method: "get",
-  //         url: url,
-  //         responseType: "arraybuffer",
-  //         timeout: 30000,
-  //         headers: { Range: `bytes=${start}-${end}` },
-  //       });
+    const completedChunkArray = [];
 
-  //       // Write chunk to temporary file
-  //       const tempFile = `${filePath}.part${chunkIndex}`;
-  //       fs.writeFileSync(tempFile, Buffer.from(res.data));
+    for (let i = 0; i < totalChunks; i++) {
+      const tempFile = `${savePath}.part${i}`;
 
-  //       console.log(`Chunk ${chunkIndex} downloaded (bytes ${start}-${end})`);
+      if (fs.existsSync(tempFile)) {
+        const stats = fs.statSync(tempFile);
+        const expectedSize = i < totalChunks - 1 ? vidChunkSize : vidSizeBytes - i * vidChunkSize;
 
-  //       //obv put into obj
-  //       return {
-  //         chunkIndex,
-  //         tempFile,
-  //         start,
-  //         end,
-  //       };
-  //     } catch (error) {
-  //       console.error(`Chunk ${chunkIndex} error: ${error.message}`);
+        if (stats.size === expectedSize) {
+          completedChunkArray.push(i);
+        } else {
+          fs.unlinkSync(tempFile); // Remove partial chunks
+        }
+      }
+    }
 
-  //       if (retry < MAX_RETRIES - 1) {
-  //         const delay = 1000 * Math.pow(2, retry);
-  //         console.log(`Retry ${retry + 1}/${MAX_RETRIES} after ${delay / 1000}s`);
-  //         await new Promise((r) => setTimeout(r, delay));
-  //       } else {
-  //         throw new Error(`Failed to download chunk ${chunkIndex} after ${MAX_RETRIES} retries`);
-  //       }
-  //     }
-  //   }
-  // }
+    return completedChunkArray;
+  }
 
-  // async cleanupTempVidFiles() {
-  //   const {} = this.dataObject;
+  async createVidQueue() {
+    const { completedChunkArray, totalChunks, vidSizeBytes } = this.dataObject;
+    const { vidChunkSize } = CONFIG;
 
-  //   for (let i = 0; i < totalChunks; i++) {
-  //     const tempFile = `${outputPath}.part${i}`;
-  //     if (fs.existsSync(tempFile)) {
-  //       fs.unlinkSync(tempFile);
-  //     }
-  //   }
-  // }
+    const pendingChunkArray = [];
 
-  // async findCompletedVidChunks() {
-  //   const {} = this.dataObject;
+    for (let i = 0; i < totalChunks; i++) {
+      if (!completedChunkArray.includes(i)) {
+        const start = i * vidChunkSize;
+        const end = Math.min(start + vidChunkSize - 1, vidSizeBytes - 1);
+        const pendingObj = {
+          index: i,
+          start: start,
+          end: end,
+        };
+        pendingChunkArray.push(pendingObj);
+      }
+    }
 
-  //   const completedChunks = [];
+    return pendingChunkArray;
+  }
 
-  //   for (let i = 0; i < totalChunks; i++) {
-  //     const tempFile = `${outputPath}.part${i}`;
+  async processVidQueue() {
+    const { url, savePath, completedChunkArray, pendingChunkArray, totalChunks } = this.dataObject;
+    const { vidConcurrent } = CONFIG;
+    const downloadedChunkArray = [...completedChunkArray];
 
-  //     if (fs.existsSync(tempFile)) {
-  //       const stats = fs.statSync(tempFile);
-  //       const expectedSize = i < totalChunks - 1 ? CHUNK_SIZE : totalSize - i * CHUNK_SIZE;
+    // Process pending chunks in batches
+    for (let i = 0; i < pendingChunkArray.length; i += vidConcurrent) {
+      const batch = pendingChunkArray.slice(i, i + vidConcurrent);
+      const promises = [];
 
-  //       if (stats.size === expectedSize) {
-  //         completedChunks.push(i);
-  //       } else {
-  //         fs.unlinkSync(tempFile); // Remove partial chunks
-  //       }
-  //     }
-  //   }
+      for (let j = 0; j < batch.length; j++) {
+        const chunk = batch[j];
+        const downloadObj = {
+          url: url,
+          savePath: savePath,
+          chunkIndex: chunk.index,
+          start: chunk.start,
+          end: chunk.end,
+        };
 
-  //   return completedChunks;
-  // }
+        const downloadModel = new KCNA(downloadObj);
+        const downloadPromise = downloadModel.downloadVidChunk();
+        promises.push(downloadPromise);
+      }
 
-  // async createVidQueue() {
-  //   const {} = this.dataObject;
+      const results = await Promise.allSettled(promises);
 
-  //   const pendingChunks = [];
+      // Process results
+      const failedChunkArray = [];
+      for (let j = 0; j < results.length; j++) {
+        const result = results[j];
 
-  //   for (let i = 0; i < totalChunks; i++) {
-  //     if (!completedChunks.includes(i)) {
-  //       const start = i * CHUNK_SIZE;
-  //       const end = Math.min(start + CHUNK_SIZE - 1, totalSize - 1);
-  //       pendingChunks.push({ index: i, start, end });
-  //     }
-  //   }
+        if (result.status === "fulfilled") {
+          downloadedChunkArray.push(result.value.chunkIndex);
+        } else {
+          console.error(`Failed chunk ${batch[j].index}: ${result.reason}`);
+          failedChunkArray.push(batch[j]);
+        }
+      }
 
-  //   return pendingChunks;
-  // }
+      // Add failed chunks back to the queue
+      pendingChunkArray.push(...failedChunkArray);
 
-  // async processVidQueue() {
-  //   const {} = this.dataObject;
+      // Show progress
+      const progress = ((downloadedChunkArray.length / totalChunks) * 100).toFixed(1);
+      console.log(`Overall progress: ${progress}% (${downloadedChunkArray.length}/${totalChunks} chunks)`);
+    }
 
-  //   const downloadedChunks = [...completedChunks];
+    // Process any failed chunks that were added back
+    if (pendingChunkArray.length > 0) {
+      console.log(`Retrying ${pendingChunkArray.length} failed chunks...`);
+      const redoObj = {
+        url: url,
+        savePath: savePath,
+        completedChunkArray: completedChunkArray,
+        pendingChunkArray: pendingChunkArray,
+        vidConcurrent: vidConcurrent,
+        totalChunks: totalChunks,
+      };
 
-  //   // Process pending chunks in batches
-  //   for (let i = 0; i < pendingChunks.length; i += CONCURRENT_DOWNLOADS) {
-  //     const batch = pendingChunks.slice(i, i + CONCURRENT_DOWNLOADS);
-  //     const promises = batch.map((chunk) => downloadChunk(url, outputPath, chunk.index, chunk.start, chunk.end));
+      const processModel = new KCNA(redoObj);
+      const redoData = await processModel.processVidQueue();
+      console.log(redoData);
+    }
 
-  //     const results = await Promise.allSettled(promises);
+    return downloadedChunkArray;
+  }
 
-  //     // Process results
-  //     const failedChunks = [];
+  async downloadVidChunk() {
+    const { url, savePath, chunkIndex, start, end } = this.dataObject;
+    const { vidRetries } = CONFIG;
 
-  //     for (let j = 0; j < results.length; j++) {
-  //       const result = results[j];
+    for (let retry = 0; retry < vidRetries; retry++) {
+      try {
+        const res = await axios({
+          method: "get",
+          url: url,
+          responseType: "arraybuffer",
+          timeout: 5 * 60 * 1000, //5 minutes
+          headers: { Range: `bytes=${start}-${end}` },
+        });
 
-  //       if (result.status === "fulfilled") {
-  //         downloadedChunks.push(result.value.chunkIndex);
-  //       } else {
-  //         console.error(`Failed chunk ${batch[j].index}: ${result.reason}`);
-  //         failedChunks.push(batch[j]);
-  //       }
-  //     }
+        // Write chunk to temporary file
+        const tempFile = `${savePath}.part${chunkIndex}`;
+        fs.writeFileSync(tempFile, Buffer.from(res.data));
 
-  //     // Add failed chunks back to the queue
-  //     pendingChunks.push(...failedChunks);
+        console.log(`Chunk ${chunkIndex} downloaded (bytes ${start}-${end})`);
 
-  //     // Show progress
-  //     const progress = ((downloadedChunks.length / totalChunks) * 100).toFixed(1);
-  //     console.log(`Overall progress: ${progress}% (${downloadedChunks.length}/${totalChunks} chunks)`);
-  //   }
+        //obv put into obj
+        const returnObj = {
+          chunkIndex: chunkIndex,
+          tempFile: tempFile,
+          start: start,
+          end: end,
+        };
 
-  //   // Process any failed chunks that were added back
-  //   if (pendingChunks.length > 0) {
-  //     console.log(`Retrying ${pendingChunks.length} failed chunks...`);
-  //     await processDownloadQueue(url, outputPath, pendingChunks, downloadedChunks, totalChunks);
-  //   }
+        return returnObj;
+      } catch (e) {
+        console.error(`Chunk ${chunkIndex} error: ${e.message}`);
 
-  //   return downloadedChunks;
-  // }
+        if (retry < vidRetries - 1) {
+          const delay = 1000 * Math.pow(2, retry);
+          console.log(`Retry ${retry + 1}/${vidRetries} after ${delay / 1000}s`);
+          await new Promise((r) => setTimeout(r, delay));
+        } else {
+          throw new Error(`Failed to download chunk ${chunkIndex} after ${vidRetries} retries`);
+        }
+      }
+    }
+  }
 
-  // async mergeChunks() {
-  //   const {} = this.dataObject;
+  async mergeChunks() {
+    const { savePath, totalChunks } = this.dataObject;
 
-  //   console.log("Merging chunks...");
-  //   const writeStream = fs.createWriteStream(outputPath);
+    console.log("Merging chunks...");
+    const writeStream = fs.createWriteStream(savePath);
 
-  //   for (let i = 0; i < totalChunks; i++) {
-  //     const tempFile = `${outputPath}.part${i}`;
-  //     const chunkData = fs.readFileSync(tempFile);
-  //     writeStream.write(chunkData);
-  //     fs.unlinkSync(tempFile); // Clean up temp file
-  //   }
+    for (let i = 0; i < totalChunks; i++) {
+      const tempFile = `${savePath}.part${i}`;
+      const chunkData = fs.readFileSync(tempFile);
+      writeStream.write(chunkData);
+      fs.unlinkSync(tempFile); // Clean up temp file
+    }
 
-  //   writeStream.end();
-  //   console.log("Merge complete");
-  // }
+    writeStream.end();
+    console.log("Merge complete");
+  }
+
+  //CLAUDE FORGETS TO CALL THIS
+  async cleanupTempVidFiles() {
+    const { savePath, totalChunks } = this.dataObject;
+
+    for (let i = 0; i < totalChunks; i++) {
+      const tempFile = `${savePath}.part${i}`;
+      if (fs.existsSync(tempFile)) {
+        fs.unlinkSync(tempFile);
+      }
+    }
+  }
 }
 
 export default KCNA;
