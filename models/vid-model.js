@@ -323,7 +323,7 @@ class Vid {
     //throws error if not new (keep out of try block to propogate error)
     await checkModel.urlNewCheck();
 
-    const downloadModel = new KCNA({vidObj: vidObj});
+    const downloadModel = new KCNA({inputObj: vidObj});
     const returnObj = await downloadModel.getVidReq();
 
     const downloadVidObj = { ...vidObj, ...returnObj };
