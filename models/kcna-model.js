@@ -248,7 +248,7 @@ class KCNA {
   }
 
   async processVidQueue() {
-    const { url, savePath, completedChunkArray, pendingChunkArray, totalChunks } = this.dataObject;
+    const { url, vidTempPath, completedChunkArray, pendingChunkArray, totalChunks } = this.dataObject;
     const { vidConcurrent, vidRetries } = CONFIG;
     const downloadedChunkArray = [...completedChunkArray];
     let remainingChunkArray = [...pendingChunkArray];
@@ -265,7 +265,7 @@ class KCNA {
           const chunk = batch[k];
           const downloadObj = {
             url: url,
-            savePath: savePath,
+            vidTempPath: vidTempPath,
             chunkIndex: chunk.index,
             start: chunk.start,
             end: chunk.end,
