@@ -84,6 +84,8 @@ export const buildVidData = async (inputArray) => {
 export const downloadNewVidsFS = async (inputArray) => {
   //download just first item (below necessary for obj to be seen as array)
   const vidDownloadArray = [inputArray[0]];
+  console.log("VID TO DOWNLOAD")
+  console.log(vidDownloadArray);
 
   //ONLY DOWNLOADING 1 PER ITERATION
   const vidModel = new Vid({ inputArray: vidDownloadArray });
