@@ -97,6 +97,8 @@ class KCNA {
   //maybe refactor
   async getPicReq() {
     const { url, savePath } = this.dataObject;
+    console.log("PIC DOWNLOAD");
+    console.log(this.dataObject);
 
     try {
       // await randomDelay(1);
