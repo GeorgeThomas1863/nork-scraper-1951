@@ -329,7 +329,8 @@ class Article {
     //post title
     await postArticleTitleTG(articleObj);
 
-    const articlePicModel = new Article({ inputObj: articleObj });
+    //inputObj has picArray
+    const articlePicModel = new Article({ inputObj: inputObj });
     const articlePicArrayData = await articlePicModel.postArticlePicArrayTG();
 
     //FIRST POST TITLE AND DATE
@@ -338,11 +339,23 @@ class Article {
   async postArticlePicArrayTG() {
     const { inputObj } = this.dataObject;
 
-    if (!inputObj || !inputObj.picArray || !inputObj.picArray.length) return null;
-    const { picArray } = inputObj;
+    if (!inputObj || !inputObj.articlePicArray || !inputObj.articlePicArray.length) return null;
+    const { articlePicArray } = inputObj;
 
-    for (let i = 0; i < picArray.length; i++) {
-      const postPicData = await postPicTG(picArray[i]);
+    for (let i = 0; i < articlePicArray.length; i++) {
+      //get full picObj
+      const picURL = articlePicArray[i];
+      const lookupParams = {
+        keyToLookup: url,
+        itemValue: picURL,
+      };
+      const picDataModel = new dbModel(lookupParams, CONFIG.picsDownloaded);
+      const picObj = await picDataModel.getUniqueItem();
+
+      console.log("PIC OBJECT DATA!!!");
+      console.log(picObj);
+
+      // const postPicData = await postPicTG(articlePicArray[i]);
     }
   }
 }

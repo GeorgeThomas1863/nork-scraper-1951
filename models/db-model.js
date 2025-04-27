@@ -87,6 +87,12 @@ class dbModel {
     return arrayData;
   }
 
+  async getUniqueItem() {
+    const { keyToLookup, itemValue } = this.dataObject;
+    const dataArray = await db.dbGet().collection(this.collection).findOne({ [keyToLookup]: [itemValue] }); //prettier-ignore
+    return dataArray;
+  }
+
   /**
    * Retrieves the most recent items from a collection based on a specified key
    * @function getLastItemsArray
