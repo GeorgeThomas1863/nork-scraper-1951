@@ -94,6 +94,10 @@ class KCNA {
     }
   }
 
+  //-------------------
+
+  //GET PIC REQ
+
   //maybe refactor
   async getPicReq() {
     const { url, savePath, kcnaId } = this.dataObject;
@@ -147,20 +151,27 @@ class KCNA {
     }
   }
 
+  //--------------------------------
+
+  //GET VID REQ
+
   async getVidReq() {
     console.log("VID DOWNLOAD!!!");
     console.log(this.dataObject);
 
     //get obj data
     const { inputObj } = this.dataObject;
-    const { vidSizeBytes, vidSizeMB, savePath } = inputObj;
+    const { vidSizeBytes } = inputObj;
     const { vidChunkSize } = CONFIG;
 
     //build vid obj, just to move shit easier
     const vidObj = { ...inputObj };
-
     const totalChunks = Math.ceil(vidSizeBytes / vidChunkSize);
     vidObj.totalChunks = totalChunks;
+
+    // Clean up any existing temp files at the start
+    const cleanupModel = new KCNA(vidObj);
+    await cleanupModel.cleanupTempVidFiles();
 
     //find shit already downloaded
     const completedModel = new KCNA(vidObj);
@@ -234,67 +245,61 @@ class KCNA {
 
   async processVidQueue() {
     const { url, savePath, completedChunkArray, pendingChunkArray, totalChunks } = this.dataObject;
-    const { vidConcurrent } = CONFIG;
+    const { vidConcurrent, vidRetries } = CONFIG;
     const downloadedChunkArray = [...completedChunkArray];
+    let remainingChunkArray = [...pendingChunkArray];
 
-    // Process pending chunks in batches
-    for (let i = 0; i < pendingChunkArray.length; i += vidConcurrent) {
-      const batch = pendingChunkArray.slice(i, i + vidConcurrent);
-      const promises = [];
-
-      for (let j = 0; j < batch.length; j++) {
-        const chunk = batch[j];
-        const downloadObj = {
-          url: url,
-          savePath: savePath,
-          chunkIndex: chunk.index,
-          start: chunk.start,
-          end: chunk.end,
-        };
-
-        const downloadModel = new KCNA(downloadObj);
-        const downloadPromise = downloadModel.downloadVidChunk();
-        promises.push(downloadPromise);
-      }
-
-      const results = await Promise.allSettled(promises);
-
-      // Process results
+    // Process chunks with retry attempts recursively
+    for (let i = 0; i < vidRetries.length; i++) {
       const failedChunkArray = [];
-      for (let j = 0; j < results.length; j++) {
-        const result = results[j];
 
-        if (result.status === "fulfilled") {
-          downloadedChunkArray.push(result.value.chunkIndex);
-        } else {
-          console.error(`Failed chunk ${batch[j].index}: ${result.reason}`);
-          failedChunkArray.push(batch[j]);
+      for (let j = 0; j < remainingChunkArray.length; i += vidConcurrent) {
+        const batch = remainingChunkArray.slice(i, i + vidConcurrent);
+        const promises = [];
+
+        for (let k = 0; k < batch.length; k++) {
+          const chunk = batch[k];
+          const downloadObj = {
+            url: url,
+            savePath: savePath,
+            chunkIndex: chunk.index,
+            start: chunk.start,
+            end: chunk.end,
+          };
+
+          const downloadModel = new KCNA(downloadObj);
+          const downloadPromise = downloadModel.downloadVidChunk();
+          promises.push(downloadPromise);
         }
+
+        const results = await Promise.allSettled(promises);
+
+        //process results
+        for (let m = 0; m < results.length; m++) {
+          const resultItem = results[m];
+
+          if (resultItem.status === "fulfilled") {
+            downloadedChunkArray.push(resultItem.value.chunkIndex);
+          } else {
+            console.error(`Failed chunk ${batch[j].index}: ${resultItem.reason}`);
+            failedChunkArray.push(batch[k]);
+          }
+        }
+
+        // Show progress
+        const progress = ((downloadedChunkArray.length / totalChunks) * 100).toFixed(1);
+        console.log(`Overall progress: ${progress}% (${downloadedChunkArray.length}/${totalChunks} chunks)`);
       }
 
-      // Add failed chunks back to the queue
-      pendingChunkArray.push(...failedChunkArray);
+      //update remaining
+      remainingChunkArray = failedChunkArray;
 
-      // Show progress
-      const progress = ((downloadedChunkArray.length / totalChunks) * 100).toFixed(1);
-      console.log(`Overall progress: ${progress}% (${downloadedChunkArray.length}/${totalChunks} chunks)`);
-    }
+      if (remainingChunkArray.length > 0 && i < vidRetries - 1) {
+        console.log(`Retry attempt ${i + 1}/${vidRetries}: ${remainingChunkArray.length} chunks remaining`);
 
-    // Process any failed chunks that were added back
-    if (pendingChunkArray.length > 0) {
-      console.log(`Retrying ${pendingChunkArray.length} failed chunks...`);
-      const redoObj = {
-        url: url,
-        savePath: savePath,
-        completedChunkArray: completedChunkArray,
-        pendingChunkArray: pendingChunkArray,
-        vidConcurrent: vidConcurrent,
-        totalChunks: totalChunks,
-      };
-
-      const processModel = new KCNA(redoObj);
-      const redoData = await processModel.processVidQueue();
-      console.log(redoData);
+        // Add exponential backoff between retry attempts
+        await new Promise((resolve) => setTimeout(resolve, 1000 * Math.pow(2, i + 1)));
+      }
     }
 
     return downloadedChunkArray;
@@ -360,7 +365,6 @@ class KCNA {
     console.log("Merge complete");
   }
 
-  //CLAUDE FORGETS TO CALL THIS
   async cleanupTempVidFiles() {
     const { savePath, totalChunks } = this.dataObject;
 
