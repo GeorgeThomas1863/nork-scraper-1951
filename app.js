@@ -1,5 +1,7 @@
 //TO DO:
 
+//Edit pic capitions
+
 //BUILD BACKUP VID DOWNLOAD (normal, 1 at a time)
 
 //CHANGE ALL FETCHES IN TG TO AXIOS
