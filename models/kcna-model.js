@@ -146,6 +146,162 @@ class KCNA {
       return null;
     }
   }
+
+  async getVidReq() {
+    console.log("VID DOWNLOAD!!!");
+    console.log(this.dataObject);
+    return null;
+  }
+
+  // async downloadVidChunk() {
+  //   const {} = this.dataObject;
+
+  //   for (let retry = 0; retry < CONFIG.vidRetries; retry++) {
+  //     try {
+  //       const res = await axios({
+  //         method: "get",
+  //         url: url,
+  //         responseType: "arraybuffer",
+  //         timeout: 30000,
+  //         headers: { Range: `bytes=${start}-${end}` },
+  //       });
+
+  //       // Write chunk to temporary file
+  //       const tempFile = `${filePath}.part${chunkIndex}`;
+  //       fs.writeFileSync(tempFile, Buffer.from(res.data));
+
+  //       console.log(`Chunk ${chunkIndex} downloaded (bytes ${start}-${end})`);
+
+  //       //obv put into obj
+  //       return {
+  //         chunkIndex,
+  //         tempFile,
+  //         start,
+  //         end,
+  //       };
+  //     } catch (error) {
+  //       console.error(`Chunk ${chunkIndex} error: ${error.message}`);
+
+  //       if (retry < MAX_RETRIES - 1) {
+  //         const delay = 1000 * Math.pow(2, retry);
+  //         console.log(`Retry ${retry + 1}/${MAX_RETRIES} after ${delay / 1000}s`);
+  //         await new Promise((r) => setTimeout(r, delay));
+  //       } else {
+  //         throw new Error(`Failed to download chunk ${chunkIndex} after ${MAX_RETRIES} retries`);
+  //       }
+  //     }
+  //   }
+  // }
+
+  // async cleanupTempVidFiles() {
+  //   const {} = this.dataObject;
+
+  //   for (let i = 0; i < totalChunks; i++) {
+  //     const tempFile = `${outputPath}.part${i}`;
+  //     if (fs.existsSync(tempFile)) {
+  //       fs.unlinkSync(tempFile);
+  //     }
+  //   }
+  // }
+
+  // async findCompletedVidChunks() {
+  //   const {} = this.dataObject;
+
+  //   const completedChunks = [];
+
+  //   for (let i = 0; i < totalChunks; i++) {
+  //     const tempFile = `${outputPath}.part${i}`;
+
+  //     if (fs.existsSync(tempFile)) {
+  //       const stats = fs.statSync(tempFile);
+  //       const expectedSize = i < totalChunks - 1 ? CHUNK_SIZE : totalSize - i * CHUNK_SIZE;
+
+  //       if (stats.size === expectedSize) {
+  //         completedChunks.push(i);
+  //       } else {
+  //         fs.unlinkSync(tempFile); // Remove partial chunks
+  //       }
+  //     }
+  //   }
+
+  //   return completedChunks;
+  // }
+
+  // async createVidQueue() {
+  //   const {} = this.dataObject;
+
+  //   const pendingChunks = [];
+
+  //   for (let i = 0; i < totalChunks; i++) {
+  //     if (!completedChunks.includes(i)) {
+  //       const start = i * CHUNK_SIZE;
+  //       const end = Math.min(start + CHUNK_SIZE - 1, totalSize - 1);
+  //       pendingChunks.push({ index: i, start, end });
+  //     }
+  //   }
+
+  //   return pendingChunks;
+  // }
+
+  // async processVidQueue() {
+  //   const {} = this.dataObject;
+
+  //   const downloadedChunks = [...completedChunks];
+
+  //   // Process pending chunks in batches
+  //   for (let i = 0; i < pendingChunks.length; i += CONCURRENT_DOWNLOADS) {
+  //     const batch = pendingChunks.slice(i, i + CONCURRENT_DOWNLOADS);
+  //     const promises = batch.map((chunk) => downloadChunk(url, outputPath, chunk.index, chunk.start, chunk.end));
+
+  //     const results = await Promise.allSettled(promises);
+
+  //     // Process results
+  //     const failedChunks = [];
+
+  //     for (let j = 0; j < results.length; j++) {
+  //       const result = results[j];
+
+  //       if (result.status === "fulfilled") {
+  //         downloadedChunks.push(result.value.chunkIndex);
+  //       } else {
+  //         console.error(`Failed chunk ${batch[j].index}: ${result.reason}`);
+  //         failedChunks.push(batch[j]);
+  //       }
+  //     }
+
+  //     // Add failed chunks back to the queue
+  //     pendingChunks.push(...failedChunks);
+
+  //     // Show progress
+  //     const progress = ((downloadedChunks.length / totalChunks) * 100).toFixed(1);
+  //     console.log(`Overall progress: ${progress}% (${downloadedChunks.length}/${totalChunks} chunks)`);
+  //   }
+
+  //   // Process any failed chunks that were added back
+  //   if (pendingChunks.length > 0) {
+  //     console.log(`Retrying ${pendingChunks.length} failed chunks...`);
+  //     await processDownloadQueue(url, outputPath, pendingChunks, downloadedChunks, totalChunks);
+  //   }
+
+  //   return downloadedChunks;
+  // }
+
+  // async mergeChunks() {
+  //   const {} = this.dataObject;
+
+  //   console.log("Merging chunks...");
+  //   const writeStream = fs.createWriteStream(outputPath);
+
+  //   for (let i = 0; i < totalChunks; i++) {
+  //     const tempFile = `${outputPath}.part${i}`;
+  //     const chunkData = fs.readFileSync(tempFile);
+  //     writeStream.write(chunkData);
+  //     fs.unlinkSync(tempFile); // Clean up temp file
+  //   }
+
+  //   writeStream.end();
+  //   console.log("Merge complete");
+  // }
 }
 
 export default KCNA;

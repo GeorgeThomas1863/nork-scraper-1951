@@ -317,65 +317,70 @@ class Vid {
   //CLAUDE CLAIMS I CAN REFACTOR, stream is an object
   async downloadVidFS() {
     const { vidObj } = this.dataObject;
-    const { url, savePath } = vidObj;
-
-    console.log("DOWNLOAD VID FS");
-    console.log(vidObj);
 
     //check if new (not possible in most situations, but adding check to be sure)
     const checkModel = new dbModel(vidObj, CONFIG.vidsDownloaded);
     //throws error if not new (keep out of try block to propogate error)
     await checkModel.urlNewCheck();
 
-    try {
-      // await randomDelay(1);
-      const res = await axios({
-        method: "get",
-        url: url,
-        timeout: 600000, //10 minutes per vid
-        responseType: "stream",
-      });
+    const downloadModel = new KCNA(vidObj);
+    const returnObj = await downloadModel.getVidReq();
 
-      // console.log("RES!!!!");
-      // console.log(res);
+    const downloadVidObj = { ...vidObj, ...returnObj };
+    const storeModel = new dbModel(downloadVidObj, CONFIG.vidsDownloaded);
+    await storeModel.storeUniqueURL();
 
-      const writer = fs.createWriteStream(savePath);
-      const stream = res.data.pipe(writer);
-      const totalSize = parseInt(res.headers["content-length"], 10);
-      const mbSize = +(totalSize / 1048576).toFixed(2);
-      let downloadedSize = 0;
+    return downloadVidObj;
 
-      console.log("DOWNLOADING VID " + mbSize + "MB");
-      console.log(totalSize);
+    // try {
+    //   // await randomDelay(1);
+    //   const res = await axios({
+    //     method: "get",
+    //     url: url,
+    //     timeout: 600000, //10 minutes per vid
+    //     responseType: "stream",
+    //   });
 
-      //download shit
-      res.data.on("data", (chunk) => {
-        downloadedSize += chunk.length;
-        if (downloadedSize >= totalSize) {
-        }
-      });
+    //   // console.log("RES!!!!");
+    //   // console.log(res);
 
-      await new Promise((resolve, reject) => {
-        stream.on("finish", resolve);
-        stream.on("error", reject);
-      });
+    //   const writer = fs.createWriteStream(savePath);
+    //   const stream = res.data.pipe(writer);
+    //   const totalSize = parseInt(res.headers["content-length"], 10);
+    //   const mbSize = +(totalSize / 1048576).toFixed(2);
+    //   let downloadedSize = 0;
 
-      console.log("VID DOWNLOADED TO " + savePath);
+    //   console.log("DOWNLOADING VID " + mbSize + "MB");
+    //   console.log(totalSize);
 
-      //store downloadedPicData
-      const downloadVidObj = { ...vidObj };
-      downloadVidObj.downloadedSize = downloadedSize;
-      downloadVidObj.totalSize = totalSize;
-      const storeModel = new dbModel(downloadVidObj, CONFIG.vidsDownloaded);
-      const storeData = await storeModel.storeUniqueURL();
-      console.log(storeData);
+    //   //download shit
+    //   res.data.on("data", (chunk) => {
+    //     downloadedSize += chunk.length;
+    //     if (downloadedSize >= totalSize) {
+    //     }
+    //   });
 
-      return downloadVidObj;
-    } catch (e) {
-      //AXIOS PRODUCES OWN CUSTOM ERROR
-      console.log("AXIOS ERROR, for " + url + "\nRESPONSE: " + e.response + "; REQUEST: " + e.request);
-      return null;
-    }
+    //   await new Promise((resolve, reject) => {
+    //     stream.on("finish", resolve);
+    //     stream.on("error", reject);
+    //   });
+
+    //   console.log("VID DOWNLOADED TO " + savePath);
+
+    //   //store downloadedPicData
+    //   const downloadVidObj = { ...vidObj };
+    //   downloadVidObj.downloadedSize = downloadedSize;
+    //   downloadVidObj.totalSize = totalSize;
+    //   const storeModel = new dbModel(downloadVidObj, CONFIG.vidsDownloaded);
+    //   const storeData = await storeModel.storeUniqueURL();
+    //   console.log(storeData);
+
+    //   return downloadVidObj;
+    // } catch (e) {
+    //   //AXIOS PRODUCES OWN CUSTOM ERROR
+    //   console.log("AXIOS ERROR, for " + url + "\nRESPONSE: " + e.response + "; REQUEST: " + e.request);
+    //   return null;
+    // }
   }
 }
 
