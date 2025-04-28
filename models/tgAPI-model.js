@@ -74,7 +74,7 @@ class TgAPI {
     //store pic Posted
     const storeObj = { ...inputObj, ...data.result };
     const storeModel = new dbModel(storeObj, CONFIG.picsUploaded);
-    await storeModel.storeUniqueURL;
+    await storeModel.storeUniqueURL();
 
     return storeObj;
   }
