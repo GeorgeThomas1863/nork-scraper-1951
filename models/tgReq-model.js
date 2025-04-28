@@ -1,8 +1,7 @@
 //SWITCH EVERYTING TO AXIOS NOT FETCH
 
 /**
- * @fileoverview Self build TG API request handler
- * Has GET, POST [Edit Caption / Send Message], POST Pic, handles TG bot rate limiting
+ * @fileoverview Self build TG API request handler / library
  * @module models/TgReq
  */
 
@@ -11,7 +10,9 @@ import fs from "fs";
 import FormData from "form-data";
 import axios from "axios";
 
+import CONFIG from "../config/scrape-config.js";
 import tokenArray from "../config/tg-bot.js";
+import dbModel from "./db-model.js";
 
 class TgReq {
   static tokenIndex = 0;
@@ -107,6 +108,9 @@ class TgReq {
   async tgPicFS(tokenIndex) {
     const { chatId, picPath } = this.dataObject;
 
+    console.log("DATA OBJECT");
+    console.log(this.dataObject);
+
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/sendPhoto`;
 
@@ -128,11 +132,10 @@ class TgReq {
 
         if (checkData) {
           const inputData = this.dataObject;
-          const retryModel = new TgReq({ inputData: inputData });
+          const retryModel = new TgReq(inputData);
           const retryData = await retryModel.tgPicFS(TgReq.tokenIndex);
           return retryData;
         }
-        // return e.response.data;
       } else {
         return e;
       }

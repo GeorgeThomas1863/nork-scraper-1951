@@ -357,12 +357,14 @@ class Article {
         };
         const picDataModel = new dbModel(lookupParams, CONFIG.picsDownloaded);
         const picObj = await picDataModel.getUniqueItem();
+        if (!picObj) continue;
 
         const postPicModel = new TgReq({ inputObj: picObj });
         const postPicData = await postPicModel.postPicTG();
         console.log(postPicData);
       } catch (e) {
-        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+        // console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+        console.log(e);
       }
     }
   }
