@@ -54,12 +54,17 @@ class TgAPI {
 
     //check token
     const checkData = await this.checkToken(data);
+    console.log("CHECK DATA")
+    console.log(checkData)
     if (checkData) {
       data = await tgModel.tgPicFS(tokenIndex);
     }
 
-    console.log("DATA HERE")
-    console.log(data)
+    console.log("TOKEN INDEX")
+    console.log(tokenIndex)
+
+    // console.log("DATA HERE")
+    // console.log(data)
 
     // if (!data) return null;
 
