@@ -29,14 +29,10 @@ class TgReq {
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/getUpdates?offset=${offset}`;
 
-    //send data
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      return data;
-    } catch (e) {
-      // console.log(e);
-    }
+    //NO TRY CATCH (fucks up tokenIndex)
+    const res = await fetch(url);
+    const data = await res.json();
+    return data;
   }
 
   /**
@@ -51,19 +47,15 @@ class TgReq {
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/${command}`;
 
-    //send data
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify(params),
-        headers: { "Content-Type": "application/json" },
-      });
+    //send data (NO TRY CATCH, fucks up token Index)
+    const res = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(params),
+      headers: { "Content-Type": "application/json" },
+    });
 
-      const data = await res.json();
-      return data;
-    } catch (e) {
-      // console.log(e);
-    }
+    const data = await res.json();
+    return data;
   }
 
   /**
@@ -83,16 +75,11 @@ class TgReq {
     form.append("chat_id", chatId);
     form.append("photo", fs.createReadStream(picPath));
 
-    //upload Pic
-    try {
-      const res = await axios.post(url, form, {
-        headers: form.getHeaders(),
-      });
-
-      return res.data;
-    } catch (e) {
-      // console.log(e);
-    }
+    //upload Pic (NO TRY CATCH)
+    const res = await axios.post(url, form, {
+      headers: form.getHeaders(),
+    });
+    return res.data;
   }
 
   //PROB NOT NECESSARY

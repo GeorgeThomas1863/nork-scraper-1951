@@ -3,6 +3,7 @@ import TgReq from "./tgReq-model.js";
 import dbModel from "./db-model.js";
 
 class TgAPI {
+  //could also make universal 
   static tokenIndex = 0;
 
   constructor(dataObject) {
