@@ -1,6 +1,8 @@
 //TO DO:
 
-//Edit pic capitions
+//FINISH Edit pic capitions
+
+//MAYBE REFACTOR TG UPLOAD (ONCE SHIT WORKING)
 
 //BUILD BACKUP VID DOWNLOAD (normal, 1 at a time)
 

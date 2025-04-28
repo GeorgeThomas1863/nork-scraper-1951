@@ -47,7 +47,7 @@ class TgReq {
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/${command}`;
 
-    //send data (NO TRY CATCH, fucks up token Index)
+    //send data (NO TRY CATCH, fucks up token Index, IF YOU DONT FUCKING RETURN IT)
     const res = await fetch(url, {
       method: "POST",
       body: JSON.stringify(params),
