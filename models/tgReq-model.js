@@ -75,11 +75,18 @@ class TgReq {
     form.append("chat_id", chatId);
     form.append("photo", fs.createReadStream(picPath));
 
-    //upload Pic (NO TRY CATCH)
-    const res = await axios.post(url, form, {
-      headers: form.getHeaders(),
-    });
-    return res.data;
+    try {
+      const res = await axios.post(url, form, {
+        headers: form.getHeaders(),
+      });
+      return res.data;
+    } catch (e) {
+      if (e.response && e.response.data) {
+        return e.response.data;
+      } else {
+        return e;
+      }
+    }
   }
 
   //PROB NOT NECESSARY
