@@ -81,7 +81,8 @@ class TgReq {
 
     //build form
     const form = new FormData();
-    form.append("chat_id", chatId), form.append("photo", fs.createReadStream(picPath));
+    form.append("chat_id", chatId);
+    form.append("photo", fs.createReadStream(picPath));
 
     //upload Pic
     try {
