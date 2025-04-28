@@ -89,8 +89,6 @@ class TgReq {
         headers: form.getHeaders(),
       });
 
-      if (!res || !res.data) return null;
-
       return res.data;
     } catch (e) {
       console.log(e);
