@@ -58,8 +58,8 @@ class TgAPI {
       data = await tgModel.tgPicFS(this.tokenIndex);
     }
 
-    // console.log("DATA HERE")
-    // console.log(data)
+    console.log("DATA HERE")
+    console.log(data)
 
     // if (!data) return null;
 
