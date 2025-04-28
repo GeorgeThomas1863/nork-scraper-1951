@@ -340,7 +340,7 @@ class Article {
     const { inputObj } = this.dataObject;
 
     if (!inputObj || !inputObj.articlePicArray || !inputObj.articlePicArray.length) return null;
-    const { articlePicArray } = inputObj;
+    const { articlePicArray, date } = inputObj;
 
     for (let i = 0; i < articlePicArray.length; i++) {
       try {
@@ -359,12 +359,15 @@ class Article {
         const picObj = await picDataModel.getUniqueItem();
         if (!picObj) continue;
 
+        //ADD ARTICLE DATE
+        picObj.articleDate = date;
+
         const postPicModel = new TgReq({ inputObj: picObj });
         const postPicData = await postPicModel.postPicTG();
         console.log(postPicData);
       } catch (e) {
-        // console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-        console.log(e);
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+        // console.log(e);
       }
     }
   }

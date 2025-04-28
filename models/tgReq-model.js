@@ -191,7 +191,7 @@ class TgReq {
 
   async postPicTG() {
     const { inputObj } = this.dataObject;
-    const { url, kcnaId, savePath } = inputObj;
+    const { kcnaId, savePath, picSizeMB, articleDate } = inputObj;
 
     //post pic
     const postParams = {
@@ -203,9 +203,9 @@ class TgReq {
     const postData = await postModel.tgPicFS(TgReq.tokenIndex);
 
     //define caption
-    const defangURL = url.replace(/\./g, "[.]").replace(/:/g, "[:]");
-    const normalURL = defangURL.substring(15);
-    const caption = "ID: " + kcnaId + "; URL: " + normalURL;
+    // const defangURL = url.replace(/\./g, "[.]").replace(/:/g, "[:]");
+    // const normalURL = defangURL.substring(15);
+    const caption = "PIC: " + kcnaId + ".jpg | Date: " + articleDate + " | Size: " + picSizeMB + "MB";
 
     //build edit caption params
     const editParams = {
@@ -220,7 +220,7 @@ class TgReq {
     };
 
     //EDIT PIC CAPTION
-    const editModel = new TgReq(paramObj);
+    const editModel = new TgReq({ inputObj: paramObj });
     const editData = await editModel.tgPost(TgReq.tokenIndex);
     console.log("!!!!!!!!!");
     console.log(editData);
