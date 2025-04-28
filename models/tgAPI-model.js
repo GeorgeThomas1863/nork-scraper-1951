@@ -15,7 +15,7 @@ class TgAPI {
     if (!inputObj) return null;
 
     const { title, date } = inputObj;
-    const titleText = title + "; <i>" + date + "</i>";
+    const titleText = title + "\n<i>" + date + "</i>";
 
     const params = {
       chat_id: CONFIG.tgUploadId,
