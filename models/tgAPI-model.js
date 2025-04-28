@@ -15,7 +15,7 @@ class TgAPI {
     if (!inputObj) return null;
 
     const { title, date } = inputObj;
-    const titleText = title + "\n<i>" + date + "</i>";
+    const titleText = title + "\n" + "<i>" + date + "</i>";
 
     const params = {
       chat_id: CONFIG.tgUploadId,
@@ -77,6 +77,8 @@ class TgAPI {
   // };
 
   async checkToken(data) {
+    console.log("ALLAHU AKBAR")
+    console.log(data)
     //429 bot fucked error
     if (!data || (data && data.ok) || (data && !data.ok && data.error_code !== 429)) return null;
 
