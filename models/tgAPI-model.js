@@ -58,14 +58,17 @@ class TgAPI {
       data = await tgModel.tgPicFS(tokenIndex);
     }
 
-    if (!data) return null;
+    console.log("DATA HERE")
+    console.log(data)
+
+    // if (!data) return null;
 
     //EDIT PIC CAPTION
 
     //STORE PIC AS UPLOADED
 
     //store pic Posted
-    const storeObj = { ...inputObj, ...data };
+    const storeObj = { ...inputObj, ...data.result };
     const storeModel = new dbModel(storeObj, CONFIG.picsUploaded);
     await storeModel.storeUniqueURL;
 
