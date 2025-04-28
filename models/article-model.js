@@ -5,7 +5,7 @@ import KCNA from "./kcna-model.js";
 import dbModel from "./db-model.js";
 import Pic from "./pic-model.js";
 import UTIL from "./util-model.js";
-import TgAPI from "./tgAPI-model.js";
+import TgReq from "./tgReq-model.js";
 
 /**
  * @class Article
@@ -326,7 +326,7 @@ class Article {
     const articleObj = await normalModel.normalizeInputsTG();
 
     //post title
-    const titleModel = new TgAPI({ inputObj: articleObj });
+    const titleModel = new TgReq({ inputObj: articleObj });
     await titleModel.postArticleTitleTG();
 
     //inputObj has picArray
@@ -358,7 +358,7 @@ class Article {
         const picDataModel = new dbModel(lookupParams, CONFIG.picsDownloaded);
         const picObj = await picDataModel.getUniqueItem();
 
-        const postPicModel = new TgAPI({ inputObj: picObj });
+        const postPicModel = new TgReq({ inputObj: picObj });
         const postPicData = await postPicModel.postPicTG();
         console.log(postPicData);
       } catch (e) {

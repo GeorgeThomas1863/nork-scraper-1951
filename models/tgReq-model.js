@@ -20,17 +20,19 @@ class TgReq {
     this.dataObject = dataObject;
   }
 
-  async checkToken(data) {
+  async checkToken() {
+    const { data } = this.dataObject;
+
     //429 bot fucked error
     if (!data || (data && data.ok) || (data && !data.ok && data.error_code !== 429)) return null;
 
     console.log("AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
 
-    TgAPI.tokenIndex++;
-    if (TgAPI.tokenIndex > 11) TgAPI.tokenIndex = 0;
+    TgReq.tokenIndex++;
+    if (TgReq.tokenIndex > 11) TgReq.tokenIndex = 0;
 
-    console.log("GOT 429 ERROR, TRYING NEW FUCKING BOT. TOKEN INDEX: " + TgAPI.tokenIndex);
-    return TgAPI.tokenIndex;
+    console.log("GOT 429 ERROR, TRYING NEW FUCKING BOT. TOKEN INDEX: " + TgReq.tokenIndex);
+    return TgReq.tokenIndex;
   }
 
   /**
@@ -47,6 +49,18 @@ class TgReq {
     //NO TRY CATCH (fucks up tokenIndex)
     const res = await fetch(url);
     const data = await res.json();
+
+    //check token
+    const checkModel = new TgReq({ data: data });
+    const checkData = await checkModel.checkToken();
+
+    if (checkData) {
+      const inputData = this.dataObject;
+      const retryModel = new TgReq({ inputData: inputData });
+      const retryData = await retryModel.tgGet(TgReq.tokenIndex);
+      return retryData;
+    }
+
     return data;
   }
 
@@ -70,6 +84,17 @@ class TgReq {
     });
 
     const data = await res.json();
+
+    //check token
+    const checkModel = new TgReq({ data: data });
+    const checkData = await checkModel.checkToken();
+
+    if (checkData) {
+      const inputData = this.dataObject;
+      const retryModel = new TgReq({ inputData: inputData });
+      const retryData = await retryModel.tgPost(TgReq.tokenIndex);
+      return retryData;
+    }
     return data;
   }
 
@@ -97,16 +122,24 @@ class TgReq {
       return res.data;
     } catch (e) {
       if (e.response && e.response.data) {
-        return e.response.data;
+        //check token
+        const checkModel = new TgReq({ data: e.response.data });
+        const checkData = await checkModel.checkToken();
+
+        if (checkData) {
+          const inputData = this.dataObject;
+          const retryModel = new TgReq({ inputData: inputData });
+          const retryData = await retryModel.tgPicFS(TgReq.tokenIndex);
+          return retryData;
+        }
+        // return e.response.data;
       } else {
         return e;
       }
     }
   }
 
-
   //-----------------------------
-
 
   // /**
   //  * TG sendMessage API, sends message chunk to TG (chunk before using) with auto token rotation
@@ -171,13 +204,11 @@ class TgReq {
     };
 
     const tgModel = new TgReq({ inputObj: postObj });
-    let data = await tgModel.tgPost(TgReq.tokenIndex);
+    const data = await tgModel.tgPost(TgReq.tokenIndex);
 
-    //check token
-    const checkData = await this.checkToken(data);
-    if (checkData) {
-      data = await tgModel.tgPost(TgAPI.tokenIndex);
-    }
+    // if (checkData) {
+    //   data = await tgModel.tgPost(TgReq.tokenIndex);
+    // }
 
     return data;
   }
@@ -192,16 +223,16 @@ class TgReq {
     };
 
     const tgModel = new TgReq(params);
-    let data = await tgModel.tgPicFS(TgAPI.tokenIndex);
+    const data = await tgModel.tgPicFS(TgReq.tokenIndex);
 
     //check token
-    const checkData = await this.checkToken(data);
+    // const checkData = await this.checkToken(data);
 
-    if (checkData) {
-      console.log("AHHHHHHHHHHHHHHHHHHHHH");
-      data = await tgModel.tgPicFS(TgAPI.tokenIndex);
-      console.log(TgAPI.tokenIndex);
-    }
+    // // if (checkData) {
+    // //   console.log("AHHHHHHHHHHHHHHHHHHHHH");
+    // //   data = await tgModel.tgPicFS(TgAPI.tokenIndex);
+    // //   console.log(TgAPI.tokenIndex);
+    // // }
 
     // console.log("DATA HERE");
     // console.log(data);
