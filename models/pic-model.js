@@ -331,8 +331,6 @@ class Pic {
     return downloadPicDataArray;
   }
 
-  //!!!!!!!
-  //CLAUDE CLAIMS I CAN REFACTOR, stream is an object
   async downloadPicFS() {
     const { picObj } = this.dataObject;
 

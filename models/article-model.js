@@ -3,7 +3,7 @@ import { JSDOM } from "jsdom";
 import CONFIG from "../config/scrape-config.js";
 import KCNA from "./kcna-model.js";
 import dbModel from "./db-model.js";
-// import Pic from "./pic-model.js";
+import Pic from "./pic-model.js";
 import UTIL from "./util-model.js";
 
 import { postArticleTitleTG, postPicTG } from "../src/tg-post.js";
@@ -343,16 +343,25 @@ class Article {
     const { articlePicArray } = inputObj;
 
     for (let i = 0; i < articlePicArray.length; i++) {
-      //get full picObj
-      const picURL = articlePicArray[i];
-      const lookupParams = {
-        keyToLookup: "url",
-        itemValue: picURL,
-      };
-      const picDataModel = new dbModel(lookupParams, CONFIG.picsDownloaded);
-      const picObj = await picDataModel.getUniqueItem();
+      try {
+        //get full picObj
+        const picURL = articlePicArray[i];
 
-      const postPicData = await postPicTG(picObj);
+        //check if pic already uploaded
+        const checkModel = new dbModel({ url: picURL }, CONFIG.picsUploaded);
+        await checkModel.urlNewCheck();
+
+        const lookupParams = {
+          keyToLookup: "url",
+          itemValue: picURL,
+        };
+        const picDataModel = new dbModel(lookupParams, CONFIG.picsDownloaded);
+        const picObj = await picDataModel.getUniqueItem();
+
+        const postPicData = await postPicTG(picObj);
+      } catch (e) {
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      }
     }
   }
 }

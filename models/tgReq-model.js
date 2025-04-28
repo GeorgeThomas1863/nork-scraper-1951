@@ -1,4 +1,4 @@
-//PROB SHOULD SWITCH EVERYTHING TO AXIOS RATHER THAN FETCH
+//SWITCH EVERYTING TO AXIOS NOT FETCH
 
 /**
  * @fileoverview Self build TG API request handler
@@ -13,8 +13,6 @@ import axios from "axios";
 
 import tokenArray from "../config/tg-bot.js";
 
-let tokenIndex = 0;
-
 class TgReq {
   constructor(dataObject) {
     this.dataObject = dataObject;
@@ -26,17 +24,18 @@ class TgReq {
    * @param {number} tokenIndex - Index of the bot token to use from the tokenArray
    * @returns {Promise<Object>} The JSON response from the Telegram API
    */
-  async tgGet() {
+  async tgGet(tokenIndex) {
+    const { offset } = this.dataObject;
     const token = tokenArray[tokenIndex];
-    const url = `https://api.telegram.org/bot${token}/getUpdates?offset=${this.dataObject.offset}`;
+    const url = `https://api.telegram.org/bot${token}/getUpdates?offset=${offset}`;
 
     //send data
     try {
-      const response = await fetch(url);
-      const data = await response.json();
+      const res = await fetch(url);
+      const data = await res.json();
       return data;
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -46,7 +45,7 @@ class TgReq {
    * @params command (command to send to tg); tokenIndex
    * @returns {Promise<Object>} The JSON response from the Telegram API
    */
-  async tgPost() {
+  async tgPost(tokenIndex) {
     const { inputObj } = this.dataObject;
     const { command, params } = inputObj;
     const token = tokenArray[tokenIndex];
@@ -54,25 +53,17 @@ class TgReq {
 
     //send data
     try {
-      const response = await fetch(url, {
+      const res = await fetch(url, {
         method: "POST",
         body: JSON.stringify(params),
         headers: { "Content-Type": "application/json" },
       });
 
-      const data = await response.json();
-      const checkData = await this.checkToken(data);
-
-      //rerun
-      if (checkData) {
-        const retryModel = new TgReq(this.dataObject);
-        await retryModel.tgPost();
-        return "TWO ATTEMPTS FAILED";
-      }
-
+      const data = await res.json();
       return data;
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      console.log(e);
+      return e;
     }
   }
 
@@ -82,7 +73,7 @@ class TgReq {
    * @param {number} tokenIndex - Index of the bot token to use from the tokenArray
    * @returns {Promise<Object>} The JSON response from the Telegram API
    */
-  async tgPicFS() {
+  async tgPicFS(tokenIndex) {
     const { chatId, picPath } = this.dataObject;
 
     const token = tokenArray[tokenIndex];
@@ -94,51 +85,18 @@ class TgReq {
 
     //upload Pic
     try {
-      const response = await axios.post(url, form, {
+      const res = await axios.post(url, form, {
         headers: form.getHeaders(),
       });
 
-      const checkData = await this.checkToken(response.data);
-      if (checkData) {
-        const retryModel = this.dataObject;
-        await retryModel.tgPicFS();
-      }
+      if (!res || !res.data) return null;
 
-      return response.data;
-    } catch (error) {
-      console.log("UPLOAD FUCKED");
-      if (error && error.response && error.response.data) {
-        console.log(error.response.data);
-        return error.response.data;
-      } else {
-        return error;
-      }
+      return res.data;
+    } catch (e) {
+      console.log(e);
+      return e;
     }
   }
-
-  //----------------------------
-
-  /**
-   * Handles TG rate limiting by checking response looking for error code 429) and rotates to NEXT bot / token
-   * if error code present
-   * @function checkToken
-   * @param {Object} data - Response data from Telegram API
-   * @returns {number|null} New token index if rotated, null if no rotation needed
-   */
-  async checkToken(data) {
-    //429 bot fucked error
-    if (!data || (data && data.ok) || (data && !data.ok && data.error_code !== 429)) return null;
-
-    tokenIndex++;
-    if (tokenIndex > 11) tokenIndex = 0;
-
-    console.log("GOT 429 ERROR, TRYING NEW FUCKING BOT. TOKEN INDEX: " + tokenIndex);
-    return tokenIndex;
-  }
-
-  //----------------------------
-
-  //below specific methods prob not necessary, but keeping for now
 
   //PROB NOT NECESSARY
   /**
@@ -147,7 +105,7 @@ class TgReq {
    * @param {Object} params - Message parameters
    * @returns {Promise<Object>} Response data from Telegram API
    */
-  async sendMessageChunkTG() {
+  async sendMessageChunkTG(tokenIndex) {
     const tgModel = new TgReq(this.dataObject);
 
     //check token
@@ -165,7 +123,7 @@ class TgReq {
    * @param {Object} inputObj - Response object from a previous sendPhoto API call, custom caption
    * @returns {Promise<Object>} Response data from Telegram API
    */
-  async editCaptionTG(caption) {
+  async editCaptionTG(caption, tokenIndex) {
     //build params
     const params = {
       chat_id: this.dataObject.result.chat.id,
@@ -182,23 +140,23 @@ class TgReq {
     return data;
   }
 
-  //PROB NOT NECESSARY
-  /**
-   * TG sendPhoto API, posts images to TG channel / user, with auto token rotation
-   * @function uploadPicsTG
-   * @param {Object} params - Upload parameters
-   * @returns {Promise<Object>} Response data from Telegram API
-   */
-  async uploadPicsTG() {
-    const tgModel = new TgReq(this.dataObject);
+  // //PROB NOT NECESSARY
+  // /**
+  //  * TG sendPhoto API, posts images to TG channel / user, with auto token rotation
+  //  * @function uploadPicsTG
+  //  * @param {Object} params - Upload parameters
+  //  * @returns {Promise<Object>} Response data from Telegram API
+  //  */
+  // async uploadPicsTG(tokenIndex) {
+  //   const tgModel = new TgReq(this.dataObject);
 
-    //check token
-    let data = await tgModel.tgPicFS(tokenIndex);
-    const checkData = this.checkToken(data);
-    if (checkData) data = await tgModel.tgPicFS(tokenIndex); //run again
+  //   //check token
+  //   let data = await tgModel.tgPicFS(tokenIndex);
+  //   const checkData = this.checkToken(data);
+  //   if (checkData) data = await tgModel.tgPicFS(tokenIndex); //run again
 
-    return data;
-  }
+  //   return data;
+  // }
 }
 
 export default TgReq;
