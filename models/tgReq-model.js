@@ -108,9 +108,6 @@ class TgReq {
   async tgPicFS(tokenIndex) {
     const { chatId, picPath } = this.dataObject;
 
-    console.log("DATA OBJECT");
-    console.log(this.dataObject);
-
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/sendPhoto`;
 
@@ -161,30 +158,6 @@ class TgReq {
   //   return data;
   // }
 
-  // //MIGHT WANT TO CHANGE HOW BELOW HAPPENS
-  // /**
-  //  * TG editMessageCaption API; edits the caption of a previously pic / message
-  //  * @function editCaptionTG
-  //  * @param {Object} inputObj - Response object from a previous sendPhoto API call, custom caption
-  //  * @returns {Promise<Object>} Response data from Telegram API
-  //  */
-  // async editCaptionTG(caption, tokenIndex) {
-  //   //build params
-  //   const params = {
-  //     chat_id: this.dataObject.result.chat.id,
-  //     message_id: this.dataObject.result.message_id,
-  //     caption: caption,
-  //   };
-
-  //   const tgModel = new TgReq(params);
-
-  //   let data = await tgModel.tgPost("editMessageCaption", tokenIndex);
-  //   const checkData = this.checkToken(data);
-  //   if (checkData) data = await tgModel.tgPost("editMessageCaption", tokenIndex); //if fucked run again
-
-  //   return data;
-  // }
-
   //--------------------------
 
   async postArticleTitleTG() {
@@ -218,45 +191,71 @@ class TgReq {
 
   async postPicTG() {
     const { inputObj } = this.dataObject;
-    const { savePath } = inputObj;
+    const { url, kcnaId, savePath } = inputObj;
 
-    const params = {
+    //post pic
+    const postParams = {
       chatId: CONFIG.tgUploadId,
       picPath: savePath,
     };
 
-    const tgModel = new TgReq(params);
-    const data = await tgModel.tgPicFS(TgReq.tokenIndex);
+    const postModel = new TgReq(postParams);
+    const postData = await postModel.tgPicFS(TgReq.tokenIndex);
 
-    //check token
-    // const checkData = await this.checkToken(data);
+    //define caption
+    const defangURL = url.replace(/\./g, "[.]").replace(/:/g, "[:]");
+    const normalURL = defangURL.substring(15);
+    const caption = "ID: " + kcnaId + "; URL: " + normalURL;
 
-    // // if (checkData) {
-    // //   console.log("AHHHHHHHHHHHHHHHHHHHHH");
-    // //   data = await tgModel.tgPicFS(TgAPI.tokenIndex);
-    // //   console.log(TgAPI.tokenIndex);
-    // // }
+    //build edit caption params
+    const editParams = {
+      chat_id: postData.result.chat.id,
+      message_id: postData.result.message_id,
+      caption: caption,
+    };
 
-    // console.log("DATA HERE");
-    // console.log(data);
-
-    // if (!data) return null;
+    const paramObj = {
+      params: editParams,
+      command: "editMessageCaption",
+    };
 
     //EDIT PIC CAPTION
-
-    //STORE PIC AS UPLOADED
+    const editModel = new TgReq(paramObj);
+    const editData = await editModel.tgPost(TgReq.tokenIndex);
+    console.log("!!!!!!!!!");
+    console.log(editData);
 
     //store pic Posted
-    const storeObj = { ...inputObj, ...data.result };
+    const storeObj = { ...inputObj, ...postData.result };
     const storeModel = new dbModel(storeObj, CONFIG.picsUploaded);
     await storeModel.storeUniqueURL();
 
     return storeObj;
   }
 
-  // export const postPicTG = async (inputObj) => {
+  //MIGHT WANT TO CHANGE HOW BELOW HAPPENS
+  /**
+   * TG editMessageCaption API; edits the caption of a previously pic / message
+   * @function editCaptionTG
+   * @param {Object} inputObj - Response object from a previous sendPhoto API call, custom caption
+   * @returns {Promise<Object>} Response data from Telegram API
+   */
+  async editCaptionTG(caption, tokenIndex) {
+    //build params
+    const params = {
+      chat_id: this.dataObject.result.chat.id,
+      message_id: this.dataObject.result.message_id,
+      caption: caption,
+    };
 
-  // };
+    const tgModel = new TgReq(params);
+
+    let data = await tgModel.tgPost("editMessageCaption", tokenIndex);
+    const checkData = this.checkToken(data);
+    if (checkData) data = await tgModel.tgPost("editMessageCaption", tokenIndex); //if fucked run again
+
+    return data;
+  }
 }
 
 export default TgReq;
