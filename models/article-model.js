@@ -360,7 +360,7 @@ class Article {
 
         const postPicModel = new TgAPI({ inputObj: picObj });
         const postPicData = await postPicModel.postPicTG();
-        // console.log(postPicData);
+        console.log(postPicData);
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       }

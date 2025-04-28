@@ -35,7 +35,7 @@ class TgReq {
       const data = await res.json();
       return data;
     } catch (e) {
-      // console.log(e);
+      console.log(e);
     }
   }
 
@@ -62,8 +62,7 @@ class TgReq {
       const data = await res.json();
       return data;
     } catch (e) {
-      // console.log(e);
-      // return e;
+      console.log(e);
     }
   }
 
@@ -92,8 +91,7 @@ class TgReq {
 
       return res.data;
     } catch (e) {
-      // console.log(e);
-      // return e;
+      console.log(e);
     }
   }
 
