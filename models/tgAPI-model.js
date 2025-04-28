@@ -77,10 +77,10 @@ class TgAPI {
   // };
 
   async checkToken(data) {
-    console.log("ALLAHU AKBAR")
-    console.log(data)
     //429 bot fucked error
     if (!data || (data && data.ok) || (data && !data.ok && data.error_code !== 429)) return null;
+    console.log("ALLAHU AKBAR");
+    console.log(data);
 
     tokenIndex++;
     if (tokenIndex > 11) tokenIndex = 0;
