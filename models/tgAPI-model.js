@@ -61,8 +61,8 @@ class TgAPI {
       console.log(TgAPI.tokenIndex);
     }
 
-    console.log("DATA HERE");
-    console.log(data);
+    // console.log("DATA HERE");
+    // console.log(data);
 
     // if (!data) return null;
 
@@ -85,6 +85,8 @@ class TgAPI {
   async checkToken(data) {
     //429 bot fucked error
     if (!data || (data && data.ok) || (data && !data.ok && data.error_code !== 429)) return null;
+
+    console.log("AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
 
     TgAPI.tokenIndex++;
     if (TgAPI.tokenIndex > 11) TgAPI.tokenIndex = 0;
