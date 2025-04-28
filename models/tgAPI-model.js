@@ -2,11 +2,10 @@ import CONFIG from "../config/scrape-config.js";
 import TgReq from "./tgReq-model.js";
 import dbModel from "./db-model.js";
 
-let tokenIndex = 0;
-
 class TgAPI {
   constructor(dataObject) {
     this.dataObject = dataObject;
+    this.tokenIndex = 0;
   }
 
   async postArticleTitleTG() {
@@ -29,12 +28,12 @@ class TgAPI {
     };
 
     const tgModel = new TgReq({ inputObj: postObj });
-    let data = await tgModel.tgPost(tokenIndex);
+    let data = await tgModel.tgPost(this.tokenIndex);
 
     //check token
     const checkData = await this.checkToken(data);
     if (checkData) {
-      data = await tgModel.tgPost(tokenIndex);
+      data = await tgModel.tgPost(this.tokenIndex);
     }
 
     return data;
@@ -50,18 +49,14 @@ class TgAPI {
     };
 
     const tgModel = new TgReq(params);
-    let data = await tgModel.tgPicFS(tokenIndex);
+    let data = await tgModel.tgPicFS(this.tokenIndex);
 
     //check token
     const checkData = await this.checkToken(data);
-    console.log("CHECK DATA")
-    console.log(checkData)
-    if (checkData) {
-      data = await tgModel.tgPicFS(tokenIndex);
-    }
 
-    console.log("TOKEN INDEX")
-    console.log(tokenIndex)
+    if (checkData) {
+      data = await tgModel.tgPicFS(this.tokenIndex);
+    }
 
     // console.log("DATA HERE")
     // console.log(data)
@@ -88,11 +83,11 @@ class TgAPI {
     //429 bot fucked error
     if (!data || (data && data.ok) || (data && !data.ok && data.error_code !== 429)) return null;
 
-    tokenIndex++;
-    if (tokenIndex > 11) tokenIndex = 0;
+    this.tokenIndex++;
+    if (this.tokenIndex > 11) this.tokenIndex = 0;
 
-    console.log("GOT 429 ERROR, TRYING NEW FUCKING BOT. TOKEN INDEX: " + tokenIndex);
-    return tokenIndex;
+    console.log("GOT 429 ERROR, TRYING NEW FUCKING BOT. TOKEN INDEX: " + this.tokenIndex);
+    return this.tokenIndex;
   }
 }
 
