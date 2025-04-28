@@ -3,9 +3,10 @@ import TgReq from "./tgReq-model.js";
 import dbModel from "./db-model.js";
 
 class TgAPI {
+  static tokenIndex = 0;
+
   constructor(dataObject) {
     this.dataObject = dataObject;
-    this.tokenIndex = 0;
   }
 
   async postArticleTitleTG() {
@@ -28,12 +29,12 @@ class TgAPI {
     };
 
     const tgModel = new TgReq({ inputObj: postObj });
-    let data = await tgModel.tgPost(this.tokenIndex);
+    let data = await tgModel.tgPost(TgAPI.tokenIndex);
 
     //check token
     const checkData = await this.checkToken(data);
     if (checkData) {
-      data = await tgModel.tgPost(this.tokenIndex);
+      data = await tgModel.tgPost(TgAPI.tokenIndex);
     }
 
     return data;
@@ -49,15 +50,15 @@ class TgAPI {
     };
 
     const tgModel = new TgReq(params);
-    let data = await tgModel.tgPicFS(this.tokenIndex);
+    let data = await tgModel.tgPicFS(TgAPI.tokenIndex);
 
     //check token
     const checkData = await this.checkToken(data);
 
     if (checkData) {
       console.log("AHHHHHHHHHHHHHHHHHHHHH");
-      data = await tgModel.tgPicFS(this.tokenIndex);
-      console.log(this.tokenIndex);
+      data = await tgModel.tgPicFS(TgAPI.tokenIndex);
+      console.log(TgAPI.tokenIndex);
     }
 
     console.log("DATA HERE");
@@ -85,11 +86,11 @@ class TgAPI {
     //429 bot fucked error
     if (!data || (data && data.ok) || (data && !data.ok && data.error_code !== 429)) return null;
 
-    this.tokenIndex++;
-    if (this.tokenIndex > 11) this.tokenIndex = 0;
+    TgAPI.tokenIndex++;
+    if (TgAPI.tokenIndex > 11) TgAPI.tokenIndex = 0;
 
-    console.log("GOT 429 ERROR, TRYING NEW FUCKING BOT. TOKEN INDEX: " + this.tokenIndex);
-    return this.tokenIndex;
+    console.log("GOT 429 ERROR, TRYING NEW FUCKING BOT. TOKEN INDEX: " + TgAPI.tokenIndex);
+    return TgAPI.tokenIndex;
   }
 }
 
