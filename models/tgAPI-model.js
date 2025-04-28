@@ -60,15 +60,16 @@ class TgAPI {
 
     if (!data) return null;
 
-    //store pic Posted
-    const storeObj = { ...inputObj, ...data };
-    const storeModel = new dbModel(storeObj, CONFIG.picsUploaded);
-
-    return data;
-
     //EDIT PIC CAPTION
 
     //STORE PIC AS UPLOADED
+
+    //store pic Posted
+    const storeObj = { ...inputObj, ...data };
+    const storeModel = new dbModel(storeObj, CONFIG.picsUploaded);
+    await storeModel.storeUniqueURL;
+
+    return storeObj;
   }
 
   // export const postPicTG = async (inputObj) => {
