@@ -314,7 +314,8 @@ class Article {
 
         uploadDataArray.push(uploadArticleData);
       } catch (e) {
-        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+        // console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+        console.log(e);
       }
     }
   }
@@ -338,7 +339,10 @@ class Article {
     const articlePicArrayData = await articlePicModel.postArticlePicArrayTG();
     console.log(articlePicArrayData);
 
-    //FIRST POST TITLE AND DATE
+    //post content
+    const contentModel = new Article({ inputObj: articleObj });
+    const contentData = await contentModel.postArticleContentTG();
+    console.log(contentData);
   }
 
   async postArticlePicArrayTG() {
@@ -371,8 +375,8 @@ class Article {
 
         postPicDataArray.push(postPicData);
       } catch (e) {
-        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-        // console.log(e);
+        // console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+        console.log(e);
       }
     }
 
@@ -380,11 +384,16 @@ class Article {
   }
 
   async postArticleContentTG() {
-    const { url, date, title, text, tgUploadId } = inputObj; //destructure everything
+    //destructure everything
+    const { inputObj } = this.dataObject;
+    const { url, date, title, tgUploadId } = inputObj;
     const { tgMaxLength } = CONFIG;
 
+    //pull as textInput to avoid confusion
+    const textInput = inputObj.text;
+
     const maxLength = tgMaxLength - title.length - date.length - url.length - 100;
-    const chunkTotal = Math.ceil(text.length / maxLength);
+    const chunkTotal = Math.ceil(textInput.length / maxLength);
     let chunkCount = 0;
 
     //define paramsObj
@@ -398,22 +407,28 @@ class Article {
       parse_mode: "HTML",
     };
 
+    console.log("PARAMS");
+    console.log(params);
+
     //if short enough send normally
-    if (text.length < maxLength) {
-      params.text = title + "\n" + date + "\n\n" + text + "\n\n" + url;
+    if (textInput.length < maxLength) {
+      params.text = title + "\n" + date + "\n\n" + textInput + "\n\n" + url;
       paramsObj.params = params;
 
       const shortModel = new TgReq({ inputObj: paramsObj });
       const shortTest = await shortModel.tgPost();
       console.log("SHORT TEST");
       console.log(shortTest);
-      return text.length;
+      return textInput.length;
     }
 
     //otherwise send in chunks
-    for (let i = 0; i < text.length; i += maxLength) {
+    for (let i = 0; i < textInput.length; i += maxLength) {
       chunkCount++;
-      const chunk = text.substring(i, i + maxLength);
+      const chunk = textInput.substring(i, i + maxLength);
+
+      console.log("CHUNK COUNT");
+      console.log(chunkCount);
 
       //set text based on chunkCount
       switch (chunkCount) {
@@ -437,7 +452,7 @@ class Article {
       console.log(postData);
     }
 
-    return text.length;
+    return textInput.length;
   }
 }
 

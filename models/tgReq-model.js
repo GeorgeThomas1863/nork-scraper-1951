@@ -144,9 +144,9 @@ class TgReq {
   async postArticleTitleTG() {
     const { inputObj } = this.dataObject;
     if (!inputObj) return null;
-    const { title, date, tgUploadId } = inputObj;
+    const { titleNormal, dateNormal, tgUploadId } = inputObj;
 
-    const titleText = "--------------" + "\n\n" + "<b>" + title + "</b>" + "\n" + "<i>" + date + "</i>" + "\n\n" + "--------------";
+    const titleText = "--------------" + "\n\n" + titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n\n" + "--------------";
 
     const params = {
       chat_id: tgUploadId,
@@ -167,7 +167,7 @@ class TgReq {
 
   async postPicTG() {
     const { inputObj } = this.dataObject;
-    const { kcnaId, savePath, date, tgUploadId } = inputObj;
+    const { kcnaId, savePath, dateNormal, tgUploadId } = inputObj;
 
     //post pic
     const postParams = {
@@ -177,8 +177,9 @@ class TgReq {
 
     const postModel = new TgReq(postParams);
     const postData = await postModel.tgPicFS(TgReq.tokenIndex);
+    if (!postData) return null;
 
-    const caption = "<b>PIC: " + kcnaId + ".jpg</b>" + "\n" + "<i>" + date.toLocaleDateString() + "</i>";
+    const caption = "<b>PIC: " + kcnaId + ".jpg</b>" + "\n" + "<i>" + dateNormal + "</i>";
 
     //build edit caption params
     const editParams = {
