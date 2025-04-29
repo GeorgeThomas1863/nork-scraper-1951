@@ -347,9 +347,9 @@ class Article {
         //get full picObj
         const picURL = articlePicArray[i];
 
-        //check if pic already uploaded
-        const checkModel = new dbModel({ url: picURL }, CONFIG.picsUploaded);
-        await checkModel.urlNewCheck();
+        // KEEP OFF
+        // const checkModel = new dbModel({ url: picURL }, CONFIG.picsUploaded);
+        // await checkModel.urlNewCheck();
 
         const lookupParams = {
           keyToLookup: "url",

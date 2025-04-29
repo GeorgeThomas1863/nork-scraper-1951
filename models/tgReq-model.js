@@ -202,8 +202,7 @@ class TgReq {
     const postModel = new TgReq(postParams);
     const postData = await postModel.tgPicFS(TgReq.tokenIndex);
 
-
-    const caption = "PIC: " + kcnaId + ".jpg | Date: " + articleDate + " | Size: " + picSizeMB + "MB";
+    const caption = "PIC: " + kcnaId + ".jpg | Date: " + articleDate.toLocaleDateString() + " | Size: " + picSizeMB + "MB";
     // articleDate.toLocaleDateString()
 
     //build edit caption params
