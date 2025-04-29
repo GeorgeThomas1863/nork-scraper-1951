@@ -166,7 +166,7 @@ class TgReq {
     if (!inputObj) return null;
 
     const { title, date } = inputObj;
-    const titleText = "----------" + "\n\n" + "NEW ARTICLE:" + "\n\n" + title + "\n" + "<i>" + date + "</i>";
+    const titleText = "----------" + "\n\n" + title + "\n" + "<i>" + date + "</i>";
 
     const params = {
       chat_id: CONFIG.tgUploadId,
@@ -205,7 +205,7 @@ class TgReq {
     const postModel = new TgReq(postParams);
     const postData = await postModel.tgPicFS(TgReq.tokenIndex);
 
-    const caption = "PIC: " + kcnaId + ".jpg" + "\n" + "<b>" + title + "</b>" + "\n" + "<i>" + date.toLocaleDateString() + "</i>";
+    const caption = "<b>PIC: " + kcnaId + ".jpg</b>" + "\n" + "<i>" + date.toLocaleDateString() + "</i>";
     // articleDate.toLocaleDateString()
 
     //build edit caption params
