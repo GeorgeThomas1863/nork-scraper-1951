@@ -332,6 +332,8 @@ class Article {
     //inputObj has picArray
     const articlePicModel = new Article({ inputObj: inputObj });
     const articlePicArrayData = await articlePicModel.postArticlePicArrayTG();
+    console.log("ALLAHU AKBAR!!!!!!");
+    console.log(articlePicArrayData);
 
     //FIRST POST TITLE AND DATE
   }
@@ -342,6 +344,7 @@ class Article {
     if (!inputObj || !inputObj.articlePicArray || !inputObj.articlePicArray.length) return null;
     const { articlePicArray } = inputObj;
 
+    const postPicDataArray = [];
     for (let i = 0; i < articlePicArray.length; i++) {
       try {
         //get full picObj
@@ -351,6 +354,8 @@ class Article {
           keyToLookup: "url",
           itemValue: picURL,
         };
+
+        //get full pic Data (from pic db, combine in with inputObj)
         const picDataModel = new dbModel(lookupParams, CONFIG.picsDownloaded);
         const picObj = await picDataModel.getUniqueItem();
         if (!picObj) continue;
@@ -359,12 +364,16 @@ class Article {
 
         const postPicModel = new TgReq({ inputObj: uploadPicObj });
         const postPicData = await postPicModel.postPicTG();
-        console.log(postPicData);
+        if (!postPicData) continue;
+
+        postPicDataArray.push(postPicData);
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
         // console.log(e);
       }
     }
+
+    return postPicDataArray;
   }
 }
 
