@@ -27,7 +27,7 @@ class TgReq {
     //429 bot fucked error
     if (!data || (data && data.ok) || (data && !data.ok && data.error_code !== 429)) return null;
 
-    console.log("AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+    console.log("AHHHHHHHHHH");
 
     TgReq.tokenIndex++;
     if (TgReq.tokenIndex > 11) TgReq.tokenIndex = 0;
@@ -202,10 +202,8 @@ class TgReq {
     const postModel = new TgReq(postParams);
     const postData = await postModel.tgPicFS(TgReq.tokenIndex);
 
-    //define caption
-    // const defangURL = url.replace(/\./g, "[.]").replace(/:/g, "[:]");
-    // const normalURL = defangURL.substring(15);
-    const caption = "PIC: " + kcnaId + ".jpg | Date: " + articleDate + " | Size: " + picSizeMB + "MB";
+
+    const caption = "PIC: " + kcnaId + ".jpg | Date: " + articleDate.toLocaleDateString() + " | Size: " + picSizeMB + "MB";
 
     //build edit caption params
     const editParams = {
