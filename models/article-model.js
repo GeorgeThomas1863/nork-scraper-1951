@@ -325,6 +325,9 @@ class Article {
     const normalModel = new UTIL({ inputObj: inputObj });
     const articleObj = await normalModel.normalizeInputsTG();
 
+    //add channel to post to here
+    articleObj.tgUploadId = CONFIG.tgUploadId;
+
     //post title
     const titleModel = new TgReq({ inputObj: articleObj });
     await titleModel.postArticleTitleTG();
@@ -350,12 +353,12 @@ class Article {
         //get full picObj
         const picURL = articlePicArray[i];
 
+        //get full pic Data (from pic db, combine in with inputObj) //get full pic Data (from pic db, combine in with inputObj)
         const lookupParams = {
           keyToLookup: "url",
           itemValue: picURL,
         };
 
-        //get full pic Data (from pic db, combine in with inputObj)
         const picDataModel = new dbModel(lookupParams, CONFIG.picsDownloaded);
         const picObj = await picDataModel.getUniqueItem();
         if (!picObj) continue;
@@ -374,6 +377,67 @@ class Article {
     }
 
     return postPicDataArray;
+  }
+
+  async postArticleContentTG() {
+    const { url, date, title, text, tgUploadId } = inputObj; //destructure everything
+    const { tgMaxLength } = CONFIG;
+
+    const maxLength = tgMaxLength - title.length - date.length - url.length - 100;
+    const chunkTotal = Math.ceil(text.length / maxLength);
+    let chunkCount = 0;
+
+    //define paramsObj
+    const paramsObj = {
+      command: "sendMessage",
+    };
+
+    //set  base params
+    const params = {
+      chat_id: tgUploadId,
+      parse_mode: "HTML",
+    };
+
+    //if short enough send normally
+    if (text.length < maxLength) {
+      params.text = title + "\n" + date + "\n\n" + text + "\n\n" + url;
+      paramsObj.params = params;
+
+      const shortModel = new TgReq({ inputObj: paramsObj });
+      const shortTest = await shortModel.tgPost();
+      console.log("SHORT TEST");
+      console.log(shortTest);
+      return text.length;
+    }
+
+    //otherwise send in chunks
+    for (let i = 0; i < text.length; i += maxLength) {
+      chunkCount++;
+      const chunk = text.substring(i, i + maxLength);
+
+      //set text based on chunkCount
+      switch (chunkCount) {
+        case 1:
+          params.text = title + "\n" + date + "\n\n" + chunk;
+          break;
+
+        case chunkTotal:
+          params.text = chunk + "\n\n" + url;
+          break;
+
+        default:
+          params.text = chunk;
+      }
+
+      paramsObj.params = params;
+
+      const postModel = new TgReq({ inputObj: paramsObj });
+      const postData = await postModel.tgPost();
+      console.log("POST DATA!!!");
+      console.log(postData);
+    }
+
+    return text.length;
   }
 }
 

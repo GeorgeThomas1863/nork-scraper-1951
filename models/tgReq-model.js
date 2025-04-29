@@ -162,14 +162,13 @@ class TgReq {
 
   async postArticleTitleTG() {
     const { inputObj } = this.dataObject;
-
     if (!inputObj) return null;
+    const { title, date, tgUploadId } = inputObj;
 
-    const { title, date } = inputObj;
     const titleText = "--------------" + "\n\n" + "<b>" + title + "</b>" + "\n" + "<i>" + date + "</i>" + "\n\n" + "--------------";
 
     const params = {
-      chat_id: CONFIG.tgUploadId,
+      chat_id: tgUploadId,
       text: titleText,
       parse_mode: "HTML",
     };
@@ -187,14 +186,14 @@ class TgReq {
 
   async postPicTG() {
     const { inputObj } = this.dataObject;
-    const { kcnaId, savePath, date } = inputObj;
+    const { kcnaId, savePath, date, tgUploadId } = inputObj;
 
     console.log("INPUT OBJECT");
     console.log(inputObj);
 
     //post pic
     const postParams = {
-      chatId: CONFIG.tgUploadId,
+      chatId: tgUploadId,
       picPath: savePath,
     };
 
