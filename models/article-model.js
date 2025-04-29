@@ -340,16 +340,12 @@ class Article {
     const { inputObj } = this.dataObject;
 
     if (!inputObj || !inputObj.articlePicArray || !inputObj.articlePicArray.length) return null;
-    const { articlePicArray, date } = inputObj;
+    const { articlePicArray } = inputObj;
 
     for (let i = 0; i < articlePicArray.length; i++) {
       try {
         //get full picObj
         const picURL = articlePicArray[i];
-
-        // KEEP OFF
-        // const checkModel = new dbModel({ url: picURL }, CONFIG.picsUploaded);
-        // await checkModel.urlNewCheck();
 
         const lookupParams = {
           keyToLookup: "url",
@@ -360,9 +356,6 @@ class Article {
         if (!picObj) continue;
 
         const uploadPicObj = { ...inputObj, ...picObj };
-
-        // //ADD ARTICLE DATE
-        // picObj.articleDate = date;
 
         const postPicModel = new TgReq({ inputObj: uploadPicObj });
         const postPicData = await postPicModel.postPicTG();

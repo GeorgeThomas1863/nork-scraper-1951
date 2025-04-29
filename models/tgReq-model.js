@@ -182,16 +182,12 @@ class TgReq {
     const tgModel = new TgReq({ inputObj: postObj });
     const data = await tgModel.tgPost(TgReq.tokenIndex);
 
-    // if (checkData) {
-    //   data = await tgModel.tgPost(TgReq.tokenIndex);
-    // }
-
     return data;
   }
 
   async postPicTG() {
     const { inputObj } = this.dataObject;
-    const { kcnaId, savePath, picSizeMB, title, date } = inputObj;
+    const { kcnaId, savePath, date } = inputObj;
 
     console.log("INPUT OBJECT");
     console.log(inputObj);
@@ -206,7 +202,6 @@ class TgReq {
     const postData = await postModel.tgPicFS(TgReq.tokenIndex);
 
     const caption = "<b>PIC: " + kcnaId + ".jpg</b>" + "\n" + "<i>" + date.toLocaleDateString() + "</i>";
-    // articleDate.toLocaleDateString()
 
     //build edit caption params
     const editParams = {
@@ -223,14 +218,15 @@ class TgReq {
 
     //EDIT PIC CAPTION
     const editModel = new TgReq({ inputObj: paramObj });
-    const editData = await editModel.tgPost(TgReq.tokenIndex);
-    console.log("!!!!!!!!!");
-    console.log(editData);
+    await editModel.tgPost(TgReq.tokenIndex);
 
     //store pic Posted
     const storeObj = { ...inputObj, ...postData.result };
     const storeModel = new dbModel(storeObj, CONFIG.picsUploaded);
-    await storeModel.storeUniqueURL();
+    const storeData = await storeModel.storeUniqueURL();
+
+    console.log("!!!!!!!!");
+    console.log(storeData);
 
     return storeObj;
   }
