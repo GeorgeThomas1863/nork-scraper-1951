@@ -165,8 +165,8 @@ class TgReq {
 
     if (!inputObj) return null;
 
-    const { title, date } = inputObj;
-    const titleText = "----------"+ "\n\n" + title + "\n" + "<i>" + date + "</i>";
+    const { title, date, kcnaId} = inputObj;
+    const titleText = "----------" + "\n" + "NEW ARTICLE: " + kcnaId + "\n" + title + "\n" + "<i>" + date + "</i>";
 
     const params = {
       chat_id: CONFIG.tgUploadId,
