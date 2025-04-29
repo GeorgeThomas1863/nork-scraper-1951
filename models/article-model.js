@@ -359,10 +359,12 @@ class Article {
         const picObj = await picDataModel.getUniqueItem();
         if (!picObj) continue;
 
-        //ADD ARTICLE DATE
-        picObj.articleDate = date;
+        const uploadPicObj = { ...inputObj, ...picObj };
 
-        const postPicModel = new TgReq({ inputObj: picObj });
+        // //ADD ARTICLE DATE
+        // picObj.articleDate = date;
+
+        const postPicModel = new TgReq({ inputObj: uploadPicObj });
         const postPicData = await postPicModel.postPicTG();
         console.log(postPicData);
       } catch (e) {

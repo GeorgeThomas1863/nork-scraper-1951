@@ -191,7 +191,10 @@ class TgReq {
 
   async postPicTG() {
     const { inputObj } = this.dataObject;
-    const { kcnaId, savePath, picSizeMB, articleDate } = inputObj;
+    const { kcnaId, savePath, picSizeMB } = inputObj;
+
+    console.log("INPUT OBJECT");
+    console.log(inputObj);
 
     //post pic
     const postParams = {
@@ -202,7 +205,7 @@ class TgReq {
     const postModel = new TgReq(postParams);
     const postData = await postModel.tgPicFS(TgReq.tokenIndex);
 
-    const caption = "PIC: " + kcnaId + ".jpg | Article Date: " + articleDate.toLocaleDateString() + " | Size: " + picSizeMB + "MB";
+    const caption = "PIC: " + kcnaId + ".jpg | Article Date: | Size: " + picSizeMB + "MB";
     // articleDate.toLocaleDateString()
 
     //build edit caption params
@@ -244,6 +247,7 @@ class TgReq {
       chat_id: this.dataObject.result.chat.id,
       message_id: this.dataObject.result.message_id,
       caption: caption,
+      parse_mode: "HTML",
     };
 
     const tgModel = new TgReq(params);
