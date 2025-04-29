@@ -233,31 +233,6 @@ class TgReq {
 
     return storeObj;
   }
-
-  //MIGHT WANT TO CHANGE HOW BELOW HAPPENS
-  /**
-   * TG editMessageCaption API; edits the caption of a previously pic / message
-   * @function editCaptionTG
-   * @param {Object} inputObj - Response object from a previous sendPhoto API call, custom caption
-   * @returns {Promise<Object>} Response data from Telegram API
-   */
-  async editCaptionTG(caption, tokenIndex) {
-    //build params
-    const params = {
-      chat_id: this.dataObject.result.chat.id,
-      message_id: this.dataObject.result.message_id,
-      caption: caption,
-      parse_mode: "HTML",
-    };
-
-    const tgModel = new TgReq(params);
-
-    let data = await tgModel.tgPost("editMessageCaption", tokenIndex);
-    const checkData = this.checkToken(data);
-    if (checkData) data = await tgModel.tgPost("editMessageCaption", tokenIndex); //if fucked run again
-
-    return data;
-  }
 }
 
 export default TgReq;
