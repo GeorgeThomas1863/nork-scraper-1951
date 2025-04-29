@@ -322,20 +322,20 @@ class Article {
   async postArticleObjTG() {
     const { inputObj } = this.dataObject;
 
+    //add channel to post to HERE
+    inputObj.tgUploadId = CONFIG.tgUploadId;
+
+    //destructures // normalizes obj
     const normalModel = new UTIL({ inputObj: inputObj });
     const articleObj = await normalModel.normalizeInputsTG();
-
-    //add channel to post to here
-    articleObj.tgUploadId = CONFIG.tgUploadId;
 
     //post title
     const titleModel = new TgReq({ inputObj: articleObj });
     await titleModel.postArticleTitleTG();
 
     //inputObj has picArray
-    const articlePicModel = new Article({ inputObj: inputObj });
+    const articlePicModel = new Article({ inputObj: articleObj });
     const articlePicArrayData = await articlePicModel.postArticlePicArrayTG();
-    console.log("ALLAHU AKBAR!!!!!!");
     console.log(articlePicArrayData);
 
     //FIRST POST TITLE AND DATE

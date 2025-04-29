@@ -139,25 +139,6 @@ class TgReq {
     }
   }
 
-  //-----------------------------
-
-  // /**
-  //  * TG sendMessage API, sends message chunk to TG (chunk before using) with auto token rotation
-  //  * @function sendMessageChunkTG
-  //  * @param {Object} params - Message parameters
-  //  * @returns {Promise<Object>} Response data from Telegram API
-  //  */
-  // async sendMessageChunkTG(tokenIndex) {
-  //   const tgModel = new TgReq(this.dataObject);
-
-  //   //check token
-  //   let data = await tgModel.tgPost("sendMessage", tokenIndex);
-  //   const checkData = this.checkToken(data);
-  //   if (checkData) data = await tgModel.tgPost("sendMessage", tokenIndex); //run again
-
-  //   return data;
-  // }
-
   //--------------------------
 
   async postArticleTitleTG() {
@@ -187,9 +168,6 @@ class TgReq {
   async postPicTG() {
     const { inputObj } = this.dataObject;
     const { kcnaId, savePath, date, tgUploadId } = inputObj;
-
-    console.log("INPUT OBJECT");
-    console.log(inputObj);
 
     //post pic
     const postParams = {
