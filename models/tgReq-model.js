@@ -177,7 +177,7 @@ class TgReq {
 
     const postModel = new TgReq(postParams);
     const postData = await postModel.tgPicFS(TgReq.tokenIndex);
-    if (!postData) return null;
+    if (!postData || !postData.result) return null;
 
     const caption = "<b>PIC: " + kcnaId + ".jpg</b>" + "\n" + "<i>" + dateNormal + "</i>";
 
