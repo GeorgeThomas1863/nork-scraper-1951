@@ -220,7 +220,7 @@ class TgReq {
     console.log(textArray);
 
     //post by looping through
-    for (let i = 0; i < textArray; i++) {
+    for (let i = 0; i < textArray.length; i++) {
       const params = {
         chat_id: tgUploadId,
         text: textArray[i],
