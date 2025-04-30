@@ -232,6 +232,9 @@ class TgReq {
         command: "sendMessage",
       };
 
+      console.log("PARAMS OBJECT YOU FUCKING BITCH");
+      console.log(paramsObj);
+
       const postModel = new TgReq({ inputObj: paramsObj });
       const postData = await postModel.tgPost();
       console.log(postData);
