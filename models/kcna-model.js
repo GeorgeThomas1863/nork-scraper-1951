@@ -54,11 +54,13 @@ class KCNA {
         timeout: 30000,
       });
 
-      return res;
+      const headers = res.headers;
+      console.log("GOT FUCKING HEADERS");
+
+      return headers;
     } catch (e) {
-      console.log("GET HEADERS ERROR 0");
-      console.log("ERROR, for " + inputURL + "; | RESPONSE: ");
-      console.log(e);
+      console.log("HEADER ERROR for " + inputURL + "; | RESPONSE: ");
+      console.log(e.code);
       //on fail try stream
       const retryModel = new KCNA(this.dataObject);
       const res = await retryModel.retryStream();
@@ -112,7 +114,7 @@ class KCNA {
       });
 
       const headers = res.headers;
-      console.log("Headers received:", headers);
+      console.log("GOT FUCKING HEADERS", headers);
 
       // Immediately abort the stream to prevent downloading the entire file
       res.data.destroy();
@@ -120,7 +122,7 @@ class KCNA {
       console.log("!!!!!!!!!!!!!!1");
       console.log(res);
 
-      return res;
+      return headers;
     } catch (e) {
       console.log("STILLL FUCKNIG FAILED");
 

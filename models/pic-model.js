@@ -240,11 +240,9 @@ class Pic {
 
     //throws error on fail
     const htmlModel = new KCNA(picParams);
-    const res = await htmlModel.getMediaHeaders();
-    if (!res) return null;
+    const headerData = await htmlModel.getMediaHeaders();
+    if (!headerData) return null;
 
-    //get pic headers
-    const headerData = res.headers;
     console.log(headerData);
     const dataType = headerData["content-type"];
 

@@ -241,11 +241,9 @@ class Vid {
     const { vidParams } = this.dataObject;
 
     const htmlModel = new KCNA(vidParams);
-    const res = await htmlModel.getMediaHeaders();
-    if (!res) return null;
+    const headerData = await htmlModel.getMediaHeaders();
+    if (!headerData) return null;
 
-    //get pic headers
-    const headerData = res.headers;
     const headerModel = new Vid({ headerData: headerData });
     const headerObj = await headerModel.parseVidHeaders();
 
