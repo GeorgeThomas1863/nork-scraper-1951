@@ -71,7 +71,7 @@ class TgReq {
    * @params command (command to send to tg); tokenIndex
    * @returns {Promise<Object>} The JSON response from the Telegram API
    */
-  async tgPost(tokenIndex) {
+  async tgPost(tokenIndex = 0) {
     const { inputObj } = this.dataObject;
     const { command, params } = inputObj;
     const token = tokenArray[tokenIndex];
