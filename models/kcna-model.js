@@ -49,7 +49,7 @@ class KCNA {
     //random between up to 200 bytes
     const randomBytes = Math.floor(Math.random() * 200);
     const byteText = "bytes=0-" + randomBytes;
-    console.log("BYTES: " + +randomBytes);
+    console.log("BYTES: ", randomBytes);
 
     try {
       const res = await axios({
