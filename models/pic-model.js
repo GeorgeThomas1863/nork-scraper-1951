@@ -271,6 +271,7 @@ class Pic {
 
   async parsePicHeaders() {
     const { headerData } = this.dataObject;
+    if (!headerData) return null;
 
     console.log("PIC HEADER DATA");
     console.log(headerData);
@@ -281,7 +282,7 @@ class Pic {
     const picEditDate = new Date(headerData["last-modified"]);
     const dataType = headerData["content-type"];
     const contentRange = headerData["content-range"];
-    const picSizeBytes = +contentRange.substring(contentRange.lastIndexOf("/") + 1, contentRange.length);
+    const picSizeBytes = +contentRange?.substring(contentRange?.lastIndexOf("/") + 1, contentRange?.length);
     const picSizeMB = +(picSizeBytes / 1048576).toFixed(2);
 
     const headerObj = {

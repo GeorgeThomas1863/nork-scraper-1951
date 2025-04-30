@@ -265,7 +265,7 @@ class Vid {
     const eTag = headerData.etag;
     const vidEditDate = new Date(headerData["last-modified"]);
     const contentRange = headerData["content-range"];
-    const vidSizeBytes = +contentRange.substring(contentRange.lastIndexOf("/") + 1, contentRange.length);
+    const vidSizeBytes = +contentRange?.substring(contentRange?.lastIndexOf("/") + 1, contentRange?.length);
     const vidSizeMB = +(vidSizeBytes / 1048576).toFixed(2);
 
     const headerObj = {
