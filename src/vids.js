@@ -89,16 +89,16 @@ export const downloadNewVidsFS = async (inputArray) => {
   console.log("VID SORT ARRAY");
   console.log(sortArray);
 
-  // //REMOVE, added for testing
-  // return null
+  //REMOVE, added for testing
+  return null
 
-  //TURN BACK ON //ONLY DOWNLOADING 1 PER ITERATION
-  const vidDownloadArray = [sortArray[0]];
-  const vidModel = new Vid({ inputArray: vidDownloadArray });
-  // const vidModel = new Vid({ inputArray: sortArray }); //for testing
+  // //TURN BACK ON //ONLY DOWNLOADING 1 PER ITERATION
+  // const vidDownloadArray = [sortArray[0]];
+  // const vidModel = new Vid({ inputArray: vidDownloadArray });
+  // // const vidModel = new Vid({ inputArray: sortArray }); //for testing
 
-  const downloadVidDataArray = await vidModel.downloadVidArray();
-  return downloadVidDataArray;
+  // const downloadVidDataArray = await vidModel.downloadVidArray();
+  // return downloadVidDataArray;
 };
 
 //---------------------

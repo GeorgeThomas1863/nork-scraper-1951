@@ -192,7 +192,9 @@ class TgReq {
     //store pic Posted
     const storeObj = { ...inputObj, ...postData.result };
     const storeModel = new dbModel(storeObj, CONFIG.picsUploaded);
-    await storeModel.storeUniqueURL();
+    const storeData = await storeModel.storeUniqueURL();
+    console.log("PIC " + kcnaId + ".jpg UPLOADED AND STORED");
+    console.log(storeData);
 
     return storeObj;
   }
