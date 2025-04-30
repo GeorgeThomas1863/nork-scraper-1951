@@ -318,6 +318,11 @@ class Article {
         console.log(e);
       }
     }
+
+    console.log(uploadDataArray);
+    console.log("FUCKING FINISHED ARTICLES");
+
+    return uploadDataArray;
   }
 
   async postArticleObjTG() {
@@ -342,7 +347,16 @@ class Article {
     //post content
     const contentModel = new TgReq({ inputObj: articleObj });
     const contentData = await contentModel.postArticleContentTG();
-    console.log(contentData);
+
+    if (!contentData || !contentData.result) return null;
+
+    //otherwise store data
+    const storeObj = { ...inputObj, ...contentData.result };
+    const storeModel = new dbModel(storeObj, CONFIG.articlesUploaded);
+    const storeData = await storeModel.storeUniqueURL();
+    console.log(storeData);
+
+    return storeObj;
   }
 
   async postArticlePicArrayTG() {

@@ -209,20 +209,15 @@ class TgReq {
   async postArticleContentTG() {
     //destructure everything
     const { inputObj } = this.dataObject;
-    const { url, date, title, tgUploadId } = inputObj;
-    const { tgMaxLength } = CONFIG;
 
     //GET TEXT ARRAY
     const textModel = new TgReq({ inputObj: inputObj });
     const textArray = await textModel.buildTextArrayTG();
 
-    console.log("TEXT ARRAY YOU FUCKING FAGGOIT");
-    console.log(textArray);
-
     //post by looping through
     for (let i = 0; i < textArray.length; i++) {
       const params = {
-        chat_id: tgUploadId,
+        chat_id: inputObj.tgUploadId,
         text: textArray[i],
         parse_mode: "HTML",
       };
@@ -232,76 +227,22 @@ class TgReq {
         command: "sendMessage",
       };
 
-      console.log("PARAMS OBJECT YOU FUCKING BITCH");
-      console.log(paramsObj);
-
       const postModel = new TgReq({ inputObj: paramsObj });
       const postData = await postModel.tgPost();
-      console.log(postData);
+      return postData;
     }
-
-    // const maxLength = tgMaxLength - title.length - date.length - url.length - 100;
-    // const chunkTotal = Math.ceil(textInput.length / maxLength);
-    // let chunkCount = 0;
-
-    // //define paramsObj
-    // const paramsObj = {
-    //   command: "sendMessage",
-    // };
-
-    // //set  base params
-
-    // console.log("PARAMS");
-    // console.log(params);
-
-    // //if short enough send normally
-    // if (textInput.length < maxLength) {
-    //   params.text = title + "\n" + date + "\n\n" + textInput + "\n\n" + url;
-    // }
-
-    // //otherwise send in chunks
-    // for (let i = 0; i < textInput.length; i += maxLength) {
-    //   chunkCount++;
-    //   const chunk = textInput.substring(i, i + maxLength);
-
-    //   console.log("CHUNK COUNT");
-    //   console.log(chunkCount);
-
-    //   //set text based on chunkCount
-    //   switch (chunkCount) {
-    //     case 1:
-    //       params.text = title + "\n" + date + "\n\n" + chunk;
-    //       break;
-
-    //     case chunkTotal:
-    //       params.text = chunk + "\n\n" + url;
-    //       break;
-
-    //     default:
-    //       params.text = chunk;
-    //   }
-
-    //   paramsObj.params = params;
-
-    //   const postModel = new TgReq({ inputObj: paramsObj });
-    //   const postData = await postModel.tgPost();
-    //   console.log("POST DATA!!!");
-    //   console.log(postData);
-    // }
-
-    // return textInput.length;
   }
 
   async buildTextArrayTG() {
     const { inputObj } = this.dataObject;
-    const { url, title, urlNormal, dateNormal } = inputObj;
+    const { url, titleNormal, urlNormal, dateNormal } = inputObj;
     const { tgMaxLength } = CONFIG;
 
     //import as textInput to avoid confusion
     const textInput = inputObj.text;
 
     //define chunks
-    const maxLength = tgMaxLength - title.length - dateNormal.length - url.length - 100;
+    const maxLength = tgMaxLength - titleNormal.length - dateNormal.length - url.length - 100;
     const chunkTotal = Math.ceil(textInput.length / maxLength);
 
     console.log("STATS!!!!!!!!!!!");
@@ -312,7 +253,7 @@ class TgReq {
     //if short return one array item
     if (textInput.length < maxLength) {
       const shortArray = [];
-      const shortText = title + "\n" + dateNormal + "\n\n" + textInput + "\n\n" + urlNormal;
+      const shortText = titleNormal + "\n" + dateNormal + "\n\n" + textInput + "\n\n" + urlNormal;
       shortArray.push(shortText);
       return shortArray;
     }
@@ -345,11 +286,11 @@ class TgReq {
   }
 
   async getChunkText() {
-    const { chunk, chunkCount, chunkTotal, title, dateNormal, urlNormal } = this.dataObject;
+    const { chunk, chunkCount, chunkTotal, titleNormal, dateNormal, urlNormal } = this.dataObject;
 
     switch (chunkCount) {
       case 1:
-        return title + "\n" + dateNormal + "\n\n" + chunk;
+        return titleNormal + "\n" + dateNormal + "\n\n" + chunk;
 
       case chunkTotal:
         return chunk + "\n\n" + urlNormal;
