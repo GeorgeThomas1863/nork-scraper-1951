@@ -42,7 +42,7 @@ class TgReq {
    * @param {number} tokenIndex - Index of the bot token to use from the tokenArray
    * @returns {Promise<Object>} The JSON response from the Telegram API
    */
-  async tgGet(tokenIndex) {
+  async tgGet(tokenIndex = 0) {
     const { offset } = this.dataObject;
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/getUpdates?offset=${offset}`;
@@ -105,7 +105,7 @@ class TgReq {
    * @param {number} tokenIndex - Index of the bot token to use from the tokenArray
    * @returns {Promise<Object>} The JSON response from the Telegram API
    */
-  async tgPicFS(tokenIndex) {
+  async tgPicFS(tokenIndex = 0) {
     const { chatId, picPath } = this.dataObject;
 
     const token = tokenArray[tokenIndex];
@@ -223,14 +223,9 @@ class TgReq {
     for (let i = 0; i < textArray.length; i++) {
       const params = {
         chat_id: tgUploadId,
-        text: "THIS IS A WASTE OF YOUR LIFE FUCKER",
+        text: textArray[i],
         parse_mode: "HTML",
       };
-      // const params = {
-      //   chat_id: tgUploadId,
-      //   text: textArray[i],
-      //   parse_mode: "HTML",
-      // };
 
       const paramsObj = {
         params: params,
