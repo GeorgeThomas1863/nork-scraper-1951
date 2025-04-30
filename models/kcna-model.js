@@ -59,61 +59,71 @@ class KCNA {
       console.log("GET HEADERS ERROR 0");
       console.log("ERROR, for " + inputURL + "; | RESPONSE: ");
       console.log(e);
-      //on fail try random
+      //on fail try stream
       const retryModel = new KCNA(this.dataObject);
-      const res = await retryModel.retryHeaderRandom();
+      const res = await retryModel.retryStream();
       return res;
     }
   }
 
-  //HEADER RETRY 1
-  async retryHeaderRandom() {
-    const inputURL = this.dataObject.url;
+  // //HEADER RETRY 1
+  // async retryHeaderRandom() {
+  //   const inputURL = this.dataObject.url;
 
-    //random between 100-200 bytes
-    const randomBytes = Math.floor(Math.random() * 100) + 100;
-    const byteText = "bytes=0-" + randomBytes;
-    console.log("TRYING RANDOM BYTES");
-    console.log(randomBytes);
-    console.log(byteText);
+  //   //random between 100-200 bytes
+  //   const randomBytes = Math.floor(Math.random() * 100) + 100;
+  //   const byteText = "bytes=0-" + randomBytes;
+  //   console.log("TRYING RANDOM BYTES");
+  //   console.log(randomBytes);
+  //   console.log(byteText);
 
-    try {
-      const res = await axios({
-        method: "get",
-        url: inputURL,
-        headers: { Range: byteText },
-        timeout: 30000,
-      });
+  //   try {
+  //     await randomDelay(3);
+  //     const res = await axios({
+  //       method: "get",
+  //       url: inputURL,
+  //       headers: { Range: byteText },
+  //       timeout: 30000,
+  //     });
 
-      return res;
-    } catch (e) {
-      console.log("FAILED AGAIN");
-      console.log("ERROR, for " + inputURL + "; | RESPONSE: ");
-      console.log(e.response);
-      //on fail try random
-      const retryModel = new KCNA(this.dataObject);
-      const res = await retryModel.retryFullReq();
-      return res;
-    }
-  }
+  //     return res;
+  //   } catch (e) {
+  //     console.log("FAILED AGAIN");
+  //     console.log("ERROR, for " + inputURL + "; | RESPONSE: ");
+  //     console.log(e);
+  //     //on fail try random
+  //     const retryModel = new KCNA(this.dataObject);
+  //     const res = await retryModel.retryStream();
+  //     return res;
+  //   }
+  // }
 
   //HEADER RETRY 2
-  async retryFullReq() {
+  async retryStream() {
     const inputURL = this.dataObject.url;
 
     try {
-      await randomDelay(3);
+      // await randomDelay(3);
       const res = await axios({
         method: "get",
         url: inputURL,
+        responseType: "stream",
         timeout: 30000,
-        maxContentLength: 1024 * 1024 * 0.1, //0.1MB
       });
+
+      const headers = res.headers;
+      console.log("Headers received:", headers);
+
+      // Immediately abort the stream to prevent downloading the entire file
+      res.data.destroy();
+
+      console.log("!!!!!!!!!!!!!!1");
+      console.log(res);
 
       return res;
     } catch (e) {
-      console.log("GET FULL DATA REQ (ON HEADERS FAIL) ERROR");
-      console.log(e);
+      console.log("STILLL FUCKNIG FAILED");
+
       return null;
     }
   }
