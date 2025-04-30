@@ -86,6 +86,9 @@ export const downloadNewVidsFS = async (inputArray) => {
   const sortModel = new UTIL({ inputArray: inputArray });
   const sortArray = await sortModel.sortArrayByKcnaId();
 
+  console.log("VID SORT ARRAY");
+  console.log(sortArray);
+
   // //REMOVE, added for testing
   // return null
 

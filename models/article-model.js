@@ -369,10 +369,12 @@ class Article {
       return noPicsData;
     }
 
+    console.log("AHHHHHHHHHHHHHHHHH");
+
     //otherwise post pics then content
-    const articleModel = new Article({ inputObj: articleObj });
     const picModel = new Pic({ inputArray: articleObj });
     await picModel.postPicArrayTG();
+    const articleModel = new Article({ inputObj: articleObj });
     const articlePicData = await articleModel.postArticleContentTG();
 
     return articlePicData;
