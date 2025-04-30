@@ -161,11 +161,11 @@ class TgReq {
     const { inputObj } = this.dataObject;
     const { titleNormal, dateNormal } = inputObj;
 
-    const beginStr = "--------------" + "\n\n" + titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n\n" + "--------------";
+    const beginStr = "--------------" + "\n" + titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n\n";
 
     //if no pics
     if (!inputObj.picArray || !inputObj.picArray.length) {
-      return beginStr;
+      return beginStr + "--------------";
     }
 
     const { picArray } = inputObj;
@@ -173,9 +173,9 @@ class TgReq {
     const firstKcnaId = +picArray[0].substring(picArray[0].length - 11, picArray[0].length - 4);
     const lastKcnaId = +picArray[lastItem].substring(picArray[lastItem].length - 11, picArray[lastItem].length - 4);
 
-    const endStr = "<b>" + picArray.length + " PICS</b>" + "\n" + firstKcnaId + ".jpg - " + lastKcnaId + ".jpg" + "\n\n";
+    const endStr = "<b>" + picArray.length + " PICS</b>" + "\n" + firstKcnaId + ".jpg - " + lastKcnaId + ".jpg" + "\n";
 
-    return beginStr + endStr 
+    return beginStr + endStr + "--------------";
   }
 
   async postPicTG() {
