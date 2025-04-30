@@ -1,5 +1,3 @@
-//SWITCH EVERYTING TO AXIOS NOT FETCH
-
 /**
  * @fileoverview Self build TG API request handler / library
  * @module models/TgReq
