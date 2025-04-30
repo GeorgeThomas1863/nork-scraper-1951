@@ -311,10 +311,17 @@ class Article {
         const inputObj = inputArray[i];
         const uploadModel = new Article({ inputObj: inputObj });
         const uploadArticleData = await uploadModel.postArticleObjTG();
-        if (!uploadArticleData) continue;
+        if (!uploadArticleData || !uploadArticleData.length) continue;
 
-        //STORE DATA HERE
-        const storeObj = { ...inputObj, ...uploadArticleData };
+        //Build store obj (just store object for first text chunk)
+        const storeObj = { ...inputObj, ...uploadArticleData[0] };
+        storeObj.textChunks = uploadArticleData.length;
+
+        //TURN OFF
+        console.log("ARTICLE STORE OBJECT");
+        console.log(storeObj);
+
+        //store data
         const storeModel = new dbModel(storeObj, CONFIG.articlesUploaded);
         const storeData = await storeModel.storeUniqueURL();
         console.log(storeData);
