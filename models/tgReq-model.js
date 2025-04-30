@@ -161,21 +161,21 @@ class TgReq {
     const { inputObj } = this.dataObject;
     const { titleNormal, dateNormal } = inputObj;
 
-    const beginStr = "--------------" + "\n\n" + titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n\n";
+    const beginStr = "--------------" + "\n\n" + titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n\n" + "--------------";
 
     //if no pics
     if (!inputObj.picArray || !inputObj.picArray.length) {
-      return beginStr + "--------------";
+      return beginStr;
     }
 
     const { picArray } = inputObj;
     const lastItem = picArray.length - 1;
-    const firstURL = picArray[0].substring(picArray[0].length - 11, picArray[0].length - 4);
-    const lastURL = picArray[lastItem].substring(picArray[lastItem].length - 11, picArray[lastItem].length - 4);
+    const firstKcnaId = +picArray[0].substring(picArray[0].length - 11, picArray[0].length - 4);
+    const lastKcnaId = +picArray[lastItem].substring(picArray[lastItem].length - 11, picArray[lastItem].length - 4);
 
-    const endStr = "PICS IN SET: " + picArray.length + "\n" + firstURL + ".jpg -- " + lastURL + ".jpg" + "\n\n";
+    const endStr = "<b>" + picArray.length + " PICS</b>" + "\n" + firstKcnaId + ".jpg - " + lastKcnaId + ".jpg" + "\n\n";
 
-    return beginStr + endStr + "--------------";
+    return beginStr + endStr 
   }
 
   async postPicTG() {
