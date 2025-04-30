@@ -215,6 +215,7 @@ class TgReq {
     const textArray = await textModel.buildTextArrayTG();
 
     //post by looping through
+    const postDataArray = [];
     for (let i = 0; i < textArray.length; i++) {
       const params = {
         chat_id: inputObj.tgUploadId,
@@ -229,8 +230,12 @@ class TgReq {
 
       const postModel = new TgReq({ inputObj: paramsObj });
       const postData = await postModel.tgPost();
-      return postData;
+      if (!postData) continue;
+
+      postDataArray.push(postData);
     }
+
+    return postDataArray;
   }
 
   async buildTextArrayTG() {
