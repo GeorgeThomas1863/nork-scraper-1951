@@ -243,6 +243,7 @@ class Pic {
     const headerData = await htmlModel.getMediaHeaders();
     if (!headerData) return null;
 
+    console.log("HEADER DATA!!!!");
     console.log(headerData);
     const dataType = headerData["content-type"];
 

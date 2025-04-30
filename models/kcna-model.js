@@ -46,11 +46,19 @@ class KCNA {
   async getMediaHeaders() {
     const inputURL = this.dataObject.url;
 
+    //random between up to 200 bytes
+    const randomBytes = Math.floor(Math.random() * 200);
+    const byteText = "bytes=0-" + randomBytes;
+    console.log("TRYING RANDOM BYTES");
+    console.log(randomBytes);
+    console.log("!!!!");
+    console.log(byteText);
+
     try {
       const res = await axios({
         method: "get",
         url: inputURL,
-        headers: { Range: "bytes=0-100" },
+        headers: { Range: byteText },
         timeout: 30000,
       });
 
@@ -67,38 +75,6 @@ class KCNA {
       return res;
     }
   }
-
-  // //HEADER RETRY 1
-  // async retryHeaderRandom() {
-  //   const inputURL = this.dataObject.url;
-
-  //   //random between 100-200 bytes
-  //   const randomBytes = Math.floor(Math.random() * 100) + 100;
-  //   const byteText = "bytes=0-" + randomBytes;
-  //   console.log("TRYING RANDOM BYTES");
-  //   console.log(randomBytes);
-  //   console.log(byteText);
-
-  //   try {
-  //     await randomDelay(3);
-  //     const res = await axios({
-  //       method: "get",
-  //       url: inputURL,
-  //       headers: { Range: byteText },
-  //       timeout: 30000,
-  //     });
-
-  //     return res;
-  //   } catch (e) {
-  //     console.log("FAILED AGAIN");
-  //     console.log("ERROR, for " + inputURL + "; | RESPONSE: ");
-  //     console.log(e);
-  //     //on fail try random
-  //     const retryModel = new KCNA(this.dataObject);
-  //     const res = await retryModel.retryStream();
-  //     return res;
-  //   }
-  // }
 
   //HEADER RETRY 2
   async retryStream() {
@@ -119,7 +95,7 @@ class KCNA {
       // Immediately abort the stream to prevent downloading the entire file
       res.data.destroy();
 
-      console.log("!!!!!!!!!!!!!!1");
+      console.log("FUCK YOU FAGGOT");
       console.log(res);
 
       return headers;
