@@ -135,9 +135,10 @@ class TgReq {
   async postTitleTG() {
     const { inputObj } = this.dataObject;
     if (!inputObj) return null;
-    const { titleNormal, dateNormal, tgUploadId } = inputObj;
+    const { tgUploadId } = inputObj;
 
-    const titleText = "--------------" + "\n\n" + titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n\n" + "--------------";
+    const textModel = new TgReq({ inputObj: inputObj });
+    const titleText = await textModel.buildTitleText();
 
     const params = {
       chat_id: tgUploadId,
@@ -154,6 +155,27 @@ class TgReq {
     const data = await tgModel.tgPost(TgReq.tokenIndex);
 
     return data;
+  }
+
+  async buildTitleText() {
+    const { inputObj } = this.dataObject;
+    const { titleNormal, dateNormal } = inputObj;
+
+    const beginStr = "--------------" + "\n\n" + titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n\n";
+
+    //if no pics
+    if (!inputObj.picArray || !inputObj.picArray.length) {
+      return beginStr + "--------------";
+    }
+
+    const { picArray } = inputObj;
+    const lastItem = picArray.length - 1;
+    const firstURL = picArray[0].substring(picArray[0].length - 11, picArray[0].length - 4);
+    const lastURL = picArray[lastItem].substring(picArray[lastItem].length - 11, picArray[lastItem].length - 4);
+
+    const endStr = "PICS IN SET: " + picArray.length + "\n" + firstURL + ".jpg -- " + lastURL + ".jpg" + "\n\n";
+
+    return beginStr + endStr + "--------------";
   }
 
   async postPicTG() {

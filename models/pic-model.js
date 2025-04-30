@@ -284,6 +284,7 @@ class Pic {
     const contentRange = headerData["content-range"];
 
     //get pic size based on content range
+    //STILL NEED TO TEST THIS LOGIC
     let picSizeBytes;
     if (contentRange) {
       picSizeBytes = +contentRange?.substring(contentRange?.lastIndexOf("/") + 1, contentRange?.length);

@@ -267,6 +267,7 @@ class Vid {
     const contentRange = headerData["content-range"];
 
     //get pic size based on content range
+    //STILL NEED TO TEST THIS LOGIC
     let vidSizeBytes;
     if (contentRange) {
       vidSizeBytes = +contentRange?.substring(contentRange?.lastIndexOf("/") + 1, contentRange?.length);
