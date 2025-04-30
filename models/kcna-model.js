@@ -58,16 +58,47 @@ class KCNA {
     } catch (e) {
       console.log("GET HEADERS ERROR");
       console.log("ERROR, for " + inputURL + "; | RESPONSE: ");
-      console.log(e);
+      console.log(e.response);
+      //on fail try random
       const retryModel = new KCNA(this.dataObject);
-      const res = await retryModel.retryHeaderReq(inputURL);
+      const res = await retryModel.retryHeaderReq();
       return res;
     }
   }
 
-  //HEADER RETRY
+  //HEADER RETRY 1
+  async retryHeaderRandom() {
+    const inputURL = this.dataObject.url;
 
-  async retryHeaderReq() {
+    //between 1-100
+    const randomBytes = Math.floor(Math.random() * 100) + 1;
+    const byteText = "bytes=0-" + randomBytes;
+    console.log("TRYING RANDOM BYTES");
+    console.log(randomBytes);
+    console.log(byteText);
+
+    try {
+      const res = await axios({
+        method: "get",
+        url: inputURL,
+        headers: { Range: byteText },
+        timeout: 30000,
+      });
+
+      return res;
+    } catch (e) {
+      console.log("FAILED AGAIN");
+      console.log("ERROR, for " + inputURL + "; | RESPONSE: ");
+      console.log(e.response);
+      //on fail try random
+      const retryModel = new KCNA(this.dataObject);
+      const res = await retryModel.retryFullReq();
+      return res;
+    }
+  }
+
+  //HEADER RETRY 2
+  async retryFullReq() {
     const inputURL = this.dataObject.url;
 
     try {
