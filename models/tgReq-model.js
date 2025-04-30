@@ -48,11 +48,10 @@ class TgReq {
     const url = `https://api.telegram.org/bot${token}/getUpdates?offset=${offset}`;
 
     //NO TRY CATCH (fucks up tokenIndex)
-    const res = await fetch(url);
-    const data = await res.json();
+    const res = await axios.get(url);
 
     //check token
-    const checkModel = new TgReq({ data: data });
+    const checkModel = new TgReq({ data: res.data });
     const checkData = await checkModel.checkToken();
 
     if (checkData) {
@@ -62,7 +61,7 @@ class TgReq {
       return retryData;
     }
 
-    return data;
+    return res.data;
   }
 
   /**
@@ -77,17 +76,18 @@ class TgReq {
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/${command}`;
 
-    //send data (NO TRY CATCH, fucks up token Index, IF YOU DONT FUCKING RETURN IT)
-    const res = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify(params),
-      headers: { "Content-Type": "application/json" },
-    });
+    // //send data (NO TRY CATCH, fucks up token Index, IF YOU DONT FUCKING RETURN IT)
+    // const res = await fetch(url, {
+    //   method: "POST",
+    //   body: JSON.stringify(params),
+    //   headers: { "Content-Type": "application/json" },
+    // });
 
-    const data = await res.json();
+    //send data (NO TRY CATCH, fucks up token Index, IF YOU DONT FUCKING RETURN IT)
+    const res = await axios.post(url, params);
 
     //check token
-    const checkModel = new TgReq({ data: data });
+    const checkModel = new TgReq({ data: res.data });
     const checkData = await checkModel.checkToken();
 
     if (checkData) {
@@ -96,7 +96,7 @@ class TgReq {
       const retryData = await retryModel.tgPost(TgReq.tokenIndex);
       return retryData;
     }
-    return data;
+    return res.data;
   }
 
   /**
