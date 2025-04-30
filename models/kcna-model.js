@@ -124,9 +124,10 @@ class KCNA {
 
   //--------------------------------
 
-  //GET VID REQ
+  //DOWNLOAD VID SECTION
 
-  async getVidReq() {
+  //complex multi thread download
+  async downloadVidMultiThread() {
     console.log("VID DOWNLOAD!!!");
     console.log(this.dataObject);
 
@@ -144,37 +145,87 @@ class KCNA {
     const totalChunks = Math.ceil(vidSizeBytes / vidChunkSize);
     vidObj.totalChunks = totalChunks;
 
-    //find shit already downloaded
-    const completedModel = new DLHelper(vidObj);
-    const completedChunkArray = await completedModel.getCompletedVidChunks();
-    vidObj.completedChunkArray = completedChunkArray;
+    try {
+      //find shit already downloaded
+      const completedModel = new DLHelper(vidObj);
+      const completedChunkArray = await completedModel.getCompletedVidChunks();
+      vidObj.completedChunkArray = completedChunkArray;
 
-    if (completedChunkArray.length > 0) {
-      console.log("Resuming Chunk " + completedChunkArray.length + " of " + totalChunks + " total chunks");
+      if (completedChunkArray.length > 0) {
+        console.log("Resuming Chunk " + completedChunkArray.length + " of " + totalChunks + " total chunks");
+      }
+
+      //create vid download queue
+      const pendingModel = new DLHelper(vidObj);
+      const pendingChunkArray = await pendingModel.createVidQueue();
+      vidObj.pendingChunkArray = pendingChunkArray;
+
+      const processModel = new DLHelper(vidObj);
+      const processVidData = await processModel.processVidQueue();
+      console.log(processVidData);
+
+      const mergeModel = new DLHelper(vidObj);
+      await mergeModel.mergeChunks();
+
+      return processVidData;
+    } catch (e) {
+      console.log(e);
+      //return null on failure
+      return null;
     }
+  }
 
-    //create vid download queue
-    const pendingModel = new DLHelper(vidObj);
-    const pendingChunkArray = await pendingModel.createVidQueue();
-    vidObj.pendingChunkArray = pendingChunkArray;
+  //VID RETRY
+  async downloadVidSimple() {
+    const { url, savePath, kcnaId } = this.dataObject;
 
-    const processModel = new DLHelper(vidObj);
-    const processVidData = await processModel.processVidQueue();
-    console.log(processVidData);
+    try {
+      // await randomDelay(1);
+      const res = await axios({
+        method: "get",
+        url: url,
+        timeout: 15 * 1000, //15 seconds
+        responseType: "stream",
+      });
 
-    const mergeModel = new DLHelper(vidObj);
-    await mergeModel.mergeChunks();
+      if (!res || !res.data) {
+        const error = new Error("FETCH FUCKED");
+        error.url = url;
+        error.fucntion = "VID REQ BACKUP";
+        throw error;
+      }
 
-    //FIGURE OUT A WAY TO RETRY HERE
+      const writer = fs.createWriteStream(savePath);
+      const stream = res.data.pipe(writer);
+      const totalSize = parseInt(res.headers["content-length"], 10);
+      const mbSize = +(totalSize / 1048576).toFixed(2);
+      let downloadedSize = 0;
 
-    // const backupVidDownloadModel = new DLHelper(this.dataObject);
-    //       const backupDownloadData = await backupVidDownloadModel.retryVidReq();
-    //       //wipe all temp shit
-    //       await backupVidDownloadModel.cleanupTempVidFiles();
-    //       if (!backupDownloadData) return null;
-    //       return true;
+      const consoleStr = "BACKUP VID DOWNLOAD: " + kcnaId + ".mp4 | SIZE: " + mbSize + "MB";
+      console.log(consoleStr);
 
-    return processVidData;
+      //download shit
+      res.data.on("data", (chunk) => {
+        downloadedSize += chunk.length;
+        if (downloadedSize >= totalSize) {
+        }
+      });
+
+      await new Promise((resolve, reject) => {
+        stream.on("finish", resolve);
+        stream.on("error", reject);
+      });
+
+      const returnObj = {
+        downloadedSize: downloadedSize,
+        totalSize: totalSize,
+      };
+
+      return returnObj;
+    } catch (e) {
+      console.log(url + "; " + e.message + "; F BREAK: " + e.function);
+      return null;
+    }
   }
 }
 

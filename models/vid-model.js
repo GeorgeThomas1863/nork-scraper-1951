@@ -298,13 +298,18 @@ class Vid {
         const vidObj = inputArray[i];
         const savePath = CONFIG.vidPath + vidObj.kcnaId + ".mp4";
         vidObj.savePath = savePath;
-        const vidModel = new Vid({ vidObj: vidObj });
+        const vidModel = new Vid({ inputObj: vidObj });
 
         //download the vid
-        const downloadVidData = await vidModel.downloadVidFS();
-        if (!downloadVidData) continue;
+        const downloadVidObj = await vidModel.downloadVidFS();
+        if (!downloadVidObj) continue;
 
-        downloadVidDataArray.push(downloadVidData);
+        //STORE HERE
+        const storeObj = { ...vidObj, ...downloadVidObj };
+        const storeModel = new dbModel(storeObj, CONFIG.vidsDownloaded);
+        await storeModel.storeUniqueURL();
+
+        downloadVidDataArray.push(storeObj);
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       }
@@ -316,19 +321,22 @@ class Vid {
   //!!!!!!!
   //CLAUDE CLAIMS I CAN REFACTOR, stream is an object
   async downloadVidFS() {
-    const { vidObj } = this.dataObject;
+    const { inputObj } = this.dataObject;
 
     //check if new (not possible in most situations, but adding check to be sure)
-    const checkModel = new dbModel(vidObj, CONFIG.vidsDownloaded);
+    const checkModel = new dbModel(inputObj, CONFIG.vidsDownloaded);
     //throws error if not new (keep out of try block to propogate error)
     await checkModel.urlNewCheck();
 
-    const downloadModel = new KCNA({ inputObj: vidObj });
-    const returnObj = await downloadModel.getVidReq();
+    //download vid multi
+    const downloadModel = new KCNA({ inputObj: inputObj });
+    const downloadVidObj = await downloadModel.downloadVidMultiThread();
 
-    const downloadVidObj = { ...vidObj, ...returnObj };
-    const storeModel = new dbModel(downloadVidObj, CONFIG.vidsDownloaded);
-    await storeModel.storeUniqueURL();
+    //if fucked try other vid download
+    if (!downloadVidObj) {
+      const retryObj = await downloadModel.downloadVidSimple();
+      return retryObj;
+    }
 
     return downloadVidObj;
   }
