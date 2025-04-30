@@ -219,6 +219,24 @@ class TgReq {
     console.log("TEXT ARRAY YOU FUCKING FAGGOIT");
     console.log(textArray);
 
+    //post by looping through
+    for (let i = 0; i < textArray; i++) {
+      const params = {
+        chat_id: tgUploadId,
+        text: textArray[i],
+        parse_mode: "HTML",
+      };
+
+      const paramsObj = {
+        params: params,
+        command: "sendMessage",
+      };
+
+      const postModel = new TgReq({ inputObj: paramsObj });
+      const postData = await postModel.tgPost();
+      console.log(postData);
+    }
+
     // const maxLength = tgMaxLength - title.length - date.length - url.length - 100;
     // const chunkTotal = Math.ceil(textInput.length / maxLength);
     // let chunkCount = 0;
@@ -229,10 +247,6 @@ class TgReq {
     // };
 
     // //set  base params
-    // const params = {
-    //   chat_id: tgUploadId,
-    //   parse_mode: "HTML",
-    // };
 
     // console.log("PARAMS");
     // console.log(params);
@@ -286,14 +300,6 @@ class TgReq {
     //define chunks
     const maxLength = tgMaxLength - title.length - dateNormal.length - url.length - 100;
     const chunkTotal = Math.ceil(textInput.length / maxLength);
-
-    console.log(tgMaxLength);
-    console.log(title.length);
-    console.log(dateNormal.length);
-    console.log(url.length);
-
-    console.log("INPUT OBJECT");
-    console.log(inputObj);
 
     console.log("STATS!!!!!!!!!!!");
     console.log(textInput.length);

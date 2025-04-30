@@ -330,9 +330,6 @@ class Article {
     const normalModel = new UTIL({ inputObj: inputObj });
     const articleObj = await normalModel.normalizeInputsTG();
 
-    console.log("ARTICLE OBJECT");
-    console.log(articleObj);
-
     //post title
     const titleModel = new TgReq({ inputObj: articleObj });
     await titleModel.postArticleTitleTG();
