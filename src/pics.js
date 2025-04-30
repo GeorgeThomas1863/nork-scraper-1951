@@ -96,5 +96,14 @@ export const downloadNewPicsFS = async (inputArray) => {
 //UPLOAD SHIT
 
 export const uploadNewPicSetsTG = async (inputArray) => {
-  console.log("BUILD");
+  //null check and sort shouldnt be necessary, doing for redundancy
+  if (!inputArray || !inputArray.length) return null;
+  const sortModel = new UTIL({ inputArray: inputArray });
+  const sortArray = await sortModel.sortArrayByDate();
+
+  //upload the array
+  const uploadModel = new Pic({ inputArray: sortArray });
+  const uploadPicSetData = await uploadModel.postPicSetArrayTG();
+
+  return uploadPicSetData;
 };

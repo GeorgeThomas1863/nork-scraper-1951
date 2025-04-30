@@ -308,11 +308,18 @@ class Article {
     const uploadDataArray = [];
     for (let i = 0; i < inputArray.length; i++) {
       try {
-        const uploadModel = new Article({ inputObj: inputArray[i] });
+        const inputObj = inputArray[i];
+        const uploadModel = new Article({ inputObj: inputObj });
         const uploadArticleData = await uploadModel.postArticleObjTG();
         if (!uploadArticleData) continue;
 
-        uploadDataArray.push(uploadArticleData);
+        //STORE DATA HERE
+        const storeObj = { ...inputObj, ...uploadArticleData };
+        const storeModel = new dbModel(storeObj, CONFIG.articlesUploaded);
+        const storeData = await storeModel.storeUniqueURL();
+        console.log(storeData);
+
+        uploadDataArray.push(storeObj);
       } catch (e) {
         // console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
         console.log(e);
@@ -328,30 +335,6 @@ class Article {
   async postArticleObjTG() {
     const { inputObj } = this.dataObject;
 
-    //add channel to post to HERE
-    inputObj.tgUploadId = CONFIG.tgUploadId;
-
-    //destructures // normalizes obj
-    const normalModel = new UTIL({ inputObj: inputObj });
-    const articleObj = await normalModel.normalizeInputsTG();
-
-    //checks if article has pic array, handles posting
-    const articlePicModel = new Article({ inputObj: articleObj });
-    const articlePicData = await articlePicModel.postArticlePicComboTG();
-    console.log(articlePicData);
-
-    //STORE DATA HERE
-    const storeObj = { ...inputObj, ...articlePicData };
-    const storeModel = new dbModel(storeObj, CONFIG.articlesUploaded);
-    const storeData = await storeModel.storeUniqueURL();
-    console.log(storeData);
-
-    return storeObj;
-  }
-
-  async postArticlePicComboTG() {
-    const { inputObj } = this.dataObject;
-
     //throw error on bad input
     if (!inputObj) {
       const error = new Error("ARTICLE UPLOAD OBJ FUCKED");
@@ -360,23 +343,49 @@ class Article {
       throw error;
     }
 
+    //add channel to post to HERE
+    inputObj.tgUploadId = CONFIG.tgUploadId;
+
+    //destructures // normalizes obj
+    const normalModel = new UTIL({ inputObj: inputObj });
+    const articleObj = await normalModel.normalizeInputsTG();
+
     //post title
-    const titleModel = new TgReq({ inputObj: inputObj });
+    const titleModel = new TgReq({ inputObj: articleObj });
     await titleModel.postArticleTitleTG();
 
     //if no article pics
     if (!inputObj.articlePicArray || !inputObj.articlePicArray.length) {
+      //post content
       const noPicsModel = new Article({ inputObj: inputObj });
       const noPicsData = await noPicsModel.postArticleContentTG();
       return noPicsData;
     }
 
-    //otehrwise post pics, then content
+    //otherwise post pics then content
     const articlePicModel = new Article({ inputObj: inputObj });
     await articlePicModel.postArticlePicArrayTG();
     const articlePicData = await articlePicModel.postArticleContentTG();
 
     return articlePicData;
+  }
+
+  async postArticleContentTG() {
+    const { inputObj } = this.dataObject;
+    const contentObj = { ...inputObj };
+
+    //BUILD TEXT ARRAY
+    const textModel = new TgReq({ inputObj: inputObj });
+    const textArray = await textModel.buildTextArrayTG();
+
+    //add text array to obj
+    contentObj.textArray = textArray;
+
+    //post it
+    const postContentModel = new TgReq({ inputObj: contentObj });
+    const postContentData = await postContentModel.postTextArrayTG();
+
+    return postContentData;
   }
 
   async postArticlePicArrayTG() {
@@ -413,24 +422,6 @@ class Article {
     }
 
     return postPicDataArray;
-  }
-
-  async postArticleContentTG() {
-    const { inputObj } = this.dataObject;
-    const contentObj = { ...inputObj };
-
-    //BUILD TEXT ARRAY
-    const textModel = new TgReq({ inputObj: inputObj });
-    const textArray = await textModel.buildTextArrayTG();
-
-    //add text array to obj
-    contentObj.textArray = textArray;
-
-    //post it
-    const postContentModel = new TgReq({ inputObj: contentObj });
-    const postContentData = await postContentModel.postTextArrayTG();
-
-    return postContentData;
   }
 }
 

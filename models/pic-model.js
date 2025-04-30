@@ -348,6 +348,14 @@ class Pic {
 
     return downloadPicObj;
   }
+
+  //-------------------
+
+  //UPLOAD PIC SECTION
+
+  async postPicSetArrayTG() {
+    const { inputObj } = this.dataObject;
+  }
 }
 
 export default Pic;
