@@ -287,6 +287,9 @@ class TgReq {
     const maxLength = tgMaxLength - title.length - date.length - url.length - 100;
     const chunkTotal = Math.ceil(textInput.length / maxLength);
 
+    console.log("INPUT OBJECT");
+    console.log(inputObj);
+
     console.log("STATS!!!!!!!!!!!");
     console.log(textInput.length);
     console.log(maxLength);
