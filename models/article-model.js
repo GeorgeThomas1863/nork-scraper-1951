@@ -343,27 +343,27 @@ class Article {
       throw error;
     }
 
-    //add channel to post to HERE
-    inputObj.tgUploadId = CONFIG.tgUploadId;
-
     //destructures // normalizes obj
     const normalModel = new UTIL({ inputObj: inputObj });
     const articleObj = await normalModel.normalizeInputsTG();
+
+    //add channel to post to HERE
+    articleObj.tgUploadId = CONFIG.tgUploadId;
 
     //post title
     const titleModel = new TgReq({ inputObj: articleObj });
     await titleModel.postArticleTitleTG();
 
     //if no article pics
-    if (!inputObj.articlePicArray || !inputObj.articlePicArray.length) {
+    if (!articleObj.articlePicArray || !articleObj.articlePicArray.length) {
       //post content
-      const noPicsModel = new Article({ inputObj: inputObj });
+      const noPicsModel = new Article({ inputObj: articleObj });
       const noPicsData = await noPicsModel.postArticleContentTG();
       return noPicsData;
     }
 
     //otherwise post pics then content
-    const articlePicModel = new Article({ inputObj: inputObj });
+    const articlePicModel = new Article({ inputObj: articleObj });
     await articlePicModel.postArticlePicArrayTG();
     const articlePicData = await articlePicModel.postArticleContentTG();
 

@@ -79,8 +79,5 @@ export const uploadNewArticlesTG = async (inputArray) => {
   const uploadModel = new Article({ inputArray: sortArray });
   const uploadArticleData = await uploadModel.postArticleArrayTG();
 
-  console.log("UPLOAD ARTICLE DATA");
-  console.log(uploadArticleData);
-
   return uploadArticleData;
 };
