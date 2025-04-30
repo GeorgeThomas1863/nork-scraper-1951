@@ -223,9 +223,14 @@ class TgReq {
     for (let i = 0; i < textArray.length; i++) {
       const params = {
         chat_id: tgUploadId,
-        text: textArray[i],
+        text: "THIS IS A WASTE OF YOUR LIFE FUCKER",
         parse_mode: "HTML",
       };
+      // const params = {
+      //   chat_id: tgUploadId,
+      //   text: textArray[i],
+      //   parse_mode: "HTML",
+      // };
 
       const paramsObj = {
         params: params,
