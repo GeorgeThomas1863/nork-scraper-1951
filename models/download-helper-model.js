@@ -15,28 +15,6 @@ class DLHelper {
     this.dataObject = dataObject;
   }
 
-  //HEADER RETRY
-
-  async retryHeaderReq() {
-    const inputURL = this.dataObject.url;
-
-    try {
-      await randomDelay(3);
-      const res = await axios({
-        method: "get",
-        url: inputURL,
-        timeout: 20000,
-        responseType: "text",
-      });
-
-      return res;
-    } catch (e) {
-      console.log("GET FULL DATA REQ (ON HEADERS FAIL) ERROR");
-      console.log(e);
-      return null;
-    }
-  }
-
   //-------------------
 
   //UTIL for multi thread vid download

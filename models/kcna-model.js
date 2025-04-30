@@ -59,12 +59,32 @@ class KCNA {
       console.log("GET HEADERS ERROR");
       console.log("ERROR, for " + inputURL + "; | RESPONSE: ");
       console.log(e);
-      const retryModel = new DLHelper(this.dataObject);
+      const retryModel = new KCNA(this.dataObject);
       const res = await retryModel.retryHeaderReq(inputURL);
       return res;
     }
   }
 
+  //HEADER RETRY
+
+  async retryHeaderReq() {
+    const inputURL = this.dataObject.url;
+
+    try {
+      await randomDelay(3);
+      const res = await axios({
+        method: "get",
+        url: inputURL,
+        timeout: 30000,
+      });
+
+      return res;
+    } catch (e) {
+      console.log("GET FULL DATA REQ (ON HEADERS FAIL) ERROR");
+      console.log(e);
+      return null;
+    }
+  }
   //-------------------
 
   //GET PIC REQ
@@ -127,7 +147,7 @@ class KCNA {
   //DOWNLOAD VID SECTION
 
   //complex multi thread download
-  async downloadVidMultiThread() {
+  async getVidMultiThread() {
     console.log("VID DOWNLOAD!!!");
     console.log(this.dataObject);
 
@@ -176,7 +196,7 @@ class KCNA {
   }
 
   //VID RETRY
-  async downloadVidSimple() {
+  async getVidSimple() {
     const { url, savePath, kcnaId } = this.dataObject;
 
     try {
