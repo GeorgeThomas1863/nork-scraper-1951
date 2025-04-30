@@ -206,7 +206,7 @@ class TgReq {
     const textInput = inputObj.text;
 
     //define chunks
-    const maxLength = tgMaxLength - titleNormal.length - dateNormal.length - url.length - 150;
+    const maxLength = tgMaxLength - titleNormal.length - dateNormal.length - url.length - 100;
     const chunkTotal = Math.ceil(textInput.length / maxLength);
 
     console.log("STATS!!!!!!!!!!!");
@@ -217,7 +217,7 @@ class TgReq {
     //if short return one array item
     if (textInput.length < maxLength) {
       const shortArray = [];
-      const shortText = "--------------" + "\n" + "<b>[ARTICLE TEXT:]</b>" + "\n\n" + textInput + "\n\n" + urlNormal + "\n" + "--------------";
+      const shortText = "<b>[ARTICLE TEXT]:</b>" + "\n\n" + textInput + "\n\n" + urlNormal;
 
       shortArray.push(shortText);
       return shortArray;
@@ -255,7 +255,7 @@ class TgReq {
 
     switch (chunkCount) {
       case 1:
-        return "--------------" + "\n" + "<b>[ARTICLE TEXT:]</b>" + "\n\n" + chunk;
+        return "<b>[ARTICLE TEXT]:</b>" + "\n\n" + chunk;
 
       case chunkTotal:
         return chunk + "\n\n" + urlNormal;
