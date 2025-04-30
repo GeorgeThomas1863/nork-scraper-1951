@@ -277,19 +277,19 @@ class TgReq {
 
   async buildTextArrayTG() {
     const { inputObj } = this.dataObject;
-    const { url, date, title, urlNormal } = inputObj;
+    const { url, title, urlNormal, dateNormal } = inputObj;
     const { tgMaxLength } = CONFIG;
 
     //import as textInput to avoid confusion
     const textInput = inputObj.text;
 
     //define chunks
-    const maxLength = tgMaxLength - title.length - date.length - url.length - 100;
+    const maxLength = tgMaxLength - title.length - dateNormal.length - url.length - 100;
     const chunkTotal = Math.ceil(textInput.length / maxLength);
 
     console.log(tgMaxLength);
     console.log(title.length);
-    console.log(date.length);
+    console.log(dateNormal.length);
     console.log(url.length);
 
     console.log("INPUT OBJECT");
@@ -303,7 +303,7 @@ class TgReq {
     //if short return one array item
     if (textInput.length < maxLength) {
       const shortArray = [];
-      const shortText = title + "\n" + date + "\n\n" + textInput + "\n\n" + urlNormal;
+      const shortText = title + "\n" + dateNormal + "\n\n" + textInput + "\n\n" + urlNormal;
       shortArray.push(shortText);
       return shortArray;
     }
