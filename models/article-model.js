@@ -340,7 +340,7 @@ class Article {
     console.log(articlePicArrayData);
 
     //post content
-    const contentModel = new Article({ inputObj: articleObj });
+    const contentModel = new TgReq({ inputObj: articleObj });
     const contentData = await contentModel.postArticleContentTG();
     console.log(contentData);
   }
@@ -381,78 +381,6 @@ class Article {
     }
 
     return postPicDataArray;
-  }
-
-  async postArticleContentTG() {
-    //destructure everything
-    const { inputObj } = this.dataObject;
-    const { url, date, title, tgUploadId } = inputObj;
-    const { tgMaxLength } = CONFIG;
-
-    //pull as textInput to avoid confusion
-    const textInput = inputObj.text;
-
-    const maxLength = tgMaxLength - title.length - date.length - url.length - 100;
-    const chunkTotal = Math.ceil(textInput.length / maxLength);
-    let chunkCount = 0;
-
-    //define paramsObj
-    const paramsObj = {
-      command: "sendMessage",
-    };
-
-    //set  base params
-    const params = {
-      chat_id: tgUploadId,
-      parse_mode: "HTML",
-    };
-
-    console.log("PARAMS");
-    console.log(params);
-
-    //if short enough send normally
-    if (textInput.length < maxLength) {
-      params.text = title + "\n" + date + "\n\n" + textInput + "\n\n" + url;
-      paramsObj.params = params;
-
-      const shortModel = new TgReq({ inputObj: paramsObj });
-      const shortTest = await shortModel.tgPost();
-      console.log("SHORT TEST");
-      console.log(shortTest);
-      return textInput.length;
-    }
-
-    //otherwise send in chunks
-    for (let i = 0; i < textInput.length; i += maxLength) {
-      chunkCount++;
-      const chunk = textInput.substring(i, i + maxLength);
-
-      console.log("CHUNK COUNT");
-      console.log(chunkCount);
-
-      //set text based on chunkCount
-      switch (chunkCount) {
-        case 1:
-          params.text = title + "\n" + date + "\n\n" + chunk;
-          break;
-
-        case chunkTotal:
-          params.text = chunk + "\n\n" + url;
-          break;
-
-        default:
-          params.text = chunk;
-      }
-
-      paramsObj.params = params;
-
-      const postModel = new TgReq({ inputObj: paramsObj });
-      const postData = await postModel.tgPost();
-      console.log("POST DATA!!!");
-      console.log(postData);
-    }
-
-    return textInput.length;
   }
 }
 
