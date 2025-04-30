@@ -335,23 +335,13 @@ class Article {
     const normalModel = new UTIL({ inputObj: inputObj });
     const articleObj = await normalModel.normalizeInputsTG();
 
-    //post title
-    const titleModel = new TgReq({ inputObj: articleObj });
-    await titleModel.postArticleTitleTG();
-
-    //inputObj has picArray
+    //checks if article has pic array, handles posting
     const articlePicModel = new Article({ inputObj: articleObj });
-    const articlePicArrayData = await articlePicModel.postArticlePicArrayTG();
-    console.log(articlePicArrayData);
+    const articlePicData = await articlePicModel.postArticlePicComboTG();
+    console.log(articlePicData);
 
-    //post content
-    const contentModel = new TgReq({ inputObj: articleObj });
-    const contentData = await contentModel.postArticleContentTG();
-
-    if (!contentData || !contentData.result) return null;
-
-    //otherwise store data
-    const storeObj = { ...inputObj, ...contentData.result };
+    //STORE DATA HERE
+    const storeObj = { ...inputObj, ...articlePicData };
     const storeModel = new dbModel(storeObj, CONFIG.articlesUploaded);
     const storeData = await storeModel.storeUniqueURL();
     console.log(storeData);
@@ -359,10 +349,38 @@ class Article {
     return storeObj;
   }
 
-  async postArticlePicArrayTG() {
+  async postArticlePicComboTG() {
     const { inputObj } = this.dataObject;
 
-    if (!inputObj || !inputObj.articlePicArray || !inputObj.articlePicArray.length) return null;
+    //throw error on bad input
+    if (!inputObj) {
+      const error = new Error("ARTICLE UPLOAD OBJ FUCKED");
+      error.url = this.dataObject.url;
+      error.function = "postArticlePicArrayTG";
+      throw error;
+    }
+
+    //post title
+    const titleModel = new TgReq({ inputObj: inputObj });
+    await titleModel.postArticleTitleTG();
+
+    //if no article pics
+    if (!inputObj.articlePicArray || !inputObj.articlePicArray.length) {
+      const noPicsModel = new Article({ inputObj: inputObj });
+      const noPicsData = await noPicsModel.postArticleContentTG();
+      return noPicsData;
+    }
+
+    //otehrwise post pics, then content
+    const articlePicModel = new Article({ inputObj: inputObj });
+    await articlePicModel.postArticlePicArrayTG();
+    const articlePicData = await articlePicModel.postArticleContentTG();
+
+    return articlePicData;
+  }
+
+  async postArticlePicArrayTG() {
+    const { inputObj } = this.dataObject;
     const { articlePicArray } = inputObj;
 
     const postPicDataArray = [];
@@ -395,6 +413,24 @@ class Article {
     }
 
     return postPicDataArray;
+  }
+
+  async postArticleContentTG() {
+    const { inputObj } = this.dataObject;
+    const contentObj = { ...inputObj };
+
+    //BUILD TEXT ARRAY
+    const textModel = new TgReq({ inputObj: inputObj });
+    const textArray = await textModel.buildTextArrayTG();
+
+    //add text array to obj
+    contentObj.textArray = textArray;
+
+    //post it
+    const postContentModel = new TgReq({ inputObj: contentObj });
+    const postContentData = await postContentModel.postTextArrayTG();
+
+    return postContentData;
   }
 }
 

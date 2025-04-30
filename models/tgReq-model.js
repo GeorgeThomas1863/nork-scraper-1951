@@ -74,13 +74,6 @@ class TgReq {
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/${command}`;
 
-    // //send data (NO TRY CATCH, fucks up token Index, IF YOU DONT FUCKING RETURN IT)
-    // const res = await fetch(url, {
-    //   method: "POST",
-    //   body: JSON.stringify(params),
-    //   headers: { "Content-Type": "application/json" },
-    // });
-
     //send data (NO TRY CATCH, fucks up token Index, IF YOU DONT FUCKING RETURN IT)
     const res = await axios.post(url, params);
 
@@ -204,38 +197,6 @@ class TgReq {
     return storeObj;
   }
 
-  async postArticleContentTG() {
-    //destructure everything
-    const { inputObj } = this.dataObject;
-
-    //GET TEXT ARRAY
-    const textModel = new TgReq({ inputObj: inputObj });
-    const textArray = await textModel.buildTextArrayTG();
-
-    //post by looping through
-    const postDataArray = [];
-    for (let i = 0; i < textArray.length; i++) {
-      const params = {
-        chat_id: inputObj.tgUploadId,
-        text: textArray[i],
-        parse_mode: "HTML",
-      };
-
-      const paramsObj = {
-        params: params,
-        command: "sendMessage",
-      };
-
-      const postModel = new TgReq({ inputObj: paramsObj });
-      const postData = await postModel.tgPost();
-      if (!postData) continue;
-
-      postDataArray.push(postData);
-    }
-
-    return postDataArray;
-  }
-
   async buildTextArrayTG() {
     const { inputObj } = this.dataObject;
     const { url, titleNormal, urlNormal, dateNormal } = inputObj;
@@ -293,14 +254,43 @@ class TgReq {
 
     switch (chunkCount) {
       case 1:
-        return titleNormal + "\n" + dateNormal + "\n\n" + chunk;
+        return "--------------" + "\n" + "<b>[ARTICLE TEXT:]</b>" + "\n\n" + chunk;
 
       case chunkTotal:
-        return chunk + "\n\n" + urlNormal;
+        return chunk + "\n\n" + urlNormal + "\n" + "--------------";
 
       default:
         return chunk;
     }
+  }
+
+  async postTextArrayTG() {
+    //destructure everything
+    const { inputObj } = this.dataObject;
+    const { textArray, tgUploadId } = inputObj;
+
+    //post by looping through
+    const postDataArray = [];
+    for (let i = 0; i < textArray.length; i++) {
+      const params = {
+        chat_id: tgUploadId,
+        text: textArray[i],
+        parse_mode: "HTML",
+      };
+
+      const paramsObj = {
+        params: params,
+        command: "sendMessage",
+      };
+
+      const postModel = new TgReq({ inputObj: paramsObj });
+      const postData = await postModel.tgPost();
+      if (!postData) continue;
+
+      postDataArray.push(postData);
+    }
+
+    return postDataArray;
   }
 }
 
