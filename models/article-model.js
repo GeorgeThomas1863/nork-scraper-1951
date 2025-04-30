@@ -226,14 +226,14 @@ class Article {
     //otherwise build pic / pic array
     const picPageURL = "http://www.kcna.kp" + picPageHref;
     const articlePicModel = new Article({ url: picPageURL });
-    const articlePicArray = await articlePicModel.getArticlePicArray();
+    const picArray = await articlePicModel.getArticlePicArray();
 
     //if articlePicArray fails to return (load) return null (to download again later)
-    if (!articlePicArray || !articlePicArray.length) return null;
+    if (!picArray || !picArray.length) return null;
 
     const articlePicObj = {
       picPageURL: picPageURL,
-      articlePicArray: articlePicArray,
+      picArray: picArray,
     };
 
     return articlePicObj;
@@ -258,7 +258,7 @@ class Article {
     const document = dom.window.document;
 
     //define return array
-    const articlePicArray = [];
+    const picArray = [];
 
     //get and loop through img elements
     const imgArray = document.querySelectorAll("img");
@@ -268,7 +268,7 @@ class Article {
         const articlePicURL = await urlModel.getArticlePicURL();
         if (!articlePicURL) continue;
 
-        articlePicArray.push(articlePicURL);
+        picArray.push(articlePicURL);
 
         //store url to picDB (so dont have to do again)
         const picDataModel = new dbModel({ url: articlePicURL }, CONFIG.picURLs);
@@ -278,7 +278,7 @@ class Article {
       }
     }
 
-    return articlePicArray;
+    return picArray;
   }
 
   /**
@@ -359,10 +359,10 @@ class Article {
 
     //post title
     const titleModel = new TgReq({ inputObj: articleObj });
-    await titleModel.postArticleTitleTG();
+    await titleModel.postTitleTG();
 
     //if no article pics
-    if (!articleObj.articlePicArray || !articleObj.articlePicArray.length) {
+    if (!articleObj.picArray || !articleObj.picArray.length) {
       //post content
       const noPicsModel = new Article({ inputObj: articleObj });
       const noPicsData = await noPicsModel.postArticleContentTG();
@@ -397,13 +397,13 @@ class Article {
 
   async postArticlePicArrayTG() {
     const { inputObj } = this.dataObject;
-    const { articlePicArray } = inputObj;
+    const { picArray } = inputObj;
 
     const postPicDataArray = [];
-    for (let i = 0; i < articlePicArray.length; i++) {
+    for (let i = 0; i < picArray.length; i++) {
       try {
         //get full picObj
-        const picURL = articlePicArray[i];
+        const picURL = picArray[i];
 
         //get full pic Data (from pic db, combine in with inputObj) //get full pic Data (from pic db, combine in with inputObj)
         const lookupParams = {

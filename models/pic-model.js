@@ -3,8 +3,10 @@ import axios from "axios";
 import { JSDOM } from "jsdom";
 
 import CONFIG from "../config/scrape-config.js";
-import { randomDelay } from "../config/util.js";
+// import { randomDelay } from "../config/util.js";
+
 import KCNA from "./kcna-model.js";
+import TgReq from "./tgReq-model.js";
 import dbModel from "./db-model.js";
 import UTIL from "./util-model.js";
 
@@ -354,7 +356,79 @@ class Pic {
   //UPLOAD PIC SECTION
 
   async postPicSetArrayTG() {
+    const { inputArray } = this.dataObject;
+
+    const uploadDataArray = [];
+    for (let i = 0; i < inputArray.length; i++) {
+      try {
+        const inputObj = inputArray[i];
+        const uploadModel = new Pic({ inputObj: inputObj });
+        const uploadArticleData = await uploadModel.postPicSetObjTG();
+        if (!uploadArticleData || !uploadArticleData.length) continue;
+
+        //FIX BELOW
+
+        //Build store obj (just store object for first text chunk)
+        const storeObj = { ...inputObj, ...uploadArticleData[0] };
+        storeObj.textChunks = uploadArticleData.length;
+
+        //TURN OFF
+        console.log("ARTICLE STORE OBJECT");
+        console.log(storeObj);
+
+        //store data
+        const storeModel = new dbModel(storeObj, CONFIG.picSetsUploaded);
+        const storeData = await storeModel.storeUniqueURL();
+        console.log(storeData);
+
+        uploadDataArray.push(storeObj);
+      } catch (e) {
+        // console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+        console.log(e);
+      }
+    }
+
+    console.log(uploadDataArray);
+    console.log("FUCKING FINISHED ARTICLES");
+
+    return uploadDataArray;
+  }
+
+  async postPicSetObjTG() {
     const { inputObj } = this.dataObject;
+
+    if (!inputObj) {
+      const error = new Error("PIC SET UPLOAD OBJ FUCKED");
+      error.url = this.dataObject.url;
+      error.function = "postPicSetObjTG";
+      throw error;
+    }
+
+    //destructures // normalizes obj
+    const normalModel = new UTIL({ inputObj: inputObj });
+    const picSetObj = await normalModel.normalizeInputsTG();
+
+    //add channel to post to HERE
+    picSetObj.tgUploadId = CONFIG.tgUploadId;
+
+    //post title
+    const titleModel = new TgReq({ inputObj: picSetObj });
+    await titleModel.postTitleTG();
+
+    //if no pics in pic Set throw error
+    if (!picSetObj.picArray || !picSetObj.picArray.length) {
+      const error = new Error("NO PICS IN PIC SET");
+      error.url = this.dataObject.url;
+      error.function = "postPicSetObjTG";
+      throw error;
+    }
+
+    //otherwise post pics then content
+    const articlePicModel = new Article({ inputObj: articleObj });
+    await articlePicModel.postArticlePicArrayTG();
+    const articlePicData = await articlePicModel.postArticleContentTG();
+
+    return articlePicData;
   }
 }
 

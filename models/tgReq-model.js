@@ -132,7 +132,7 @@ class TgReq {
 
   //--------------------------
 
-  async postArticleTitleTG() {
+  async postTitleTG() {
     const { inputObj } = this.dataObject;
     if (!inputObj) return null;
     const { titleNormal, dateNormal, tgUploadId } = inputObj;
