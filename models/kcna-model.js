@@ -56,12 +56,12 @@ class KCNA {
 
       return res;
     } catch (e) {
-      console.log("GET HEADERS ERROR");
+      console.log("GET HEADERS ERROR 0");
       console.log("ERROR, for " + inputURL + "; | RESPONSE: ");
-      console.log(e.response);
+      console.log(e);
       //on fail try random
       const retryModel = new KCNA(this.dataObject);
-      const res = await retryModel.retryHeaderReq();
+      const res = await retryModel.retryHeaderRandom();
       return res;
     }
   }
@@ -70,8 +70,8 @@ class KCNA {
   async retryHeaderRandom() {
     const inputURL = this.dataObject.url;
 
-    //between 1-100
-    const randomBytes = Math.floor(Math.random() * 100) + 1;
+    //random between 100-200 bytes
+    const randomBytes = Math.floor(Math.random() * 100) + 100;
     const byteText = "bytes=0-" + randomBytes;
     console.log("TRYING RANDOM BYTES");
     console.log(randomBytes);
@@ -107,6 +107,7 @@ class KCNA {
         method: "get",
         url: inputURL,
         timeout: 30000,
+        maxContentLength: 1024 * 1024 * 0.1, //0.1MB
       });
 
       return res;
