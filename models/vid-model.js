@@ -265,7 +265,14 @@ class Vid {
     const eTag = headerData.etag;
     const vidEditDate = new Date(headerData["last-modified"]);
     const contentRange = headerData["content-range"];
-    const vidSizeBytes = +contentRange?.substring(contentRange?.lastIndexOf("/") + 1, contentRange?.length);
+
+    //get pic size based on content range
+    let vidSizeBytes;
+    if (contentRange) {
+      vidSizeBytes = +contentRange?.substring(contentRange?.lastIndexOf("/") + 1, contentRange?.length);
+    } else {
+      vidSizeBytes = headerData["content-length"];
+    }
     const vidSizeMB = +(vidSizeBytes / 1048576).toFixed(2);
 
     const headerObj = {

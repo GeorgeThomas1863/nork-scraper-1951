@@ -276,13 +276,20 @@ class Pic {
     console.log("PIC HEADER DATA");
     console.log(headerData);
 
-    //otherwise get data about pic and add to obj //TEST
+    //otherwise get data about pic and add to obj
     const serverData = headerData.server;
     const eTag = headerData.etag;
     const picEditDate = new Date(headerData["last-modified"]);
     const dataType = headerData["content-type"];
     const contentRange = headerData["content-range"];
-    const picSizeBytes = +contentRange?.substring(contentRange?.lastIndexOf("/") + 1, contentRange?.length);
+
+    //get pic size based on content range
+    let picSizeBytes;
+    if (contentRange) {
+      picSizeBytes = +contentRange?.substring(contentRange?.lastIndexOf("/") + 1, contentRange?.length);
+    } else {
+      picSizeBytes = headerData["content-length"];
+    }
     const picSizeMB = +(picSizeBytes / 1048576).toFixed(2);
 
     const headerObj = {
