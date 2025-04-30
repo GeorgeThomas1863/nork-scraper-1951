@@ -286,7 +286,11 @@ class TgReq {
     //define chunks
     const maxLength = tgMaxLength - title.length - date.length - url.length - 100;
     const chunkTotal = Math.ceil(textInput.length / maxLength);
-    let chunkCount = 0;
+
+    console.log("STATS!!!!!!!!!!!");
+    console.log(textInput.length);
+    console.log(maxLength);
+    console.log(chunkTotal);
 
     //if short return one array item
     if (textInput.length < maxLength) {
@@ -297,6 +301,7 @@ class TgReq {
     }
 
     //otherwise build text array
+    let chunkCount = 0;
     const textArray = [];
     for (let i = 0; i < textInput.length; i += maxLength) {
       chunkCount++;
