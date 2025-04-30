@@ -49,10 +49,7 @@ class KCNA {
     //random between up to 200 bytes
     const randomBytes = Math.floor(Math.random() * 200);
     const byteText = "bytes=0-" + randomBytes;
-    console.log("TRYING RANDOM BYTES");
     console.log(randomBytes);
-    console.log("!!!!");
-    console.log(byteText);
 
     try {
       const res = await axios({
@@ -71,8 +68,8 @@ class KCNA {
       console.log(e.code);
       //on fail try stream
       const retryModel = new KCNA(this.dataObject);
-      const res = await retryModel.retryStream();
-      return res;
+      const retryData = await retryModel.retryStream();
+      return retryData;
     }
   }
 
@@ -95,16 +92,42 @@ class KCNA {
       // Immediately abort the stream to prevent downloading the entire file
       res.data.destroy();
 
-      console.log("FUCK YOU FAGGOT");
-      console.log(res);
-
       return headers;
     } catch (e) {
-      console.log("STILLL FUCKNIG FAILED");
+      //if still fucked, check if pic and if so try full thing
+      if (inputURL.slice(-4) === ".jpg") {
+        const finalTryModel = new KCNA(this.dataObject);
+        const res = await finalTryModel.retryFullReq();
+        return res;
+      }
 
+      //otherwise give up
       return null;
     }
   }
+
+  //full get req for failed headers
+  async retryFullReq() {
+    const inputURL = this.dataObject.url;
+
+    try {
+      await randomDelay(3);
+      const res = await axios({
+        method: "get",
+        url: inputURL,
+        timeout: 15000, //only wait 15 sec
+      });
+
+      const headers = res.headers;
+
+      return headerss;
+    } catch (e) {
+      console.log("TRIED FULL REQ, STILL FUCKED");
+      // console.log(e);
+      return null;
+    }
+  }
+
   //-------------------
 
   //GET PIC REQ
