@@ -370,9 +370,10 @@ class Article {
     }
 
     //otherwise post pics then content
-    const articlePicModel = new Article({ inputObj: articleObj });
-    await articlePicModel.postArticlePicArrayTG();
-    const articlePicData = await articlePicModel.postArticleContentTG();
+    const articleModel = new Article({ inputObj: articleObj });
+    const picModel = new Pic({ inputArray: articleObj });
+    await picModel.postPicArrayTG();
+    const articlePicData = await articleModel.postArticleContentTG();
 
     return articlePicData;
   }
@@ -393,42 +394,6 @@ class Article {
     const postContentData = await postContentModel.postTextArrayTG();
 
     return postContentData;
-  }
-
-  async postArticlePicArrayTG() {
-    const { inputObj } = this.dataObject;
-    const { picArray } = inputObj;
-
-    const postPicDataArray = [];
-    for (let i = 0; i < picArray.length; i++) {
-      try {
-        //get full picObj
-        const picURL = picArray[i];
-
-        //get full pic Data (from pic db, combine in with inputObj) //get full pic Data (from pic db, combine in with inputObj)
-        const lookupParams = {
-          keyToLookup: "url",
-          itemValue: picURL,
-        };
-
-        const picDataModel = new dbModel(lookupParams, CONFIG.picsDownloaded);
-        const picObj = await picDataModel.getUniqueItem();
-        if (!picObj) continue;
-
-        const uploadPicObj = { ...inputObj, ...picObj };
-
-        const postPicModel = new TgReq({ inputObj: uploadPicObj });
-        const postPicData = await postPicModel.postPicTG();
-        if (!postPicData) continue;
-
-        postPicDataArray.push(postPicData);
-      } catch (e) {
-        // console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-        console.log(e);
-      }
-    }
-
-    return postPicDataArray;
   }
 }
 

@@ -323,7 +323,7 @@ class Vid {
     //throws error if not new (keep out of try block to propogate error)
     await checkModel.urlNewCheck();
 
-    const downloadModel = new KCNA({inputObj: vidObj});
+    const downloadModel = new KCNA({ inputObj: vidObj });
     const returnObj = await downloadModel.getVidReq();
 
     const downloadVidObj = { ...vidObj, ...returnObj };
@@ -331,56 +331,6 @@ class Vid {
     await storeModel.storeUniqueURL();
 
     return downloadVidObj;
-
-    // try {
-    //   // await randomDelay(1);
-    //   const res = await axios({
-    //     method: "get",
-    //     url: url,
-    //     timeout: 600000, //10 minutes per vid
-    //     responseType: "stream",
-    //   });
-
-    //   // console.log("RES!!!!");
-    //   // console.log(res);
-
-    //   const writer = fs.createWriteStream(savePath);
-    //   const stream = res.data.pipe(writer);
-    //   const totalSize = parseInt(res.headers["content-length"], 10);
-    //   const mbSize = +(totalSize / 1048576).toFixed(2);
-    //   let downloadedSize = 0;
-
-    //   console.log("DOWNLOADING VID " + mbSize + "MB");
-    //   console.log(totalSize);
-
-    //   //download shit
-    //   res.data.on("data", (chunk) => {
-    //     downloadedSize += chunk.length;
-    //     if (downloadedSize >= totalSize) {
-    //     }
-    //   });
-
-    //   await new Promise((resolve, reject) => {
-    //     stream.on("finish", resolve);
-    //     stream.on("error", reject);
-    //   });
-
-    //   console.log("VID DOWNLOADED TO " + savePath);
-
-    //   //store downloadedPicData
-    //   const downloadVidObj = { ...vidObj };
-    //   downloadVidObj.downloadedSize = downloadedSize;
-    //   downloadVidObj.totalSize = totalSize;
-    //   const storeModel = new dbModel(downloadVidObj, CONFIG.vidsDownloaded);
-    //   const storeData = await storeModel.storeUniqueURL();
-    //   console.log(storeData);
-
-    //   return downloadVidObj;
-    // } catch (e) {
-    //   //AXIOS PRODUCES OWN CUSTOM ERROR
-    //   console.log("AXIOS ERROR, for " + url + "\nRESPONSE: " + e.response + "; REQUEST: " + e.request);
-    //   return null;
-    // }
   }
 }
 

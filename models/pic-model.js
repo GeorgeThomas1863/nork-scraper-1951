@@ -366,14 +366,11 @@ class Pic {
         const uploadArticleData = await uploadModel.postPicSetObjTG();
         if (!uploadArticleData || !uploadArticleData.length) continue;
 
-        //FIX BELOW
-
         //Build store obj (just store object for first text chunk)
-        const storeObj = { ...inputObj, ...uploadArticleData[0] };
-        storeObj.textChunks = uploadArticleData.length;
+        const storeObj = { ...inputObj, ...uploadArticleData };
 
         //TURN OFF
-        console.log("ARTICLE STORE OBJECT");
+        console.log("PIC SET STORE OBJECT");
         console.log(storeObj);
 
         //store data
@@ -389,7 +386,7 @@ class Pic {
     }
 
     console.log(uploadDataArray);
-    console.log("FUCKING FINISHED ARTICLES");
+    console.log("FUCKING FINISHED PICS");
 
     return uploadDataArray;
   }
@@ -424,11 +421,46 @@ class Pic {
     }
 
     //otherwise post pics then content
-    const articlePicModel = new Article({ inputObj: articleObj });
-    await articlePicModel.postArticlePicArrayTG();
-    const articlePicData = await articlePicModel.postArticleContentTG();
+    const postModel = new Pic({ inputObj: picSetObj });
+    const postPicArrayData = await postModel.postPicArrayTG();
 
-    return articlePicData;
+    return postPicArrayData;
+  }
+
+  async postPicArrayTG() {
+    const { inputObj } = this.dataObject;
+    const { picArray } = inputObj;
+
+    const postPicDataArray = [];
+    for (let i = 0; i < picArray.length; i++) {
+      try {
+        //get full picObj
+        const picURL = picArray[i];
+
+        //get full pic Data (from pic db, combine in with inputObj) //get full pic Data (from pic db, combine in with inputObj)
+        const lookupParams = {
+          keyToLookup: "url",
+          itemValue: picURL,
+        };
+
+        const picDataModel = new dbModel(lookupParams, CONFIG.picsDownloaded);
+        const picObj = await picDataModel.getUniqueItem();
+        if (!picObj) continue;
+
+        const uploadPicObj = { ...inputObj, ...picObj };
+
+        const postPicModel = new TgReq({ inputObj: uploadPicObj });
+        const postPicData = await postPicModel.postPicTG();
+        if (!postPicData) continue;
+
+        postPicDataArray.push(postPicData);
+      } catch (e) {
+        // console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+        console.log(e);
+      }
+    }
+
+    return postPicDataArray;
   }
 }
 
