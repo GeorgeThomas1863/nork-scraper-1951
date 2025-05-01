@@ -161,7 +161,7 @@ class TgReq {
     const { inputObj } = this.dataObject;
     const { titleNormal, dateNormal } = inputObj;
 
-    const beginStr = "🇰🇵" + "--------------" + "\n" + titleNormal +  "\n" + "<i>" + dateNormal + "</i>" + "\n" + "--------------";
+    const beginStr = "🇰🇵 🇰🇵 🇰🇵" + "\n\n" + "--------------" + "\n" + titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "--------------";
 
     //if no pics
     if (!inputObj.picArray || !inputObj.picArray.length) {
