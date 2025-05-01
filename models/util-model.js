@@ -211,7 +211,7 @@ class UTIL {
     //normalize
     normalObj.urlNormal = url.replace(/\./g, "[.]").replace(/:/g, "[:]");
     normalObj.dateNormal = new Date(date).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" });
-    normalObj.titleNormal = "<b1>" + title + "</b1>";
+    normalObj.titleNormal = `<b>${title}</b>`;
 
     return normalObj;
   }
