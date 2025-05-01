@@ -218,10 +218,3 @@ class UTIL {
 }
 
 export default UTIL;
-
-// const outputObj = {
-//   url: urlNormal,
-//   date: dateNormal,
-//   title: titleNormal,
-//   text: inputObj.text,
-// };

@@ -1,5 +1,7 @@
 //TO DO:
 
+//FIX THE TITLE FONT ON UPLOAD
+
 //POST PIC SETS / VIDS
 
 //BUILD BACKUP VID DOWNLOAD (normal, 1 at a time)
