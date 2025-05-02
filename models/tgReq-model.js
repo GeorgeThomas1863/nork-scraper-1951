@@ -454,7 +454,7 @@ class TgReq {
   //post each chunk, edit captions
   async postChunkObj() {
     const { inputObj } = this.dataObject;
-    const { totalChunks, titleNormal, dateNormal, kcnaId } = inputObj;
+    const { totalChunks, titleNormal, dateNormal, kcnaId, chunkNumber } = inputObj;
 
     //post the chunk
     const chunkModel = new TgReq({ inputObj: inputObj });
@@ -462,7 +462,7 @@ class TgReq {
     if (!chunkData || !chunkData.result) return null;
 
     //label the chunk (add caption)
-    const caption = titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + kcnaId + ".mp4; [Chunk " + i + "of " + totalChunks + "]";
+    const caption = titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + kcnaId + ".mp4; [Chunk " + chunkNumber + "of " + totalChunks + "]";
 
     //build edit caption params
     const editParams = {
