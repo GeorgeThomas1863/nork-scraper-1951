@@ -399,12 +399,12 @@ class TgReq {
 
   async postVidTG() {
     const { inputObj } = this.dataObject;
-    const { kcnaId, vidSizeMB } = inputObj;
+    const { kcnaId, vidSizeBytes } = inputObj;
     const postVidObj = { ...inputObj };
 
     //define chunk size
-    const chunkSize = 40; //40MB
-    const totalChunks = Math.ceil(vidSizeMB / chunkSize);
+    const chunkSize = 40 * 1024 * 1024; //40MB
+    const totalChunks = Math.ceil(vidSizeBytes / chunkSize);
     postVidObj.totalChunks = totalChunks;
 
     console.log("TOTAL CHUNKS");
@@ -418,7 +418,7 @@ class TgReq {
     for (let i = 0; i < totalChunks; i++) {
       //define chunk
       const start = i * chunkSize;
-      const end = Math.min(vidSizeMB, start + chunkSize);
+      const end = Math.min(vidSizeBytes, start + chunkSize);
       console.log(start);
       console.log(end);
       postVidObj.start = start;
@@ -427,6 +427,8 @@ class TgReq {
 
       const chunkModel = new TgReq({ inputObj: postVidObj });
       const chunkData = await chunkModel.postVidChunk();
+
+      console.log(chunkData);
     }
 
     const postModel = new TgReq({ inputObj: postVidObj });
