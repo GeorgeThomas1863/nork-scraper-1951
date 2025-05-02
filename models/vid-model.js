@@ -354,12 +354,19 @@ class Vid {
 
     const uploadDataArray = [];
     for (let i = 0; i < inputArray.length; i++) {
-      const inputObj = inputArray[i];
-      const uploadModel = new Vid({ inputObj: inputObj });
-      const uploadVidPageData = await uploadModel.postVidPageObj();
+      try {
+        const inputObj = inputArray[i];
+        const uploadModel = new Vid({ inputObj: inputObj });
+        const uploadVidPageData = await uploadModel.postVidPageObj();
+        if (!uploadVidPageData) continue;
 
-      //STORE HERE
+        uploadDataArray.push(uploadVidPageData);
+      } catch (e) {
+        console.log(e);
+      }
     }
+
+    return uploadDataArray;
   }
 
   async postVidPageObj() {
@@ -368,7 +375,7 @@ class Vid {
 
     if (!inputObj) {
       const error = new Error("VID PAGE UPLOAD FUCKED");
-      error.url = this.dataObject.url;
+      error.url = url;
       error.function = "postVidPageObj";
       throw error;
     }
@@ -376,30 +383,34 @@ class Vid {
     //add channel to post to HERE
     inputObj.tgUploadId = CONFIG.tgUploadId;
 
-    //normalizes obj
-    const normalModel = new UTIL({ inputObj: inputObj });
-    const normalObj = await normalModel.normalizeInputsTG();
+    try {
+      //normalizes obj
+      const normalModel = new UTIL({ inputObj: inputObj });
+      const normalObj = await normalModel.normalizeInputsTG();
 
-    //get vid obj data (extra data for each vid)
-    const lookupParams = {
-      keyToLookup: "url",
-      itemValue: vidURL,
-    };
-    const vidObjModel = new dbModel(lookupParams, CONFIG.vidsDownloaded);
-    const vidObjData = await vidObjModel.getUniqueItem();
+      //get vid obj data (extra data for each vid)
+      const lookupParams = {
+        keyToLookup: "url",
+        itemValue: vidURL,
+      };
+      const vidObjModel = new dbModel(lookupParams, CONFIG.vidsDownloaded);
+      const vidObjData = await vidObjModel.getUniqueItem();
 
-    //build vidPageObj
-    const vidPageObj = { ...normalObj, ...vidObjData };
+      //build vidPageObj
+      const vidPageObj = { ...normalObj, ...vidObjData };
 
-    //post title
-    const tgModel = new TG({ inputObj: vidPageObj });
-    await tgModel.postTitleTG();
+      //post title
+      const tgModel = new TG({ inputObj: vidPageObj });
+      await tgModel.postTitleTG();
 
-    //post vid
-    const postVidData = await tgModel.postVidTG();
-    console.log(postVidData);
+      //post vid
+      const postVidData = await tgModel.postVidTG();
+      console.log(postVidData);
 
-    return postVidData;
+      return postVidData;
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
 

@@ -221,14 +221,10 @@ class TG {
     const chunkDataArray = await postChunkModel.postChunkArray();
     if (!chunkDataArray || !chunkDataArray.length) return null;
 
-    //STORE HERE, JUST FIRST array item
-    try {
-      const storeModel = new dbModel(chunkDataArray[0], vidsUploaded);
-      const storeData = await storeModel.storeUniqueURL();
-      console.log(storeData);
-    } catch (e) {
-      console.log(e);
-    }
+    //if successful store vid as uploaded (just data from first item in array)
+    const storeModel = new dbModel(chunkDataArray[0], CONFIG.vidsUploaded);
+    const storeData = await storeModel.storeUniqueURL();
+    console.log(storeData);
 
     return chunkDataArray;
   }
@@ -259,13 +255,19 @@ class TG {
   }
 
   //post each chunk, edit captions
-  async postChunkObj() {
+  async postVidChunk() {
     const { inputObj } = this.dataObject;
     const { totalChunks, titleNormal, dateNormal, kcnaId, chunkNumber } = inputObj;
 
-    //post the chunk
-    const chunkModel = new TG({ inputObj: inputObj });
-    const chunkData = await chunkModel.postVidChunk();
+    //get chunk form
+    const formModel = new TG({ inputObj: inputObj });
+    const chunkForm = await formModel.getChunkForm();
+
+    console.log("Uploading chunk " + (chunkNumber + 1) + " of " + totalChunks);
+
+    //post chunk
+    const postModel = new TgReq({ form: chunkForm });
+    const chunkData = await postModel.tgVidFS(TgReq.tokenIndex);
     if (!chunkData || !chunkData.result) return null;
 
     //label the chunk (add caption)
@@ -289,11 +291,11 @@ class TG {
     const editChunkData = await editModel.tgPost(TgReq.tokenIndex);
     if (!editChunkData || !editChunkData.result) return null;
 
-    //otherwise return chunk data
+    //return chunk data
     return chunkData;
   }
 
-  async postVidChunk() {
+  async getChunkForm() {
     const { inputObj } = this.dataObject;
     const { savePath, tgUploadId, thumbnailPath, start, end, chunkNumber, totalChunks } = inputObj;
 
@@ -315,12 +317,7 @@ class TG {
     //add thumbnail
     formData.append("thumb", fs.createReadStream(thumbnailPath));
 
-    console.log("Uploading chunk " + (chunkNumber + 1) + " of " + totalChunks);
-
-    const postModel = new TgReq({ form: formData });
-    const postData = await postModel.tgVidFS(TgReq.tokenIndex);
-
-    return postData;
+    return formData;
   }
 }
 
