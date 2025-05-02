@@ -170,7 +170,7 @@ class TgReq {
     }
   }
 
-  async tgDocFS() {
+  async tgDocFS(tokenIndex = 0) {
     const { chatId, vidPath } = this.dataObject;
 
     const token = tokenArray[tokenIndex];
@@ -418,6 +418,7 @@ class TgReq {
   async postVidBySize() {
     const { inputObj } = this.dataObject;
     const { savePath, tgUploadId, vidSizeMB, thumbnailPath } = inputObj;
+    const postVidObj = { ...inputObj };
 
     //build Pparams
     const postParams = {
@@ -429,9 +430,9 @@ class TgReq {
     //check if vid too big, if so post as doc
     if (vidSizeMB > 40) {
       //send thumbnail as pic first
-      postParams.picPath = thumbnailPath;
-      const picModel = new TgReq(postParams);
-      await picModel.tgPicFS(TgReq.tokenIndex);
+      postVidObj.savePath = thumbnailPath;
+      const picModel = new TgReq({ inputObj: postVidObj });
+      await picModel.postPicTG();
 
       //then post vid as doc
       const docModel = new TgReq(postParams);
