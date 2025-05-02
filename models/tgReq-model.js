@@ -131,22 +131,16 @@ class TgReq {
   }
 
   async tgVidFS(tokenIndex = 0) {
-    const { chatId, vidPath, thumbnailPath } = this.dataObject;
+    const { form } = this.dataObject;
 
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/sendVideo`;
 
-    //build form
-    const form = new FormData();
-    form.append("chat_id", chatId);
-    form.append("video", fs.createReadStream(vidPath));
-
-    //append thumbnail to form
-    form.append("thumb", fs.createReadStream(thumbnailPath));
-
     try {
       const res = await axios.post(url, form, {
         headers: form.getHeaders(),
+        maxBodyLength: Infinity,
+        maxContentLength: Infinity,
       });
 
       console.log("RES DATA");
@@ -170,45 +164,45 @@ class TgReq {
     }
   }
 
-  async tgDocFS(tokenIndex = 0) {
-    const { chatId, vidPath } = this.dataObject;
+  // async tgDocFS(tokenIndex = 0) {
+  //   const { chatId, vidPath } = this.dataObject;
 
-    const token = tokenArray[tokenIndex];
-    const url = `https://api.telegram.org/bot${token}/sendDocument`;
+  //   const token = tokenArray[tokenIndex];
+  //   const url = `https://api.telegram.org/bot${token}/sendDocument`;
 
-    //build form
-    const form = new FormData();
-    form.append("chat_id", chatId);
-    form.append("document", fs.createReadStream(vidPath));
+  //   //build form
+  //   const form = new FormData();
+  //   form.append("chat_id", chatId);
+  //   form.append("document", fs.createReadStream(vidPath));
 
-    console.log("ALLAHU AKBAR");
-    console.log(url);
+  //   console.log("ALLAHU AKBAR");
+  //   console.log(url);
 
-    try {
-      const res = await axios.post(url, form, {
-        headers: form.getHeaders(),
-      });
+  //   try {
+  //     const res = await axios.post(url, form, {
+  //       headers: form.getHeaders(),
+  //     });
 
-      console.log("DOC RES FAGGOT");
-      console.log(res);
-      return res.data;
-    } catch (e) {
-      if (e.response && e.response.data) {
-        //check token
-        const checkModel = new TgReq({ data: e.response.data });
-        const checkData = await checkModel.checkToken();
+  //     console.log("DOC RES FAGGOT");
+  //     console.log(res);
+  //     return res.data;
+  //   } catch (e) {
+  //     if (e.response && e.response.data) {
+  //       //check token
+  //       const checkModel = new TgReq({ data: e.response.data });
+  //       const checkData = await checkModel.checkToken();
 
-        if (checkData) {
-          const inputData = this.dataObject;
-          const retryModel = new TgReq(inputData);
-          const retryData = await retryModel.tgDocFS(TgReq.tokenIndex);
-          return retryData;
-        }
-      } else {
-        return e;
-      }
-    }
-  }
+  //       if (checkData) {
+  //         const inputData = this.dataObject;
+  //         const retryModel = new TgReq(inputData);
+  //         const retryData = await retryModel.tgDocFS(TgReq.tokenIndex);
+  //         return retryData;
+  //       }
+  //     } else {
+  //       return e;
+  //     }
+  //   }
+  // }
 
   //--------------------------
 
@@ -408,9 +402,27 @@ class TgReq {
     const { kcnaId, vidSizeMB } = inputObj;
     const postVidObj = { ...inputObj };
 
+    //define chunk size
+    const chunkSize = 40 * 1024 * 1024; //40MB
+    const totalChunks = Math.ceil(vidSizeMB / chunkSize);
+    postVidObj.totalChunks = totalChunks;
+
     //build thumbnail path
     const thumbnailPath = CONFIG.picPath + kcnaId + ".jpg";
     postVidObj.thumbnailPath = thumbnailPath;
+
+    //send each chunk
+    for (let i = 0; i < totalChunks; i++) {
+      //define chunk
+      const start = i * chunkSize;
+      const end = Math.min(vidSizeMB, start + chunkSize);
+      postVidObj.start = start;
+      postVidObj.end = end;
+      postVidObj.chunkNumber = i;
+
+      const chunkModel = new TgReq({ inputObj: postVidObj });
+      const chunkData = await chunkModel.postVidChunk();
+    }
 
     const postModel = new TgReq({ inputObj: postVidObj });
     const postData = await postModel.postVidBySize();
@@ -421,39 +433,70 @@ class TgReq {
     //NEXT CAPTION
   }
 
-  async postVidBySize() {
+  async postVidChunk() {
     const { inputObj } = this.dataObject;
-    const { savePath, tgUploadId, vidSizeMB, thumbnailPath } = inputObj;
-    const postVidObj = { ...inputObj };
+    const { savePath, tgUploadId, vidSizeMB, thumbnailPath, start, end, chunkNumber, totalChunks } = inputObj;
+
+    const readStream = fs.createReadStream(savePath, { start: start, end: end - 1 });
+
+    // Create form data for this chunk
+    const formData = new FormData();
+    formData.append("chat_id", tgUploadId);
+    formData.append("video", readStream, {
+      filename: `chunk_${chunkNumber}_of_${totalChunks}.mp4`,
+      knownLength: end - start,
+    });
+
+    //add thumbnail
+    formData.append("thumb", fs.createReadStream(thumbnailPath));
+
+    console.log(`Uploading chunk ${chunkNumber} of ${totalChunks}...`);
+
+    const postModel = new TgReq({ form: formData });
+    const postData = await postModel.tgVidFS(TgReq.tokenIndex);
+    console.log(postData);
+
+    // try {
+    //   const res = await axios.post(`https://api.telegram.org/bot${telegramBotToken}/sendDocument`, formData, {
+    //     headers: formData.getHeaders(),
+    //     maxBodyLength: Infinity,
+    //     maxContentLength: Infinity,
+    //   });
+    //   console.log(`Chunk ${chunkNumber} uploaded successfully!`);
+    //   return { success: true, response };
+    // } catch (error) {
+    //   console.error(`Error uploading chunk ${chunkNumber}:`, error.message);
+    //   return { success: false, error };
+    // }
 
     //build Pparams
-    const postParams = {
-      chatId: tgUploadId,
-      vidPath: savePath,
-      thumbnailPath: thumbnailPath,
-    };
+    // const postParams = {
+    //   chatId: tgUploadId,
+    //   vidPath: savePath,
+    //   thumbnailPath: thumbnailPath,
+    // };
 
-    //check if vid too big, if so post as doc
-    if (vidSizeMB > 40) {
-      //send thumbnail as pic first
-      try {
-        postVidObj.savePath = thumbnailPath;
-        const picModel = new TgReq({ inputObj: postVidObj });
-        await picModel.postPicTG();
-      } catch (e) {
-        console.log(e);
-      }
+    // //check if vid too big, if so post as doc
+    // if (vidSizeMB > 40) {
+    //   //send thumbnail as pic first
+    //   try {
+    //     postVidObj.savePath = thumbnailPath;
+    //     const picModel = new TgReq({ inputObj: postVidObj });
+    //     await picModel.postPicTG();
+    //   } catch (e) {
+    //     console.log(e);
+    //   }
 
-      //then post vid as doc
-      const docModel = new TgReq(postParams);
-      const docData = await docModel.tgDocFS(TgReq.tokenIndex);
-      return docData;
-    }
+    //   //then post vid as doc
+    //   const docModel = new TgReq(postParams);
+    //   const docData = await docModel.tgDocFS(TgReq.tokenIndex);
+    //   return docData;
+    // }
 
-    //otherwise send as vid
-    const vidModel = new TgReq(postParams);
-    const vidData = await vidModel.tgVidFS();
-    return vidData;
+    // //otherwise send as vid
+    // const vidModel = new TgReq(postParams);
+    // const vidData = await vidModel.tgVidFS();
+    // return vidData;
   }
 }
 
