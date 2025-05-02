@@ -431,7 +431,9 @@ class TgReq {
       console.log(chunkData);
     }
 
-    //NEXT CAPTION
+    //ADD CAPTION NEXT
+
+    //THEN STORE IT
   }
 
   async postVidChunk() {
@@ -456,49 +458,8 @@ class TgReq {
 
     const postModel = new TgReq({ form: formData });
     const postData = await postModel.tgVidFS(TgReq.tokenIndex);
-    console.log(postData);
 
-    // try {
-    //   const res = await axios.post(`https://api.telegram.org/bot${telegramBotToken}/sendDocument`, formData, {
-    //     headers: formData.getHeaders(),
-    //     maxBodyLength: Infinity,
-    //     maxContentLength: Infinity,
-    //   });
-    //   console.log(`Chunk ${chunkNumber} uploaded successfully!`);
-    //   return { success: true, response };
-    // } catch (error) {
-    //   console.error(`Error uploading chunk ${chunkNumber}:`, error.message);
-    //   return { success: false, error };
-    // }
-
-    //build Pparams
-    // const postParams = {
-    //   chatId: tgUploadId,
-    //   vidPath: savePath,
-    //   thumbnailPath: thumbnailPath,
-    // };
-
-    // //check if vid too big, if so post as doc
-    // if (vidSizeMB > 40) {
-    //   //send thumbnail as pic first
-    //   try {
-    //     postVidObj.savePath = thumbnailPath;
-    //     const picModel = new TgReq({ inputObj: postVidObj });
-    //     await picModel.postPicTG();
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
-
-    //   //then post vid as doc
-    //   const docModel = new TgReq(postParams);
-    //   const docData = await docModel.tgDocFS(TgReq.tokenIndex);
-    //   return docData;
-    // }
-
-    // //otherwise send as vid
-    // const vidModel = new TgReq(postParams);
-    // const vidData = await vidModel.tgVidFS();
-    // return vidData;
+    return postData;
   }
 }
 
