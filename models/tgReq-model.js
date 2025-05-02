@@ -144,8 +144,8 @@ class TgReq {
     form.append("chat_id", chatId);
     form.append("video", fs.createReadStream(vidPath));
 
-    //append thumbnail to form
-    form.append("thumb", fs.createReadStream(thumbnailPath));
+    // //append thumbnail to form
+    // form.append("thumb", fs.createReadStream(thumbnailPath));
 
     try {
       const res = await axios.post(url, form, {
