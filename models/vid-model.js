@@ -367,6 +367,7 @@ class Vid {
 
   async postVidPageObj() {
     const { inputObj } = this.dataObject;
+    const { url, vidURL } = inputObj;
 
     if (!inputObj) {
       const error = new Error("VID PAGE UPLOAD FUCKED");
@@ -392,6 +393,9 @@ class Vid {
 
     //build vidPageObj
     const vidPageObj = { ...normalObj, ...vidObjData };
+
+    console.log("FUCKING VID PAGE OBJ");
+    console.log(vidPageObj);
 
     //post title
     const tgModel = new TgReq({ inputObj: vidPageObj });
