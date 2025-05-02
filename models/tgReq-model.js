@@ -433,9 +433,13 @@ class TgReq {
     //check if vid too big, if so post as doc
     if (vidSizeMB > 40) {
       //send thumbnail as pic first
-      postVidObj.savePath = thumbnailPath;
-      const picModel = new TgReq({ inputObj: postVidObj });
-      await picModel.postPicTG();
+      try {
+        postVidObj.savePath = thumbnailPath;
+        const picModel = new TgReq({ inputObj: postVidObj });
+        await picModel.postPicTG();
+      } catch (e) {
+        console.log(e);
+      }
 
       //then post vid as doc
       const docModel = new TgReq(postParams);
