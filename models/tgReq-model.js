@@ -179,12 +179,15 @@ class TgReq {
     //build form
     const form = new FormData();
     form.append("chat_id", chatId);
-    form.append("photo", fs.createReadStream(vidPath));
+    form.append("document", fs.createReadStream(vidPath));
 
     try {
       const res = await axios.post(url, form, {
         headers: form.getHeaders(),
       });
+
+      console.log("DOC RES FAGGOT");
+      console.log(res);
       return res.data;
     } catch (e) {
       if (e.response && e.response.data) {
