@@ -152,7 +152,7 @@ class TgReq {
         headers: form.getHeaders(),
       });
       console.log("RES DATA");
-      console.log(res.data);
+      console.log(res);
       return res.data;
     } catch (e) {
       if (e.response && e.response.data) {
