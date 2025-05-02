@@ -462,7 +462,7 @@ class TgReq {
     if (!chunkData || !chunkData.result) return null;
 
     //label the chunk (add caption)
-    const caption = titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + kcnaId + ".mp4; [Chunk " + chunkNumber + "of " + totalChunks + "]";
+    const caption = titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + kcnaId + ".mp4; [Chunk " + chunkNumber + " of " + totalChunks + "]";
 
     //build edit caption params
     const editParams = {

@@ -1,5 +1,7 @@
 //TO DO:
 
+//FIX VID DOWNLOAD / UPLOAD STORAGE
+
 //SET THE UPLOAD SIZE ON VIDS SO THEY AUTO PLAY
 
 //REFACTOR TgReq (re-remove the bottom shit into own module)
