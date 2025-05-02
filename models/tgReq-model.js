@@ -407,6 +407,9 @@ class TgReq {
     const totalChunks = Math.ceil(vidSizeMB / chunkSize);
     postVidObj.totalChunks = totalChunks;
 
+    console.log("TOTAL CHUNKS");
+    console.log(totalChunks);
+
     //build thumbnail path
     const thumbnailPath = CONFIG.picPath + kcnaId + ".jpg";
     postVidObj.thumbnailPath = thumbnailPath;
@@ -416,6 +419,8 @@ class TgReq {
       //define chunk
       const start = i * chunkSize;
       const end = Math.min(vidSizeMB, start + chunkSize);
+      console.log(start);
+      console.log(end);
       postVidObj.start = start;
       postVidObj.end = end;
       postVidObj.chunkNumber = i;
