@@ -6,7 +6,7 @@ import CONFIG from "../config/scrape-config.js";
 // import { randomDelay } from "../config/util.js";
 
 import KCNA from "./kcna-model.js";
-import TgReq from "./tgReq-model.js";
+import TG from "./tg-controller-model.js";
 import dbModel from "./db-model.js";
 import UTIL from "./util-model.js";
 
@@ -417,7 +417,7 @@ class Pic {
     picSetObj.tgUploadId = CONFIG.tgUploadId;
 
     //post title
-    const titleModel = new TgReq({ inputObj: picSetObj });
+    const titleModel = new TG({ inputObj: picSetObj });
     await titleModel.postTitleTG();
 
     //if no pics in pic Set throw error
@@ -457,7 +457,7 @@ class Pic {
 
         const uploadPicObj = { ...inputObj, ...picObj };
 
-        const postPicModel = new TgReq({ inputObj: uploadPicObj });
+        const postPicModel = new TG({ inputObj: uploadPicObj });
         const postPicData = await postPicModel.postPicTG();
         if (!postPicData) continue;
 

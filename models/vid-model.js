@@ -1,11 +1,8 @@
-import fs from "fs";
-import axios from "axios";
 import { JSDOM } from "jsdom";
 
 import CONFIG from "../config/scrape-config.js";
-import { randomDelay } from "../config/util.js";
 import KCNA from "./kcna-model.js";
-import TgReq from "./tgReq-model.js";
+import TG from "./tg-controller-model.js";
 import dbModel from "./db-model.js";
 import UTIL from "./util-model.js";
 
@@ -395,7 +392,7 @@ class Vid {
     const vidPageObj = { ...normalObj, ...vidObjData };
 
     //post title
-    const tgModel = new TgReq({ inputObj: vidPageObj });
+    const tgModel = new TG({ inputObj: vidPageObj });
     await tgModel.postTitleTG();
 
     //post vid

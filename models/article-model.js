@@ -2,10 +2,10 @@ import { JSDOM } from "jsdom";
 
 import CONFIG from "../config/scrape-config.js";
 import KCNA from "./kcna-model.js";
+import TG from "./tg-controller-model.js";
 import dbModel from "./db-model.js";
 import Pic from "./pic-model.js";
 import UTIL from "./util-model.js";
-import TgReq from "./tgReq-model.js";
 
 /**
  * @class Article
@@ -358,7 +358,7 @@ class Article {
     articleObj.tgUploadId = CONFIG.tgUploadId;
 
     //post title
-    const titleModel = new TgReq({ inputObj: articleObj });
+    const titleModel = new TG({ inputObj: articleObj });
     await titleModel.postTitleTG();
 
     //if no article pics
@@ -383,14 +383,14 @@ class Article {
     const contentObj = { ...inputObj };
 
     //BUILD TEXT ARRAY
-    const textModel = new TgReq({ inputObj: inputObj });
+    const textModel = new TG({ inputObj: inputObj });
     const textArray = await textModel.buildTextArrayTG();
 
     //add text array to obj
     contentObj.textArray = textArray;
 
     //post it
-    const postContentModel = new TgReq({ inputObj: contentObj });
+    const postContentModel = new TG({ inputObj: contentObj });
     const postContentData = await postContentModel.postTextArrayTG();
 
     return postContentData;
