@@ -139,6 +139,8 @@ class TgReq {
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/sendVideo`;
 
+    console.log(url);
+
     //build form
     const form = new FormData();
     form.append("chat_id", chatId);
@@ -147,29 +149,29 @@ class TgReq {
     // //append thumbnail to form
     // form.append("thumb", fs.createReadStream(thumbnailPath));
 
-    try {
-      const res = await axios.post(url, form, {
-        headers: form.getHeaders(),
-      });
-      console.log("RES DATA");
-      console.log(res);
-      return res.data;
-    } catch (e) {
-      if (e.response && e.response.data) {
-        //check token
-        const checkModel = new TgReq({ data: e.response.data });
-        const checkData = await checkModel.checkToken();
+    const res = await axios.post(url, form, {
+      headers: form.getHeaders(),
+    });
 
-        if (checkData) {
-          const inputData = this.dataObject;
-          const retryModel = new TgReq(inputData);
-          const retryData = await retryModel.tgVidFS(TgReq.tokenIndex);
-          return retryData;
-        }
-      } else {
-        return e;
-      }
-    }
+    console.log("RES DATA");
+    console.log(res);
+    return res.data;
+    // } catch (e) {
+    //   if (e.response && e.response.data) {
+    //     //check token
+    //     const checkModel = new TgReq({ data: e.response.data });
+    //     const checkData = await checkModel.checkToken();
+
+    //     if (checkData) {
+    //       const inputData = this.dataObject;
+    //       const retryModel = new TgReq(inputData);
+    //       const retryData = await retryModel.tgVidFS(TgReq.tokenIndex);
+    //       return retryData;
+    //     }
+    //   } else {
+    //     return e;
+    // //   }
+    // }
   }
 
   //--------------------------
