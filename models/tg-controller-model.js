@@ -3,7 +3,7 @@ import fs from "fs";
 import FormData from "form-data";
 
 import CONFIG from "../config/scrape-config.js";
-import TgReq from "./tgReq-model";
+import TgReq from "./tgReq-model.js";
 import dbModel from "./db-model.js";
 
 class TG {
