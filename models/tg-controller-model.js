@@ -245,7 +245,7 @@ class TG {
       chunkObj.chunkNumber = i;
 
       const postChunkModel = new TG({ inputObj: chunkObj });
-      const postChunkData = await postChunkModel.postChunkObj();
+      const postChunkData = await postChunkModel.postVidChunk();
       if (!postChunkData) continue;
 
       chunkDataArray.push(postChunkData);
