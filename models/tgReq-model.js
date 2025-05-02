@@ -403,7 +403,7 @@ class TgReq {
     const postVidObj = { ...inputObj };
 
     //define chunk size
-    const chunkSize = 40 * 1024 * 1024; //40MB
+    const chunkSize = 40; //40MB
     const totalChunks = Math.ceil(vidSizeMB / chunkSize);
     postVidObj.totalChunks = totalChunks;
 
