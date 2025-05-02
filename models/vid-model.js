@@ -394,9 +394,6 @@ class Vid {
     //build vidPageObj
     const vidPageObj = { ...normalObj, ...vidObjData };
 
-    console.log("FUCKING VID PAGE OBJ");
-    console.log(vidPageObj);
-
     //post title
     const tgModel = new TgReq({ inputObj: vidPageObj });
     await tgModel.postTitleTG();

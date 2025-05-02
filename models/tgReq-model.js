@@ -145,9 +145,9 @@ class TgReq {
     form.append("thumb", fs.createReadStream(thumbnailPath));
 
     try {
-      const res = await axios.post(url, form, {
-        headers: form.getHeaders(),
-      });
+      const res = await axios.post(url, form);
+      console.log("RES DATA");
+      console.log(res.data);
       return res.data;
     } catch (e) {
       if (e.response && e.response.data) {
