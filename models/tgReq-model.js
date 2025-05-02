@@ -143,8 +143,8 @@ class TgReq {
         maxContentLength: Infinity,
       });
 
-      console.log("RES DATA");
-      console.log(res);
+      // console.log("RES DATA");
+      // console.log(res);
       return res.data;
     } catch (e) {
       if (e.response && e.response.data) {
@@ -451,7 +451,11 @@ class TgReq {
       filename: `chunk_${chunkNumber}_of_${totalChunks}.mp4`,
       knownLength: end - start,
     });
+
+    //set setting for auto play / streaming
     formData.append("supports_streaming", "true");
+    formData.append("width", "1280");
+    formData.append("height", "720");
 
     //add thumbnail
     formData.append("thumb", fs.createReadStream(thumbnailPath));
