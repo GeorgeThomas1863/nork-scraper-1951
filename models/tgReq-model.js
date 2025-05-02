@@ -431,6 +431,8 @@ class TgReq {
       console.log(chunkData);
     }
 
+    //SET VID SIZE TO A STANDARD SETTING TO ENABLE AUTO PLAY
+
     //ADD CAPTION NEXT
 
     //THEN STORE IT
