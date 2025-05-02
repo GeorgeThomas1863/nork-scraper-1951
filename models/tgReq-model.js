@@ -399,48 +399,96 @@ class TgReq {
 
   async postVidTG() {
     const { inputObj } = this.dataObject;
-    const { kcnaId, vidSizeBytes } = inputObj;
-    const postVidObj = { ...inputObj };
+    const { kcnaId, vidSizeBytes, titleNormal, dateNormal } = inputObj;
+    const chunkObj = { ...inputObj };
 
     //define chunk size
-    const chunkSize = 40 * 1024 * 1024; //40MB
-    const totalChunks = Math.ceil(vidSizeBytes / chunkSize);
-    postVidObj.totalChunks = totalChunks;
-
-    console.log("TOTAL CHUNKS");
-    console.log(totalChunks);
+    chunkObj.chunkSize = 40 * 1024 * 1024; //40MB
+    chunkObj.totalChunks = Math.ceil(vidSizeBytes / chunkObj.chunkSize);
 
     //build thumbnail path
-    const thumbnailPath = CONFIG.picPath + kcnaId + ".jpg";
-    postVidObj.thumbnailPath = thumbnailPath;
+    chunkObj.thumbnailPath = CONFIG.picPath + kcnaId + ".jpg";
+
+    //posts ALL chunks, edits the caption
+    const postChunkModel = new TgReq({ inputObj: chunkObj });
+    const chunkDataArray = await postChunkModel.postChunkArray();
+    if (!chunkDataArray || !chunkDataArray.length) return null;
+
+    //STORE HERE, JUST FIRST array item
+    try {
+      const storeModel = new dbModel(chunkDataArray[0], vidsUploaded);
+      const storeData = await storeModel.storeUniqueURL();
+      console.log(storeData);
+    } catch (e) {
+      console.log(e);
+    }
+
+    return chunkDataArray;
+  }
+
+  async postChunkArray() {
+    const { inputObj } = this.dataObject;
+    const { totalChunks, chunkSize, vidSizeBytes } = inputObj;
+    const chunkObj = { ...inputObj };
 
     //send each chunk
+    const chunkDataArray = [];
     for (let i = 0; i < totalChunks; i++) {
       //define chunk
       const start = i * chunkSize;
       const end = Math.min(vidSizeBytes, start + chunkSize);
-      console.log(start);
-      console.log(end);
-      postVidObj.start = start;
-      postVidObj.end = end;
-      postVidObj.chunkNumber = i;
+      chunkObj.start = start;
+      chunkObj.end = end;
+      chunkObj.chunkNumber = i;
 
-      const chunkModel = new TgReq({ inputObj: postVidObj });
-      const chunkData = await chunkModel.postVidChunk();
+      const postChunkModel = new TgReq({ inputObj: chunkObj });
+      const postChunkData = await postChunkModel.postChunkObj();
+      if (!postChunkData) continue;
 
-      console.log(chunkData);
+      chunkDataArray.push(postChunkData);
     }
 
-    //SET VID SIZE TO A STANDARD SETTING TO ENABLE AUTO PLAY
+    return chunkDataArray;
+  }
 
-    //ADD CAPTION NEXT
+  //post each chunk, edit captions
+  async postChunkObj() {
+    const { inputObj } = this.dataObject;
+    const { totalChunks, titleNormal, dateNormal, kcnaId } = inputObj;
 
-    //THEN STORE IT
+    //post the chunk
+    const chunkModel = new TgReq({ inputObj: inputObj });
+    const chunkData = await chunkModel.postVidChunk();
+    if (!chunkData || !chunkData.result) return null;
+
+    //label the chunk (add caption)
+    const caption = titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + kcnaId + ".mp4; [Chunk " + i + "of " + totalChunks + "]";
+
+    //build edit caption params
+    const editParams = {
+      chat_id: chunkData.result.chat.id,
+      message_id: chunkData.result.message_id,
+      caption: caption,
+      parse_mode: "HTML",
+    };
+
+    const paramObj = {
+      params: editParams,
+      command: "editMessageCaption",
+    };
+
+    //edit caption
+    const editModel = new TgReq({ inputObj: paramObj });
+    const editChunkData = await editModel.tgPost(TgReq.tokenIndex);
+    if (!editChunkData || !editChunkData.result) return null;
+
+    //otherwise return chunk data
+    return chunkData;
   }
 
   async postVidChunk() {
     const { inputObj } = this.dataObject;
-    const { savePath, tgUploadId, vidSizeMB, thumbnailPath, start, end, chunkNumber, totalChunks } = inputObj;
+    const { savePath, tgUploadId, thumbnailPath, start, end, chunkNumber, totalChunks } = inputObj;
 
     const readStream = fs.createReadStream(savePath, { start: start, end: end - 1 });
 
