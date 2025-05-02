@@ -315,7 +315,7 @@ class TG {
     //add thumbnail
     formData.append("thumb", fs.createReadStream(thumbnailPath));
 
-    console.log(`Uploading chunk ${chunkNumber} of ${totalChunks}...`);
+    console.log("Uploading chunk " + (chunkNumber + 1) + " of " + totalChunks);
 
     const postModel = new TgReq({ form: formData });
     const postData = await postModel.tgVidFS(TgReq.tokenIndex);
