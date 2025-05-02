@@ -116,6 +116,4 @@ export const uploadNewVidPagesTG = async (inputArray) => {
   const uploadVidPageData = await uploadModel.postVidPageArrayTG();
 
   return uploadVidPageData;
-
-  console.log("BUILD");
 };

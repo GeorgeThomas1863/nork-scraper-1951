@@ -374,6 +374,9 @@ class TgReq {
       thumbnailPath: thumbnailPath,
     };
 
+    console.log("POST PARAMS");
+    console.log(postParams);
+
     const postModel = new TgReq(postParams);
     const postData = await postModel.tgPicFS(TgReq.tokenIndex);
     if (!postData || !postData.result) return null;
