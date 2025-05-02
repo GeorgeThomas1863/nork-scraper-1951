@@ -378,7 +378,7 @@ class TgReq {
     console.log(postParams);
 
     const postModel = new TgReq(postParams);
-    const postData = await postModel.tgPicFS(TgReq.tokenIndex);
+    const postData = await postModel.tgVidFS(TgReq.tokenIndex);
     if (!postData || !postData.result) return null;
 
     //NEXT CAPTION
