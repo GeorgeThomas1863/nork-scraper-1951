@@ -5,6 +5,7 @@ import { JSDOM } from "jsdom";
 import CONFIG from "../config/scrape-config.js";
 import { randomDelay } from "../config/util.js";
 import KCNA from "./kcna-model.js";
+import TgReq from "./tgReq-model.js";
 import dbModel from "./db-model.js";
 import UTIL from "./util-model.js";
 
@@ -345,6 +346,62 @@ class Vid {
     }
 
     return downloadVidObj;
+  }
+
+  //-----------------------------
+
+  //UPLOAD VIDS
+
+  async postVidPageArrayTG() {
+    const { inputArray } = this.dataObject;
+
+    const uploadDataArray = [];
+    for (let i = 0; i < inputArray.length; i++) {
+      const inputObj = inputArray[i];
+      const uploadModel = new Vid({ inputObj: inputObj });
+      const uploadVidPageData = await uploadModel.postVidPageObj();
+
+      //STORE HERE
+    }
+  }
+
+  async postVidPageObj() {
+    const { inputObj } = this.dataObject;
+
+    if (!inputObj) {
+      const error = new Error("VID PAGE UPLOAD FUCKED");
+      error.url = this.dataObject.url;
+      error.function = "postVidPageObj";
+      throw error;
+    }
+
+    //add channel to post to HERE
+    inputObj.tgUploadId = CONFIG.tgUploadId;
+
+    //normalizes obj
+    const normalModel = new UTIL({ inputObj: inputObj });
+    const normalObj = await normalModel.normalizeInputsTG();
+
+    //get vid obj data (extra data for each vid)
+    const lookupParams = {
+      keyToLookup: "url",
+      itemValue: vidURL,
+    };
+    const vidObjModel = new dbModel(lookupParams, CONFIG.vidsDownloaded);
+    const vidObjData = await vidObjModel.getUniqueItem();
+
+    //build vidPageObj
+    const vidPageObj = { ...normalObj, ...vidObjData };
+
+    //post title
+    const tgModel = new TgReq({ inputObj: vidPageObj });
+    await tgModel.postTitleTG();
+
+    //post vid
+    const postVidData = await tgModel.postVidTG();
+    console.log(postVidData);
+
+    return postVidData;
   }
 }
 

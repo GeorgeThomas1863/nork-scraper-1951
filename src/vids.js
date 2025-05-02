@@ -106,5 +106,16 @@ export const downloadNewVidsFS = async (inputArray) => {
 //UPLOAD SHIT
 
 export const uploadNewVidPagesTG = async (inputArray) => {
+  if (!inputArray || !inputArray.length) return null;
+
+  const sortModel = new UTIL({ inputArray: inputArray });
+  const sortArray = await sortModel.sortArrayByDate();
+
+  //upload the array
+  const uploadModel = new Vid({ inputArray: sortArray });
+  const uploadVidPageData = await uploadModel.postVidPageArrayTG();
+
+  return uploadVidPageData;
+
   console.log("BUILD");
 };

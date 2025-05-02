@@ -130,7 +130,46 @@ class TgReq {
     }
   }
 
+  async tgVidFS(tokenIndex = 0) {
+    const { chatId, vidPath, thumbnailPath } = this.dataObject;
+
+    const token = tokenArray[tokenIndex];
+    const url = `https://api.telegram.org/bot${token}/sendVideo`;
+
+    //build form
+    const form = new FormData();
+    form.append("chat_id", chatId);
+    form.append("photo", fs.createReadStream(vidPath));
+
+    //append thumbnail to form
+    form.append("thumb", fs.createReadStream(thumbnailPath));
+
+    try {
+      const res = await axios.post(url, form, {
+        headers: form.getHeaders(),
+      });
+      return res.data;
+    } catch (e) {
+      if (e.response && e.response.data) {
+        //check token
+        const checkModel = new TgReq({ data: e.response.data });
+        const checkData = await checkModel.checkToken();
+
+        if (checkData) {
+          const inputData = this.dataObject;
+          const retryModel = new TgReq(inputData);
+          const retryData = await retryModel.tgVidFS(TgReq.tokenIndex);
+          return retryData;
+        }
+      } else {
+        return e;
+      }
+    }
+  }
+
   //--------------------------
+
+  //POST TEXT
 
   async postTitleTG() {
     const { inputObj } = this.dataObject;
@@ -176,49 +215,6 @@ class TgReq {
     const endStr = "\n\n" + "<b>" + picArray.length + " PICS</b>" + "\n" + firstKcnaId + ".jpg - " + lastKcnaId + ".jpg" + "\n";
 
     return beginStr + endStr;
-  }
-
-  async postPicTG() {
-    const { inputObj } = this.dataObject;
-    const { kcnaId, savePath, dateNormal, tgUploadId } = inputObj;
-
-    //post pic
-    const postParams = {
-      chatId: tgUploadId,
-      picPath: savePath,
-    };
-
-    const postModel = new TgReq(postParams);
-    const postData = await postModel.tgPicFS(TgReq.tokenIndex);
-    if (!postData || !postData.result) return null;
-
-    const caption = "<b>PIC: " + kcnaId + ".jpg</b>" + "\n" + "<i>" + dateNormal + "</i>";
-
-    //build edit caption params
-    const editParams = {
-      chat_id: postData.result.chat.id,
-      message_id: postData.result.message_id,
-      caption: caption,
-      parse_mode: "HTML",
-    };
-
-    const paramObj = {
-      params: editParams,
-      command: "editMessageCaption",
-    };
-
-    //EDIT PIC CAPTION
-    const editModel = new TgReq({ inputObj: paramObj });
-    await editModel.tgPost(TgReq.tokenIndex);
-
-    //store pic Posted
-    const storeObj = { ...inputObj, ...postData.result };
-    const storeModel = new dbModel(storeObj, CONFIG.picsUploaded);
-    const storeData = await storeModel.storeUniqueURL();
-    console.log("PIC " + kcnaId + ".jpg UPLOADED AND STORED");
-    console.log(storeData);
-
-    return storeObj;
   }
 
   async buildTextArrayTG() {
@@ -311,6 +307,78 @@ class TgReq {
     }
 
     return postDataArray;
+  }
+
+  //--------------
+
+  //POST IMAGE
+
+  async postPicTG() {
+    const { inputObj } = this.dataObject;
+    const { kcnaId, savePath, dateNormal, tgUploadId } = inputObj;
+
+    //post pic
+    const postParams = {
+      chatId: tgUploadId,
+      picPath: savePath,
+    };
+
+    const postModel = new TgReq(postParams);
+    const postData = await postModel.tgPicFS(TgReq.tokenIndex);
+    if (!postData || !postData.result) return null;
+
+    const caption = "<b>PIC: " + kcnaId + ".jpg</b>" + "\n" + "<i>" + dateNormal + "</i>";
+
+    //build edit caption params
+    const editParams = {
+      chat_id: postData.result.chat.id,
+      message_id: postData.result.message_id,
+      caption: caption,
+      parse_mode: "HTML",
+    };
+
+    const paramObj = {
+      params: editParams,
+      command: "editMessageCaption",
+    };
+
+    //edit caption
+    const editModel = new TgReq({ inputObj: paramObj });
+    await editModel.tgPost(TgReq.tokenIndex);
+
+    //store pic Posted
+    const storeObj = { ...inputObj, ...postData.result };
+    const storeModel = new dbModel(storeObj, CONFIG.picsUploaded);
+    const storeData = await storeModel.storeUniqueURL();
+    console.log("PIC " + kcnaId + ".jpg UPLOADED AND STORED");
+    console.log(storeData);
+
+    return storeObj;
+  }
+
+  //--------------------
+
+  //POST VIDS
+
+  async postVidTG() {
+    const { inputObj } = this.dataObject;
+    const { kcnaId, savePath, dateNormal, tgUploadId, thumbnail } = inputObj;
+
+    //build thumbnail path
+    const thumbnailPath = CONFIG.picPath + kcnaId + ".jpg";
+
+    //build params
+    const postParams = {
+      chatId: tgUploadId,
+      vidPath: savePath,
+      thumbnailPath: thumbnailPath,
+    };
+
+    const postModel = new TgReq(postParams);
+    const postData = await postModel.tgPicFS(TgReq.tokenIndex);
+    if (!postData || !postData.result) return null;
+
+    //NEXT CAPTION
   }
 }
 

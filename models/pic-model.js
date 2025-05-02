@@ -371,11 +371,11 @@ class Pic {
       try {
         const inputObj = inputArray[i];
         const uploadModel = new Pic({ inputObj: inputObj });
-        const uploadArticleData = await uploadModel.postPicSetObjTG();
-        if (!uploadArticleData || !uploadArticleData.length) continue;
+        const uploadPicSetData = await uploadModel.postPicSetObjTG();
+        if (!uploadPicSetData || !uploadPicSetData.length) continue;
 
         //Build store obj (just store object for first text chunk)
-        const storeObj = { ...inputObj, ...uploadArticleData };
+        const storeObj = { ...inputObj, ...uploadPicSetData };
 
         //TURN OFF
         console.log("PIC SET STORE OBJECT");
