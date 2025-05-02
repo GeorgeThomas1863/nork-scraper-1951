@@ -139,13 +139,15 @@ class TgReq {
     //build form
     const form = new FormData();
     form.append("chat_id", chatId);
-    form.append("photo", fs.createReadStream(vidPath));
+    form.append("video", fs.createReadStream(vidPath));
 
     //append thumbnail to form
     form.append("thumb", fs.createReadStream(thumbnailPath));
 
     try {
-      const res = await axios.post(url, form);
+      const res = await axios.post(url, form, {
+        headers: form.getHeaders(),
+      });
       console.log("RES DATA");
       console.log(res.data);
       return res.data;
