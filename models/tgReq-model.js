@@ -133,6 +133,9 @@ class TgReq {
   async tgVidFS(tokenIndex = 0) {
     const { chatId, vidPath, thumbnailPath } = this.dataObject;
 
+    console.log(chatId);
+    console.log(this.dataObject);
+
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/sendVideo`;
 
