@@ -181,6 +181,9 @@ class TgReq {
     form.append("chat_id", chatId);
     form.append("document", fs.createReadStream(vidPath));
 
+    console.log("ALLAHU AKBAR");
+    console.log(url);
+
     try {
       const res = await axios.post(url, form, {
         headers: form.getHeaders(),
