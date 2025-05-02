@@ -431,12 +431,6 @@ class TgReq {
       console.log(chunkData);
     }
 
-    const postModel = new TgReq({ inputObj: postVidObj });
-    const postData = await postModel.postVidBySize();
-
-    console.log("VID POST DATA");
-    console.log(postData);
-
     //NEXT CAPTION
   }
 
@@ -453,6 +447,7 @@ class TgReq {
       filename: `chunk_${chunkNumber}_of_${totalChunks}.mp4`,
       knownLength: end - start,
     });
+    formData.append("supports_streaming", "true");
 
     //add thumbnail
     formData.append("thumb", fs.createReadStream(thumbnailPath));
