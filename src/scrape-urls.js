@@ -49,7 +49,9 @@ export const getNewContentData = async (type) => {
   //scrape new content (based on type using map.func)
   console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
   const contentArray = await newContentInputObj.func(downloadArray);
-  console.log("GOT CONTENT FOR " + contentArray?.length + " " + type.toUpperCase());
+  if (!contentArray || !contentArray.length) return null;
+
+  console.log("GOT CONTENT FOR " + contentArray.length + " " + type.toUpperCase());
 
   return contentArray;
 };
