@@ -7,16 +7,50 @@ import Article from "../models/article-model.js";
 import UTIL from "../models/util-model.js";
 import dbModel from "../models/db-model.js";
 
-//FIX MODELS
+import { articleTypeMap } from "../config/map.js";
+
+export const buildArticleListByType = async (inputHTML) => {
+  const { articleTypeArr } = CONFIG;
+
+  const articleListTypeArray = [];
+  for (let i = 0; i < articleTypeArr.length; i++) {
+    const articleType = articleTypeArr[i];
+    const articleListHTML = await getArticleListHTML(articleType, inputHTML);
+    const articleListTypeData = await buildArticleList(articleListHTML, articleType);
+    if (!articleListTypeData) continue;
+
+    articleListTypeArray.push(articleListTypeData);
+  }
+
+  return articleListTypeArray;
+};
+
+export const getArticleListHTML = async (articleType, inputHTML) => {
+  if (articleType === "fatboy") return inputHTML;
+
+  //otherwise get html by type
+  const articleListURL = await articleTypeMap(articleType);
+
+  const htmlModel = new KCNA({ url: articleListURL });
+  const articleListHTML = await htmlModel.getHTML();
+
+  return articleListHTML;
+};
 
 /**
  * Extracts articleListPage data items, sorts / normalizes them, then stores them
  * @function buildArticleList
  * @returns {array} ARRAY of sorted OBJECTs (for tracking)
  */
-export const buildArticleList = async (inputHTML) => {
+export const buildArticleList = async (inputHTML, articleType) => {
   try {
-    const articleListModel = new Article({ html: inputHTML });
+    //build inputObj
+    const inputObj = {
+      html: inputHTML,
+      type: articleType,
+    };
+
+    const articleListModel = new Article(inputObj);
     const articleListArray = await articleListModel.getArticleListArray();
     console.log("GOT " + articleListArray.length + " ARTICLES");
 

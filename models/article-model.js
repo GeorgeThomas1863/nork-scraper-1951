@@ -21,7 +21,7 @@ class Article {
   //PARSE ARTICLE LIST PAGE SECTION
 
   async getArticleListArray() {
-    const { html } = this.dataObject;
+    const { html, type } = this.dataObject;
 
     // Parse the HTML using JSDOM
     const dom = new JSDOM(html);
@@ -39,8 +39,13 @@ class Article {
       throw error;
     }
 
+    const articleLinkObj = {
+      type: type,
+      inputArray: linkElementArray,
+    };
+
     //extract out the articleListObjs
-    const articleLinkModel = new Article({ inputArray: linkElementArray });
+    const articleLinkModel = new Article(articleLinkObj);
     const articleListArray = await articleLinkModel.parseArticleLinks();
 
     return articleListArray;
@@ -53,7 +58,7 @@ class Article {
    * @returns //array of (unsorted) articleListObjs
    */
   async parseArticleLinks() {
-    const { inputArray } = this.dataObject;
+    const { inputArray, type } = this.dataObject;
 
     //loop through a tags and pull out hrefs
     const articleListArray = [];
@@ -61,6 +66,9 @@ class Article {
       try {
         const articleListModel = new Article({ listItem: inputArray[i] });
         const articleListObj = await articleListModel.parseArticleListItem();
+
+        //ADD ARTICLE TYPE HERE
+        articleListObj.articleType = type;
 
         articleListArray.push(articleListObj); //add to array
       } catch (e) {
