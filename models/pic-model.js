@@ -6,7 +6,7 @@ import CONFIG from "../config/scrape-config.js";
 // import { randomDelay } from "../config/util.js";
 
 import KCNA from "./kcna-model.js";
-import TG from "./tg-controller-model.js";
+import TG from "./tg-control-model.js";
 import dbModel from "./db-model.js";
 import UTIL from "./util-model.js";
 
