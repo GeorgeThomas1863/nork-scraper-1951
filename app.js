@@ -1,6 +1,6 @@
 //TO DO:
 
-//unfuck tg post
+//fix article post for all article types
 
 //FIX VID DOWNLOAD / UPLOAD STORAGE
 
