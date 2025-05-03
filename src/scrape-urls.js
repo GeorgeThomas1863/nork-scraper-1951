@@ -26,7 +26,7 @@ export const getNewListData = async (type) => {
   const listArray = await newListInputObj.func(newListHTML);
 
   if (!listArray || !listArray.length) {
-    console.log("FOUND NO NEW " + type.toUpperCase());
+    console.log("FOUND 0 NEW " + type.toUpperCase());
     return null;
   }
 
