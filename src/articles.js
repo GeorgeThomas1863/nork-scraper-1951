@@ -42,7 +42,7 @@ export const buildArticleList = async (inputHTML, articleType) => {
 
     const articleListModel = new Article(inputObj);
     const articleListArray = await articleListModel.getArticleListArray();
-    console.log("GOT " + articleListArray.length + " ARTICLES");
+    console.log("GOT " + articleListArray.length + " NEW ARTICLES");
 
     //sort the array
     const sortModel = new UTIL({ inputArray: articleListArray });

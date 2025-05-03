@@ -121,6 +121,10 @@ class Article {
     const urlConstant = "http://www.kcna.kp";
     const url = urlConstant + href;
 
+    //CHECK IF URL NEW HERE, throws error if not new
+    const checkModel = new dbModel({ url: url });
+    await checkModel.urlNewCheck();
+
     //GET DATE
     const dateModel = new UTIL({ inputItem: listItem });
     const articleDate = await dateModel.parseListDate();
