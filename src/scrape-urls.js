@@ -24,6 +24,9 @@ export const getNewListData = async (type) => {
   //extract list array from html (based on type using map.func)
   console.log("GETTING LIST DATA FOR " + type.toUpperCase());
   const listArray = await newListInputObj.func(newListHTML);
+  console.log("LIST ARRAY DATA");
+  console.log(listArray);
+
   console.log("FOUND " + listArray?.length + " " + type.toUpperCase());
 
   return listArray;
