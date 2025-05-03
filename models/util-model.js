@@ -67,6 +67,32 @@ class UTIL {
   }
 
   /**
+   * Function that sorts an array of article OBJECTS by DATE
+   * @function sortArrayByArticleId
+   * @param {} inputArray
+   * @returns sorted Array of article OBJECTS (sorted by date oldest to newest)
+   */
+  async sortArrayByArticleId() {
+    const { inputArray } = this.dataObject;
+    //return null on blank input
+    if (!inputArray || !inputArray.length) return null;
+
+    // Create a copy of the array to avoid modifying the original
+    const sortArray = [...inputArray];
+
+    //sort input array by DATE OLDEST to NEWEST
+    sortArray.sort((a, b) => {
+      // Convert datetime strings to Date objects if needed
+      const idA = a.articleId;
+      const idB = b.articleId;
+
+      return idA - idB;
+    });
+
+    return sortArray;
+  }
+
+  /**
    * Adds current article Id to array (by looping through / getting current article ID)
    * @function addListId
    * @returns current article Id

@@ -65,7 +65,7 @@ export const buildArticleList = async (inputHTML, articleType) => {
 
 //---------------
 
-//Article content 
+//Article content
 
 /**
  * GETs and builds array of NEW articleObjs by looping through download array (which ONLY contains new items)
@@ -101,7 +101,7 @@ export const uploadNewArticlesTG = async (inputArray) => {
   //null check and sort shouldnt be necessary, doing for redundancy
   if (!inputArray || !inputArray.length) return null;
   const sortModel = new UTIL({ inputArray: inputArray });
-  const sortArray = await sortModel.sortArrayByDate();
+  const sortArray = await sortModel.sortArrayByArticleId();
 
   //upload the array
   const uploadModel = new Article({ inputArray: sortArray });
