@@ -106,6 +106,11 @@ class Pic {
 
   async getPicSetObj() {
     const { inputObj } = this.dataObject;
+    if (!inputObj) return null;
+
+    //double check if new here, throws error if not
+    const checkModel = new dbModel(inputObj, CONFIG.picSetContent);
+    await checkModel.urlNewCheck();
 
     //get HTML
     const htmlModel = new KCNA(inputObj);
@@ -190,7 +195,7 @@ class Pic {
   async getPicData() {
     const { inputObj } = this.dataObject;
 
-    //CHECK IF ALREADY HAVE DATA HERE
+    //CHECK IF ALREADY HAVE (shouldnt happen, but double check)
     const checkModel = new dbModel(inputObj, CONFIG.pics);
     await checkModel.urlNewCheck();
 
