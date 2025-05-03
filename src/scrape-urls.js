@@ -24,8 +24,11 @@ export const getNewListData = async (type) => {
   //extract list array from html (based on type using map.func)
   console.log("GETTING LIST DATA FOR " + type.toUpperCase());
   const listArray = await newListInputObj.func(newListHTML);
-  console.log("LIST ARRAY DATA");
-  console.log(listArray);
+
+  if (!listArray || !listArray.length) {
+    console.log("FOUND NO NEW " + type.toUpperCase());
+    return null;
+  }
 
   console.log("FOUND " + listArray?.length + " " + type.toUpperCase());
 
@@ -38,10 +41,10 @@ export const getNewContentData = async (type) => {
   const contentModel = new dbModel(newContentInputObj.params, "");
   const downloadArray = await contentModel.findNewURLs();
 
-  if (!downloadArray || !downloadArray.length) {
-    console.log("NO NEW " + type.toUpperCase());
-    return null;
-  }
+  // if (!downloadArray || !downloadArray.length) {
+  //   console.log("NO NEW " + type.toUpperCase());
+  //   return null;
+  // }
 
   //scrape new content (based on type using map.func)
   console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());
