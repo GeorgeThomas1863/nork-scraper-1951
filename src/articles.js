@@ -7,34 +7,22 @@ import Article from "../models/article-model.js";
 import UTIL from "../models/util-model.js";
 import dbModel from "../models/db-model.js";
 
-import { articleTypeMap } from "../config/map.js";
-
 export const buildArticleListByType = async (inputHTML) => {
   const { articleTypeArr } = CONFIG;
 
   const articleListTypeArray = [];
   for (let i = 0; i < articleTypeArr.length; i++) {
     const articleType = articleTypeArr[i];
-    const articleListHTML = await getArticleListHTML(articleType, inputHTML);
-    const articleListTypeData = await buildArticleList(articleListHTML, articleType);
+    const articleListTypeModel = new Article({ type: articleType, html: inputHTML });
+    const articleListTypeHTML = await articleListTypeModel.getArticleListTypeHTML();
+
+    const articleListTypeData = await buildArticleList(articleListTypeHTML, articleType);
     if (!articleListTypeData) continue;
 
     articleListTypeArray.push(articleListTypeData);
   }
 
   return articleListTypeArray;
-};
-
-export const getArticleListHTML = async (articleType, inputHTML) => {
-  if (articleType === "fatboy") return inputHTML;
-
-  //otherwise get html by type
-  const articleListURL = await articleTypeMap(articleType);
-
-  const htmlModel = new KCNA({ url: articleListURL });
-  const articleListHTML = await htmlModel.getHTML();
-
-  return articleListHTML;
 };
 
 /**
@@ -72,6 +60,26 @@ export const buildArticleList = async (inputHTML, articleType) => {
     console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
   }
 };
+
+//---------------
+
+// export const buildArticleContentByType = async (inputArray) => {
+//   const { articleTypeArr } = CONFIG;
+
+//   const articleContentTypeArray = [];
+//   for (let i = 0; i < articleTypeArr.length; i++) {
+//     const articleType = articleTypeArr[i];
+//     const articleContentTypeModel = new Article({ type: articleType, inputArray: inputArray });
+//     const articleContentTypeArray = await articleContentTypeModel.getArticleContentTypeArray();
+
+//     const articleContentTypeData = await buildArticleContent(articleContentTypeArray, articleType);
+//     if (!articleContentTypeData) continue;
+
+//     articleContentTypeArray.push(articleContentTypeData);
+//   }
+
+//   return articleContentTypeArray;
+// };
 
 /**
  * GETs and builds array of NEW articleObjs by looping through download array (which ONLY contains new items)

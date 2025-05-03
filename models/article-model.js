@@ -7,6 +7,8 @@ import dbModel from "./db-model.js";
 import Pic from "./pic-model.js";
 import UTIL from "./util-model.js";
 
+import { articleTypeMap } from "../config/map.js";
+
 /**
  * @class Article
  * @description Does shit with KCNA Articles (gets them, parses html)
@@ -18,7 +20,22 @@ class Article {
 
   //-----------
 
-  //PARSE ARTICLE LIST PAGE SECTION
+  //ARTICLE LIST SECTION
+
+  //gets article list html by type
+  async getArticleListTypeHTML() {
+    const { type, html } = this.dataObject;
+
+    if (type === "fatboy") return html;
+
+    //otherwise get html by type
+    const articleListURL = await articleTypeMap(type);
+
+    const htmlModel = new KCNA({ url: articleListURL });
+    const articleListHTML = await htmlModel.getHTML();
+
+    return articleListHTML;
+  }
 
   async getArticleListArray() {
     const { html, type } = this.dataObject;
@@ -119,7 +136,21 @@ class Article {
 
   //--------------------------
 
-  //ARTICLE DATA ITEM SECTION
+  //ARTICLE CONTENT / DATA ITEM SECTION
+
+  // async getArticleContentTypeArray() {
+  //   const { type, inputArray } = this.dataObject;
+
+  //   if (type === "fatboy") return inputArray;
+
+  //   //otherwise get html by type
+  //   const articleListURL = await articleTypeMap(type);
+
+  //   const htmlModel = new KCNA({ url: articleListURL });
+  //   const articleListHTML = await htmlModel.getHTML();
+
+  //   return articleListHTML;
+  // }
 
   /**
    * Builds articleObj by parsing articleHTML, combining with inputObj then storing it
