@@ -384,10 +384,20 @@ class Pic {
       try {
         const inputObj = inputArray[i];
         const uploadModel = new Pic({ inputObj: inputObj });
-        const uploadPicSetData = await uploadModel.postPicSetObjTG();
-        if (!uploadPicSetData || !uploadPicSetData.length) continue;
+        const postPicSetData = await uploadModel.postPicSetObjTG();
+        if (!postPicSetData || !postPicSetData.length) continue;
 
         //Build store obj (just store object for first text chunk)
+        const storeObj = { ...inputObj };
+        storeObj.picsPosted = postPicSetData.length;
+        storeObj.chat = postPicSetData[0]?.chat;
+        storeObj.message_id = postPicSetData[0]?.message_id;
+        storeObj.sender_chat = postPicSetData[0]?.sender_chat;
+
+        //store data
+        const storeModel = new dbModel(storeObj, CONFIG.picSetsUploaded);
+        const storeData = await storeModel.storeUniqueURL();
+        console.log(storeData);
 
         uploadDataArray.push(storeObj);
       } catch (e) {
@@ -433,16 +443,9 @@ class Pic {
 
     //otherwise post pics then content
     const postModel = new Pic({ inputObj: picSetObj });
-    const postPicArrayData = await postModel.postPicArrayTG();
-    const storeObj = { ...inputObj, ...postPicArrayData[0] };
-    storeObj.picsPosted = postPicArrayData.length;
+    const postPicSetArray = await postModel.postPicArrayTG();
 
-    //store data
-    const storeModel = new dbModel(storeObj, CONFIG.picSetsUploaded);
-    const storeData = await storeModel.storeUniqueURL();
-    console.log(storeData);
-
-    return storeObj;
+    return postPicSetArray;
   }
 
   async postPicArrayTG() {
