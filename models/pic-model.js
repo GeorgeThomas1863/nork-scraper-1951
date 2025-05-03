@@ -90,6 +90,10 @@ class Pic {
     const urlConstant = "http://www.kcna.kp";
     const picSetURL = urlConstant + href;
 
+    //CHECK IF NEW HERE (throws error if not)
+    const checkModel = new dbModel({ url: picSetURL }, CONFIG.picSetList);
+    await checkModel.urlNewCheck();
+
     //build picSetListObj
     const picSetListObj = {
       url: picSetURL,
