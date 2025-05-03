@@ -74,12 +74,15 @@ class TgReq {
     const checkModel = new TgReq({ data: res.data });
     const checkData = await checkModel.checkToken();
 
+    console.log("CHECK DATA");
+    console.log(checkData);
+
     if (checkData) {
-      const inputData = this.dataObject;
-      const retryModel = new TgReq({ inputData: inputData });
+      const retryModel = new TgReq({ inputObj: inputObj });
       const retryData = await retryModel.tgPost(TgReq.tokenIndex);
       return retryData;
     }
+
     return res.data;
   }
 
