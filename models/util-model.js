@@ -242,6 +242,22 @@ class UTIL {
 
     return normalObj;
   }
+
+  async showScrapeTime() {
+    const { startTime, endTime } = this.dataObject;
+
+    //in milliseconds convert to seconds
+    const scrapeSeconds = (endTime - startTime) / 1000;
+
+    //if short
+    if (scrapeSeconds < 120) {
+      return console.log("FINISHED SCRAPE FOR NEW DATA, SCRAPE TOOK " + scrapeSeconds + " seconds");
+    }
+
+    //otherwise return in minutes
+    const scrapeMinutes = scrapeSeconds / 60 + " minutes";
+    return console.log("FINISHED SCRAPE FOR NEW DATA, SCRAPE TOOK " + scrapeMinutes + " minutes");
+  }
 }
 
 export default UTIL;

@@ -1,3 +1,5 @@
+import UTIL from "../models/util-model.js";
+
 import { scrapeNewURLs } from "./scrape-urls.js";
 import { scrapeNewMedia } from "./scrape-download.js";
 import { uploadNewTG } from "./scrape-upload.js";
@@ -21,9 +23,12 @@ export const scrapeNewKCNA = async () => {
   const uploadData = await uploadNewTG();
   console.log(uploadData);
 
+  //show how long it took and write it in readable format
   const endScrapeTime = new Date();
-  const scrapeTime = startScrapeTime - endScrapeTime;
-  console.log("FINISHED SCRAPE FOR NEW DATA, SCRAPE TOOK " + scrapeTime);
+  const statsModel = new UTIL({ startTime: startScrapeTime, endTime: endScrapeTime });
+  await statsModel.showScrapeTime();
 
-  return;
+  console.log("#DONE");
+
+  return true;
 };
