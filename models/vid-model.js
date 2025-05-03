@@ -362,7 +362,9 @@ class Vid {
 
         uploadDataArray.push(uploadVidPageData);
       } catch (e) {
-        console.log(e);
+        // console.log(e);
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+        
       }
     }
 
@@ -415,7 +417,7 @@ class Vid {
 
       return storeObj;
     } catch (e) {
-      console.log(e);
+      ;
     }
   }
 }

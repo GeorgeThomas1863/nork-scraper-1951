@@ -234,7 +234,7 @@ class TG {
 
   async postVidTG() {
     const { inputObj } = this.dataObject;
-    const { kcnaId, vidSizeBytes, titleNormal, dateNormal } = inputObj;
+    const { kcnaId, vidSizeBytes, titleNormal, dateNormal, url } = inputObj;
     const chunkObj = { ...inputObj };
 
     try {
@@ -260,7 +260,8 @@ class TG {
 
       return storeObj;
     } catch (e) {
-      console.log(e);
+      // console.log(e);
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
   }
 

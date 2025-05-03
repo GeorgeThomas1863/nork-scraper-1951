@@ -391,8 +391,8 @@ class Pic {
 
         uploadDataArray.push(storeObj);
       } catch (e) {
-        // console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-        console.log(e);
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+        // console.log(e);
       }
     }
 
@@ -473,8 +473,8 @@ class Pic {
 
         postPicDataArray.push(postPicData);
       } catch (e) {
-        // console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-        console.log(e);
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+        // console.log(e);
       }
     }
 

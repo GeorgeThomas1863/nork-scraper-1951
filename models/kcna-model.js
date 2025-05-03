@@ -232,7 +232,7 @@ class KCNA {
 
       return processVidData;
     } catch (e) {
-      console.log(e);
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       //return null on failure
       return null;
     }

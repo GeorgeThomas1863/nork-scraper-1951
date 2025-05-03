@@ -357,8 +357,8 @@ class Article {
 
         uploadDataArray.push(storeObj);
       } catch (e) {
-        // console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-        console.log(e);
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+        // console.log(e);
       }
     }
 
