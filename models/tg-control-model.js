@@ -70,18 +70,19 @@ class TG {
 
   async getTypeStr() {
     const { inputObj } = this.dataObject;
+    const { articleType, articleId, picSetId, vidPageId } = inputObj;
 
-    if (inputObj.articleType) {
-      const articleTypeStr = await articleTypeTitleMap(inputObj.articleType);
-      return "<b>ARTICLE TYPE:</b> " + articleTypeStr + "; ID: " + (inputObj.articleId + 1) + "\n\n";
+    if (articleType) {
+      const articleTypeStr = await articleTypeTitleMap(articleType);
+      return "<b>ARTICLE TYPE:</b> " + articleTypeStr + "; ID: " + articleId + "\n\n";
     }
 
-    if (inputObj.picSetId) {
-      return "<b>TYPE:</b> Pic Set " + (inputObj.picSetId + 1) + "\n\n";
+    if (picSetId || picSetId === 0) {
+      return "<b>TYPE:</b> Pic Set " + picSetId + "\n\n";
     }
 
-    if (inputObj.vidPageId) {
-      return "<b>TYPE:</b> Vid Page " + (inputObj.vidPageId + 1) + "\n\n";
+    if (vidPageId || vidPageId === 0) {
+      return "<b>TYPE:</b> Vid Page " + vidPageId + "\n\n";
     }
   }
 
