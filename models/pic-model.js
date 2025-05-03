@@ -388,16 +388,6 @@ class Pic {
         if (!uploadPicSetData || !uploadPicSetData.length) continue;
 
         //Build store obj (just store object for first text chunk)
-        const storeObj = { ...inputObj, ...uploadPicSetData };
-
-        //TURN OFF
-        console.log("PIC SET STORE OBJECT");
-        console.log(storeObj);
-
-        //store data
-        const storeModel = new dbModel(storeObj, CONFIG.picSetsUploaded);
-        const storeData = await storeModel.storeUniqueURL();
-        console.log(storeData);
 
         uploadDataArray.push(storeObj);
       } catch (e) {
@@ -444,8 +434,15 @@ class Pic {
     //otherwise post pics then content
     const postModel = new Pic({ inputObj: picSetObj });
     const postPicArrayData = await postModel.postPicArrayTG();
+    const storeObj = { ...inputObj, ...postPicArrayData[0] };
+    storeObj.picsPosted = postPicArrayData.length;
 
-    return postPicArrayData;
+    //store data
+    const storeModel = new dbModel(storeObj, CONFIG.picSetsUploaded);
+    const storeData = await storeModel.storeUniqueURL();
+    console.log(storeData);
+
+    return storeObj;
   }
 
   async postPicArrayTG() {
