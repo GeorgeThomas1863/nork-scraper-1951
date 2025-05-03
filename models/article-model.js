@@ -7,7 +7,7 @@ import dbModel from "./db-model.js";
 import Pic from "./pic-model.js";
 import UTIL from "./util-model.js";
 
-import { articleTypeMap } from "../config/map.js";
+import { articleTypeListMap } from "../config/map.js";
 
 /**
  * @class Article
@@ -29,7 +29,7 @@ class Article {
     if (type === "fatboy") return html;
 
     //otherwise get html by type
-    const articleListURL = await articleTypeMap(type);
+    const articleListURL = await articleTypeListMap(type);
 
     const htmlModel = new KCNA({ url: articleListURL });
     const articleListHTML = await htmlModel.getHTML();

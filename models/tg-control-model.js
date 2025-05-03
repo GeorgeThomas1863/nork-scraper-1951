@@ -46,10 +46,8 @@ class TG {
 
     const firstStr = "🇰🇵 🇰🇵 🇰🇵" + "\n\n";
 
-    let typeStr = "";
-    if (inputObj.articleType) {
-      typeStr = "ARTICLE TYPE " + "<b>" + inputObj.articleType + "</b>" + "\n\n";
-    }
+    const typeModel = new TG({ inputObj: inputObj });
+    const typeStr = await typeModel.getTypeStr();
 
     const beginStr = firstStr + typeStr + "--------------" + "\n\n" + titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n\n" + "--------------";
 
@@ -66,6 +64,22 @@ class TG {
     const endStr = "\n\n" + "<b>" + picArray.length + " PICS</b>" + "\n" + firstKcnaId + ".jpg - " + lastKcnaId + ".jpg" + "\n";
 
     return beginStr + endStr;
+  }
+
+  async getTypeStr() {
+    const inputObj = this.dataObject;
+
+    if (inputObj.articleType) {
+      return "<b>ARTICLE TYPE:</b> " + inputObj.articleType + "\n\n";
+    }
+
+    if (inputObj.picSetId) {
+      return "<b>TYPE:</b> Pic Set " + inputObj.picSetId + "\n\n";
+    }
+
+    if (inputObj.vidPageId) {
+      return "<b>TYPE:</b> Vid Page " + inputObj.vidPageId + "\n\n";
+    }
   }
 
   async buildTextArrayTG() {
