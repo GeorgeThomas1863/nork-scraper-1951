@@ -36,6 +36,9 @@ export const getNewMediaData = async (type) => {
 
   console.log("GETTING DATA FOR " + downloadArray?.length + " " + type.toUpperCase());
   const mediaDataArray = await newMediaObj.func(downloadArray);
+  console.log("MEDIA DATA ARRAY");
+  console.log(mediaDataArray);
+
   console.log("FOUND " + mediaDataArray?.length + " " + type.toUpperCase());
 
   return mediaDataArray;
