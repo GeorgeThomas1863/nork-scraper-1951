@@ -1,16 +1,14 @@
 //TO DO:
 
-//fix article post for all article types
+//MAKE VID UPLOAD CHECK IF PATH EXISTS BEFORE POSTING
 
-//FIX VID DOWNLOAD / UPLOAD STORAGE
+//have vid upload clear the temp folder once all finished / nothing new to download
 
-//SET THE UPLOAD SIZE ON VIDS SO THEY AUTO PLAY
-
-//REFACTOR TgReq (re-remove the bottom shit into own module)
-
-//BUILD BACKUP VID DOWNLOAD (normal, 1 at a time)
+//MOVE ON TO NEXT PROJECT
 
 //BUILD API [AGAIN THE POINT OF ALL THIS SHIT]
+
+//BUILD BACKUP VID DOWNLOAD (normal, 1 at a time)
 
 import CONFIG from "./config/scrape-config.js";
 import express from "express";
