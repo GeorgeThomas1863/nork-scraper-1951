@@ -69,7 +69,7 @@ class TG {
   }
 
   async getTypeStr() {
-    const inputObj = this.dataObject;
+    const { inputObj } = this.dataObject;
 
     if (inputObj.articleType) {
       const articleTypeStr = await articleTypeTitleMap(inputObj.articleType);
