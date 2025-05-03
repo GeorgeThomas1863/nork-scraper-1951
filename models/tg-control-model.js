@@ -73,15 +73,15 @@ class TG {
 
     if (inputObj.articleType) {
       const articleTypeStr = await articleTypeTitleMap(inputObj.articleType);
-      return "<b>ARTICLE TYPE:</b> " + articleTypeStr + "\n\n";
+      return "<b>ARTICLE TYPE:</b> " + articleTypeStr + "; ID: " + (inputObj.articleId + 1) + "\n\n";
     }
 
     if (inputObj.picSetId) {
-      return "<b>TYPE:</b> Pic Set " + inputObj.picSetId + "\n\n";
+      return "<b>TYPE:</b> Pic Set " + (inputObj.picSetId + 1) + "\n\n";
     }
 
     if (inputObj.vidPageId) {
-      return "<b>TYPE:</b> Vid Page " + inputObj.vidPageId + "\n\n";
+      return "<b>TYPE:</b> Vid Page " + (inputObj.vidPageId + 1) + "\n\n";
     }
   }
 
