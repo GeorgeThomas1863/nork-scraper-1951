@@ -1,4 +1,5 @@
 import { JSDOM } from "jsdom";
+import fs from "fs";
 
 import CONFIG from "../config/scrape-config.js";
 import KCNA from "./kcna-model.js";
@@ -357,14 +358,24 @@ class Vid {
       try {
         const inputObj = inputArray[i];
         const uploadModel = new Vid({ inputObj: inputObj });
-        const uploadVidPageData = await uploadModel.postVidPageObj();
-        if (!uploadVidPageData) continue;
+        const postVidPageObjData = await uploadModel.postVidPageObj();
+        if (!postVidPageObjData) continue;
 
-        uploadDataArray.push(uploadVidPageData);
+        //Build store obj (just store object for first text chunk)
+        const storeObj = { ...inputObj };
+        storeObj.chat = postVidPageObjData?.chat;
+        storeObj.message_id = postVidPageObjData?.message_id;
+        storeObj.sender_chat = postVidPageObjData?.sender_chat;
+
+        //store data
+        const storeModel = new dbModel(storeObj, CONFIG.vidPagesUploaded);
+        const storeData = await storeModel.storeUniqueURL();
+        console.log(storeData);
+
+        uploadDataArray.push(storeObj);
       } catch (e) {
         // console.log(e);
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-        
       }
     }
 
@@ -385,40 +396,39 @@ class Vid {
     //add channel to post to HERE
     inputObj.tgUploadId = CONFIG.tgUploadId;
 
-    try {
-      //normalizes obj
-      const normalModel = new UTIL({ inputObj: inputObj });
-      const normalObj = await normalModel.normalizeInputsTG();
+    //normalizes obj
+    const normalModel = new UTIL({ inputObj: inputObj });
+    const normalObj = await normalModel.normalizeInputsTG();
 
-      //get vid obj data (extra data for each vid)
-      const lookupParams = {
-        keyToLookup: "url",
-        itemValue: vidURL,
-      };
-      const vidObjModel = new dbModel(lookupParams, CONFIG.vidsDownloaded);
-      const vidObjData = await vidObjModel.getUniqueItem();
+    //get vid obj data (extra data for each vid)
+    const lookupParams = {
+      keyToLookup: "url",
+      itemValue: vidURL,
+    };
+    const vidObjModel = new dbModel(lookupParams, CONFIG.vidsDownloaded);
+    const vidObjData = await vidObjModel.getUniqueItem();
 
-      //build vidPageObj
-      const vidPageObj = { ...normalObj, ...vidObjData };
+    //build vidPageObj
+    const vidPageObj = { ...normalObj, ...vidObjData };
 
-      //post title
-      const tgModel = new TG({ inputObj: vidPageObj });
-      await tgModel.postTitleTG();
-
-      //post vid
-      const postVidData = await tgModel.postVidTG();
-      console.log(postVidData);
-
-      //store vid Page posted
-      const storeObj = { ...postVidData, ...vidPageObj };
-      const storeModel = new dbModel(storeObj, CONFIG.vidPagesUploaded);
-      const storeData = await storeModel.storeUniqueURL();
-      console.log(storeData);
-
-      return storeObj;
-    } catch (e) {
-      ;
+    //check if file exists HERE, throw error if it doesnt
+    const vidExsts = fs.existsSync(vidPageObj.savePath);
+    if (!vidExsts) {
+      const error = new Error("VID NOT YET DOWNLOADED");
+      error.url = url;
+      error.function = "postVidPageObj";
+      throw error;
     }
+
+    //otherwise stuff, starting with title
+    const tgModel = new TG({ inputObj: vidPageObj });
+    await tgModel.postTitleTG();
+
+    //post vid
+    const postVidData = await tgModel.postVidTG();
+    // console.log(postVidData);
+
+    return postVidData;
   }
 }
 
