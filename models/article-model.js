@@ -122,7 +122,7 @@ class Article {
     const url = urlConstant + href;
 
     //CHECK IF URL NEW HERE, throws error if not new
-    const checkModel = new dbModel({ url: url });
+    const checkModel = new dbModel({ url: url }, CONFIG.articleList);
     await checkModel.urlNewCheck();
 
     //GET DATE
