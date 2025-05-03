@@ -426,7 +426,6 @@ class Vid {
 
     //post vid
     const postVidData = await tgModel.postVidTG();
-    // console.log(postVidData);
 
     return postVidData;
   }

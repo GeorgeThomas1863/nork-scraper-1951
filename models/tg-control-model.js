@@ -238,32 +238,30 @@ class TG {
     const { kcnaId, vidSizeBytes, titleNormal, dateNormal, url } = inputObj;
     const chunkObj = { ...inputObj };
 
+    //define chunk size
+    chunkObj.chunkSize = 40 * 1024 * 1024; //40MB
+    chunkObj.totalChunks = Math.ceil(vidSizeBytes / chunkObj.chunkSize);
+
+    //build thumbnail path
+    chunkObj.thumbnailPath = CONFIG.picPath + kcnaId + ".jpg";
+
+    //posts ALL chunks, edits the caption
+    const postChunkModel = new TG({ inputObj: chunkObj });
+    const chunkDataArray = await postChunkModel.postChunkArray();
+
+    //STORE HERE
+    if (!chunkDataArray || !chunkDataArray.length) return null;
+    const storeObj = { ...inputObj, ...chunkDataArray[0] };
+    storeObj.chunksUploaded = chunkDataArray.length;
     try {
-      //define chunk size
-      chunkObj.chunkSize = 40 * 1024 * 1024; //40MB
-      chunkObj.totalChunks = Math.ceil(vidSizeBytes / chunkObj.chunkSize);
-
-      //build thumbnail path
-      chunkObj.thumbnailPath = CONFIG.picPath + kcnaId + ".jpg";
-
-      //posts ALL chunks, edits the caption
-      const postChunkModel = new TG({ inputObj: chunkObj });
-      const chunkDataArray = await postChunkModel.postChunkArray();
-
-      //STORE HERE
-      if (!chunkDataArray || !chunkDataArray.length) return null;
-      const storeObj = { ...inputObj, ...chunkDataArray[0] };
-      storeObj.chunksUploaded = chunkDataArray.length;
-
       const storeModel = new dbModel(storeObj, CONFIG.vidsUploaded);
       const storeData = await storeModel.storeUniqueURL();
       console.log(storeData);
-
-      return storeObj;
     } catch (e) {
       // console.log(e);
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
+    return storeObj;
   }
 
   async postChunkArray() {

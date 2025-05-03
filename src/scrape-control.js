@@ -9,7 +9,8 @@ import { uploadNewTG } from "./scrape-upload.js";
  */
 
 export const scrapeNewKCNA = async () => {
-  console.log("STARTING NEW KCNA SCRAPE AT " + new Date());
+  const startScrapeTime = new Date();
+  console.log("STARTING NEW KCNA SCRAPE AT " + startScrapeTime);
 
   const urlData = await scrapeNewURLs();
   console.log(urlData);
@@ -19,6 +20,10 @@ export const scrapeNewKCNA = async () => {
 
   const uploadData = await uploadNewTG();
   console.log(uploadData);
+
+  const endScrapeTime = new Date();
+  const scrapeTime = startScrapeTime - endScrapeTime;
+  console.log("FINISHED SCRAPE FOR NEW DATA, SCRAPE TOOK " + scrapeTime);
 
   return;
 };
