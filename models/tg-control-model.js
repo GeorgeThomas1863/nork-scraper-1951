@@ -6,6 +6,8 @@ import CONFIG from "../config/scrape-config.js";
 import TgReq from "./tgReq-model.js";
 import dbModel from "./db-model.js";
 
+import { articleTypeTitleMap } from "../config/map.js";
+
 class TG {
   static tokenIndex = 0;
 
@@ -70,7 +72,8 @@ class TG {
     const inputObj = this.dataObject;
 
     if (inputObj.articleType) {
-      return "<b>ARTICLE TYPE:</b> " + inputObj.articleType + "\n\n";
+      const articleTypeStr = await articleTypeTitleMap(inputObj.articleType);
+      return "<b>ARTICLE TYPE:</b> " + articleTypeStr + "\n\n";
     }
 
     if (inputObj.picSetId) {
