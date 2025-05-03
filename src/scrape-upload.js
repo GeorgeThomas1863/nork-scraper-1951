@@ -11,6 +11,8 @@ export const uploadNewTG = async () => {
     const type = typeArr[i];
     await uploadByTypeTG(type);
   }
+
+  return "FINISHED UPLOADING DATA";
 };
 
 export const uploadByTypeTG = async (type) => {
