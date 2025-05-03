@@ -38,21 +38,27 @@ class TgReq {
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/getUpdates?offset=${offset}`;
 
-    //NO TRY CATCH (fucks up tokenIndex)
-    const res = await axios.get(url);
+    try {
+      //thing axios throws error if bot token fails???
+      const res = await axios.get(url);
 
-    //check token
-    const checkModel = new TgReq({ data: res.data });
-    const checkData = await checkModel.checkToken();
+      return res.data;
+    } catch (e) {
+      if (e.response && e.response.data) {
+        //check token
+        const checkModel = new TgReq({ data: e.response.data });
+        const checkData = await checkModel.checkToken();
 
-    if (checkData) {
-      const inputData = this.dataObject;
-      const retryModel = new TgReq({ inputData: inputData });
-      const retryData = await retryModel.tgGet(TgReq.tokenIndex);
-      return retryData;
+        if (checkData) {
+          const inputData = this.dataObject;
+          const retryModel = new TgReq(inputData);
+          const retryData = await retryModel.tgGet(TgReq.tokenIndex);
+          return retryData;
+        }
+      } else {
+        return e;
+      }
     }
-
-    return res.data;
   }
 
   /**
@@ -67,23 +73,27 @@ class TgReq {
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/${command}`;
 
-    //send data (NO TRY CATCH, fucks up token Index, IF YOU DONT FUCKING RETURN IT)
-    const res = await axios.post(url, params);
+    //try using try catch bc axios
+    try {
+      const res = await axios.post(url, params);
 
-    //check token
-    const checkModel = new TgReq({ data: res.data });
-    const checkData = await checkModel.checkToken();
+      return res.data;
+    } catch (e) {
+      if (e.response && e.response.data) {
+        //check token
+        const checkModel = new TgReq({ data: e.response.data });
+        const checkData = await checkModel.checkToken();
 
-    console.log("CHECK DATA");
-    console.log(checkData);
-
-    if (checkData) {
-      const retryModel = new TgReq({ inputObj: inputObj });
-      const retryData = await retryModel.tgPost(TgReq.tokenIndex);
-      return retryData;
+        if (checkData) {
+          const inputData = this.dataObject;
+          const retryModel = new TgReq(inputData);
+          const retryData = await retryModel.tgPost(TgReq.tokenIndex);
+          return retryData;
+        }
+      } else {
+        return e;
+      }
     }
-
-    return res.data;
   }
 
   /**
