@@ -48,7 +48,7 @@ class TG {
 
     let typeStr = "";
     if (inputObj.articleType) {
-      typeStr = firstStr + "ARTICLE TYPE " + "<b>" + inputObj.articleType + "</b>" + "\n\n";
+      typeStr = "ARTICLE TYPE " + "<b>" + inputObj.articleType + "</b>" + "\n\n";
     }
 
     const beginStr = firstStr + typeStr + "--------------" + "\n\n" + titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n\n" + "--------------";
