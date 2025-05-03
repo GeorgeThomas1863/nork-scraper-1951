@@ -7,6 +7,8 @@ import Article from "../models/article-model.js";
 import UTIL from "../models/util-model.js";
 import dbModel from "../models/db-model.js";
 
+//ARTICLE LIST SECTION
+
 export const buildArticleListByType = async (inputHTML) => {
   const { articleTypeArr } = CONFIG;
 
@@ -63,23 +65,7 @@ export const buildArticleList = async (inputHTML, articleType) => {
 
 //---------------
 
-// export const buildArticleContentByType = async (inputArray) => {
-//   const { articleTypeArr } = CONFIG;
-
-//   const articleContentTypeArray = [];
-//   for (let i = 0; i < articleTypeArr.length; i++) {
-//     const articleType = articleTypeArr[i];
-//     const articleContentTypeModel = new Article({ type: articleType, inputArray: inputArray });
-//     const articleContentTypeArray = await articleContentTypeModel.getArticleContentTypeArray();
-
-//     const articleContentTypeData = await buildArticleContent(articleContentTypeArray, articleType);
-//     if (!articleContentTypeData) continue;
-
-//     articleContentTypeArray.push(articleContentTypeData);
-//   }
-
-//   return articleContentTypeArray;
-// };
+//Article content 
 
 /**
  * GETs and builds array of NEW articleObjs by looping through download array (which ONLY contains new items)

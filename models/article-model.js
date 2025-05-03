@@ -138,20 +138,6 @@ class Article {
 
   //ARTICLE CONTENT / DATA ITEM SECTION
 
-  // async getArticleContentTypeArray() {
-  //   const { type, inputArray } = this.dataObject;
-
-  //   if (type === "fatboy") return inputArray;
-
-  //   //otherwise get html by type
-  //   const articleListURL = await articleTypeMap(type);
-
-  //   const htmlModel = new KCNA({ url: articleListURL });
-  //   const articleListHTML = await htmlModel.getHTML();
-
-  //   return articleListHTML;
-  // }
-
   /**
    * Builds articleObj by parsing articleHTML, combining with inputObj then storing it
    * [new check NOT necessary bc way download array generated]

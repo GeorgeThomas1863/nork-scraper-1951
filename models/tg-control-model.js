@@ -44,7 +44,13 @@ class TG {
     const { inputObj } = this.dataObject;
     const { titleNormal, dateNormal } = inputObj;
 
-    const beginStr = "🇰🇵 🇰🇵 🇰🇵" + "\n\n" + "--------------" + "\n\n" + titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n\n" + "--------------";
+    //FIX HERE
+    let typeStr = "";
+    if (inputObj.articleType) {
+      typeStr = "ARTICLE TYPE HERE";
+    }
+
+    const beginStr = "🇰🇵 🇰🇵 🇰🇵" + "\n\n" + "--------------" + "\n\n" + typeStr + titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n\n" + "--------------";
 
     //if no pics
     if (!inputObj.picArray || !inputObj.picArray.length) {
