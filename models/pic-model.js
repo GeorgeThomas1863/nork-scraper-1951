@@ -190,6 +190,10 @@ class Pic {
   async getPicData() {
     const { inputObj } = this.dataObject;
 
+    //CHECK IF ALREADY HAVE DATA HERE
+    const checkModel = new dbModel(inputObj, CONFIG.pics);
+    await checkModel.urlNewCheck();
+
     //get picParams
     const paramModel = new Pic({ picURL: inputObj.url });
     const picParams = await paramModel.getPicParams();
