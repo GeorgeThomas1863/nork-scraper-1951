@@ -186,47 +186,46 @@ class TG {
     const { kcnaId, savePath, dateNormal, tgUploadId } = inputObj;
 
     //post pic
+
+    const postParams = {
+      chatId: tgUploadId,
+      picPath: savePath,
+    };
+
+    const postModel = new TgReq(postParams);
+    const postData = await postModel.tgPicFS(TgReq.tokenIndex);
+    if (!postData || !postData.result) return null;
+
+    const caption = "<b>PIC: " + kcnaId + ".jpg</b>" + "\n" + "<i>" + dateNormal + "</i>";
+
+    //build edit caption params
+    const editParams = {
+      chat_id: postData.result.chat.id,
+      message_id: postData.result.message_id,
+      caption: caption,
+      parse_mode: "HTML",
+    };
+
+    const paramObj = {
+      params: editParams,
+      command: "editMessageCaption",
+    };
+
+    //edit caption
+    const editModel = new TgReq({ inputObj: paramObj });
+    await editModel.tgPost(TgReq.tokenIndex);
+    const storeObj = { ...inputObj, ...postData.result };
+
+    //store pic Posted
     try {
-      const postParams = {
-        chatId: tgUploadId,
-        picPath: savePath,
-      };
-
-      const postModel = new TgReq(postParams);
-      const postData = await postModel.tgPicFS(TgReq.tokenIndex);
-      if (!postData || !postData.result) return null;
-
-      const caption = "<b>PIC: " + kcnaId + ".jpg</b>" + "\n" + "<i>" + dateNormal + "</i>";
-
-      //build edit caption params
-      const editParams = {
-        chat_id: postData.result.chat.id,
-        message_id: postData.result.message_id,
-        caption: caption,
-        parse_mode: "HTML",
-      };
-
-      const paramObj = {
-        params: editParams,
-        command: "editMessageCaption",
-      };
-
-      //edit caption
-      const editModel = new TgReq({ inputObj: paramObj });
-      await editModel.tgPost(TgReq.tokenIndex);
-
-      //store pic Posted
-      const storeObj = { ...inputObj, ...postData.result };
       const storeModel = new dbModel(storeObj, CONFIG.picsUploaded);
       const storeData = await storeModel.storeUniqueURL();
       console.log("PIC " + kcnaId + ".jpg UPLOADED AND STORED");
       console.log(storeData);
-
-      return storeObj;
     } catch (e) {
-      console.log(e);
-      if (storeObj) return storeObj;
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
+    return storeObj;
   }
 
   //--------------------
