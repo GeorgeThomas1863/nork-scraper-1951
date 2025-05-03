@@ -209,24 +209,31 @@ class TG {
     const { kcnaId, vidSizeBytes, titleNormal, dateNormal } = inputObj;
     const chunkObj = { ...inputObj };
 
-    //define chunk size
-    chunkObj.chunkSize = 40 * 1024 * 1024; //40MB
-    chunkObj.totalChunks = Math.ceil(vidSizeBytes / chunkObj.chunkSize);
+    try {
+      //define chunk size
+      chunkObj.chunkSize = 40 * 1024 * 1024; //40MB
+      chunkObj.totalChunks = Math.ceil(vidSizeBytes / chunkObj.chunkSize);
 
-    //build thumbnail path
-    chunkObj.thumbnailPath = CONFIG.picPath + kcnaId + ".jpg";
+      //build thumbnail path
+      chunkObj.thumbnailPath = CONFIG.picPath + kcnaId + ".jpg";
 
-    //posts ALL chunks, edits the caption
-    const postChunkModel = new TG({ inputObj: chunkObj });
-    const chunkDataArray = await postChunkModel.postChunkArray();
-    if (!chunkDataArray || !chunkDataArray.length) return null;
+      //posts ALL chunks, edits the caption
+      const postChunkModel = new TG({ inputObj: chunkObj });
+      const chunkDataArray = await postChunkModel.postChunkArray();
 
-    //if successful store vid as uploaded (just data from first item in array)
-    const storeModel = new dbModel(chunkDataArray[0], CONFIG.vidsUploaded);
-    const storeData = await storeModel.storeUniqueURL();
-    console.log(storeData);
+      //STORE HERE
+      if (!chunkDataArray || !chunkDataArray.length) return null;
+      const storeObj = { ...inputObj, ...chunkDataArray[0] };
+      storeObj.chunksUploaded = chunkDataArray.length;
 
-    return chunkDataArray;
+      const storeModel = new dbModel(storeObj, CONFIG.vidsUploaded);
+      const storeData = await storeModel.storeUniqueURL();
+      console.log(storeData);
+
+      return storeObj;
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async postChunkArray() {

@@ -407,7 +407,13 @@ class Vid {
       const postVidData = await tgModel.postVidTG();
       console.log(postVidData);
 
-      return postVidData;
+      //store vid Page posted
+      const storeObj = { ...postVidData, ...vidPageObj };
+      const storeModel = new dbModel(storeObj, CONFIG.vidPagesUploaded);
+      const storeData = await storeModel.storeUniqueURL();
+      console.log(storeData);
+
+      return storeObj;
     } catch (e) {
       console.log(e);
     }
