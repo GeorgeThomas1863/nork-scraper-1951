@@ -12,6 +12,8 @@
 
 import CONFIG from "./config/scrape-config.js";
 import express from "express";
+import cors from "cors";
+
 import routes from "./routes/router.js";
 import * as db from "./data/db.js";
 
@@ -26,10 +28,12 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.use(cors());
+
 app.use(routes);
 
 //RUN FUNCTION
-scrapeNewKCNA();
+// scrapeNewKCNA(); //turn off for testing
 
 //PORT to listen
 // app.listen(CONFIG.port);
