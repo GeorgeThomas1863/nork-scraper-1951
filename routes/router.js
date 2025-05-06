@@ -1,15 +1,8 @@
 import express from "express";
+import { parseAdminCommand } from "../controllers/parse-command.js";
 
 const router = express.Router();
 
-router.post("/admin-submit-route", async (req, res) => {
-  const command = req.body;
-  console.log("HOLY FUCK BALLS");
-  console.log("Received command:", command);
-
-  // Process command logic here
-
-  res.json({ success: true, message: "Command " + command.commandType + " processed" });
-});
+router.post("/nork", parseAdminCommand);
 
 export default router;
