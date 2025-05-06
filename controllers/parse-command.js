@@ -5,6 +5,9 @@ export const parseAdminCommand = async (req, res) => {
   const { commandType } = inputParams;
   if (!commandType) return null;
 
+  console.log("INPUT PARAMS");
+  console.log(inputParams);
+
   let data = "";
   switch (commandType) {
     case "start-scrape":
