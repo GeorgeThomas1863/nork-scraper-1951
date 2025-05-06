@@ -32,3 +32,12 @@ export const scrapeNewKCNA = async () => {
 
   return true;
 };
+
+export const scrapeAllKCNA = async () => {
+  console.log("BUILD");
+};
+
+export const scrapeUrlKCNA = async (url) => {
+  //figure out type based on html of URL
+  console.log("build");
+};
