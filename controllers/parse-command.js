@@ -7,19 +7,19 @@ export const parseAdminCommand = async (req, res) => {
 
   let data = "";
   switch (commandType) {
-    case startScrape:
+    case "start-scrape":
       data = await parseStartCommand(inputParams);
       break;
 
-    case stopScrape:
+    case "stop-scrape":
       data = await stopSrapeKCNA(inputParams);
       break;
 
-    case scrapeStatus:
+    case "scrape-status":
       data = await getScrapeStatus(inputParams);
       break;
 
-    case restartAuto:
+    case "restart-auto":
       data = await restartAutoScrape(inputParams);
       break;
   }
@@ -33,15 +33,15 @@ export const parseStartCommand = async (inputParams) => {
 
   let data = "";
   switch (howMuch) {
-    case scrapeNew:
+    case "scrape-new":
       data = await scrapeNewKCNA();
       break;
 
-    case scrapeAll:
+    case "scrape-all":
       data = await scrapeAllKCNA();
       break;
 
-    case scrapeURL:
+    case "scrape-url":
       if (!urlInput) return null;
       data = await scrapeUrlKCNA(urlInput);
       break;
@@ -53,6 +53,7 @@ export const parseStartCommand = async (inputParams) => {
 //might move
 export const stopSrapeKCNA = async (inputParams) => {
   const testData = { data: "ALLAHU AKBAR" };
+  return testData;
 };
 
 //might move
