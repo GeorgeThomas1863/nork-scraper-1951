@@ -7,13 +7,24 @@ import { newListMap, newContentMap } from "../config/map.js";
 export const scrapeNewURLs = async () => {
   const { typeArr } = CONFIG;
   //loop through types for content data
+  const urlDataArray = [];
   for (let i = 0; i < typeArr.length; i++) {
     const type = typeArr[i];
-    await getNewListData(type);
-    await getNewContentData(type);
+    const newListData = await getNewListData(type);
+    const newContentData = await getNewContentData(type);
+
+    //return data stats
+    const urlDataObj = {
+      type: type,
+      newListData: newListData,
+      newContentData: newContentData,
+    };
+    if (!urlDataObj) continue;
+
+    urlDataArray.push(urlDataObj);
   }
 
-  return "DONE GETTING NEW URLs";
+  return urlDataArray;
 };
 
 export const getNewListData = async (type) => {
@@ -40,11 +51,6 @@ export const getNewContentData = async (type) => {
   const newContentInputObj = await newContentMap(type);
   const contentModel = new dbModel(newContentInputObj.params, "");
   const downloadArray = await contentModel.findNewURLs();
-
-  // if (!downloadArray || !downloadArray.length) {
-  //   console.log("NO NEW " + type.toUpperCase());
-  //   return null;
-  // }
 
   //scrape new content (based on type using map.func)
   console.log("GETTING CONTENT FOR " + downloadArray.length + " " + type.toUpperCase());

@@ -15,6 +15,7 @@ export const scrapeNewKCNA = async () => {
   console.log("STARTING NEW KCNA SCRAPE AT " + startScrapeTime);
 
   const urlData = await scrapeNewURLs();
+  //send this shit back or stop here
   console.log(urlData);
 
   const downloadData = await scrapeNewMedia();

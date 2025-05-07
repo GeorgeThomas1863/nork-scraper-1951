@@ -8,23 +8,50 @@ export const scrapeNewMedia = async () => {
   const { typeArr } = CONFIG;
 
   //retarded loop for getting new media data (start at 1 bc 0 is articles)
+  const findMediaArray = [];
   for (let i = 1; i < typeArr.length; i++) {
     const findType = typeArr[i];
-    if (findType === "articles") continue;
-    await getNewMediaData(findType);
+    const newMediaData = await getNewMediaData(findType);
+
+    const findMediaObj = {
+      type: findType,
+      newMediaData: newMediaData,
+    };
+
+    //ADD CHECK HERE for STOPPING
+
+    //otherwise push to array
+    findMediaArray.push(findMediaObj);
   }
 
   //retarded loop for downloading shit
+  const downloadMediaArray = [];
   for (let i = 1; i < typeArr.length; i++) {
     const downloadType = typeArr[i];
-    if (downloadType === "articles") continue;
-    await downloadNewMediaFS(downloadType);
+    const downloadMediaData = await downloadNewMediaFS(downloadType);
+
+    const downloadMediaObj = {
+      type: downloadType,
+      downloadMediaData: downloadMediaData,
+    };
+
+    //ADD CHECK HERE for STOPPING
+
+    //otherwise push to array
+    downloadMediaArray.push(downloadMediaObj);
   }
 
-  return "FINISHED GETTING NEW MEDIA DATA";
+  const newMediaObj = {
+    findMediaArray: findMediaArray,
+    downloadMediaArray: downloadMediaArray,
+  };
+
+  return newMediaObj;
 };
 
 export const getNewMediaData = async (type) => {
+  if (type === "articles") return null;
+
   const newMediaObj = await findNewMediaMap(type);
   const arrayModel = new dbModel(newMediaObj.params, "");
   const downloadArray = await arrayModel.findNewURLs();
@@ -44,6 +71,7 @@ export const getNewMediaData = async (type) => {
 };
 
 export const downloadNewMediaFS = async (type) => {
+  if (type === "articles") return null;
   const downloadObj = await downloadNewMediaMap(type);
 
   const downloadModel = new dbModel(downloadObj.params, "");

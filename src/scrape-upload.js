@@ -7,12 +7,23 @@ import { newUploadMap } from "../config/map.js";
 export const uploadNewTG = async () => {
   const { typeArr } = CONFIG;
 
+  const uploadDataArray = [];
   for (let i = 0; i < typeArr.length; i++) {
     const type = typeArr[i];
-    await uploadByTypeTG(type);
+    const uploadData = await uploadByTypeTG(type);
+
+    const uploadDataObj = {
+      type: type,
+      uploadData: uploadData,
+    };
+
+    //ADD CHECK HERE FOR STOPPING
+
+    //otherwise add to array
+    uploadDataArray.push(uploadDataObj);
   }
 
-  return "FINISHED UPLOADING DATA";
+  return uploadDataArray;
 };
 
 export const uploadByTypeTG = async (type) => {
