@@ -42,3 +42,7 @@ export const scrapeUrlKCNA = async (url) => {
   //figure out type based on html of URL
   console.log("build");
 };
+
+// export const continueScrape = async (keepGoing = true) =>{
+//   return keepGoing
+// }

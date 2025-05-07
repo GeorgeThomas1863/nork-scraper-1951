@@ -1,5 +1,5 @@
 import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA } from "../src/scrape-control.js";
-
+ 
 export const parseAdminCommand = async (req, res) => {
   const inputParams = req.body;
   const { commandType } = inputParams;
@@ -16,10 +16,7 @@ export const parseAdminCommand = async (req, res) => {
 
     case "stop-scrape":
       data = await stopSrapeKCNA(inputParams);
-      break;
-
-    case "scrape-status":
-      data = await getScrapeStatus(inputParams);
+      await continueScrape(false)
       break;
 
     case "restart-auto":
@@ -58,9 +55,6 @@ export const stopSrapeKCNA = async (inputParams) => {
   const testData = { data: "ALLAHU AKBAR" };
   return testData;
 };
-
-//might move
-export const getScrapeStatus = async (inputParams) => {};
 
 //might move
 export const restartAutoScrape = async (inputParams) => {};
