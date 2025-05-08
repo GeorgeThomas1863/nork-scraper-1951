@@ -209,26 +209,22 @@ class UTIL {
     //otherwise its end scrape
     const { scrapeId } = this.dataObject;
 
-    //get end time
+    //get end time / start time
     const endTime = new Date();
-
-    //get the start time
     const findModel = new dbModel({ keyToLookup: "_id", itemValue: scrapeId }, CONFIG.log);
     const findData = await findModel.getUniqueItem();
     const startTime = findData.startTime;
 
-    //scrapeLength
-    // const scrapeLength = endTime - startTime;
+    //calc scrape secs
     const scrapeSeconds = +((endTime - startTime) / 1000).toFixed(2);
 
     const timeObj = {
-      scrapeId: scrapeId,
       endTime: endTime,
       scrapeSeconds: scrapeSeconds,
     };
 
     const endModel = new dbModel(timeObj, CONFIG.log);
-    const endData = await endModel.updateScrapeId();
+    const endData = await endModel.updateLog(scrapeId);
 
     //display log in console log (can turn off)
     const displayModel = new UTIL(timeObj);

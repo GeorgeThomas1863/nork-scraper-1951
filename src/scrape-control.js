@@ -1,4 +1,6 @@
+import CONFIG from "../config/config.js";
 import UTIL from "../models/util-model.js";
+import dbModel from "../models/db-model.js";
 
 import { continueScrape, setScrapeActive } from "./scrape-status.js";
 import { scrapeNewURLs } from "./scrape-urls.js";
@@ -13,9 +15,9 @@ export const scrapeNewKCNA = async () => {
   const startModel = new UTIL();
   const scrapeId = await startModel.logScrape();
 
-  const urlData = await scrapeNewURLs();
-  //send this shit back or stop here
-  console.log(urlData);
+  //get and store new urls
+  const urlDataArray = await scrapeNewURLs();
+  await storeLogDataArray(urlDataArray, scrapeId);
 
   const downloadData = await scrapeNewMedia();
   console.log(downloadData);
@@ -42,4 +44,17 @@ export const scrapeUrlKCNA = async (url) => {
   if (!continueScrape) return null;
   //figure out type based on html of URL
   console.log("build");
+};
+
+//put here so you can use the fucking scrape id
+export const storeLogDataArray = async (inputArray, scrapeId) => {
+  if (!inputArray || !inputArray.length) return null;
+
+  for (let i = 0; i < inputArray.length; i++) {
+    const storeModel = new dbModel({ storeObj: inputArray[i] }, CONFIG.log);
+    const storeData = await storeModel.updateLog(scrapeId);
+    console.log(storeData);
+  }
+
+  return true;
 };

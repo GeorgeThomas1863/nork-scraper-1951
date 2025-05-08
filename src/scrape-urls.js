@@ -17,11 +17,11 @@ export const scrapeNewURLs = async () => {
     const newListData = await getNewListData(type);
     const newContentData = await getNewContentData(type);
 
-    //return data stats
+    //log data stats (fix type string first)
+    const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
     const urlDataObj = {
-      type: type,
-      newListData: newListData,
-      newContentData: newContentData,
+      [`${typeStr}_listItemCount`]: newListData.length,
+      [`${typeStr}_contentScrapedCount`]: newContentData.length,
     };
     if (!urlDataObj) continue;
 
