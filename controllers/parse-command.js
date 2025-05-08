@@ -6,12 +6,6 @@ export const parseAdminCommand = async (req, res) => {
   const { commandType } = inputParams;
   if (!commandType) return null;
 
-  //if scrape already active return null (prevents double scrapes)
-  if (scrapeActive) {
-    console.log("ALREADY SCRAPING FAGGOT");
-    return null;
-  }
-
   //reset the stopper
   await setContinueScrape(true);
 
@@ -37,6 +31,12 @@ export const parseAdminCommand = async (req, res) => {
 export const parseStartCommand = async (inputParams) => {
   const { howMuch, urlInput } = inputParams;
   if (!howMuch) return null;
+
+  //if scrape already active return null (prevents double scrapes)
+  if (scrapeActive) {
+    console.log("ALREADY SCRAPING FAGGOT");
+    return null;
+  }
 
   let data = "";
   switch (howMuch) {
@@ -64,4 +64,10 @@ export const stopSrapeKCNA = async (inputParams) => {
 };
 
 //might move
-export const restartAutoScrape = async (inputParams) => {};
+export const restartAutoScrape = async (inputParams) => {
+  //if scrape already active return null (prevents double scrapes)
+  if (scrapeActive) {
+    console.log("ALREADY SCRAPING FAGGOT");
+    return null;
+  }
+};
