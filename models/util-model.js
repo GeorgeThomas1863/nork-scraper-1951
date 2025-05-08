@@ -213,7 +213,7 @@ class UTIL {
     const endTime = new Date();
 
     //get the start time
-    const findModel = new dbModel({ keyToLookup: __dirname, itemValue: scrapeId }, CONFIG.log);
+    const findModel = new dbModel({ keyToLookup: _id, itemValue: scrapeId }, CONFIG.log);
     const findData = await findModel.getUniqueItem();
     const startTime = findData.startTime;
 
