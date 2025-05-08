@@ -17,22 +17,12 @@ class dbModel {
 
   //STORE STUFF
 
-  /**
-   * Stores any data object in the specified collection
-   * @function storeAny
-   * @returns {Promise<Object>} The MongoDB insertOne result
-   */
   async storeAny() {
     // await db.dbConnect();
     const storeData = await db.dbGet().collection(this.collection).insertOne(this.dataObject);
     return storeData;
   }
 
-  /**
-   * Stores data only if the URL is not already in the collection
-   * @function storeUniqueURL
-   * @returns {Promise<Object>} The MongoDB insertOne result
-   */
   async storeUniqueURL() {
     // await db.dbConnect();
     await this.urlNewCheck(); //check if new
@@ -41,11 +31,6 @@ class dbModel {
     return storeData;
   }
 
-  /**
-   * Stores array of data data (could alsoi put in util)
-   * @function storeArrays
-   * @returns {array} ARRAY of sorted OBJECTs
-   */
   async storeArray() {
     //return null on blank input
     const storeArray = [];
@@ -73,6 +58,18 @@ class dbModel {
   }
 
   //-----------
+
+  //UPDATES STUFF
+
+  async updateScrapeId() {
+    const { scrapeId, endTime } = this.dataObject;
+    const updateData = await db.dbGet().collection(this.collection).updateMany({ _id: scrapeId }, { $set: { endTime: endTime } }); //prettier-ignore
+    console.log("UPDATE DATA")
+    console.log(updateData)
+    return updateData
+  }
+
+  //--------------
 
   //GETS STUFF
 

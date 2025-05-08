@@ -1,6 +1,4 @@
-import CONFIG from "../config/config.js";
-import KCNA from "../models/kcna-model.js";
-import dbModel from "../models/db-model.js";
+import UTIL from "../models/util-model.js";
 
 import { continueScrape } from "./scrape-stop.js";
 import { scrapeNewURLs } from "./scrape-urls.js";
@@ -9,13 +7,8 @@ import { uploadNewTG } from "./scrape-upload.js";
 
 export const scrapeNewKCNA = async () => {
   //log scrape start
-  const startScrapeTime = new Date();
-  const startModel = new dbModel({ startTime: startScrapeTime }, CONFIG.log);
-  const startData = await startModel.storeAny();
-  const scrapeId = startData.insertedId;
-  console.log("SCRAPE ID");
-  console.log(scrapeId);
-  console.log("STARTING NEW KCNA SCRAPE AT " + startScrapeTime);
+  const startModel = new UTIL({ type: "startScrape" });
+  const scrapeId = await startModel.logScrape();
 
   const urlData = await scrapeNewURLs();
   //send this shit back or stop here
@@ -27,12 +20,9 @@ export const scrapeNewKCNA = async () => {
   const uploadData = await uploadNewTG();
   console.log(uploadData);
 
-  //FIX
-  ////LOG SCRAPE / show how long it took and write it in readable format
-  // const endScrapeTime = new Date();
-  // const logModel = new KCNA({ startTime: startScrapeTime, endTime: endScrapeTime });
-  // await logModel.logScrape();
-
+  //LOG SCRAPE / show how long it took and write it in readable format
+  const endModel = new UTIL({ type: "endScrape", scrapeId: scrapeId });
+  await endModel.logScrape();
   console.log("#DONE");
 
   return true;
@@ -48,7 +38,3 @@ export const scrapeUrlKCNA = async (url) => {
   //figure out type based on html of URL
   console.log("build");
 };
-
-// export const continueScrape = async (keepGoing = true) =>{
-//   return keepGoing
-// }

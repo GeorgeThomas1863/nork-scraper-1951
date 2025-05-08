@@ -194,6 +194,32 @@ class UTIL {
     return normalObj;
   }
 
+  async logScrape() {
+    const { type } = this.dataObject;
+
+    switch (type) {
+      case "startScrape":
+        const startScrapeTime = new Date();
+        const startModel = new dbModel({ startTime: startScrapeTime }, CONFIG.log);
+        const startData = await startModel.storeAny();
+        const startScrapeId = startData.insertedId;
+        console.log("STARTING NEW KCNA SCRAPE AT " + startScrapeTime);
+        return startScrapeId;
+
+      case "endScrape":
+        const { scrapeId } = this.dataObject;
+        const endObj = {
+          endTime: new Date(),
+          scrapeId: scrapeId,
+        };
+        const endModel = new dbModel(endObj, CONFIG.log);
+        const endData = await endModel.updateScrapeId();
+        console.log("END DATA");
+        console.log(endData);
+        return endData;
+    }
+  }
+
   async showScrapeTime() {
     const { startTime, endTime } = this.dataObject;
 

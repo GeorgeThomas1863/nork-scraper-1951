@@ -15,8 +15,6 @@ class KCNA {
     this.dataObject = dataObject;
   }
 
-  //-----------------------
-
   //confirm try catch works
   async getHTML() {
     const inputURL = this.dataObject.url;
