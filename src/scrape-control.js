@@ -7,7 +7,7 @@ import { uploadNewTG } from "./scrape-upload.js";
 
 export const scrapeNewKCNA = async () => {
   //log scrape start
-  const startModel = new UTIL({ type: "startScrape" });
+  const startModel = new UTIL();
   const scrapeId = await startModel.logScrape();
 
   const urlData = await scrapeNewURLs();
@@ -21,7 +21,7 @@ export const scrapeNewKCNA = async () => {
   console.log(uploadData);
 
   //LOG SCRAPE / show how long it took and write it in readable format
-  const endModel = new UTIL({ type: "endScrape", scrapeId: scrapeId });
+  const endModel = new UTIL({ scrapeId: scrapeId });
   await endModel.logScrape();
   console.log("#DONE");
 

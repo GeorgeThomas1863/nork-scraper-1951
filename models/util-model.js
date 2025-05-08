@@ -195,29 +195,45 @@ class UTIL {
   }
 
   async logScrape() {
-    const { type } = this.dataObject;
+    //if input null then its start
+    if (!this.dataObject) {
+      const startScrapeTime = new Date();
+      console.log("STARTING NEW KCNA SCRAPE AT " + startScrapeTime);
+      const startModel = new dbModel({ startTime: startScrapeTime }, CONFIG.log);
+      const startData = await startModel.storeAny();
+      const startScrapeId = startData.insertedId;
 
-    switch (type) {
-      case "startScrape":
-        const startScrapeTime = new Date();
-        const startModel = new dbModel({ startTime: startScrapeTime }, CONFIG.log);
-        const startData = await startModel.storeAny();
-        const startScrapeId = startData.insertedId;
-        console.log("STARTING NEW KCNA SCRAPE AT " + startScrapeTime);
-        return startScrapeId;
-
-      case "endScrape":
-        const { scrapeId } = this.dataObject;
-        const endObj = {
-          endTime: new Date(),
-          scrapeId: scrapeId,
-        };
-        const endModel = new dbModel(endObj, CONFIG.log);
-        const endData = await endModel.updateScrapeId();
-        console.log("END DATA");
-        console.log(endData);
-        return endData;
+      return startScrapeId;
     }
+
+    //otherwise its end scrape
+    const { scrapeId } = this.dataObject;
+
+    //get end time
+    const endTime = new Date();
+
+    //get the start time
+    const findModel = new dbModel({ keyToLookup: __dirname, itemValue: scrapeId }, CONFIG.log);
+    const findData = await findModel.getUniqueItem();
+    const startTime = findData.startTime;
+
+    //scrapeLength
+    const scrapeLength = endTime - startTime;
+
+    const endObj = {
+      scrapeId: scrapeId,
+      endTime: endTime,
+      scrapeLength: scrapeLength,
+    };
+
+    const endModel = new dbModel(endObj, CONFIG.log);
+    const endData = await endModel.updateScrapeId();
+
+    //display log in console log (can turn off)
+    const displayModel = new UTIL({ startTime: startTime, endTime: endTime });
+    await displayModel.showScrapeTime();
+
+    return endData;
   }
 
   async showScrapeTime() {
