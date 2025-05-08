@@ -232,6 +232,9 @@ class UTIL {
       scrapeId: scrapeId,
     };
 
+    console.log("STORE OBJECT");
+    console.log(storeObj);
+
     //store it
     const storeModel = new dbModel(storeObj, CONFIG.log);
     const storeData = await storeModel.updateLog();
