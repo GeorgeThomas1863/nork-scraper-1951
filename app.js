@@ -10,7 +10,7 @@
 
 //BUILD BACKUP VID DOWNLOAD (normal, 1 at a time)
 
-import CONFIG from "./config/scrape-config.js";
+import CONFIG from "./config/config.js";
 import express from "express";
 import cors from "cors";
 

@@ -1,25 +1,11 @@
-import CONFIG from "../config/scrape-config.js";
+import CONFIG from "../config/config.js";
 import dbModel from "./db-model.js";
 
-/**
- * @class UTIL
- * @description does utility shit
- */
 class UTIL {
-  /**
-   * @constructor
-   * @param {Object} dataObject - The data object with request parameters
-   */
   constructor(dataObject) {
     this.dataObject = dataObject;
   }
 
-  /**
-   * Function that sorts an array of article OBJECTS by DATE
-   * @function sortArrayByDate
-   * @param {} inputArray
-   * @returns sorted Array of article OBJECTS (sorted by date oldest to newest)
-   */
   async sortArrayByKcnaId() {
     const { inputArray } = this.dataObject;
     //return null on blank input
@@ -40,12 +26,6 @@ class UTIL {
     return sortArray;
   }
 
-  /**
-   * Function that sorts an array of article OBJECTS by DATE
-   * @function sortArrayByDate
-   * @param {} inputArray
-   * @returns sorted Array of article OBJECTS (sorted by date oldest to newest)
-   */
   async sortArrayByDate() {
     const { inputArray } = this.dataObject;
     //return null on blank input
@@ -66,12 +46,6 @@ class UTIL {
     return sortArray;
   }
 
-  /**
-   * Function that sorts an array of article OBJECTS by DATE
-   * @function sortArrayByArticleId
-   * @param {} inputArray
-   * @returns sorted Array of article OBJECTS (sorted by date oldest to newest)
-   */
   async sortArrayByArticleId() {
     const { inputArray } = this.dataObject;
     //return null on blank input
@@ -92,11 +66,6 @@ class UTIL {
     return sortArray;
   }
 
-  /**
-   * Adds current article Id to array (by looping through / getting current article ID)
-   * @function addListId
-   * @returns current article Id
-   */
   async addListId(collection, inputType) {
     const { inputArray } = this.dataObject;
     if (!inputArray || !inputArray.length) return null;
@@ -163,12 +132,6 @@ class UTIL {
     return dateArray;
   }
 
-  /**
-   * Parses date element for article list item format (MIGHT be able to use elsewhere; move to UTIL)
-   * @function parseDateElement
-   * @param {*} dateText raw date text from article list format
-   * @returns date as standard JS date obj (for storing in Mongo)
-   */
   async parseListDate() {
     const { inputItem } = this.dataObject;
 
@@ -195,12 +158,6 @@ class UTIL {
   }
 
   //BELOW SHOULDNT BE NECESSARY
-  /**
-   * Parses date element for article list item format (MIGHT be able to use elsewhere; move to UTIL)
-   * @function parseDateElement
-   * @param {*} dateText raw date text from article list format
-   * @returns date as standard JS date obj (for storing in Mongo)
-   */
   async parseDateElement() {
     const { dateText } = this.dataObject;
     //return null if empty
@@ -222,12 +179,6 @@ class UTIL {
     return normalDate;
   }
 
-  /**
-   * Normalizes article data for telegram posting format
-   * @function normalizeInputsTG
-   * @params inputObj wiht raw article data
-   * @returns Normalized object with telegram-friendly formatting
-   */
   async normalizeInputsTG() {
     const { inputObj } = this.dataObject;
     const { url, date, title } = inputObj;

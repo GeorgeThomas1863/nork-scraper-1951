@@ -4,7 +4,7 @@
  */
 
 import { MongoClient } from "mongodb";
-import CONFIG from "../config/scrape-config.js";
+import CONFIG from "../config/config.js";
 
 let db;
 

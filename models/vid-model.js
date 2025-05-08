@@ -1,7 +1,7 @@
 import { JSDOM } from "jsdom";
 import fs from "fs";
 
-import CONFIG from "../config/scrape-config.js";
+import CONFIG from "../config/config.js";
 import KCNA from "./kcna-model.js";
 import TG from "./tg-control-model.js";
 import dbModel from "./db-model.js";

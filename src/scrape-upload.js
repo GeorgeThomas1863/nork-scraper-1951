@@ -1,4 +1,4 @@
-import CONFIG from "../config/scrape-config.js";
+import CONFIG from "../config/config.js";
 import dbModel from "../models/db-model.js";
 
 import { continueScrape } from "./scrape-stop.js";

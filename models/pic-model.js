@@ -1,9 +1,6 @@
-import fs from "fs";
-import axios from "axios";
 import { JSDOM } from "jsdom";
 
-import CONFIG from "../config/scrape-config.js";
-// import { randomDelay } from "../config/util.js";
+import CONFIG from "../config/config.js";
 
 import KCNA from "./kcna-model.js";
 import TG from "./tg-control-model.js";

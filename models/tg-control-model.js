@@ -2,7 +2,7 @@
 import fs from "fs";
 import FormData from "form-data";
 
-import CONFIG from "../config/scrape-config.js";
+import CONFIG from "../config/config.js";
 import TgReq from "./tgReq-model.js";
 import dbModel from "./db-model.js";
 

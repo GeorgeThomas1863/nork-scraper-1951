@@ -1,4 +1,4 @@
-import CONFIG from "../config/scrape-config.js";
+import CONFIG from "../config/config.js";
 import Pic from "../models/pic-model.js";
 import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
