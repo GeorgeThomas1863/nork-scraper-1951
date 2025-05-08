@@ -11,7 +11,10 @@ export const scrapeNewURLs = async () => {
   //log scrape start
   const startScrapeTime = new Date();
   const startModel = new dbModel({ startTime: startScrapeTime }, CONFIG.log);
-  await startModel.storeAny();
+  const startData = await startModel.storeAny();
+  console.log("START DATA");
+  console.log(startData);
+
   console.log("STARTING NEW KCNA SCRAPE AT " + startScrapeTime);
 
   //loop through types for content data
