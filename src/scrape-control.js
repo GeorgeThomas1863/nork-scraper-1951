@@ -1,18 +1,21 @@
-import UTIL from "../models/util-model.js";
+import CONFIG from "../config/config.js";
+import KCNA from "../models/kcna-model.js";
+import dbModel from "../models/db-model.js";
 
 import { continueScrape } from "./scrape-stop.js";
 import { scrapeNewURLs } from "./scrape-urls.js";
 import { scrapeNewMedia } from "./scrape-download.js";
 import { uploadNewTG } from "./scrape-upload.js";
 
-/**
- * Gets / checks for new KCNA data, downloads it AND uploads it to TG
- * @function scrapeKCNA
- * @returns array for tracking
- */
-
 export const scrapeNewKCNA = async () => {
-  if (!continueScrape) return null;
+  //log scrape start
+  const startScrapeTime = new Date();
+  const startModel = new dbModel({ startTime: startScrapeTime }, CONFIG.log);
+  const startData = await startModel.storeAny();
+  const scrapeId = startData.insertedId;
+  console.log("SCRAPE ID");
+  console.log(scrapeId);
+  console.log("STARTING NEW KCNA SCRAPE AT " + startScrapeTime);
 
   const urlData = await scrapeNewURLs();
   //send this shit back or stop here

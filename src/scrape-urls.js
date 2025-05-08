@@ -8,15 +8,6 @@ import { newListMap, newContentMap } from "../config/map.js";
 export const scrapeNewURLs = async () => {
   const { typeArr } = CONFIG;
 
-  //log scrape start
-  const startScrapeTime = new Date();
-  const startModel = new dbModel({ startTime: startScrapeTime }, CONFIG.log);
-  const startData = await startModel.storeAny();
-  console.log("START DATA");
-  console.log(startData);
-
-  console.log("STARTING NEW KCNA SCRAPE AT " + startScrapeTime);
-
   //loop through types for content data
   const urlDataArray = [];
   for (let i = 0; i < typeArr.length; i++) {

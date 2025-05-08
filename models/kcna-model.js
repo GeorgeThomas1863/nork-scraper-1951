@@ -15,11 +15,7 @@ class KCNA {
     this.dataObject = dataObject;
   }
 
-  /**
-   * Gets HTML content from the specified URL (works for any url), returns as text
-   * @function getHTML
-   * @returns  HTML content as text
-   */
+  //-----------------------
 
   //confirm try catch works
   async getHTML() {
