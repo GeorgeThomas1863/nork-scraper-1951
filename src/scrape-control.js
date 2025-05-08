@@ -1,11 +1,14 @@
 import UTIL from "../models/util-model.js";
 
-import { continueScrape } from "./scrape-stop.js";
+import { continueScrape, setScrapeActive } from "./scrape-status.js";
 import { scrapeNewURLs } from "./scrape-urls.js";
 import { scrapeNewMedia } from "./scrape-download.js";
 import { uploadNewTG } from "./scrape-upload.js";
 
 export const scrapeNewKCNA = async () => {
+  //set scrape active
+  await setScrapeActive(true);
+
   //log scrape start
   const startModel = new UTIL();
   const scrapeId = await startModel.logScrape();
@@ -25,7 +28,9 @@ export const scrapeNewKCNA = async () => {
   await endModel.logScrape();
   console.log("#DONE");
 
-  return true;
+  //clear scrape active
+  await setScrapeActive(false);
+  return "FINISHD NEW SCRAPE";
 };
 
 export const scrapeAllKCNA = async () => {

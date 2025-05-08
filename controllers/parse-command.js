@@ -1,13 +1,16 @@
 import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA } from "../src/scrape-control.js";
-import { setContinueScrape } from "../src/scrape-stop.js";
+import { setContinueScrape, scrapeActive } from "../src/scrape-status.js";
 
 export const parseAdminCommand = async (req, res) => {
   const inputParams = req.body;
   const { commandType } = inputParams;
   if (!commandType) return null;
 
-  console.log("INPUT PARAMS");
-  console.log(inputParams);
+  //if scrape already active return null (prevents double scrapes)
+  if (scrapeActive) {
+    console.log("ALREADY SCRAPING FAGGOT");
+    return null;
+  }
 
   //reset the stopper
   await setContinueScrape(true);

@@ -2,7 +2,7 @@ import CONFIG from "../config/config.js";
 import KCNA from "../models/kcna-model.js";
 import dbModel from "../models/db-model.js";
 
-import { continueScrape } from "./scrape-stop.js";
+import { continueScrape } from "./scrape-status.js";
 import { newListMap, newContentMap } from "../config/map.js";
 
 export const scrapeNewURLs = async () => {

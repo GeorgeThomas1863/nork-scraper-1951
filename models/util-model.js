@@ -218,29 +218,27 @@ class UTIL {
     const startTime = findData.startTime;
 
     //scrapeLength
-    const scrapeLength = endTime - startTime;
+    // const scrapeLength = endTime - startTime;
+    const scrapeSeconds = +((endTime - startTime) / 1000).toFixed(2);
 
-    const endObj = {
+    const timeObj = {
       scrapeId: scrapeId,
       endTime: endTime,
-      scrapeLength: scrapeLength,
+      scrapeSeconds: scrapeSeconds,
     };
 
-    const endModel = new dbModel(endObj, CONFIG.log);
+    const endModel = new dbModel(timeObj, CONFIG.log);
     const endData = await endModel.updateScrapeId();
 
     //display log in console log (can turn off)
-    const displayModel = new UTIL({ startTime: startTime, endTime: endTime });
+    const displayModel = new UTIL(timeObj);
     await displayModel.showScrapeTime();
 
     return endData;
   }
 
   async showScrapeTime() {
-    const { startTime, endTime } = this.dataObject;
-
-    //in milliseconds convert to seconds
-    const scrapeSeconds = (endTime - startTime) / 1000;
+    const { scrapeSeconds } = this.dataObject;
 
     //if short
     if (scrapeSeconds < 120) {
@@ -248,7 +246,7 @@ class UTIL {
     }
 
     //otherwise return in minutes
-    const scrapeMinutes = scrapeSeconds / 60 + " minutes";
+    const scrapeMinutes = +(scrapeSeconds / 60).toFixed(2);
     return console.log("FINISHED SCRAPE FOR NEW DATA, SCRAPE TOOK " + scrapeMinutes + " minutes");
   }
 }

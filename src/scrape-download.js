@@ -1,7 +1,7 @@
 import CONFIG from "../config/config.js";
 import dbModel from "../models/db-model.js";
 
-import { continueScrape } from "./scrape-stop.js";
+import { continueScrape } from "./scrape-status.js";
 import { findNewMediaMap, downloadNewMediaMap } from "../config/map.js";
 
 //NEW MEDIA SECTION (URLS AND DOWNLOAD)

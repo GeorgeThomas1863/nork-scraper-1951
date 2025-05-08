@@ -1,7 +1,7 @@
 import CONFIG from "../config/config.js";
 import dbModel from "../models/db-model.js";
 
-import { continueScrape } from "./scrape-stop.js";
+import { continueScrape } from "./scrape-status.js";
 import { newUploadMap } from "../config/map.js";
 
 export const uploadNewTG = async () => {

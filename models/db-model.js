@@ -62,9 +62,8 @@ class dbModel {
   //UPDATES STUFF
 
   async updateScrapeId() {
-    const { scrapeId, endTime, startTime } = this.dataObject;
-    const scrapeTime = endTime - startTime;
-    const updateData = await db.dbGet().collection(this.collection).updateMany({ _id: scrapeId }, { $set: { endTime: endTime, scrapeTime: scrapeTime } }); //prettier-ignore
+    const { scrapeId, endTime, scrapeSeconds } = this.dataObject;
+    const updateData = await db.dbGet().collection(this.collection).updateMany({ _id: scrapeId }, { $set: { endTime: endTime, scrapeSeconds: scrapeSeconds } }); //prettier-ignore
     console.log("UPDATE DATA");
     console.log(updateData);
     return updateData;
