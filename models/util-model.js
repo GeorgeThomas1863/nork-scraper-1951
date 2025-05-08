@@ -218,19 +218,26 @@ class UTIL {
     //calc scrape secs
     const scrapeSeconds = +((endTime - startTime) / 1000).toFixed(2);
 
+    //build objs
     const timeObj = {
       endTime: endTime,
       scrapeSeconds: scrapeSeconds,
     };
 
-    const endModel = new dbModel(timeObj, CONFIG.log);
-    const endData = await endModel.updateLog(scrapeId);
+    const storeObj = {
+      inputObj: timeObj,
+      scrapeId: scrapeId,
+    };
+
+    //store it
+    const storeModel = new dbModel(storeObj, CONFIG.log);
+    const storeData = await storeModel.updateLog();
 
     //display log in console log (can turn off)
     const displayModel = new UTIL(timeObj);
     await displayModel.showScrapeTime();
 
-    return endData;
+    return storeData;
   }
 
   async showScrapeTime() {

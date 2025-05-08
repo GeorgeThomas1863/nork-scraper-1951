@@ -61,8 +61,8 @@ class dbModel {
 
   //UPDATES STUFF
 
-  async updateLog(scrapeId) {
-    const { inputObj } = this.dataObject;
+  async updateLog() {
+    const { inputObj, scrapeId } = this.dataObject;
     const updateData = await db.dbGet().collection(this.collection).updateMany({ _id: scrapeId }, { $set: { ...inputObj } }); //prettier-ignore
     return updateData;
   }

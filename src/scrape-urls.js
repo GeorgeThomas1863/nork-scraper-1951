@@ -20,8 +20,8 @@ export const scrapeNewURLs = async () => {
     //log data stats (fix type string first)
     const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
     const urlDataObj = {
-      [`${typeStr}_listItemCount`]: newListData.length,
-      [`${typeStr}_contentScrapedCount`]: newContentData.length,
+      [`${typeStr}_listItemCount`]: newListData ? newListData.length : 0,
+      [`${typeStr}_contentScrapedCount`]: newContentData ? newContentData.length : 0,
     };
     if (!urlDataObj) continue;
 

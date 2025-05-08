@@ -51,8 +51,12 @@ export const storeLogDataArray = async (inputArray, scrapeId) => {
   if (!inputArray || !inputArray.length) return null;
 
   for (let i = 0; i < inputArray.length; i++) {
-    const storeModel = new dbModel({ storeObj: inputArray[i] }, CONFIG.log);
-    const storeData = await storeModel.updateLog(scrapeId);
+    const storeObj = {
+      inputObj: inputArray[i],
+      scrapeId: scrapeId,
+    };
+    const storeModel = new dbModel(storeObj, CONFIG.log);
+    const storeData = await storeModel.updateLog();
     console.log(storeData);
   }
 
