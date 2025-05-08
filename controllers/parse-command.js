@@ -1,42 +1,43 @@
 import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA } from "../src/scrape-control.js";
 import { setContinueScrape, scrapeActive } from "../src/scrape-status.js";
 
+//could refactor back to switch but easier this way
 export const parseAdminCommand = async (req, res) => {
   const inputParams = req.body;
   const { commandType } = inputParams;
   if (!commandType) return null;
 
-  //reset the stopper
-  await setContinueScrape(true);
-
-  let data = "";
-  switch (commandType) {
-    case "start-scrape":
-      data = await parseStartCommand(inputParams);
-      break;
-
-    case "stop-scrape":
-      data = await stopSrapeKCNA(inputParams);
-      await setContinueScrape(false);
-      break;
-
-    case "restart-auto":
-      data = await restartAutoScrape(inputParams);
-      break;
+  //if stop scrape
+  if (commandType === "stop-scrape") {
+    await setContinueScrape(false);
+    return res.json({ data: "SCRAPE STOPPED" });
   }
 
-  return res.json({ data: data });
+  //check if already scraping, return null (prevents double scrapes)
+  if (scrapeActive) return res.json({ data: "ALREADY SCRAPING FAGGOT" });
+
+  // reset the stopper
+  await setContinueScrape(true);
+
+  //if reset auto
+  if (commandType === "reset-auto") {
+    const restartData = await restartAutoScrape(inputParams);
+    return res.json({ data: restartData });
+  }
+
+  //handle other entries
+  if (commandType !== "start-scrape") return null;
+
+  //otherwise start scrape
+  const scrapeData = await parseStartCommand(inputParams);
+
+  return res.json({ data: scrapeData });
 };
 
 export const parseStartCommand = async (inputParams) => {
   const { howMuch, urlInput } = inputParams;
-  if (!howMuch) return null;
 
-  //if scrape already active return null (prevents double scrapes)
-  if (scrapeActive) {
-    console.log("ALREADY SCRAPING FAGGOT");
-    return null;
-  }
+  if (!howMuch) return null;
 
   let data = "";
   switch (howMuch) {
@@ -58,16 +59,7 @@ export const parseStartCommand = async (inputParams) => {
 };
 
 //might move
-export const stopSrapeKCNA = async (inputParams) => {
-  const testData = { data: "ALLAHU AKBAR" };
-  return testData;
-};
-
-//might move
 export const restartAutoScrape = async (inputParams) => {
   //if scrape already active return null (prevents double scrapes)
-  if (scrapeActive) {
-    console.log("ALREADY SCRAPING FAGGOT");
-    return null;
-  }
+  console.log("BUILD");
 };
