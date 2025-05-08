@@ -1,7 +1,7 @@
 import CONFIG from "../config/scrape-config.js";
-import KCNA from "../models/kcna-model.js";
 import dbModel from "../models/db-model.js";
 
+import { continueScrape } from "./scrape-stop.js";
 import { newUploadMap } from "../config/map.js";
 
 export const uploadNewTG = async () => {
@@ -9,6 +9,7 @@ export const uploadNewTG = async () => {
 
   const uploadDataArray = [];
   for (let i = 0; i < typeArr.length; i++) {
+    if (!continueScrape) return null;
     const type = typeArr[i];
     const uploadData = await uploadByTypeTG(type);
 

@@ -1,6 +1,7 @@
 import CONFIG from "../config/scrape-config.js";
 import dbModel from "../models/db-model.js";
 
+import { continueScrape } from "./scrape-stop.js";
 import { findNewMediaMap, downloadNewMediaMap } from "../config/map.js";
 
 //NEW MEDIA SECTION (URLS AND DOWNLOAD)
@@ -10,6 +11,7 @@ export const scrapeNewMedia = async () => {
   //retarded loop for getting new media data (start at 1 bc 0 is articles)
   const findMediaArray = [];
   for (let i = 1; i < typeArr.length; i++) {
+    if (!continueScrape) return null;
     const findType = typeArr[i];
     const newMediaData = await getNewMediaData(findType);
 
@@ -27,6 +29,7 @@ export const scrapeNewMedia = async () => {
   //retarded loop for downloading shit
   const downloadMediaArray = [];
   for (let i = 1; i < typeArr.length; i++) {
+    if (!continueScrape) return null;
     const downloadType = typeArr[i];
     const downloadMediaData = await downloadNewMediaFS(downloadType);
 

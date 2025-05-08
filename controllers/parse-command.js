@@ -1,5 +1,6 @@
 import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA } from "../src/scrape-control.js";
- 
+import { setContinueScrape } from "../src/scrape-stop.js";
+
 export const parseAdminCommand = async (req, res) => {
   const inputParams = req.body;
   const { commandType } = inputParams;
@@ -7,6 +8,9 @@ export const parseAdminCommand = async (req, res) => {
 
   console.log("INPUT PARAMS");
   console.log(inputParams);
+
+  //reset the stopper
+  await setContinueScrape(true);
 
   let data = "";
   switch (commandType) {
@@ -16,7 +20,7 @@ export const parseAdminCommand = async (req, res) => {
 
     case "stop-scrape":
       data = await stopSrapeKCNA(inputParams);
-      await continueScrape(false)
+      await setContinueScrape(false);
       break;
 
     case "restart-auto":

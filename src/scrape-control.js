@@ -1,5 +1,6 @@
 import UTIL from "../models/util-model.js";
 
+import { continueScrape } from "./scrape-stop.js";
 import { scrapeNewURLs } from "./scrape-urls.js";
 import { scrapeNewMedia } from "./scrape-download.js";
 import { uploadNewTG } from "./scrape-upload.js";
@@ -13,6 +14,7 @@ import { uploadNewTG } from "./scrape-upload.js";
 export const scrapeNewKCNA = async () => {
   const startScrapeTime = new Date();
   console.log("STARTING NEW KCNA SCRAPE AT " + startScrapeTime);
+  if (!continueScrape) return null;
 
   const urlData = await scrapeNewURLs();
   //send this shit back or stop here
@@ -35,10 +37,12 @@ export const scrapeNewKCNA = async () => {
 };
 
 export const scrapeAllKCNA = async () => {
+  if (!continueScrape) return null;
   console.log("BUILD");
 };
 
 export const scrapeUrlKCNA = async (url) => {
+  if (!continueScrape) return null;
   //figure out type based on html of URL
   console.log("build");
 };

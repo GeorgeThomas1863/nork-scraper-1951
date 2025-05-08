@@ -2,6 +2,7 @@ import CONFIG from "../config/scrape-config.js";
 import KCNA from "../models/kcna-model.js";
 import dbModel from "../models/db-model.js";
 
+import { continueScrape } from "./scrape-stop.js";
 import { newListMap, newContentMap } from "../config/map.js";
 
 export const scrapeNewURLs = async () => {
@@ -9,6 +10,8 @@ export const scrapeNewURLs = async () => {
   //loop through types for content data
   const urlDataArray = [];
   for (let i = 0; i < typeArr.length; i++) {
+    //stop it needed
+    if (!continueScrape) return null;
     const type = typeArr[i];
     const newListData = await getNewListData(type);
     const newContentData = await getNewContentData(type);
