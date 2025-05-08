@@ -20,7 +20,7 @@ export const scrapeNewKCNA = async () => {
   const uploadData = await uploadNewTG();
   console.log(uploadData);
 
-  //LOG SCRAPE / show how long it took and write it in readable format
+  //LOG SCRAPE END / show how long it took and write it in readable format
   const endModel = new UTIL({ scrapeId: scrapeId });
   await endModel.logScrape();
   console.log("#DONE");

@@ -1,12 +1,6 @@
 //TO DO:
 
-//MAKE VID UPLOAD CHECK IF PATH EXISTS BEFORE POSTING
-
-//have vid upload clear the temp folder once all finished / nothing new to download
-
-//MOVE ON TO NEXT PROJECT
-
-//BUILD API [AGAIN THE POINT OF ALL THIS SHIT]
+//STORE STATS in STATS db
 
 //BUILD BACKUP VID DOWNLOAD (normal, 1 at a time)
 
