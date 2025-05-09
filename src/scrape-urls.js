@@ -26,10 +26,7 @@ export const scrapeNewURLs = async () => {
     urlDataArray.push(urlDataObj);
   }
 
-  if (!urlDataArray || !urlDataArray.length) return null;
-  const normalArray = await normalizeUrlDataArray(urlDataArray);
-
-  return normalArray;
+  return urlDataArray;
 };
 
 export const getNewListData = async (type) => {
@@ -65,20 +62,4 @@ export const getNewContentData = async (type) => {
   console.log("GOT CONTENT FOR " + contentArray.length + " " + type.toUpperCase());
 
   return contentArray;
-};
-
-export const normalizeUrlDataArray = async (inputArray) => {
-  const normalArray = [];
-  for (let i = 0; i < inputArray.length; i++) {
-    const { type, newListData, newContentData } = inputArray[i];
-    //log data stats (fix type string first)
-    const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
-    const urlDataObj = {
-      [`${typeStr}_listItemCount`]: newListData ? newListData.length : 0,
-      [`${typeStr}_contentScrapedCount`]: newContentData ? newContentData.length : 0,
-    };
-    normalArray.push(urlDataObj);
-  }
-
-  return normalArray;
 };

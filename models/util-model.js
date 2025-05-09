@@ -196,9 +196,6 @@ class UTIL {
 
   async logScrape() {
     //if input null then its start
-    console.log("!!!!!!!!!!!!LOG SCRAPE");
-    console.log(this.dataObject);
-
     if (!this.dataObject) {
       const startScrapeTime = new Date();
       console.log("STARTING NEW KCNA SCRAPE AT " + startScrapeTime);

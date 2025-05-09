@@ -1,11 +1,10 @@
-import CONFIG from "../config/config.js";
 import UTIL from "../models/util-model.js";
-import dbModel from "../models/db-model.js";
 
 import { continueScrape, setScrapeActive } from "./scrape-status.js";
 import { scrapeNewURLs } from "./scrape-urls.js";
 import { scrapeNewMedia } from "./scrape-download.js";
 import { uploadNewTG } from "./scrape-upload.js";
+import { logListData } from "./scrape-log.js";
 
 export const scrapeNewKCNA = async () => {
   //set scrape active
@@ -17,7 +16,7 @@ export const scrapeNewKCNA = async () => {
 
   //get and store new urls
   const urlDataArray = await scrapeNewURLs();
-  await storeLogDataArray(urlDataArray, scrapeId);
+  await logListData(urlDataArray, scrapeId);
 
   const downloadData = await scrapeNewMedia();
   console.log(downloadData);
@@ -46,19 +45,7 @@ export const scrapeUrlKCNA = async (url) => {
   console.log("build");
 };
 
-//put here so you can use the fucking scrape id
-export const storeLogDataArray = async (inputArray, scrapeId) => {
-  if (!inputArray || !inputArray.length) return null;
+// //put here so you can use the fucking scrape id
+// export const storeLogData = async (inputArray, scrapeId) => {
 
-  for (let i = 0; i < inputArray.length; i++) {
-    const storeObj = {
-      inputObj: inputArray[i],
-      scrapeId: scrapeId,
-    };
-    const storeModel = new dbModel(storeObj, CONFIG.log);
-    const storeData = await storeModel.updateLog();
-    console.log(storeData);
-  }
-
-  return true;
-};
+// };
