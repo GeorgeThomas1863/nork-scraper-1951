@@ -1,11 +1,11 @@
 import CONFIG from "../config/config.js";
 import dbModel from "../models/db-model.js";
 
-export const logListData = async (inputArray, scrapeId) => {
+export const logUrlData = async (inputArray, scrapeId) => {
   if (!inputArray || !inputArray.length) return null;
 
   //normalize data
-  const normalArray = await normalizeListData(inputArray);
+  const normalArray = await normalizeUrlData(inputArray);
   if (!normalArray || !normalArray.length) return null;
 
   for (let i = 0; i < normalArray.length; i++) {
@@ -23,7 +23,28 @@ export const logListData = async (inputArray, scrapeId) => {
   return true;
 };
 
-export const normalizeListData = async (inputArray) => {
+export const logDownloadData = async (inputObj, scrapeId) => {
+  if (!inputObj) return null;
+  console.log("!!!!INPUT OBJ");
+  console.log(inputObj);
+
+  //normalize data
+  const normalObj = await normalizeDownloadData(inputObj);
+
+  const storeObj = {
+    inputObj: normalObj,
+    scrapeId: scrapeId,
+  };
+
+  console.log("!!! STORE OBJ");
+  console.log(storeObj);
+
+  const storeModel = new dbModel(storeObj, CONFIG.log);
+  const storeData = await storeModel.updateLog();
+  console.log(storeData);
+};
+
+export const normalizeUrlData = async (inputArray) => {
   const normalArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     const { type, newListData, newContentData } = inputArray[i];
@@ -35,6 +56,35 @@ export const normalizeListData = async (inputArray) => {
       [`${typeStr}_contentScrapedCount`]: newContentData?.length || 0,
     };
     normalArray.push(urlDataObj);
+  }
+
+  return normalArray;
+};
+
+//FIX HERE !!!!
+export const normalizeDownloadData = async (inputArray) => {
+  const flatArray = [...inputArray.findMediaArray, ...inputArray.downloadMediaArray];
+
+  const normalArray = [];
+  for (let i = 0; i < flatArray.length; i++) {
+    const { type, downloadMediaData, newMediaData } = flatArray[i];
+
+    //log data stats (fix type string first)
+    const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
+    //if found item
+    if (newMediaData) {
+      const foundObj = {
+        [`${typeStr}_mediaFoundCount`]: newMediaData?.length || 0,
+      };
+      normalArray.push(foundObj);
+      continue;
+    }
+    //otherwise downloadObj
+    const downloadObj = {
+      [`${typeStr}_mediaDownloadedCount`]: downloadMediaData?.length || 0,
+    };
+
+    normalArray.push(downloadObj);
   }
 
   return normalArray;

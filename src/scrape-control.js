@@ -4,7 +4,7 @@ import { continueScrape, setScrapeActive } from "./scrape-status.js";
 import { scrapeNewURLs } from "./scrape-urls.js";
 import { scrapeNewMedia } from "./scrape-download.js";
 import { uploadNewTG } from "./scrape-upload.js";
-import { logListData } from "./scrape-log.js";
+import { logUrlData, logDownloadData } from "./scrape-log.js";
 
 export const scrapeNewKCNA = async () => {
   //set scrape active
@@ -15,11 +15,11 @@ export const scrapeNewKCNA = async () => {
   const scrapeId = await startModel.logScrape();
 
   //get and store new urls
-  const urlDataArray = await scrapeNewURLs();
-  await logListData(urlDataArray, scrapeId);
+  const urlData = await scrapeNewURLs();
+  await logUrlData(urlData, scrapeId);
 
   const downloadData = await scrapeNewMedia();
-  console.log(downloadData);
+  await logDownloadData(downloadData, scrapeId);
 
   const uploadData = await uploadNewTG();
   console.log(uploadData);
