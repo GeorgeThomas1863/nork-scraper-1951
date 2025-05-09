@@ -79,6 +79,10 @@ class Vid {
     const urlConstant = "http://www.kcna.kp";
     const vidPageURL = urlConstant + href;
 
+    //check HERE if new URL, throw error if not new
+    const checkModel = new dbModel({ url: vidPageURL }, CONFIG.vidPageList);
+    await checkModel.urlNewCheck();
+
     //extract thmubnail and store it
     const thumbnailModel = new Vid({ inputItem: listItem });
     const thumbnailURL = await thumbnailModel.getVidThumbnail();

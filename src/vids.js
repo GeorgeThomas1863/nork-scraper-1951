@@ -7,11 +7,6 @@ import UTIL from "../models/util-model.js";
 
 //FIND VID PAGES / GET VID URLs SECTION
 
-/**
- * Extracts articleListPage data items, sorts / normalizes them, then stores them
- * @function parseVidList
- * @returns {array} ARRAY of sorted OBJECTs (for tracking)
- */
 export const buildVidList = async (inputHTML) => {
   try {
     // Parse the HTML using JSDOM
@@ -26,9 +21,14 @@ export const buildVidList = async (inputHTML) => {
     const idModel = new UTIL({ inputArray: vidListSort });
     const vidListNormal = await idModel.addListId(CONFIG.vidPageList, "vidPageId");
 
+    console.log("VID LIST NORMAL");
+    console.log(vidListNormal);
+
     //store it
     const storeDataModel = new dbModel(vidListNormal, CONFIG.vidPageList);
-    await storeDataModel.storeArray();
+    const storeData = await storeDataModel.storeArray();
+    console.log("STORE DATA");
+    console.log(storeData);
 
     //(added sorting)
     return vidListArray;

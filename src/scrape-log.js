@@ -11,9 +11,10 @@ export const logListData = async (inputArray, scrapeId) => {
   for (let i = 0; i < normalArray.length; i++) {
     //store by updating log
     const storeObj = {
-      inputObj: inputArray[i],
+      inputObj: normalArray[i],
       scrapeId: scrapeId,
     };
+
     const storeModel = new dbModel(storeObj, CONFIG.log);
     const storeData = await storeModel.updateLog();
     console.log(storeData);
@@ -26,6 +27,7 @@ export const normalizeListData = async (inputArray) => {
   const normalArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     const { type, newListData, newContentData } = inputArray[i];
+
     //log data stats (fix type string first)
     const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
     const urlDataObj = {
