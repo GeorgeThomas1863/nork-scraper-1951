@@ -29,8 +29,8 @@ export const normalizeListData = async (inputArray) => {
     //log data stats (fix type string first)
     const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
     const urlDataObj = {
-      [`${typeStr}_listItemCount`]: newListData ? newListData.length : 0,
-      [`${typeStr}_contentScrapedCount`]: newContentData ? newContentData.length : 0,
+      [`${typeStr}_listItemCount`]: newListData?.length || 0,
+      [`${typeStr}_contentScrapedCount`]: newContentData?.length || 0,
     };
     normalArray.push(urlDataObj);
   }
