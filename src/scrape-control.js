@@ -19,7 +19,7 @@ export const scrapeNewKCNA = async () => {
   //get new media data AND download it
   await scrapeNewMedia(scrapeId);
 
-  const uploadData = await uploadNewTG();
+  const uploadData = await uploadNewTG(scrapeId);
   console.log(uploadData);
 
   //LOG SCRAPE END / show how long it took and write it in readable format

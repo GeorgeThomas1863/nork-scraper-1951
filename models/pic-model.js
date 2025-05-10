@@ -1,11 +1,12 @@
 import { JSDOM } from "jsdom";
 
 import CONFIG from "../config/config.js";
-
 import KCNA from "./kcna-model.js";
 import TG from "./tg-control-model.js";
 import dbModel from "./db-model.js";
 import UTIL from "./util-model.js";
+
+import { continueScrape } from "../src/scrape-status.js";
 
 /**
  * @class Pic
@@ -378,6 +379,9 @@ class Pic {
     const postPicDataArray = [];
     for (let i = 0; i < picArray.length; i++) {
       try {
+        //stop here if needed
+        if (!continueScrape) return postPicDataArray;
+        
         //get full picObj
         const picURL = picArray[i];
 

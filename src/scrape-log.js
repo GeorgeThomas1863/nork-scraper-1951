@@ -25,27 +25,31 @@ export const logData = async (inputArray, scrapeId, logType) => {
 
 //could make better, but dont hate self enough
 export const normalizeByType = async (inputArray, logType) => {
-  // let key = "";
-  // let value = "";
   let normalArray = [];
 
   switch (logType) {
     case "listArray":
       normalArray = await normalizeArray(inputArray, "listItemCount", "newListData", true);
-      return normalArray;
+      break;
 
     case "contentArray":
       normalArray = await normalizeArray(inputArray, "contentScrapedCount", "newContentData", true);
-      return normalArray;
+      break;
 
     case "findMedia":
       normalArray = await normalizeArray(inputArray, "foundCount", "newMediaData", false);
-      return normalArray;
+      break;
 
     case "downloadMedia":
       normalArray = await normalizeArray(inputArray, "downloadedCount", "downloadMediaData", false);
-      return normalArray;
+      break;
+
+    case "uploadMedia":
+      normalArray = await normalizeArray(inputArray, "uploadCount", "uploadMediaData", false);
+      break;
   }
+
+  return normalArray;
 };
 
 //---------------

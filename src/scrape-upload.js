@@ -3,22 +3,28 @@ import dbModel from "../models/db-model.js";
 
 import { continueScrape } from "./scrape-status.js";
 import { newUploadMap } from "../config/map.js";
+import { logData } from "./scrape-log.js";
 
-export const uploadNewTG = async () => {
+export const uploadNewTG = async (scrapeId) => {
+  const uploadMediaData = await uploadMediaArrayTG();
+  await logData(uploadMediaData, scrapeId, "uploadMedia");
+
+  return uploadMediaData;
+};
+
+export const uploadMediaArrayTG = async () => {
   const { typeArr } = CONFIG;
 
   const uploadDataArray = [];
   for (let i = 0; i < typeArr.length; i++) {
-    if (!continueScrape) return null;
+    if (!continueScrape) return uploadDataArray;
     const type = typeArr[i];
-    const uploadData = await uploadByTypeTG(type);
+    const uploadMediaData = await uploadByTypeTG(type);
 
     const uploadDataObj = {
       type: type,
-      uploadData: uploadData,
+      uploadMediaData: uploadMediaData,
     };
-
-    //ADD CHECK HERE FOR STOPPING
 
     //otherwise add to array
     uploadDataArray.push(uploadDataObj);
