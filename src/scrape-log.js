@@ -4,6 +4,10 @@ import dbModel from "../models/db-model.js";
 export const logData = async (inputArray, scrapeId, logType) => {
   if (!inputArray || !inputArray.length) return null;
 
+  console.log("!!!!LOG DATA")
+  console.log(inputArray.length)
+  console.log(logType)
+
   //normalize data
   const normalArray = await normalizeByType(inputArray, logType);
   if (!normalArray || !normalArray.length) return null;
