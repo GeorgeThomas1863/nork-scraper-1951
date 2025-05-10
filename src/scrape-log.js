@@ -25,8 +25,6 @@ export const logUrlData = async (inputArray, scrapeId) => {
 
 export const logDownloadData = async (inputObj, scrapeId) => {
   if (!inputObj) return null;
-  console.log("!!!!INPUT OBJ");
-  console.log(inputObj);
 
   //normalize data
   const normalObj = await normalizeDownloadData(inputObj);
@@ -43,6 +41,8 @@ export const logDownloadData = async (inputObj, scrapeId) => {
   const storeData = await storeModel.updateLog();
   console.log(storeData);
 };
+
+//---------------
 
 export const normalizeUrlData = async (inputArray) => {
   const normalArray = [];
@@ -61,31 +61,36 @@ export const normalizeUrlData = async (inputArray) => {
   return normalArray;
 };
 
+//------------
+
 //FIX HERE !!!! NOT A FUCKING ARRAY (an OBJ)
-export const normalizeDownloadData = async (inputArray) => {
-  const flatArray = [...inputArray.findMediaArray, ...inputArray.downloadMediaArray];
+export const normalizeDownloadData = async (inputObj) => {
+  const flatArray = { ...inputArray.findMediaArray, ...inputArray.downloadMediaArray };
 
-  const normalArray = [];
-  for (let i = 0; i < flatArray.length; i++) {
-    const { type, downloadMediaData, newMediaData } = flatArray[i];
+  console.log("FLAT ARRAY FAGGOT");
+  console.log(flatArray);
 
-    //log data stats (fix type string first)
-    const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
-    //if found item
-    if (newMediaData) {
-      const foundObj = {
-        [`${typeStr}_mediaFoundCount`]: newMediaData?.length || 0,
-      };
-      normalArray.push(foundObj);
-      continue;
-    }
-    //otherwise downloadObj
-    const downloadObj = {
-      [`${typeStr}_mediaDownloadedCount`]: downloadMediaData?.length || 0,
-    };
+  // const normalArray = [];
+  // for (let i = 0; i < flatArray.length; i++) {
+  //   const { type, downloadMediaData, newMediaData } = flatArray[i];
 
-    normalArray.push(downloadObj);
-  }
+  //   //log data stats (fix type string first)
+  //   const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
+  //   //if found item
+  //   if (newMediaData) {
+  //     const foundObj = {
+  //       [`${typeStr}_mediaFoundCount`]: newMediaData?.length || 0,
+  //     };
+  //     normalArray.push(foundObj);
+  //     continue;
+  //   }
+  //   //otherwise downloadObj
+  //   const downloadObj = {
+  //     [`${typeStr}_mediaDownloadedCount`]: downloadMediaData?.length || 0,
+  //   };
 
-  return normalArray;
+  //   normalArray.push(downloadObj);
+  // }
+
+  // return normalArray;
 };
