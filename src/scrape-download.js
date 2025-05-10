@@ -3,6 +3,7 @@ import dbModel from "../models/db-model.js";
 
 import { continueScrape } from "./scrape-status.js";
 import { findNewMediaMap, downloadNewMediaMap } from "../config/map.js";
+import { logData } from "./scrape-log.js";
 
 //NEW MEDIA SECTION (URLS AND DOWNLOAD)
 export const scrapeNewMedia = async (scrapeId) => {

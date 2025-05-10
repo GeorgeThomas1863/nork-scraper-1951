@@ -4,6 +4,7 @@ import dbModel from "../models/db-model.js";
 
 import { continueScrape } from "./scrape-status.js";
 import { newListMap, newContentMap } from "../config/map.js";
+import { logData } from "./scrape-log.js";
 
 export const scrapeNewURLs = async (scrapeId) => {
   //get list array data
