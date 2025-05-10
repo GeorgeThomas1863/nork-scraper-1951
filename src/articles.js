@@ -100,7 +100,7 @@ export const buildArticleContent = async (inputArray) => {
 //---------------------
 
 //UPLOAD SHIT
-export const uploadNewArticlesTG = async (inputArray) => {
+export const uploadArticleArrayTG = async (inputArray) => {
   //null check and sort shouldnt be necessary, doing for redundancy
   if (!inputArray || !inputArray.length) return null;
   const sortModel = new UTIL({ inputArray: inputArray });

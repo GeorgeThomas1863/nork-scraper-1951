@@ -85,7 +85,7 @@ export const buildVidData = async (inputArray) => {
 //----------------------------
 
 //DOWNLOAD VID SECTION
-export const downloadNewVidsFS = async (inputArray) => {
+export const downloadVidPageArray = async (inputArray) => {
   //download just first item (below necessary for obj to be seen as array)
   const sortModel = new UTIL({ inputArray: inputArray });
   const sortArray = await sortModel.sortArrayByKcnaId();
@@ -126,7 +126,7 @@ export const downloadNewVidsFS = async (inputArray) => {
 
 //UPLOAD SHIT
 
-export const uploadNewVidPagesTG = async (inputArray) => {
+export const uploadVidPageArrayTG = async (inputArray) => {
   const sortModel = new UTIL({ inputArray: inputArray });
   const sortArray = await sortModel.sortArrayByDate();
   if (!sortArray || !sortArray.length) return null;

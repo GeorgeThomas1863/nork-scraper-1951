@@ -12,7 +12,7 @@ export const buildPicSetList = async (inputHTML) => {
   try {
     //stop if needed
     if (!continueScrape) return null;
-    
+
     const picSetModel = new Pic({ html: inputHTML });
     const picSetListArray = await picSetModel.getPicSetListArray();
 
@@ -82,7 +82,7 @@ export const buildPicData = async (inputArray) => {
 //----------------------
 
 //DOWNLOAD PIC SECTION
-export const downloadNewPicSets = async (inputArray) => {
+export const downloadPicSetArray = async (inputArray) => {
   const sortModel = new UTIL({ inputArray: inputArray });
   const sortArray = await sortModel.sortArrayByKcnaId();
   if (!sortArray || !sortArray.length) return null;
@@ -114,7 +114,7 @@ export const downloadNewPicSets = async (inputArray) => {
 //---------------------
 
 //UPLOAD PIC SETS
-export const uploadNewPicSetsTG = async (inputArray) => {
+export const uploadPicSetArrayTG = async (inputArray) => {
   //null check and sort shouldnt be necessary, doing for redundancy
   if (!inputArray || !inputArray.length) return null;
   const sortModel = new UTIL({ inputArray: inputArray });
