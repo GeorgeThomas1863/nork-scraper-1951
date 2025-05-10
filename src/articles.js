@@ -26,6 +26,9 @@ export const buildArticleListByType = async (inputHTML) => {
     articleListTypeArray.push(articleListTypeData);
   }
 
+  console.log("!!!!!!!ARTILE LIST ARRAY");
+  console.log(articleListTypeArray.length);
+
   return articleListTypeArray;
 };
 
