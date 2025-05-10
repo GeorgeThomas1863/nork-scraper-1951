@@ -14,7 +14,9 @@ export const parseAdminCommand = async (req, res) => {
   }
 
   //check if already scraping, return null (prevents double scrapes)
-  if (scrapeActive) return res.json({ data: "ALREADY SCRAPING FAGGOT" });
+  if (scrapeActive) {
+    return res.json({ data: "ALREADY SCRAPING FAGGOT" });
+  }
 
   // reset the stopper
   await setContinueScrape(true);
