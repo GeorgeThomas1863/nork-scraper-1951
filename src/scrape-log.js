@@ -23,36 +23,50 @@ export const logData = async (inputArray, scrapeId, logType) => {
   return true;
 };
 
+//could make better, but dont hate self enough
 export const normalizeByType = async (inputArray, logType) => {
-  let normalArray = [];
+  let key = "";
+  let value = "";
 
   switch (logType) {
     case "listArray":
-      normalArray = await normalizeListArray(inputArray);
-      return normalArray;
+      key = "listItemCount";
+      value = "newListData";
+      break;
 
     case "contentArray":
-      normalArray = await normalizeContentArray(inputArray);
+      key = "contentScrapedCount";
+      value = "newContentData";
+      break;
 
     case "findMedia":
-      normalArray = await normalizeFindMediaArray(inputArray);
+      key = "foundCount";
+      value = "newMediaData";
+      break;
 
     case "downloadMedia":
-      normalArray = await normalizeDownloadArray(inputArray);
+      key = "downloadedCount";
+      value = "downloadMediaData";
+      break;
   }
+
+  const normalArray = await normalizeArray(inputArray, key, value);
+
+  return normalArray;
 };
 
 //---------------
 
-export const normalizeListArray = async (inputArray) => {
+export const normalizeArray = async (inputArray, key, value) => {
   const normalArray = [];
   for (let i = 0; i < inputArray.length; i++) {
-    const { type, newListData } = inputArray[i];
+    //way to dynamically destructure
+    const { type, [value]: valueName } = inputArray[i];
 
     //log data stats (fix type string first)
     const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
     const normalObj = {
-      [`${typeStr}_listItemCount`]: newListData?.length || 0,
+      [`${typeStr}_${key}`]: valueName?.length || 0,
     };
     normalArray.push(normalObj);
   }
@@ -60,45 +74,45 @@ export const normalizeListArray = async (inputArray) => {
   return normalArray;
 };
 
-export const normalizeContentArray = async (inputArray) => {
-  const normalArray = [];
-  for (let i = 0; i < inputArray.length; i++) {
-    const { type, newContentData } = inputArray[i];
+// export const normalizeContentArray = async (inputArray) => {
+//   const normalArray = [];
+//   for (let i = 0; i < inputArray.length; i++) {
+//     const { type, newContentData } = inputArray[i];
 
-    const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
-    const normalObj = {
-      [`${typeStr}_contentScrapedCount`]: newContentData?.length || 0,
-    };
-    normalArray.push(normalObj);
-  }
+//     const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
+//     const normalObj = {
+//       [`${typeStr}_contentScrapedCount`]: newContentData?.length || 0,
+//     };
+//     normalArray.push(normalObj);
+//   }
 
-  return normalArray;
-};
+//   return normalArray;
+// };
 
-export const normalizeFindMediaArray = async (inputArray) => {
-  const normalArray = [];
-  for (let i = 0; i < inputArray.length; i++) {
-    const { type, newMediaData } = inputArray[i];
+// export const normalizeFindMediaArray = async (inputArray) => {
+//   const normalArray = [];
+//   for (let i = 0; i < inputArray.length; i++) {
+//     const { type, newMediaData } = inputArray[i];
 
-    const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
-    const normalObj = { [`${typeStr}_foundCount`]: newMediaData?.length || 0 };
-    normalArray.push(normalObj);
-  }
+//     const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
+//     const normalObj = { [`${typeStr}_foundCount`]: newMediaData?.length || 0 };
+//     normalArray.push(normalObj);
+//   }
 
-  return normalArray;
-};
+//   return normalArray;
+// };
 
-export const normalizeDownloadArray = async (inputArray) => {
-  const normalArray = [];
-  for (let i = 0; i < inputArray.length; i++) {
-    const { type, downloadMediaData } = inputArray[i];
+// export const normalizeDownloadArray = async (inputArray) => {
+//   const normalArray = [];
+//   for (let i = 0; i < inputArray.length; i++) {
+//     const { type, downloadMediaData } = inputArray[i];
 
-    const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
-    const normalObj = { [`${typeStr}_downloadedCount`]: downloadMediaData?.length || 0 };
-    normalArray.push(normalObj);
-  }
+//     const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
+//     const normalObj = { [`${typeStr}_downloadedCount`]: downloadMediaData?.length || 0 };
+//     normalArray.push(normalObj);
+//   }
 
-  return normalArray;
-};
+//   return normalArray;
+// };
 
 //------------

@@ -14,7 +14,7 @@ export const scrapeNewURLs = async (scrapeId) => {
 
   //get content array data
   const newContentArray = await getNewContentArray();
-  await logData(newListArray, scrapeId, "contentArray");
+  await logData(newContentArray, scrapeId, "contentArray");
 
   return newContentArray;
 };

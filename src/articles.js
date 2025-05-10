@@ -27,17 +27,9 @@ export const buildArticleListByType = async (inputHTML) => {
     articleListTypeArray.push(...articleListTypeData);
   }
 
-  console.log("^^^^ARTILE LIST ARRAY END LENGTH");
-  console.log(articleListTypeArray.length);
-
   return articleListTypeArray;
 };
 
-/**
- * Extracts articleListPage data items, sorts / normalizes them, then stores them
- * @function buildArticleList
- * @returns {array} ARRAY of sorted OBJECTs (for tracking)
- */
 export const buildArticleList = async (inputHTML, articleType) => {
   //build inputObj
   const inputObj = {
