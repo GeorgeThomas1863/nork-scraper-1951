@@ -4,7 +4,6 @@ import { continueScrape, setScrapeActive } from "./scrape-status.js";
 import { scrapeNewURLs } from "./scrape-urls.js";
 import { scrapeNewMedia } from "./scrape-download.js";
 import { uploadNewTG } from "./scrape-upload.js";
-import { logUrlData, logDownloadData } from "./scrape-log.js";
 
 export const scrapeNewKCNA = async () => {
   //set scrape active
@@ -19,7 +18,6 @@ export const scrapeNewKCNA = async () => {
 
   //get new media data AND download it
   await scrapeNewMedia(scrapeId);
-
 
   const uploadData = await uploadNewTG();
   console.log(uploadData);
