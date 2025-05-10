@@ -26,13 +26,14 @@ export const buildArticleListByType = async (inputHTML) => {
     const articleListTypeData = await buildArticleList(articleListTypeHTML, articleType);
     if (!articleListTypeData) continue;
 
-    console.log("ARTICLE LIST TYPE DATA");
-    console.log(articleListTypeData);
+    // console.log("ARTICLE LIST TYPE DATA");
+    // console.log(articleListTypeData);
 
     console.log("!!!!!!ARTILE LIST ARRAY LENGTH");
     console.log(articleListTypeArray.length);
 
-    articleListTypeArray.push(articleListTypeData);
+    //need spread operator to appropriately append (couild also use concat)
+    articleListTypeArray.push(...articleListTypeData);
   }
 
   console.log("^^^^ARTILE LIST ARRAY END LENGTH");
