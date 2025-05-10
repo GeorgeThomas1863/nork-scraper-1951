@@ -1,6 +1,6 @@
 //TO DO:
 
-//UPLOAD STATS
+//UPLOAD VID STATS
 
 //BUILD BACKUP VID DOWNLOAD (normal, 1 at a time)
 
