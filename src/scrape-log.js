@@ -65,10 +65,10 @@ export const normalizeUrlData = async (inputArray) => {
 
 //FIX HERE !!!! NOT A FUCKING ARRAY (an OBJ)
 export const normalizeDownloadData = async (inputObj) => {
-  const flatArray = { ...inputArray.findMediaArray, ...inputArray.downloadMediaArray };
+  const flatObj = { ...inputObj.findMediaArray, ...inputObj.downloadMediaArray };
 
-  console.log("FLAT ARRAY FAGGOT");
-  console.log(flatArray);
+  console.log("FLAT OBJ FAGGOT");
+  console.log(flatObj);
 
   // const normalArray = [];
   // for (let i = 0; i < flatArray.length; i++) {
