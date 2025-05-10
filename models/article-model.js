@@ -330,44 +330,6 @@ class Article {
   //-----------------
 
   //UPLOAD SECTION
-
-  async postArticleArrayTG() {
-    const { inputArray } = this.dataObject;
-
-    const uploadDataArray = [];
-    for (let i = 0; i < inputArray.length; i++) {
-      try {
-        const inputObj = inputArray[i];
-        const uploadModel = new Article({ inputObj: inputObj });
-        const uploadArticleData = await uploadModel.postArticleObjTG();
-        if (!uploadArticleData || !uploadArticleData.length) continue;
-
-        //Build store obj (just store object for first text chunk)
-        const storeObj = { ...inputObj, ...uploadArticleData[0] };
-        storeObj.textChunks = uploadArticleData.length;
-
-        //TURN OFF
-        console.log("ARTICLE STORE OBJECT");
-        console.log(storeObj);
-
-        //store data
-        const storeModel = new dbModel(storeObj, CONFIG.articlesUploaded);
-        const storeData = await storeModel.storeUniqueURL();
-        console.log(storeData);
-
-        uploadDataArray.push(storeObj);
-      } catch (e) {
-        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-        // console.log(e);
-      }
-    }
-
-    console.log(uploadDataArray);
-    console.log("FUCKING FINISHED ARTICLES");
-
-    return uploadDataArray;
-  }
-
   async postArticleObjTG() {
     const { inputObj } = this.dataObject;
 

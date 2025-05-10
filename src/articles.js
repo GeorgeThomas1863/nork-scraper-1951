@@ -4,6 +4,8 @@ import Article from "../models/article-model.js";
 import UTIL from "../models/util-model.js";
 import dbModel from "../models/db-model.js";
 
+import { continueScrape } from "./scrape-status.js";
+
 //ARTICLE LIST SECTION
 
 export const buildArticleListByType = async (inputHTML) => {
@@ -11,6 +13,9 @@ export const buildArticleListByType = async (inputHTML) => {
 
   const articleListTypeArray = [];
   for (let i = 0; i < articleTypeArr.length; i++) {
+    //stop if needed
+    if (!continueScrape) return articleListTypeArray;
+
     const articleType = articleTypeArr[i];
     const articleListTypeModel = new Article({ type: articleType, html: inputHTML });
     const articleListTypeHTML = await articleListTypeModel.getArticleListTypeHTML();
@@ -76,6 +81,8 @@ export const buildArticleContent = async (inputArray) => {
   //loop (dont check if stored since inputArray based on mongo compare earlier)
   const articleObjArray = [];
   for (let i = 0; i < inputArray.length; i++) {
+    //stop if needed
+    if (!continueScrape) return articleObjArray;
     try {
       const articleObjModel = new Article({ inputObj: inputArray[i] });
       const articleObj = await articleObjModel.getArticleObj();
@@ -93,16 +100,37 @@ export const buildArticleContent = async (inputArray) => {
 //---------------------
 
 //UPLOAD SHIT
-
 export const uploadNewArticlesTG = async (inputArray) => {
   //null check and sort shouldnt be necessary, doing for redundancy
   if (!inputArray || !inputArray.length) return null;
   const sortModel = new UTIL({ inputArray: inputArray });
   const sortArray = await sortModel.sortArrayByArticleId();
 
-  //upload the array
-  const uploadModel = new Article({ inputArray: sortArray });
-  const uploadArticleData = await uploadModel.postArticleArrayTG();
+  const uploadDataArray = [];
+  for (let i = 0; i < sortArray.length; i++) {
+    //stop if needed
+    if (!continueScrape) return uploadDataArray;
+    try {
+      const inputObj = sortArray[i];
+      const uploadModel = new Article({ inputObj: inputObj });
+      const uploadArticleData = await uploadModel.postArticleObjTG();
+      if (!uploadArticleData || !uploadArticleData.length) continue;
 
-  return uploadArticleData;
+      //Build store obj (just store object for first text chunk)
+      const storeObj = { ...inputObj, ...uploadArticleData[0] };
+      storeObj.textChunks = uploadArticleData.length;
+
+      //store data
+      const storeModel = new dbModel(storeObj, CONFIG.articlesUploaded);
+      const storeData = await storeModel.storeUniqueURL();
+      console.log(storeData);
+
+      uploadDataArray.push(storeObj);
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      // console.log(e);
+    }
+  }
+
+  return uploadDataArray;
 };

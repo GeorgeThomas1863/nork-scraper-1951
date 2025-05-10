@@ -239,12 +239,7 @@ class Pic {
   }
 
   //CAN BREAK UP BELOW / REFACTOR
-  /**
-   * Builds picObj from looking up pic headers (and input)
-   * throws ERROR if URL doesnt exist / wrosng, NULL if url NOT pic (to iterate through dateArray)
-   * @params requires url, kcnaId, dateString as input params
-   * @returns finished picObj
-   */
+
   async getPicObj() {
     const { picParams } = this.dataObject;
 
@@ -319,38 +314,6 @@ class Pic {
   //--------------------
 
   //DOWNLOAD PIC SECTION
-
-  async downloadPicArray() {
-    const { inputArray } = this.dataObject;
-
-    //checks /sort not necessary but doing anyway
-    if (!inputArray || !inputArray.length) return null;
-    //SORTING ELSEWHERE
-    // const sortModel = new UTIL({ inputArray: inputArray });
-    // const sortArray = await sortModel.sortArrayByKcnaId();
-
-    const downloadPicDataArray = [];
-    for (let i = 0; i < inputArray.length; i++) {
-      try {
-        //add save path to picObj
-        const picObj = inputArray[i];
-        const savePath = CONFIG.picPath + picObj.kcnaId + ".jpg";
-        picObj.savePath = savePath;
-        const picModel = new Pic({ picObj: picObj });
-
-        //download the pic
-        const downloadPicData = await picModel.downloadPicFS();
-        if (!downloadPicData) continue;
-
-        downloadPicDataArray.push(downloadPicData);
-      } catch (e) {
-        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-      }
-    }
-
-    return downloadPicDataArray;
-  }
-
   async downloadPicFS() {
     const { picObj } = this.dataObject;
 
@@ -371,44 +334,7 @@ class Pic {
 
   //-------------------
 
-  //UPLOAD PIC SECTION
-
-  async postPicSetArrayTG() {
-    const { inputArray } = this.dataObject;
-
-    const uploadDataArray = [];
-    for (let i = 0; i < inputArray.length; i++) {
-      try {
-        const inputObj = inputArray[i];
-        const uploadModel = new Pic({ inputObj: inputObj });
-        const postPicSetData = await uploadModel.postPicSetObjTG();
-        if (!postPicSetData || !postPicSetData.length) continue;
-
-        //Build store obj (just store object for first text chunk)
-        const storeObj = { ...inputObj };
-        storeObj.picsPosted = postPicSetData.length;
-        storeObj.chat = postPicSetData[0]?.chat;
-        storeObj.message_id = postPicSetData[0]?.message_id;
-        storeObj.sender_chat = postPicSetData[0]?.sender_chat;
-
-        //store data
-        const storeModel = new dbModel(storeObj, CONFIG.picSetsUploaded);
-        const storeData = await storeModel.storeUniqueURL();
-        console.log(storeData);
-
-        uploadDataArray.push(storeObj);
-      } catch (e) {
-        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-        // console.log(e);
-      }
-    }
-
-    console.log(uploadDataArray);
-    console.log("FUCKING FINISHED PICS");
-
-    return uploadDataArray;
-  }
-
+  //UPLOAD PIC SET SECTION
   async postPicSetObjTG() {
     const { inputObj } = this.dataObject;
 

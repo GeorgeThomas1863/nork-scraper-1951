@@ -295,40 +295,6 @@ class Vid {
 
   //DOWNLOAD VID SECTION
 
-  async downloadVidArray() {
-    const { inputArray } = this.dataObject;
-
-    if (!inputArray || !inputArray.length) return null;
-
-    const downloadVidDataArray = [];
-    for (let i = 0; i < inputArray.length; i++) {
-      try {
-        //add save path to picObj
-        const vidObj = inputArray[i];
-        const savePath = CONFIG.vidPath + vidObj.kcnaId + ".mp4";
-        vidObj.savePath = savePath;
-        const vidModel = new Vid({ inputObj: vidObj });
-
-        //download the vid
-        const downloadVidObj = await vidModel.downloadVidFS();
-        if (!downloadVidObj) continue;
-
-        //STORE HERE
-        const storeObj = { ...vidObj, ...downloadVidObj };
-        const storeModel = new dbModel(storeObj, CONFIG.vidsDownloaded);
-        await storeModel.storeUniqueURL();
-
-        downloadVidDataArray.push(storeObj);
-      } catch (e) {
-        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-      }
-    }
-
-    return downloadVidDataArray;
-  }
-
-  //!!!!!!!
-  //CLAUDE CLAIMS I CAN REFACTOR, stream is an object
   async downloadVidFS() {
     const { inputObj } = this.dataObject;
 
@@ -353,39 +319,6 @@ class Vid {
   //-----------------------------
 
   //UPLOAD VIDS
-
-  async postVidPageArrayTG() {
-    const { inputArray } = this.dataObject;
-
-    const uploadDataArray = [];
-    for (let i = 0; i < inputArray.length; i++) {
-      try {
-        const inputObj = inputArray[i];
-        const uploadModel = new Vid({ inputObj: inputObj });
-        const postVidPageObjData = await uploadModel.postVidPageObj();
-        if (!postVidPageObjData) continue;
-
-        //Build store obj (just store object for first text chunk)
-        const storeObj = { ...inputObj };
-        storeObj.chat = postVidPageObjData?.chat;
-        storeObj.message_id = postVidPageObjData?.message_id;
-        storeObj.sender_chat = postVidPageObjData?.sender_chat;
-
-        //store data
-        const storeModel = new dbModel(storeObj, CONFIG.vidPagesUploaded);
-        const storeData = await storeModel.storeUniqueURL();
-        console.log(storeData);
-
-        uploadDataArray.push(storeObj);
-      } catch (e) {
-        // console.log(e);
-        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-      }
-    }
-
-    return uploadDataArray;
-  }
-
   async postVidPageObj() {
     const { inputObj } = this.dataObject;
     const { url, vidURL } = inputObj;

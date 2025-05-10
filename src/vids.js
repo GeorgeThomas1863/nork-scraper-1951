@@ -1,14 +1,17 @@
-import { JSDOM } from "jsdom";
-
 import CONFIG from "../config/config.js";
 import Vid from "../models/vid-model.js";
 import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
 
+import { continueScrape } from "./scrape-status.js";
+
 //FIND VID PAGES / GET VID URLs SECTION
 
 export const buildVidList = async (inputHTML) => {
   try {
+    //stop if needed
+    if (!continueScrape) return null;
+
     // Parse the HTML using JSDOM
     const vidListModel = new Vid({ html: inputHTML });
     const vidListArray = await vidListModel.getVidListArray();
@@ -21,13 +24,9 @@ export const buildVidList = async (inputHTML) => {
     const idModel = new UTIL({ inputArray: vidListSort });
     const vidListNormal = await idModel.addListId(CONFIG.vidPageList, "vidPageId");
 
-    console.log("VID LIST NORMAL");
-    console.log(vidListNormal);
-
     //store it
     const storeDataModel = new dbModel(vidListNormal, CONFIG.vidPageList);
     const storeData = await storeDataModel.storeArray();
-    console.log("STORE DATA");
     console.log(storeData);
 
     //(added sorting)
@@ -43,6 +42,9 @@ export const buildVidList = async (inputHTML) => {
 export const buildVidPageContent = async (inputArray) => {
   const vidPageArray = [];
   for (let i = 0; i < inputArray.length; i++) {
+    //stop if needed
+    if (!continueScrape) return vidPageArray;
+
     try {
       const vidPageModel = new Vid({ inputObj: inputArray[i] });
       const vidPageObj = await vidPageModel.getVidPageObj();
@@ -64,6 +66,9 @@ export const buildVidPageContent = async (inputArray) => {
 export const buildVidData = async (inputArray) => {
   const vidDataArray = [];
   for (let i = 0; i < inputArray.length; i++) {
+    //stop if needed
+    if (!continueScrape) return vidDataArray;
+
     try {
       const vidModel = new Vid(inputArray[i]);
       const vidDataObj = await vidModel.getVidData();
@@ -84,16 +89,36 @@ export const downloadNewVidsFS = async (inputArray) => {
   //download just first item (below necessary for obj to be seen as array)
   const sortModel = new UTIL({ inputArray: inputArray });
   const sortArray = await sortModel.sortArrayByKcnaId();
+  if (!sortArray || !sortArray.length) return null;
 
-  // //REMOVE
-  // return null;
+  const downloadVidDataArray = [];
+  // for (let i = 0; i < 1; i++) { //download 1 for TESTING
+  for (let i = 0; i < sortArray.length; i++) {
+    //stop if needed
+    if (!continueScrape) return downloadVidDataArray;
 
-  // // //TURN BACK ON // ONLY DOWNLOADING 1 PER ITERATION
-  // const vidDownloadArray = [sortArray[0]];
-  // const vidModel = new Vid({ inputArray: vidDownloadArray });
-  const vidModel = new Vid({ inputArray: sortArray }); //for testing
+    try {
+      //add save path to picObj
+      const vidObj = sortArray[i];
+      const savePath = CONFIG.vidPath + vidObj.kcnaId + ".mp4";
+      vidObj.savePath = savePath;
+      const vidModel = new Vid({ inputObj: vidObj });
 
-  const downloadVidDataArray = await vidModel.downloadVidArray();
+      //download the vid
+      const downloadVidObj = await vidModel.downloadVidFS();
+      if (!downloadVidObj) continue;
+
+      //STORE HERE
+      const storeObj = { ...vidObj, ...downloadVidObj };
+      const storeModel = new dbModel(storeObj, CONFIG.vidsDownloaded);
+      await storeModel.storeUniqueURL();
+
+      downloadVidDataArray.push(storeObj);
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
+  }
+
   return downloadVidDataArray;
 };
 
@@ -102,14 +127,37 @@ export const downloadNewVidsFS = async (inputArray) => {
 //UPLOAD SHIT
 
 export const uploadNewVidPagesTG = async (inputArray) => {
-  if (!inputArray || !inputArray.length) return null;
-
   const sortModel = new UTIL({ inputArray: inputArray });
   const sortArray = await sortModel.sortArrayByDate();
+  if (!sortArray || !sortArray.length) return null;
 
-  //upload the array
-  const uploadModel = new Vid({ inputArray: sortArray });
-  const uploadVidPageData = await uploadModel.postVidPageArrayTG();
+  const uploadDataArray = [];
+  for (let i = 0; i < sortArray.length; i++) {
+    //stop if needed
+    if (!continueScrape) return uploadDataArray;
+    try {
+      const inputObj = sortArray[i];
+      const uploadModel = new Vid({ inputObj: inputObj });
+      const postVidPageObjData = await uploadModel.postVidPageObj();
+      if (!postVidPageObjData) continue;
 
-  return uploadVidPageData;
+      //Build store obj (just store object for first text chunk)
+      const storeObj = { ...inputObj };
+      storeObj.chat = postVidPageObjData?.chat;
+      storeObj.message_id = postVidPageObjData?.message_id;
+      storeObj.sender_chat = postVidPageObjData?.sender_chat;
+
+      //store data
+      const storeModel = new dbModel(storeObj, CONFIG.vidPagesUploaded);
+      const storeData = await storeModel.storeUniqueURL();
+      console.log(storeData);
+
+      uploadDataArray.push(storeObj);
+    } catch (e) {
+      // console.log(e);
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
+  }
+
+  return uploadDataArray;
 };
