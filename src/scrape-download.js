@@ -69,8 +69,7 @@ export const downloadNewMedia = async () => {
     if (!continueScrape) return downloadMediaArray;
     const downloadType = typeArr[i];
     const downloadMediaData = await downloadNewMediaByType(downloadType);
-    if (!downloadMediaData) continue;
-
+  
     const downloadMediaObj = {
       type: downloadType,
       downloadMediaData: downloadMediaData,

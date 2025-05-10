@@ -28,7 +28,6 @@ export const getNewListArray = async () => {
     if (!continueScrape) return newListArray;
     const type = typeArr[i];
     const newListData = await getNewListData(type);
-    if (!newListData) continue;
 
     const newListObj = {
       newListData: newListData,
@@ -70,7 +69,7 @@ export const getNewContentArray = async () => {
     if (!continueScrape) return newContentArray;
     const type = typeArr[i];
     const newContentData = await getNewContentData(type);
-    if (!newContentData) continue;
+
     const newContentObj = {
       newContentData: newContentData,
       type: type,

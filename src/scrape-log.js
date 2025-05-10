@@ -2,11 +2,13 @@ import CONFIG from "../config/config.js";
 import dbModel from "../models/db-model.js";
 
 export const logData = async (inputArray, scrapeId, logType) => {
-  if (!inputArray || !inputArray.length) return null;
+  if (!inputArray) return null;
+  console.log("AHHHHHHHHHHHHHHHHHHHH");
+  console.log(inputArray);
 
   //normalize data
   const normalArray = await normalizeByType(inputArray, logType);
-  if (!normalArray || !normalArray.length) return null;
+  if (!normalArray) return null;
 
   for (let i = 0; i < normalArray.length; i++) {
     //store by updating log
