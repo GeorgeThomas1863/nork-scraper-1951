@@ -29,10 +29,13 @@ export const buildArticleListByType = async (inputHTML) => {
     console.log("ARTICLE LIST TYPE DATA");
     console.log(articleListTypeData);
 
+    console.log("!!!!!!ARTILE LIST ARRAY LENGTH");
+    console.log(articleListTypeArray.length);
+
     articleListTypeArray.push(articleListTypeData);
   }
 
-  console.log("!!!!!!!ARTILE LIST ARRAY");
+  console.log("^^^^ARTILE LIST ARRAY END LENGTH");
   console.log(articleListTypeArray.length);
 
   return articleListTypeArray;
@@ -44,46 +47,39 @@ export const buildArticleListByType = async (inputHTML) => {
  * @returns {array} ARRAY of sorted OBJECTs (for tracking)
  */
 export const buildArticleList = async (inputHTML, articleType) => {
+  //build inputObj
+  const inputObj = {
+    html: inputHTML,
+    type: articleType,
+  };
+
+  const articleListModel = new Article(inputObj);
+  const articleListArray = await articleListModel.getArticleListArray();
+  console.log("GOT " + articleListArray.length + " NEW ARTICLES");
+
+  //sort the array
+  const sortModel = new UTIL({ inputArray: articleListArray });
+  const articleListSort = await sortModel.sortArrayByDate();
+
+  //add article ID
+  const idModel = new UTIL({ inputArray: articleListSort });
+  const articleListNormal = await idModel.addListId(CONFIG.articleList, "articleId");
+
+  //store the sorted array
   try {
-    //build inputObj
-    const inputObj = {
-      html: inputHTML,
-      type: articleType,
-    };
-
-    const articleListModel = new Article(inputObj);
-    const articleListArray = await articleListModel.getArticleListArray();
-    console.log("GOT " + articleListArray.length + " NEW ARTICLES");
-
-    //sort the array
-    const sortModel = new UTIL({ inputArray: articleListArray });
-    const articleListSort = await sortModel.sortArrayByDate();
-
-    //add article ID
-    const idModel = new UTIL({ inputArray: articleListSort });
-    const articleListNormal = await idModel.addListId(CONFIG.articleList, "articleId");
-
-    //store the sorted array
     const storeDataModel = new dbModel(articleListNormal, CONFIG.articleList);
     await storeDataModel.storeArray();
-
-    //for tracking
-    return articleListNormal;
   } catch (e) {
     console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
   }
+
+  return articleListNormal;
 };
 
 //---------------
 
 //Article content
 
-/**
- * GETs and builds array of NEW articleObjs by looping through download array (which ONLY contains new items)
- * @function buildArticleContent
- * @params downloadArray (new articles to download)
- * @returns array of articleObjs (for tracking)
- */
 export const buildArticleContent = async (inputArray) => {
   if (!inputArray || !inputArray.length) return null;
 
