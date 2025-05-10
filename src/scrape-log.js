@@ -63,37 +63,25 @@ export const normalizeUrlData = async (inputArray) => {
 
 //------------
 
-//FIX HERE !!!! NOT A FUCKING ARRAY (an OBJ)
 export const normalizeDownloadData = async (inputObj) => {
-  const flatArray = [ ...inputObj.findMediaArray, ...inputObj.downloadMediaArray ]
+  const { findMediaArray, downloadMediaArray } = inputObj;
 
-  console.log("FLAT OBJ FAGGOT");
-  console.log(flatArray);
+  //found media array loop
+  const normalArray = [];
+  for (let i = 0; i < findMediaArray.length; i++) {
+    const { type, newMediaData } = findMediaArray[i];
+    const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
+    const returnObj = { [`${typeStr}_foundCount`]: newMediaData?.length || 0 };
+    normalArray.push(returnObj);
+  }
 
-  console.log("FUCKING INPUT OBJ");
-  console.log(inputObj);
+  //downloaded media array loop
+  for (let i = 0; i < downloadMediaArray.length; i++) {
+    const { type, downloadMediaData } = downloadMediaArray[i];
+    const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
+    const returnObj = { [`${typeStr}_downloadedCount`]: downloadMediaData?.length || 0 };
+    normalArray.push(returnObj);
+  }
 
-  // const normalArray = [];
-  // for (let i = 0; i < flatArray.length; i++) {
-  //   const { type, downloadMediaData, newMediaData } = flatArray[i];
-
-  //   //log data stats (fix type string first)
-  //   const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
-  //   //if found item
-  //   if (newMediaData) {
-  //     const foundObj = {
-  //       [`${typeStr}_mediaFoundCount`]: newMediaData?.length || 0,
-  //     };
-  //     normalArray.push(foundObj);
-  //     continue;
-  //   }
-  //   //otherwise downloadObj
-  //   const downloadObj = {
-  //     [`${typeStr}_mediaDownloadedCount`]: downloadMediaData?.length || 0,
-  //   };
-
-  //   normalArray.push(downloadObj);
-  // }
-
-  // return normalArray;
+  return normalArray;
 };
