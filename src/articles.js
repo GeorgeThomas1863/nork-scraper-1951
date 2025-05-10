@@ -20,8 +20,14 @@ export const buildArticleListByType = async (inputHTML) => {
     const articleListTypeModel = new Article({ type: articleType, html: inputHTML });
     const articleListTypeHTML = await articleListTypeModel.getArticleListTypeHTML();
 
+    console.log("ARTICLE TYPE!!!");
+    console.log(articleType);
+
     const articleListTypeData = await buildArticleList(articleListTypeHTML, articleType);
     if (!articleListTypeData) continue;
+
+    console.log("ARTICLE LIST TYPE DATA");
+    console.log(articleListTypeData);
 
     articleListTypeArray.push(articleListTypeData);
   }
