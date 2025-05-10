@@ -29,6 +29,7 @@ export const logDownloadData = async (inputObj, scrapeId) => {
   //normalize data
   const normalObj = await normalizeDownloadData(inputObj);
 
+  //store it
   const storeObj = {
     inputObj: normalObj,
     scrapeId: scrapeId,
@@ -67,21 +68,19 @@ export const normalizeDownloadData = async (inputObj) => {
   const { findMediaArray, downloadMediaArray } = inputObj;
 
   //found media array loop
-  const normalArray = [];
+  const normalObj = {};
   for (let i = 0; i < findMediaArray.length; i++) {
     const { type, newMediaData } = findMediaArray[i];
     const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
-    const returnObj = { [`${typeStr}_foundCount`]: newMediaData?.length || 0 };
-    normalArray.push(returnObj);
+    normalObj[`${typeStr}_foundCount`] = newMediaData?.length || 0;
   }
 
   //downloaded media array loop
   for (let i = 0; i < downloadMediaArray.length; i++) {
     const { type, downloadMediaData } = downloadMediaArray[i];
     const typeStr = type === "pics" ? "picSets" : type === "vids" ? "vidPages" : type;
-    const returnObj = { [`${typeStr}_downloadedCount`]: downloadMediaData?.length || 0 };
-    normalArray.push(returnObj);
+    normalObj[`${typeStr}_downloadedCount`] = downloadMediaData?.length || 0;
   }
 
-  return normalArray;
+  return normalObj;
 };
