@@ -70,6 +70,9 @@ export const normalizeDownloadData = async (inputObj) => {
   console.log("FLAT OBJ FAGGOT");
   console.log(flatObj);
 
+  console.log("FUCKING INPUT OBJ");
+  console.log(inputObj);
+
   // const normalArray = [];
   // for (let i = 0; i < flatArray.length; i++) {
   //   const { type, downloadMediaData, newMediaData } = flatArray[i];
