@@ -1,8 +1,6 @@
 //TO DO:
 
-//STORE STATS in LOG db
-
-//KEEP GOING ON / TEST STAT STORAGE
+//UPLOAD STATS
 
 //BUILD BACKUP VID DOWNLOAD (normal, 1 at a time)
 
