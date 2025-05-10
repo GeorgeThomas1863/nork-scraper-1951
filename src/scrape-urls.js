@@ -5,28 +5,38 @@ import dbModel from "../models/db-model.js";
 import { continueScrape } from "./scrape-status.js";
 import { newListMap, newContentMap } from "../config/map.js";
 
-export const scrapeNewURLs = async () => {
+export const scrapeNewURLs = async (scrapeId) => {
+  //get list array data
+  const newListArray = await getNewListArray();
+  await logData(newListArray, scrapeId, "listArray");
+  if (!continueScrape) return newListArray;
+
+  //get content array data
+  const newContentArray = await getNewContentArray();
+  await logData(newListArray, scrapeId, "contentArray");
+
+  return newContentArray;
+};
+
+export const getNewListArray = async () => {
   const { typeArr } = CONFIG;
 
-  //loop through types for content data
-  const urlDataArray = [];
+  const newListArray = [];
   for (let i = 0; i < typeArr.length; i++) {
     //stop if needed
-    if (!continueScrape) continue;
+    if (!continueScrape) return newListArray;
     const type = typeArr[i];
     const newListData = await getNewListData(type);
-    const newContentData = await getNewContentData(type);
-    const urlDataObj = {
-      type: type,
-      newListData: newListData,
-      newContentData: newContentData,
-    };
-    if (!urlDataObj) continue;
+    if (!newListData) continue;
 
-    urlDataArray.push(urlDataObj);
+    const newListObj = {
+      newListData: newListData,
+      type: type,
+    };
+    newListArray.push(newListObj);
   }
 
-  return urlDataArray;
+  return newListArray;
 };
 
 export const getNewListData = async (type) => {
@@ -46,6 +56,29 @@ export const getNewListData = async (type) => {
   console.log("FOUND " + listArray?.length + " " + type.toUpperCase());
 
   return listArray;
+};
+
+//-------------
+
+export const getNewContentArray = async () => {
+  const { typeArr } = CONFIG;
+
+  const newContentArray = [];
+  for (let i = 0; i < typeArr.length; i++) {
+    //stop if needed
+    if (!continueScrape) return newContentArray;
+    const type = typeArr[i];
+    const newContentData = await getNewContentData(type);
+    if (!newContentData) continue;
+    const newContentObj = {
+      newContentData: newContentData,
+      type: type,
+    };
+
+    newContentArray.push(newContentObj);
+  }
+
+  return newContentArray;
 };
 
 export const getNewContentData = async (type) => {

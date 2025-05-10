@@ -15,11 +15,11 @@ export const scrapeNewKCNA = async () => {
   const scrapeId = await startModel.logScrape();
 
   //get and store new urls
-  const urlData = await scrapeNewURLs();
-  await logUrlData(urlData, scrapeId);
+  await scrapeNewURLs(scrapeId);
 
-  const downloadData = await scrapeNewMedia();
-  await logDownloadData(downloadData, scrapeId);
+  //get new media data AND download it
+  await scrapeNewMedia(scrapeId);
+
 
   const uploadData = await uploadNewTG();
   console.log(uploadData);

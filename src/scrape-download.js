@@ -5,51 +5,36 @@ import { continueScrape } from "./scrape-status.js";
 import { findNewMediaMap, downloadNewMediaMap } from "../config/map.js";
 
 //NEW MEDIA SECTION (URLS AND DOWNLOAD)
-export const scrapeNewMedia = async () => {
+export const scrapeNewMedia = async (scrapeId) => {
+  const findMediaData = await findNewMedia();
+  await logData(findMediaData, scrapeId, "findMedia");
+  if (!continueScrape) return findMediaData;
+
+  const downloadMediaData = await downloadNewMedia();
+  await logData(downloadMediaData, scrapeId, "downloadMedia");
+
+  return downloadMediaData;
+};
+
+export const findNewMedia = async () => {
   const { typeArr } = CONFIG;
 
-  //retarded loop for getting new media data (start at 1 bc 0 is articles)
   const findMediaArray = [];
   for (let i = 1; i < typeArr.length; i++) {
-    if (!continueScrape) continue;
+    if (!continueScrape) return findMediaArray;
     const findType = typeArr[i];
     const newMediaData = await getNewMediaData(findType);
+    if (!newMediaData) continue;
 
     const findMediaObj = {
       type: findType,
       newMediaData: newMediaData,
     };
 
-    //ADD CHECK HERE for STOPPING
-
-    //otherwise push to array
     findMediaArray.push(findMediaObj);
   }
 
-  //retarded loop for downloading shit
-  const downloadMediaArray = [];
-  for (let i = 1; i < typeArr.length; i++) {
-    if (!continueScrape) continue;
-    const downloadType = typeArr[i];
-    const downloadMediaData = await downloadNewMediaFS(downloadType);
-
-    const downloadMediaObj = {
-      type: downloadType,
-      downloadMediaData: downloadMediaData,
-    };
-
-    //ADD CHECK HERE for STOPPING
-
-    //otherwise push to array
-    downloadMediaArray.push(downloadMediaObj);
-  }
-
-  const newMediaObj = {
-    findMediaArray: findMediaArray,
-    downloadMediaArray: downloadMediaArray,
-  };
-
-  return newMediaObj;
+  return findMediaArray;
 };
 
 export const getNewMediaData = async (type) => {
@@ -73,7 +58,31 @@ export const getNewMediaData = async (type) => {
   return mediaDataArray;
 };
 
-export const downloadNewMediaFS = async (type) => {
+//-----------
+
+export const downloadNewMedia = async () => {
+  const { typeArr } = CONFIG;
+
+  const downloadMediaArray = [];
+  for (let i = 1; i < typeArr.length; i++) {
+    if (!continueScrape) return downloadMediaArray;
+    const downloadType = typeArr[i];
+    const downloadMediaData = await downloadNewMediaByType(downloadType);
+    if (!downloadMediaData) continue;
+
+    const downloadMediaObj = {
+      type: downloadType,
+      downloadMediaData: downloadMediaData,
+    };
+
+    //otherwise push to array
+    downloadMediaArray.push(downloadMediaObj);
+  }
+
+  return downloadMediaArray;
+};
+
+export const downloadNewMediaByType = async (type) => {
   if (type === "articles") return null;
   const downloadObj = await downloadNewMediaMap(type);
 
