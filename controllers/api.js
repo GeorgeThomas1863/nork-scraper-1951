@@ -1,4 +1,4 @@
-import { parseAdminCommand } from "../src/scrape-command-parse";
+import { parseAdminCommand } from "../src/scrape-command-parse.js";
 
 //moved everything to src
 export const apiRoute = async (req, res) => {
