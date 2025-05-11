@@ -8,7 +8,7 @@ export const parseAdminCommand = async (req, res) => {
   if (!commandType) return null;
 
   //if stop scrape
-  if (commandType === "stop-scrape") {
+  if (commandType === "admin-stop-scrape") {
     await setContinueScrape(false);
     console.log("SCRAPE STOPPED");
     return res.json({ data: "SCRAPE STOPPED" });
@@ -24,13 +24,13 @@ export const parseAdminCommand = async (req, res) => {
   await setContinueScrape(true);
 
   //if reset auto
-  if (commandType === "reset-auto") {
+  if (commandType === "admin-reset-auto") {
     const restartData = await restartAutoScrape(inputParams);
     return res.json({ data: restartData });
   }
 
   //handle other entries
-  if (commandType !== "start-scrape") return null;
+  if (commandType !== "admin-start-scrape") return null;
 
   //otherwise start scrape
   const scrapeData = await parseStartCommand(inputParams);
@@ -45,15 +45,15 @@ export const parseStartCommand = async (inputParams) => {
 
   let data = "";
   switch (howMuch) {
-    case "scrape-new":
+    case "admin-scrape-new":
       data = await scrapeNewKCNA();
       break;
 
-    case "scrape-all":
+    case "admin-scrape-all":
       data = await scrapeAllKCNA();
       break;
 
-    case "scrape-url":
+    case "admin-scrape-url":
       if (!urlInput) return null;
       data = await scrapeUrlKCNA(urlInput);
       break;
