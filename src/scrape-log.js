@@ -10,7 +10,7 @@ export const logData = async (inputArray, scrapeId, logType) => {
 
   for (let i = 0; i < normalArray.length; i++) {
     //store by updating log
-    const storeObj = {
+    let storeObj = {
       inputObj: normalArray[i],
       scrapeId: scrapeId,
     };
