@@ -6,30 +6,35 @@ import { scrapeNewMedia } from "./scrape-download.js";
 import { uploadNewTG } from "./scrape-upload.js";
 
 export const scrapeNewKCNA = async () => {
-  //set scrape active
-  await setScrapeActive(true);
+  try {
+    //set scrape active
+    await setScrapeActive(true);
 
-  //log scrape start
-  const startModel = new UTIL();
-  const scrapeId = await startModel.logScrape();
+    //log scrape start
+    const startModel = new UTIL();
+    const scrapeId = await startModel.logScrape();
 
-  //get and store new urls
-  await scrapeNewURLs(scrapeId);
+    //get and store new urls
+    await scrapeNewURLs(scrapeId);
 
-  //get new media data AND download it
-  await scrapeNewMedia(scrapeId);
+    //get new media data AND download it
+    await scrapeNewMedia(scrapeId);
 
-  const uploadData = await uploadNewTG(scrapeId);
-  console.log(uploadData);
+    const uploadData = await uploadNewTG(scrapeId);
+    console.log(uploadData);
 
-  //LOG SCRAPE END / show how long it took and write it in readable format
-  const endModel = new UTIL({ scrapeId: scrapeId });
-  await endModel.logScrape();
-  console.log("#DONE");
+    //LOG SCRAPE END / show how long it took and write it in readable format
+    const endModel = new UTIL({ scrapeId: scrapeId });
+    await endModel.logScrape();
+    console.log("#DONE");
 
-  //clear scrape active
-  await setScrapeActive(false);
-  return "FINISHED NEW SCRAPE";
+    //clear scrape active
+    await setScrapeActive(false);
+    return "FINISHED NEW SCRAPE";
+  } catch (e) {
+    console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    return "SCRAPE FAILED";
+  }
 };
 
 export const scrapeAllKCNA = async () => {
