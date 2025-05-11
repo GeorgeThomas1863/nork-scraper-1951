@@ -321,7 +321,7 @@ class Vid {
   //UPLOAD VIDS
   async postVidPageObj() {
     const { inputObj } = this.dataObject;
-    const { url, vidURL } = inputObj;
+    const { url, vidURL, thumbnail } = inputObj;
 
     if (!inputObj) {
       const error = new Error("VID PAGE UPLOAD FUCKED");
@@ -364,7 +364,7 @@ class Vid {
     //post thumbnail
     const thumbnailLookupParams = {
       keyToLookup: "url",
-      itemValue: "thumbnail",
+      itemValue: thumbnail,
     };
 
     //get thumbnail data
