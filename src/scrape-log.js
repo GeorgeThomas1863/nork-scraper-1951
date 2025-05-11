@@ -112,7 +112,7 @@ export const extractPicsPosted = async (inputArray) => {
       case "articles":
         for (let j = 0; j < uploadMediaData.length; j++) {
           const articleItem = uploadMediaData[j];
-          if (!articleItem || !articleItem.picArray) continue;
+          if (!articleItem || !articleItem.picArray || !articleItem.picArray.length) continue;
 
           //add number of articles posted
           picsPosted = picsPosted + articleItem.picArray.length;
@@ -122,7 +122,7 @@ export const extractPicsPosted = async (inputArray) => {
       case "pics":
         for (let k = 0; k < uploadMediaData.length; k++) {
           const picSetItem = uploadMediaData[k];
-          if (!picSetItem || !picSetItem.picArray) continue;
+          if (!picSetItem || !picSetItem.picArray || !picSetItem.picArray.length) continue;
 
           //add number of articles posted
           picsPosted = picsPosted + picSetItem.picArray.length;

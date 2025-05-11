@@ -357,9 +357,23 @@ class Vid {
       throw error;
     }
 
-    //otherwise stuff, starting with title
+    //otherwise post title
     const tgModel = new TG({ inputObj: vidPageObj });
     await tgModel.postTitleTG();
+
+    //post thumbnail
+    const thumbnailLookupParams = {
+      keyToLookup: "url",
+      itemValue: "thumbnail",
+    };
+
+    //get thumbnail data
+    const thumbnailLookupModel = new dbModel(thumbnailLookupParams, CONFIG.picsDownloaded);
+    const lookupObj = await thumbnailLookupModel.getUniqueItem();
+    const thumbnailObj = { ...lookupObj, ...normalObj };
+
+    const thumnailPostModel = new TG({ inputObj: thumbnailObj });
+    await thumnailPostModel.postPicTG();
 
     //post vid
     const postVidData = await tgModel.postVidTG();
