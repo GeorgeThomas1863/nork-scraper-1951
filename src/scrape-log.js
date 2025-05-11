@@ -55,10 +55,13 @@ export const normalizeByType = async (inputArray, logType) => {
 
 export const extractMediaCount = async (inputArray) => {
   console.log("%%%% ALLAHU AKBAR");
-  console.log(inputArray);
+  // console.log(inputArray);
   //extract pics posted
   const picsPosted = await extractPicsPosted(inputArray);
   const vidsPosted = await extractVidsPosted(inputArray);
+
+  console.log("WHY DOES NOTHING FUCKING WORK");
+  console.log(picsPosted);
 
   //build obj
   const storeObj = {
