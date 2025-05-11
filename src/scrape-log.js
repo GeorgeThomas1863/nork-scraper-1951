@@ -10,15 +10,20 @@ export const logData = async (inputArray, scrapeId, logType) => {
 
   for (let i = 0; i < normalArray.length; i++) {
     //store by updating log
-    let storeObj = {
+    const storeObj = {
       inputObj: normalArray[i],
       scrapeId: scrapeId,
     };
 
     if (logType === "uploadMedia") {
       const mediaObj = await extractMediaCount(inputArray);
-      storeObj = { ...storeObj, ...mediaObj };
+      const { pics_uploadCount, vids_uploadCount } = mediaObj;
+      storeObj.pics_uploadCount = pics_uploadCount;
+      storeObj.vids_uploadCount = vids_uploadCount;
     }
+
+    console.log("MOTHERFUCKING STORE OBJ");
+    console.log(storeObj);
 
     const storeModel = new dbModel(storeObj, CONFIG.log);
     const storeData = await storeModel.updateLog();
@@ -51,7 +56,6 @@ export const normalizeByType = async (inputArray, logType) => {
 
     case "uploadMedia":
       normalArray = await normalizeArray(inputArray, "uploadCount", "uploadMediaData", true);
-
       break;
   }
 
