@@ -24,9 +24,6 @@ export const logData = async (inputArray, scrapeId, logType) => {
       scrapeId: scrapeId,
     };
 
-    console.log("MOTHERFUCKING STORE OBJ");
-    console.log(storeObj);
-
     const storeModel = new dbModel(storeObj, CONFIG.log);
     const storeData = await storeModel.updateLog();
     console.log(storeData);
