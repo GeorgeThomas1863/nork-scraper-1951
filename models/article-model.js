@@ -8,6 +8,7 @@ import Pic from "./pic-model.js";
 import UTIL from "./util-model.js";
 
 import { articleTypeListMap } from "../config/map.js";
+import { scrapeId } from "../src/scrape-util.js";
 
 /**
  * @class Article
@@ -84,8 +85,9 @@ class Article {
         const articleListModel = new Article({ listItem: inputArray[i] });
         const articleListObj = await articleListModel.parseArticleListItem();
 
-        //ADD ARTICLE TYPE HERE
+        //ADD ARTICLE TYPE HERE AND SCRAPE ID HERE
         articleListObj.articleType = type;
+        articleListObj.scrapeId = scrapeId;
 
         articleListArray.push(articleListObj); //add to array
       } catch (e) {
@@ -142,13 +144,6 @@ class Article {
 
   //ARTICLE CONTENT / DATA ITEM SECTION
 
-  /**
-   * Builds articleObj by parsing articleHTML, combining with inputObj then storing it
-   * [new check NOT necessary bc way download array generated]
-   * @function buildArticleObj
-   * @param {*} inputObj articleItem to download from downloadArray
-   * @returns
-   */
   async getArticleObj() {
     //get html for new article
     const { inputObj } = this.dataObject;
@@ -170,6 +165,9 @@ class Article {
     if (!parseObj) return null;
 
     const articleObj = { ...inputObj, ...parseObj };
+
+    //add scrapeId here
+    articleObj.scrapeId = scrapeId;
 
     const storeModel = new dbModel(articleObj, CONFIG.articles);
     const storeData = await storeModel.storeUniqueURL();
@@ -222,12 +220,6 @@ class Article {
     return parseObj;
   }
 
-  /**
-   * Extracts text content from article (array of paragraph items)
-   * @function parseArticleText
-   * @param {*} inputArray array of paragraph items containing article text
-   * @returns article text as a joined string
-   */
   async parseArticleText() {
     const { textElement } = this.dataObject;
     const textArray = textElement.querySelectorAll("p"); //array of paragraph elements
@@ -268,12 +260,6 @@ class Article {
     return articlePicObj;
   }
 
-  /**
-   * Extracts articlPicArray by parsing article pic page (if present)
-   * AFTER adding to array (so not impacted by pics already downloaded) stores NEW pics in pic db for later downloading
-   * @param {} picPageURL url for article pic page
-   * @returns array of articlePicObjs
-   */
   async getArticlePicArray() {
     //get article pic html
     const htmlModel = new KCNA(this.dataObject);
@@ -310,11 +296,6 @@ class Article {
     return picArray;
   }
 
-  /**
-   * Gets the article picObj by using Pic model, returns picObj
-   * @param {*} imgItem image element with link to pic
-   * @returns returns articlePicObj
-   */
   async getArticlePicURL() {
     const { imgItem } = this.dataObject;
     if (!imgItem) return null;
@@ -345,8 +326,9 @@ class Article {
     const normalModel = new UTIL({ inputObj: inputObj });
     const articleObj = await normalModel.normalizeInputsTG();
 
-    //add channel to post to HERE
+    //add channel to post to / SRAPE ID  HERE
     articleObj.tgUploadId = CONFIG.tgUploadId;
+    articleObj.scrapeId = scrapeId;
 
     //post title
     const titleModel = new TG({ inputObj: articleObj });

@@ -1,6 +1,6 @@
 import UTIL from "../models/util-model.js";
 
-import { continueScrape, setScrapeActive } from "./scrape-status.js";
+import { continueScrape, setScrapeActive, setScrapeId } from "./scrape-util.js";
 import { scrapeNewURLs } from "./scrape-urls.js";
 import { scrapeNewMedia } from "./scrape-download.js";
 import { uploadNewTG } from "./scrape-upload.js";
@@ -9,9 +9,10 @@ export const scrapeNewKCNA = async () => {
   //set scrape active
   await setScrapeActive(true);
 
-  //log scrape start
+  //log scrape start / set scrape ID
   const startModel = new UTIL();
   const scrapeId = await startModel.logScrape();
+  await setScrapeId(scrapeId);
 
   //get and store new urls
   await scrapeNewURLs(scrapeId);

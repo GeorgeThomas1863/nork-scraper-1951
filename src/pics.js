@@ -3,7 +3,7 @@ import Pic from "../models/pic-model.js";
 import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
 
-import { continueScrape } from "./scrape-status.js";
+import { continueScrape } from "./scrape-util.js";
 
 //FIND PICS / GET PICURLS SECTION
 

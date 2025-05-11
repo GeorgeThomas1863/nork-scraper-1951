@@ -1,5 +1,5 @@
 import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA, restartAutoScrape } from "./scrape-control.js";
-import { setContinueScrape, scrapeActive, continueScrape } from "./scrape-status.js";
+import { setContinueScrape, scrapeActive, continueScrape } from "./scrape-util.js";
 
 //could refactor to switch
 export const parseAdminCommand = async (inputParams) => {

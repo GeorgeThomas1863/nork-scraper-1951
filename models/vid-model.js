@@ -8,6 +8,8 @@ import Pic from "./pic-model.js";
 import dbModel from "./db-model.js";
 import UTIL from "./util-model.js";
 
+import { scrapeId } from "../src/scrape-util.js";
+
 /**
  * @class Vid
  * @description Does shit with KCNA Vid (gets them, parses html)
@@ -109,6 +111,7 @@ class Vid {
       dateString: dateString,
       date: vidDate,
       title: title,
+      scrapeId: scrapeId,
     };
 
     return vidListObj;
@@ -160,6 +163,7 @@ class Vid {
     //add to obj
     const vidPageObj = { ...inputObj };
     vidPageObj.vidURL = vidURL;
+    vidPageObj.scrapeId = scrapeId;
 
     //store obj
     const storeModel = new dbModel(vidPageObj, CONFIG.vidPageContent);
@@ -215,6 +219,9 @@ class Vid {
     const vidObj = await vidObjModel.getVidObj();
     if (!vidObj) return null;
 
+    //add scrape id
+    vidObj.scrapeId = scrapeId;
+
     const storeModel = new dbModel(vidObj, CONFIG.vids);
     const storeData = await storeModel.storeUniqueURL();
     console.log(storeData);
@@ -235,9 +242,6 @@ class Vid {
       dateString: dateString,
     };
 
-    // console.log("FUCKING VID PARAMS");
-    // console.log(vidParams);
-
     return vidParams;
   }
 
@@ -252,9 +256,6 @@ class Vid {
     const headerObj = await headerModel.parseVidHeaders();
 
     const vidObj = { ...vidParams, ...headerObj };
-
-    // console.log("VID OBJECT");
-    // console.log(vidObj);
 
     return vidObj;
   }
@@ -304,6 +305,9 @@ class Vid {
     //throws error if not new (keep out of try block to propogate error)
     await checkModel.urlNewCheck();
 
+    //add scrapeId
+    inputObj.scrapeId = scrapeId;
+
     //download vid multi
     const downloadModel = new KCNA({ inputObj: inputObj });
     const downloadVidObj = await downloadModel.getVidMultiThread();
@@ -333,6 +337,7 @@ class Vid {
 
     //add channel to post to HERE
     inputObj.tgUploadId = CONFIG.tgUploadId;
+    inputObj.scrapeId = scrapeId;
 
     //normalizes obj
     const normalModel = new UTIL({ inputObj: inputObj });
@@ -396,6 +401,7 @@ class Vid {
           url: thumbnail,
           kcnaId: kcnaId,
           savePath: thumbnailObj.savePath,
+          scrapeId: scrapeId,
         };
         const picModel = new Pic({ picObj: picParams });
         await picModel.downloadPicFS();

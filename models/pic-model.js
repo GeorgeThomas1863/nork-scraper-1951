@@ -7,7 +7,7 @@ import TG from "./tg-control-model.js";
 import dbModel from "./db-model.js";
 import UTIL from "./util-model.js";
 
-import { continueScrape } from "../src/scrape-status.js";
+import { continueScrape, scrapeId } from "../src/scrape-util.js";
 
 /**
  * @class Pic
@@ -98,6 +98,7 @@ class Pic {
       url: picSetURL,
       title: title,
       date: picSetDate,
+      scrapeId: scrapeId,
     };
 
     return picSetListObj;
@@ -131,9 +132,10 @@ class Pic {
     const parseModel = new Pic({ html: picSetPageHTML });
     const picSetArray = await parseModel.parsePicSetHTML();
 
-    //add to obj
+    //add to obj / ADD SCRAPE ID HERE
     const picSetObj = { ...inputObj };
     picSetObj.picArray = picSetArray;
+    picSetObj.scrapeId = scrapeId;
 
     //store it
     const storePicSetModel = new dbModel(picSetObj, CONFIG.picSetContent);
@@ -215,6 +217,9 @@ class Pic {
     const picObj = await picObjModel.getPicObj();
     if (!picObj) return null;
 
+    //add scrape id here
+    picObj.scrapeId = scrapeId;
+
     //store it
     const storeModel = new dbModel(picObj, CONFIG.pics);
     const storeData = await storeModel.storeUniqueURL();
@@ -269,9 +274,6 @@ class Pic {
     }
 
     const picObj = { ...picParams, ...headerObj };
-
-    // console.log("PIC OBJECT");
-    // console.log(picObj);
 
     return picObj;
   }
@@ -336,8 +338,12 @@ class Pic {
 
     const downloadModel = new KCNA(picObj);
     const returnObj = await downloadModel.getPicReq();
-
     const downloadPicObj = { ...picObj, ...returnObj };
+
+    //add scrape id
+    downloadPicObj.scrapeId = scrapeId;
+
+    //store it
     const storeModel = new dbModel(downloadPicObj, CONFIG.picsDownloaded);
     await storeModel.storeUniqueURL();
 
@@ -361,8 +367,9 @@ class Pic {
     const normalModel = new UTIL({ inputObj: inputObj });
     const picSetObj = await normalModel.normalizeInputsTG();
 
-    //add channel to post to HERE
+    //add channel to post to AND scrape ID here
     picSetObj.tgUploadId = CONFIG.tgUploadId;
+    picSetObj.scrapeId = scrapeId;
 
     //post title
     const titleModel = new TG({ inputObj: picSetObj });

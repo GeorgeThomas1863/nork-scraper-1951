@@ -1,13 +1,13 @@
 import CONFIG from "../config/config.js";
 import dbModel from "../models/db-model.js";
 
-import { continueScrape } from "./scrape-status.js";
+import { continueScrape } from "./scrape-util.js";
 import { newUploadMap } from "../config/map.js";
-import { logData } from "./scrape-log.js";
+// import { logData } from "./scrape-log.js";
 
-export const uploadNewTG = async (scrapeId) => {
+export const uploadNewTG = async () => {
   const uploadMediaData = await uploadMediaArrayTG();
-  await logData(uploadMediaData, scrapeId, "uploadMedia");
+  // await logData(uploadMediaData, scrapeId, "uploadMedia");
 
   return uploadMediaData;
 };

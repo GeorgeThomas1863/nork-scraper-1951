@@ -2,20 +2,20 @@ import CONFIG from "../config/config.js";
 import KCNA from "../models/kcna-model.js";
 import dbModel from "../models/db-model.js";
 
-import { continueScrape } from "./scrape-status.js";
+import { continueScrape } from "./scrape-util.js";
 import { newListMap, newContentMap } from "../config/map.js";
-import { logData } from "./scrape-log.js";
+// import { logData } from "./scrape-log.js";
 
-export const scrapeNewURLs = async (scrapeId) => {
+export const scrapeNewURLs = async () => {
   //get list array data
 
   const newListArray = await getNewListArray();
-  await logData(newListArray, scrapeId, "listArray");
+  // await logData(newListArray, scrapeId, "listArray");
   if (!continueScrape) return newListArray;
 
   //get content array data
   const newContentArray = await getNewContentArray();
-  await logData(newContentArray, scrapeId, "contentArray");
+  // await logData(newContentArray, scrapeId, "contentArray");
 
   return newContentArray;
 };
@@ -36,6 +36,7 @@ export const getNewListArray = async () => {
         newListData: newListData,
         type: type,
       };
+
       newListArray.push(newListObj);
     } catch (e) {
       console.log(e.message + "; F BREAK: getNewListArray; SITE CONNECTION PROB FUCKED");

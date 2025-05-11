@@ -1,18 +1,18 @@
 import CONFIG from "../config/config.js";
 import dbModel from "../models/db-model.js";
 
-import { continueScrape } from "./scrape-status.js";
+import { continueScrape } from "./scrape-util.js";
 import { findNewMediaMap, downloadNewMediaMap } from "../config/map.js";
-import { logData } from "./scrape-log.js";
+// import { logData } from "./scrape-log.js";
 
 //NEW MEDIA SECTION (URLS AND DOWNLOAD)
-export const scrapeNewMedia = async (scrapeId) => {
+export const scrapeNewMedia = async () => {
   const findMediaData = await findNewMedia();
-  await logData(findMediaData, scrapeId, "findMedia");
+  // await logData(findMediaData, scrapeId, "findMedia");
   if (!continueScrape) return findMediaData;
 
   const downloadMediaData = await downloadNewMedia();
-  await logData(downloadMediaData, scrapeId, "downloadMedia");
+  // await logData(downloadMediaData, scrapeId, "downloadMedia");
 
   return downloadMediaData;
 };
@@ -69,7 +69,7 @@ export const downloadNewMedia = async () => {
     if (!continueScrape) return downloadMediaArray;
     const downloadType = typeArr[i];
     const downloadMediaData = await downloadNewMediaByType(downloadType);
-  
+
     const downloadMediaObj = {
       type: downloadType,
       downloadMediaData: downloadMediaData,

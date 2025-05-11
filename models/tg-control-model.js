@@ -7,7 +7,7 @@ import TgReq from "./tgReq-model.js";
 import dbModel from "./db-model.js";
 
 import { articleTypeTitleMap } from "../config/map.js";
-import { continueScrape } from "../src/scrape-status.js";
+import { continueScrape } from "../src/scrape-util.js";
 
 class TG {
   static tokenIndex = 0;
