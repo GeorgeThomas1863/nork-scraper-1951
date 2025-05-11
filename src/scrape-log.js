@@ -69,9 +69,12 @@ export const extractMediaCount = async (inputArray) => {
     vids_uploadCount: vidsPosted?.length || 0,
   };
 
+  console.log(storeObj);
+
   //store it
   const storeModel = new dbModel(storeObj, CONFIG.log);
   const storeData = await storeModel.updateLog();
+  console.log("WHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
   console.log(storeData);
 
   return storeObj;
