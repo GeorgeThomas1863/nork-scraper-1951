@@ -372,6 +372,9 @@ class Vid {
     const lookupObj = await thumbnailLookupModel.getUniqueItem();
     const thumbnailObj = { ...lookupObj, ...normalObj };
 
+    console.log("THUMBNAIL OBJ");
+    console.log(thumbnailObj);
+
     const thumnailPostModel = new TG({ inputObj: thumbnailObj });
     await thumnailPostModel.postPicTG();
 
