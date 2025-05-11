@@ -388,9 +388,9 @@ class Vid {
     const thumbnailObj = { ...lookupObj, ...inputObj };
 
     //check if thumbnail exists, download it if not
-    const picExists = fs.existsSync(thumbnailObj.savePath);
-    if (!picExists) {
-      try {
+    try {
+      const picExists = fs.existsSync(thumbnailObj.savePath);
+      if (!picExists) {
         //build download pic params
         const picParams = {
           url: thumbnail,
@@ -398,19 +398,14 @@ class Vid {
           savePath: thumbnailObj.savePath,
         };
         const picModel = new Pic({ picObj: picParams });
-        const picData = await picModel.downloadPicFS();
-
-        //if download fails (or error), giveup, return null
-        if (!picData) return null;
-      } catch (e) {
-        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-        return null;
+        await picModel.downloadPicFS();
       }
+      //post thumbnail
+      const thumnailPostModel = new TG({ inputObj: thumbnailObj });
+      await thumnailPostModel.postPicTG();
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
-
-    //post thumbnail
-    const thumnailPostModel = new TG({ inputObj: thumbnailObj });
-    await thumnailPostModel.postPicTG();
   }
 }
 
