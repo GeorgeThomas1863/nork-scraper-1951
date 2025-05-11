@@ -1,3 +1,4 @@
+import fs from "fs";
 import { JSDOM } from "jsdom";
 
 import CONFIG from "../config/config.js";
@@ -317,11 +318,21 @@ class Pic {
   //DOWNLOAD PIC SECTION
   async downloadPicFS() {
     const { picObj } = this.dataObject;
+    const { url, savePath } = picObj;
 
-    //check if new (not possible in most situations, but adding check to be sure)
-    const checkModel = new dbModel(picObj, CONFIG.picsDownloaded);
-    //throws error if not new (keep out of try block to propogate error)
-    await checkModel.urlNewCheck();
+    //!!!!HAVE IT CHECK IF ITS ALREADY SAVED TO FILE PATH (instead of Mongo lookup)
+    const picExists = fs.existsSync(savePath);
+    if (picExists) {
+      const error = new Error("PIC ALREADY DOWNLOADED");
+      error.url = url;
+      error.function = "downloadPicFS";
+      throw error;
+    }
+
+    // //check if new (not possible in most situations, but adding check to be sure)
+    // const checkModel = new dbModel(picObj, CONFIG.picsDownloaded);
+    // //throws error if not new (keep out of try block to propogate error)
+    // await checkModel.urlNewCheck();
 
     const downloadModel = new KCNA(picObj);
     const returnObj = await downloadModel.getPicReq();
@@ -381,7 +392,7 @@ class Pic {
       try {
         //stop here if needed
         if (!continueScrape) return postPicDataArray;
-        
+
         //get full picObj
         const picURL = picArray[i];
 

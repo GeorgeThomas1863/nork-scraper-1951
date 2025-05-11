@@ -4,6 +4,7 @@ import fs from "fs";
 import CONFIG from "../config/config.js";
 import KCNA from "./kcna-model.js";
 import TG from "./tg-control-model.js";
+import Pic from "./pic-model.js";
 import dbModel from "./db-model.js";
 import UTIL from "./util-model.js";
 
@@ -373,7 +374,7 @@ class Vid {
 
   async postVidThumbnail() {
     const { inputObj } = this.dataObject;
-    const { thumbnail } = inputObj;
+    const { thumbnail, kcnaId } = inputObj;
 
     //thumbnail params
     const thumbnailLookupParams = {
@@ -386,8 +387,26 @@ class Vid {
     const lookupObj = await thumbnailLookupModel.getUniqueItem();
     const thumbnailObj = { ...lookupObj, ...inputObj };
 
-    console.log("!!!!!!!!!!!!!!THUMBNAIL OBJECT");
-    console.log(thumbnailObj);
+    //check if thumbnail exists, download it if not
+    const picExists = fs.existsSync(thumbnailObj.savePath);
+    if (!picExists) {
+      try {
+        //build download pic params
+        const picParams = {
+          url: thumbnail,
+          kcnaId: kcnaId,
+          savePath: thumbnailObj.savePath,
+        };
+        const picModel = new Pic({ picObj: picParams });
+        const picData = await picModel.downloadPicFS();
+
+        //if download fails (or error), giveup, return null
+        if (!picData) return null;
+      } catch (e) {
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+        return null;
+      }
+    }
 
     //post thumbnail
     const thumnailPostModel = new TG({ inputObj: thumbnailObj });
