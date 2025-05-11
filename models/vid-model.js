@@ -337,9 +337,6 @@ class Vid {
     const normalModel = new UTIL({ inputObj: inputObj });
     const normalObj = await normalModel.normalizeInputsTG();
 
-    console.log("NORMAL OBJECT IN MODEL");
-    console.log(normalObj);
-
     //get vid obj data (extra data for each vid)
     const lookupParams = {
       keyToLookup: "url",
@@ -352,8 +349,8 @@ class Vid {
     const vidPageObj = { ...normalObj, ...vidObjData };
 
     //check if file exists HERE, throw error if it doesnt
-    const vidExsts = fs.existsSync(vidPageObj.savePath);
-    if (!vidExsts) {
+    const vidExists = fs.existsSync(vidPageObj.savePath);
+    if (!vidExists) {
       const error = new Error("VID NOT YET DOWNLOADED");
       error.url = url;
       error.function = "postVidPageObj";
@@ -364,6 +361,20 @@ class Vid {
     const tgModel = new TG({ inputObj: vidPageObj });
     await tgModel.postTitleTG();
 
+    //post thumbnail
+    const thumbnailModel = new Vid({ inputObj: normalObj });
+    await thumbnailModel.postVidThumbnail();
+
+    //post vid
+    const postVidData = await tgModel.postVidTG();
+
+    return postVidData;
+  }
+
+  async postVidThumbnail() {
+    const { inputObj } = this.dataObject;
+    const { thumbnail } = inputObj;
+
     //thumbnail params
     const thumbnailLookupParams = {
       keyToLookup: "url",
@@ -373,16 +384,14 @@ class Vid {
     //get thumbnail data
     const thumbnailLookupModel = new dbModel(thumbnailLookupParams, CONFIG.picsDownloaded);
     const lookupObj = await thumbnailLookupModel.getUniqueItem();
-    const thumbnailObj = { ...lookupObj, ...normalObj };
+    const thumbnailObj = { ...lookupObj, ...inputObj };
+
+    console.log("!!!!!!!!!!!!!!THUMBNAIL OBJECT");
+    console.log(thumbnailObj);
 
     //post thumbnail
     const thumnailPostModel = new TG({ inputObj: thumbnailObj });
     await thumnailPostModel.postPicTG();
-
-    //post vid
-    const postVidData = await tgModel.postVidTG();
-
-    return postVidData;
   }
 }
 
