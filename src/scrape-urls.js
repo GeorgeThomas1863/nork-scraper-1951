@@ -8,6 +8,7 @@ import { logData } from "./scrape-log.js";
 
 export const scrapeNewURLs = async (scrapeId) => {
   //get list array data
+
   const newListArray = await getNewListArray();
   await logData(newListArray, scrapeId, "listArray");
   if (!continueScrape) return newListArray;
@@ -24,18 +25,22 @@ export const getNewListArray = async () => {
 
   const newListArray = [];
   for (let i = 0; i < typeArr.length; i++) {
-    //stop if needed
-    if (!continueScrape) return newListArray;
-    const type = typeArr[i];
-    const newListData = await getNewListData(type);
+    //try in case url connection fails
+    try {
+      //stop if needed
+      if (!continueScrape) return newListArray;
+      const type = typeArr[i];
+      const newListData = await getNewListData(type);
 
-    const newListObj = {
-      newListData: newListData,
-      type: type,
-    };
-    newListArray.push(newListObj);
+      const newListObj = {
+        newListData: newListData,
+        type: type,
+      };
+      newListArray.push(newListObj);
+    } catch (e) {
+      console.log(e.message + "; F BREAK: getNewListArray; SITE CONNECTION PROB FUCKED");
+    }
   }
-
   return newListArray;
 };
 
@@ -65,17 +70,21 @@ export const getNewContentArray = async () => {
 
   const newContentArray = [];
   for (let i = 0; i < typeArr.length; i++) {
-    //stop if needed
-    if (!continueScrape) return newContentArray;
-    const type = typeArr[i];
-    const newContentData = await getNewContentData(type);
+    try {
+      //stop if needed
+      if (!continueScrape) return newContentArray;
+      const type = typeArr[i];
+      const newContentData = await getNewContentData(type);
 
-    const newContentObj = {
-      newContentData: newContentData,
-      type: type,
-    };
+      const newContentObj = {
+        newContentData: newContentData,
+        type: type,
+      };
 
-    newContentArray.push(newContentObj);
+      newContentArray.push(newContentObj);
+    } catch (e) {
+      console.log(e.message + "; F BREAK: getNewContentArray; SITE CONNECTION PROB FUCKED");
+    }
   }
 
   return newContentArray;
