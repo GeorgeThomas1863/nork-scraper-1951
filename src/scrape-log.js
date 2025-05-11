@@ -3,8 +3,6 @@ import dbModel from "../models/db-model.js";
 
 export const logData = async (inputArray, scrapeId, logType) => {
   if (!inputArray) return null;
-  console.log("AHHHHHHHHHHHHHHHHHHHH");
-  console.log(inputArray);
 
   //normalize data
   const normalArray = await normalizeByType(inputArray, logType);
@@ -47,8 +45,12 @@ export const normalizeByType = async (inputArray, logType) => {
       break;
 
     case "uploadMedia":
-      normalArray = await normalizeArray(inputArray, "uploadCount", "uploadMediaData", false);
+      normalArray = await normalizeArray(inputArray, "uploadCount", "uploadMediaData", true);
       break;
+  }
+
+  if (logType === "uploadMedia") {
+    const picsPosted = await extractPicsPosted(inputArray);
   }
 
   return normalArray;
@@ -75,4 +77,34 @@ export const normalizeArray = async (inputArray, key, value, changeTypeStr) => {
   }
 
   return normalArray;
+};
+
+export const extractPicsPosted = async (inputArray) => {
+  let picsPosted = 0;
+
+  console.log("EXTRACT PICS FROM ARTICLES");
+  console.log(inputArray[0]);
+  console.log("EXTRACT PICS FROM PIC SETS");
+  console.log(inputArray[1]);
+  console.log("EXTRACT PICS FROM VIDS");
+  console.log(inputArray[2]);
+
+  for (let i = 0; i < inputArray.length; i++) {
+    const { type } = inputArray[i];
+
+    switch (type) {
+      case "articles":
+        const { uploadMediaData } = inputArray[i];
+        for (let j = 0; j < uploadMediaData.length; j++) {
+          const articleItem = uploadMediaData[j];
+          if (!articleItem || !articleItem.picArray) continue;
+
+          //add number of articles posted
+          picsPosted = picsPosted + articleItem.picArray.length;
+        }
+    }
+  }
+
+  console.log("######PICS POSTED");
+  console.log(picsPosted);
 };
