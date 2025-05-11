@@ -29,7 +29,7 @@ export const scrapeNewKCNA = async () => {
 
   //clear scrape active
   await setScrapeActive(false);
-  return;
+  return "FINISHED SUCCESSFUL SCRAPE";
 };
 
 export const scrapeAllKCNA = async () => {
