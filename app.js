@@ -3,6 +3,8 @@
 //ADD one more set of stats at very end showing TOTAL articles, pics, vids, vidPages, picSets 
 // uploaded ALL TIME / NOT single scrape(just use mongo)
 
+//BUILD GET STATUS INTO DISPLAY ONLY (look up log collection)
+
 //BUILD BACKUP VID DOWNLOAD (normal, 1 at a time)
 
 import CONFIG from "./config/config.js";
