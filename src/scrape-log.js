@@ -10,10 +10,15 @@ export const logData = async (inputArray, scrapeId, logType) => {
 
   for (let i = 0; i < normalArray.length; i++) {
     //store by updating log
-    const storeObj = {
-      inputObj: normalArray[i],
-      scrapeId: scrapeId,
-    };
+    const storeObj = {};
+
+    if (logType === "uploadMedia") {
+      const mediaObj = await extractMediaCount(inputArray);
+      storeObj = { ...mediaObj };
+    }
+
+    storeObj.inputObj = normalArray[i];
+    storeObj.scrapeId = scrapeId;
 
     const storeModel = new dbModel(storeObj, CONFIG.log);
     const storeData = await storeModel.updateLog();
@@ -46,7 +51,7 @@ export const normalizeByType = async (inputArray, logType) => {
 
     case "uploadMedia":
       normalArray = await normalizeArray(inputArray, "uploadCount", "uploadMediaData", true);
-      await extractMediaCount(inputArray);
+
       break;
   }
 
@@ -54,28 +59,15 @@ export const normalizeByType = async (inputArray, logType) => {
 };
 
 export const extractMediaCount = async (inputArray) => {
-  console.log("%%%% ALLAHU AKBAR");
-  // console.log(inputArray);
   //extract pics posted
   const picsPosted = await extractPicsPosted(inputArray);
   const vidsPosted = await extractVidsPosted(inputArray);
 
-  console.log("WHY DOES NOTHING FUCKING WORK");
-  console.log(picsPosted);
-
   //build obj
   const storeObj = {
-    pics_uploadCount: picsPosted?.length || 0,
-    vids_uploadCount: vidsPosted?.length || 0,
+    pics_uploadCount: picsPosted || 0,
+    vids_uploadCount: vidsPosted || 0,
   };
-
-  console.log(storeObj);
-
-  //store it
-  const storeModel = new dbModel(storeObj, CONFIG.log);
-  const storeData = await storeModel.updateLog();
-  console.log("WHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
-  console.log(storeData);
 
   return storeObj;
 };
