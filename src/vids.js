@@ -127,6 +127,9 @@ export const downloadVidPageArray = async (inputArray) => {
 //UPLOAD SHIT
 
 export const uploadVidPageArrayTG = async (inputArray) => {
+  console.log("!!!!!!!UPLOAD VID PAGE ARRAY");
+  console.log(inputArray);
+
   const sortModel = new UTIL({ inputArray: inputArray });
   const sortArray = await sortModel.sortArrayByDate();
   if (!sortArray || !sortArray.length) return null;
