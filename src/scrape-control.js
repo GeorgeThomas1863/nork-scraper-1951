@@ -30,10 +30,10 @@ export const scrapeNewKCNA = async () => {
 
     //clear scrape active
     await setScrapeActive(false);
-    return "FINISHED NEW SCRAPE";
+    return { data: "FINISHED NEW SCRAPE" };
   } catch (e) {
     console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-    return "SCRAPE FAILED";
+    return { data: "SCRAPE FAILED" };
   }
 };
 
@@ -48,7 +48,8 @@ export const scrapeUrlKCNA = async (url) => {
   console.log("build");
 };
 
-// //put here so you can use the fucking scrape id
-// export const storeLogData = async (inputArray, scrapeId) => {
-
-// };
+//might move
+export const restartAutoScrape = async (inputParams) => {
+  //if scrape already active return null (prevents double scrapes)
+  console.log("BUILD");
+};

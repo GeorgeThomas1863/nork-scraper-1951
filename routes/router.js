@@ -1,8 +1,8 @@
 import express from "express";
-import { parseAdminCommand } from "../controllers/parse-command.js";
+import { apiRoute } from "../controllers/api.js";
 
 const router = express.Router();
 
-router.post("/nork", parseAdminCommand);
+router.post("/nork", apiRoute);
 
 export default router;

@@ -1,9 +1,8 @@
-import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA } from "../src/scrape-control.js";
-import { setContinueScrape, scrapeActive } from "../src/scrape-status.js";
+import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA, restartAutoScrape } from "./scrape-control.js";
+import { setContinueScrape, scrapeActive } from "./scrape-status.js";
 
-//could refactor back to switch but easier this way
-export const parseAdminCommand = async (req, res) => {
-  const inputParams = req.body;
+//could refactor to switch
+export const parseAdminCommand = async (inputParams) => {
   const { commandType } = inputParams;
   if (!commandType) return null;
 
@@ -11,13 +10,13 @@ export const parseAdminCommand = async (req, res) => {
   if (commandType === "admin-stop-scrape") {
     await setContinueScrape(false);
     console.log("SCRAPE STOPPED");
-    return res.json({ data: "SCRAPE STOPPED" });
+    return "SCRAPE STOPPED";
   }
 
   //check if already scraping, return null (prevents double scrapes)
   if (scrapeActive) {
     console.log("ALREADY SCRAPING FAGGOT");
-    return res.json({ data: "ALREADY SCRAPING FAGGOT" });
+    return "ALREADY SCRAPING FAGGOT";
   }
 
   // reset the stopper
@@ -26,7 +25,7 @@ export const parseAdminCommand = async (req, res) => {
   //if reset auto
   if (commandType === "admin-reset-auto") {
     const restartData = await restartAutoScrape(inputParams);
-    return res.json({ data: restartData });
+    return restartData;
   }
 
   //handle other entries
@@ -35,7 +34,7 @@ export const parseAdminCommand = async (req, res) => {
   //otherwise start scrape
   const scrapeData = await parseStartCommand(inputParams);
 
-  return res.json({ data: scrapeData });
+  return scrapeData;
 };
 
 export const parseStartCommand = async (inputParams) => {
@@ -60,10 +59,4 @@ export const parseStartCommand = async (inputParams) => {
   }
 
   return data;
-};
-
-//might move
-export const restartAutoScrape = async (inputParams) => {
-  //if scrape already active return null (prevents double scrapes)
-  console.log("BUILD");
 };
