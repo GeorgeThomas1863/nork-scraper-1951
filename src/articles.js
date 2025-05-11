@@ -4,7 +4,7 @@ import Article from "../models/article-model.js";
 import UTIL from "../models/util-model.js";
 import dbModel from "../models/db-model.js";
 
-import { continueScrape } from "./scrape-status.js";
+import { continueScrape } from "./scrape-util.js";
 
 //ARTICLE LIST SECTION
 
