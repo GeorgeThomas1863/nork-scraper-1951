@@ -46,14 +46,30 @@ export const normalizeByType = async (inputArray, logType) => {
 
     case "uploadMedia":
       normalArray = await normalizeArray(inputArray, "uploadCount", "uploadMediaData", true);
+      await extractMediaCount(inputArray);
       break;
   }
 
-  if (logType === "uploadMedia") {
-    const picsPosted = await extractPicsPosted(inputArray);
-  }
-
   return normalArray;
+};
+
+export const extractMediaCount = async (inputArray) => {
+  //extract pics posted
+  const picsPosted = await extractPicsPosted(inputArray);
+  const vidsPosted = await extractVidsPosted(inputArray);
+
+  //build obj
+  const storeObj = {
+    pics_uploadCount: picsPosted?.length || 0,
+    vids_uploadCount: vidsPosted?.length || 0,
+  };
+
+  //store it
+  const storeModel = new dbModel(storeObj, CONFIG.log);
+  const storeData = await storeModel.updateLog();
+  console.log(storeData);
+
+  return storeObj;
 };
 
 //---------------
@@ -90,11 +106,10 @@ export const extractPicsPosted = async (inputArray) => {
   console.log(inputArray[2]);
 
   for (let i = 0; i < inputArray.length; i++) {
-    const { type } = inputArray[i];
+    const { type, uploadMediaData } = inputArray[i];
 
     switch (type) {
       case "articles":
-        const { uploadMediaData } = inputArray[i];
         for (let j = 0; j < uploadMediaData.length; j++) {
           const articleItem = uploadMediaData[j];
           if (!articleItem || !articleItem.picArray) continue;
@@ -102,9 +117,51 @@ export const extractPicsPosted = async (inputArray) => {
           //add number of articles posted
           picsPosted = picsPosted + articleItem.picArray.length;
         }
+        break;
+
+      case "pics":
+        for (let k = 0; k < uploadMediaData.length; k++) {
+          const picSetItem = uploadMediaData[k];
+          if (!picSetItem || !picSetItem.picArray) continue;
+
+          //add number of articles posted
+          picsPosted = picsPosted + picSetItem.picArray.length;
+        }
+        break;
+
+      case "vids":
+        for (let m = 0; m < uploadMediaData.length; m++) {
+          const vidPageItem = uploadMediaData[m];
+          if (!vidPageItem || !vidPageItem.thumbnail) continue;
+
+          //otherwise count thumbnail
+          picsPosted++;
+        }
+        break;
     }
+
+    return picsPosted;
   }
 
   console.log("######PICS POSTED");
   console.log(picsPosted);
+};
+
+export const extractVidsPosted = async (inputArray) => {
+  let vidsPosted = 0;
+
+  for (let i = 0; i < inputArray.length; i++) {
+    const { type, uploadMediaData } = inputArray[i];
+    if (type !== "vids" || !uploadMediaData) continue;
+
+    for (let j = 0; j < uploadMediaData.length; j++) {
+      const vidItem = uploadMediaData[j];
+      if (!vidItem || !vidItem.tgUploadId) continue;
+
+      //otherwise count vid as uploaded
+      vidsPosted++;
+    }
+  }
+
+  return vidsPosted;
 };
