@@ -1,3 +1,5 @@
+import { parseAdminCommand } from "../src/scrape-command-parse";
+
 //moved everything to src
 export const apiRoute = async (req, res) => {
   const inputParams = req.body;
