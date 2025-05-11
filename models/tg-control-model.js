@@ -306,8 +306,7 @@ class TG {
     if (!chunkData || !chunkData.result) return null;
 
     //label the chunk (add caption)
-    const caption =
-      titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + kcnaId + ".mp4; [" + (chunkNumber + 1) + " of " + totalChunks + "]";
+    const caption = titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + kcnaId + ".mp4; [" + (chunkNumber + 1) + " of " + totalChunks + "]";
 
     //build edit caption params
     const editParams = {

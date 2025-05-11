@@ -361,7 +361,7 @@ class Vid {
     const tgModel = new TG({ inputObj: vidPageObj });
     await tgModel.postTitleTG();
 
-    //post thumbnail
+    //thumbnail params
     const thumbnailLookupParams = {
       keyToLookup: "url",
       itemValue: thumbnail,
@@ -370,14 +370,9 @@ class Vid {
     //get thumbnail data
     const thumbnailLookupModel = new dbModel(thumbnailLookupParams, CONFIG.picsDownloaded);
     const lookupObj = await thumbnailLookupModel.getUniqueItem();
-    console.log("LOOKUP OBJ");
-    console.log(lookupObj);
-
     const thumbnailObj = { ...lookupObj, ...normalObj };
 
-    console.log("THUMBNAIL OBJ");
-    console.log(thumbnailObj);
-
+    //post thumbnail
     const thumnailPostModel = new TG({ inputObj: thumbnailObj });
     await thumnailPostModel.postPicTG();
 
