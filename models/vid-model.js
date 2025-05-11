@@ -370,6 +370,9 @@ class Vid {
     //get thumbnail data
     const thumbnailLookupModel = new dbModel(thumbnailLookupParams, CONFIG.picsDownloaded);
     const lookupObj = await thumbnailLookupModel.getUniqueItem();
+    console.log("LOOKUP OBJ");
+    console.log(lookupObj);
+
     const thumbnailObj = { ...lookupObj, ...normalObj };
 
     console.log("THUMBNAIL OBJ");
