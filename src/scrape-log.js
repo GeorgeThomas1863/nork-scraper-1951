@@ -10,17 +10,19 @@ export const logData = async (inputArray, scrapeId, logType) => {
 
   for (let i = 0; i < normalArray.length; i++) {
     //store by updating log
-    const storeObj = {
-      inputObj: normalArray[i],
-      scrapeId: scrapeId,
-    };
+    const inputObj = normalArray[i];
 
     if (logType === "uploadMedia") {
       const mediaObj = await extractMediaCount(inputArray);
       const { pics_uploadCount, vids_uploadCount } = mediaObj;
-      storeObj.pics_uploadCount = pics_uploadCount;
-      storeObj.vids_uploadCount = vids_uploadCount;
+      inputObj.pics_uploadCount = pics_uploadCount;
+      inputObj.vids_uploadCount = vids_uploadCount;
     }
+
+    const storeObj = {
+      inputObj: inputObj,
+      scrapeId: scrapeId,
+    };
 
     console.log("MOTHERFUCKING STORE OBJ");
     console.log(storeObj);
