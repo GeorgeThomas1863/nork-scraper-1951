@@ -337,6 +337,9 @@ class Vid {
     const normalModel = new UTIL({ inputObj: inputObj });
     const normalObj = await normalModel.normalizeInputsTG();
 
+    console.log("NORMAL OBJECT IN MODEL");
+    console.log(normalObj);
+
     //get vid obj data (extra data for each vid)
     const lookupParams = {
       keyToLookup: "url",
