@@ -30,10 +30,10 @@ export const scrapeNewKCNA = async () => {
 
     //clear scrape active
     await setScrapeActive(false);
-    return { data: "FINISHED NEW SCRAPE" };
+    return "FINISHED NEW SCRAPE";
   } catch (e) {
     console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-    return { data: "SCRAPE FAILED" };
+    return "SCRAPE FUCKED";
   }
 };
 
