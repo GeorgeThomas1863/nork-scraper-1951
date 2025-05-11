@@ -7,6 +7,7 @@ import TgReq from "./tgReq-model.js";
 import dbModel from "./db-model.js";
 
 import { articleTypeTitleMap } from "../config/map.js";
+import { continueScrape } from "../src/scrape-status.js";
 
 class TG {
   static tokenIndex = 0;
@@ -272,6 +273,9 @@ class TG {
     //send each chunk
     const chunkDataArray = [];
     for (let i = 0; i < totalChunks; i++) {
+      //STOP HERE if needed
+      if (!continueScrape) return chunkDataArray;
+
       //define chunk
       const start = i * chunkSize;
       const end = Math.min(vidSizeBytes, start + chunkSize);
