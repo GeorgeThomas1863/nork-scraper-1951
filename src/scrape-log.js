@@ -54,6 +54,8 @@ export const normalizeByType = async (inputArray, logType) => {
 };
 
 export const extractMediaCount = async (inputArray) => {
+  console.log("%%%% ALLAHU AKBAR");
+  console.log(inputArray);
   //extract pics posted
   const picsPosted = await extractPicsPosted(inputArray);
   const vidsPosted = await extractVidsPosted(inputArray);
@@ -111,7 +113,6 @@ export const extractPicsPosted = async (inputArray) => {
 
     switch (type) {
       case "articles":
-        console.log(uploadMediaData);
         for (let j = 0; j < uploadMediaData.length; j++) {
           const articleItem = uploadMediaData[j];
           if (!articleItem || !articleItem.picArray || !articleItem.picArray.length) continue;
