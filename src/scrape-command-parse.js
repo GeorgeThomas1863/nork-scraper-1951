@@ -1,5 +1,5 @@
 import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA, restartAutoScrape } from "./scrape-control.js";
-import { setContinueScrape, scrapeActive } from "./scrape-status.js";
+import { setContinueScrape, scrapeActive, continueScrape } from "./scrape-status.js";
 
 //could refactor to switch
 export const parseAdminCommand = async (inputParams) => {
@@ -10,7 +10,6 @@ export const parseAdminCommand = async (inputParams) => {
   if (commandType === "admin-stop-scrape") {
     await setContinueScrape(false);
     console.log("SCRAPE STOPPED");
-    return "SCRAPE STOPPED";
   }
 
   //check if already scraping, return null (prevents double scrapes)
@@ -33,6 +32,9 @@ export const parseAdminCommand = async (inputParams) => {
 
   //otherwise start scrape
   const scrapeData = await parseStartCommand(inputParams);
+
+  //prevents scrape thats been stopped from overriding shit
+  if (!continueScrape) return "SCRAPE STOPPED";
 
   return scrapeData;
 };
