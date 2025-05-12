@@ -1,7 +1,6 @@
 //TO DO:
 
-//ADD one more set of stats at very end showing TOTAL articles, pics, vids, vidPages, picSets 
-// uploaded ALL TIME / NOT single scrape(just use mongo)
+//rebuild the fuckign log
 
 //BUILD GET STATUS INTO DISPLAY ONLY (look up log collection)
 
