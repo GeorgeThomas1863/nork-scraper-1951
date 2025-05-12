@@ -193,65 +193,6 @@ class UTIL {
 
     return normalObj;
   }
-
-  async logScrape() {
-    //if input null then its start
-    if (!this.dataObject) {
-      const startScrapeTime = new Date();
-      console.log("STARTING NEW KCNA SCRAPE AT " + startScrapeTime);
-      const startModel = new dbModel({ startTime: startScrapeTime }, CONFIG.log);
-      const startData = await startModel.storeAny();
-      const startScrapeId = startData.insertedId;
-
-      return startScrapeId;
-    }
-
-    //otherwise its end scrape
-    const { scrapeId } = this.dataObject;
-
-    //get end time / start time
-    const endTime = new Date();
-    const findModel = new dbModel({ keyToLookup: "_id", itemValue: scrapeId }, CONFIG.log);
-    const findData = await findModel.getUniqueItem();
-    const startTime = findData.startTime;
-
-    //calc scrape secs
-    const scrapeSeconds = +((endTime - startTime) / 1000).toFixed(2);
-
-    //build objs
-    const timeObj = {
-      endTime: endTime,
-      scrapeSeconds: scrapeSeconds,
-    };
-
-    const storeObj = {
-      inputObj: timeObj,
-      scrapeId: scrapeId,
-    };
-
-    //store it
-    const storeModel = new dbModel(storeObj, CONFIG.log);
-    const storeData = await storeModel.updateLog();
-
-    //display log in console log (can turn off)
-    const displayModel = new UTIL(timeObj);
-    await displayModel.showScrapeTime();
-
-    return storeData;
-  }
-
-  async showScrapeTime() {
-    const { scrapeSeconds } = this.dataObject;
-
-    //if short
-    if (scrapeSeconds < 90) {
-      return console.log("FINISHED SCRAPE FOR NEW DATA, SCRAPE TOOK " + scrapeSeconds + " seconds");
-    }
-
-    //otherwise return in minutes
-    const scrapeMinutes = +(scrapeSeconds / 60).toFixed(2);
-    return console.log("FINISHED SCRAPE FOR NEW DATA, SCRAPE TOOK " + scrapeMinutes + " minutes");
-  }
 }
 
 export default UTIL;

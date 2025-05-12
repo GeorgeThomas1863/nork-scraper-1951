@@ -7,42 +7,43 @@ import { newListMap, newContentMap } from "../config/map.js";
 // import { logData } from "./scrape-log.js";
 
 export const scrapeNewURLs = async () => {
+  if (!continueScrape) return null;
   //get list array data
-
-  const newListArray = await getNewListArray();
+  await getNewListArray();
   // await logData(newListArray, scrapeId, "listArray");
-  if (!continueScrape) return newListArray;
+  if (!continueScrape) return null;
 
   //get content array data
-  const newContentArray = await getNewContentArray();
+  await getNewContentArray();
   // await logData(newContentArray, scrapeId, "contentArray");
 
-  return newContentArray;
+  return true;
 };
 
 export const getNewListArray = async () => {
   const { typeArr } = CONFIG;
 
-  const newListArray = [];
+  // const newListArray = [];
   for (let i = 0; i < typeArr.length; i++) {
     //try in case url connection fails
     try {
       //stop if needed
-      if (!continueScrape) return newListArray;
+      if (!continueScrape) return null;
       const type = typeArr[i];
-      const newListData = await getNewListData(type);
+      await getNewListData(type);
+      // const newListData = await getNewListData(type);
 
-      const newListObj = {
-        newListData: newListData,
-        type: type,
-      };
+      // const newListObj = {
+      //   newListData: newListData,
+      //   type: type,
+      // };
 
-      newListArray.push(newListObj);
+      // newListArray.push(newListObj);
     } catch (e) {
       console.log(e.message + "; F BREAK: getNewListArray; SITE CONNECTION PROB FUCKED");
     }
   }
-  return newListArray;
+  return true;
 };
 
 export const getNewListData = async (type) => {
@@ -69,26 +70,27 @@ export const getNewListData = async (type) => {
 export const getNewContentArray = async () => {
   const { typeArr } = CONFIG;
 
-  const newContentArray = [];
+  // const newContentArray = [];
   for (let i = 0; i < typeArr.length; i++) {
     try {
       //stop if needed
-      if (!continueScrape) return newContentArray;
+      if (!continueScrape) return null;
       const type = typeArr[i];
-      const newContentData = await getNewContentData(type);
+      await getNewContentData(type);
+      // const newContentData = await getNewContentData(type);
 
-      const newContentObj = {
-        newContentData: newContentData,
-        type: type,
-      };
+      // const newContentObj = {
+      //   newContentData: newContentData,
+      //   type: type,
+      // };
 
-      newContentArray.push(newContentObj);
+      // newContentArray.push(newContentObj);
     } catch (e) {
       console.log(e.message + "; F BREAK: getNewContentArray; SITE CONNECTION PROB FUCKED");
     }
   }
 
-  return newContentArray;
+  return true;
 };
 
 export const getNewContentData = async (type) => {

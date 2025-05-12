@@ -7,35 +7,38 @@ import { findNewMediaMap, downloadNewMediaMap } from "../config/map.js";
 
 //NEW MEDIA SECTION (URLS AND DOWNLOAD)
 export const scrapeNewMedia = async () => {
-  const findMediaData = await findNewMedia();
-  // await logData(findMediaData, scrapeId, "findMedia");
-  if (!continueScrape) return findMediaData;
+  if (!continueScrape) return null;
 
-  const downloadMediaData = await downloadNewMedia();
+  await findNewMedia();
+  // await logData(findMediaData, scrapeId, "findMedia");
+  if (!continueScrape) return null;
+
+  await downloadNewMedia();
   // await logData(downloadMediaData, scrapeId, "downloadMedia");
 
-  return downloadMediaData;
+  return true;
 };
 
 export const findNewMedia = async () => {
   const { typeArr } = CONFIG;
 
-  const findMediaArray = [];
+  // const findMediaArray = [];
   for (let i = 1; i < typeArr.length; i++) {
-    if (!continueScrape) return findMediaArray;
+    if (!continueScrape) return null;
     const findType = typeArr[i];
-    const newMediaData = await getNewMediaData(findType);
-    if (!newMediaData) continue;
+    await getNewMediaData(findType);
+    // const newMediaData = await getNewMediaData(findType);
+    // if (!newMediaData) continue;
 
-    const findMediaObj = {
-      type: findType,
-      newMediaData: newMediaData,
-    };
+    // const findMediaObj = {
+    //   type: findType,
+    //   newMediaData: newMediaData,
+    // };
 
-    findMediaArray.push(findMediaObj);
+    // findMediaArray.push(findMediaObj);
   }
 
-  return findMediaArray;
+  return true;
 };
 
 export const getNewMediaData = async (type) => {
@@ -64,22 +67,23 @@ export const getNewMediaData = async (type) => {
 export const downloadNewMedia = async () => {
   const { typeArr } = CONFIG;
 
-  const downloadMediaArray = [];
+  // const downloadMediaArray = [];
   for (let i = 1; i < typeArr.length; i++) {
-    if (!continueScrape) return downloadMediaArray;
+    if (!continueScrape) return null;
     const downloadType = typeArr[i];
-    const downloadMediaData = await downloadNewMediaByType(downloadType);
+    await downloadNewMediaByType(downloadType);
+    // const downloadMediaData = await downloadNewMediaByType(downloadType);
 
-    const downloadMediaObj = {
-      type: downloadType,
-      downloadMediaData: downloadMediaData,
-    };
+    // const downloadMediaObj = {
+    //   type: downloadType,
+    //   downloadMediaData: downloadMediaData,
+    // };
 
-    //otherwise push to array
-    downloadMediaArray.push(downloadMediaObj);
+    // //otherwise push to array
+    // downloadMediaArray.push(downloadMediaObj);
   }
 
-  return downloadMediaArray;
+  return true;
 };
 
 export const downloadNewMediaByType = async (type) => {

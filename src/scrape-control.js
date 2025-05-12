@@ -1,4 +1,4 @@
-import UTIL from "../models/util-model.js";
+import Log from "../models/log-model.js";
 
 import { continueScrape, setScrapeActive, setScrapeId } from "./scrape-util.js";
 import { scrapeNewURLs } from "./scrape-urls.js";
@@ -10,8 +10,8 @@ export const scrapeNewKCNA = async () => {
   await setScrapeActive(true);
 
   //log scrape start / set scrape ID
-  const startModel = new UTIL();
-  const scrapeId = await startModel.logScrape();
+  const startModel = new Log();
+  const scrapeId = await startModel.logStart();
   await setScrapeId(scrapeId);
 
   //get and store new urls
@@ -24,13 +24,13 @@ export const scrapeNewKCNA = async () => {
   console.log(uploadData);
 
   //LOG SCRAPE END / show how long it took and write it in readable format
-  const endModel = new UTIL({ scrapeId: scrapeId });
+  const endModel = new Log({ scrapeId: scrapeId });
   await endModel.logScrape();
   console.log("#DONE");
 
   //clear scrape active
   await setScrapeActive(false);
-  return "FINISHED SUCCESSFUL SCRAPE";
+  return scrapeId;
 };
 
 export const scrapeAllKCNA = async () => {

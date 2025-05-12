@@ -5,18 +5,21 @@ import { setContinueScrape, scrapeActive, continueScrape } from "./scrape-util.j
 export const parseAdminCommand = async (inputParams) => {
   const { commandType } = inputParams;
   if (!commandType) return null;
+  let textStr = "";
 
   //if stop scrape
   if (commandType === "admin-stop-scrape") {
     await setContinueScrape(false);
-    console.log("SCRAPE STOPPED");
-    return "STOPPING SCRAPE";
+    textStr = "SCRAPE STOPPED";
+    console.log(textStr);
+    return { text: textStr };
   }
 
   //check if already scraping, return null (prevents double scrapes)
   if (scrapeActive) {
-    console.log("ALREADY SCRAPING FAGGOT");
-    return "ALREADY SCRAPING FAGGOT";
+    textStr = "ALREADY SCRAPING FAGGOT";
+    console.log(textStr);
+    return { text: textStr };
   }
 
   // reset the stopper
@@ -35,9 +38,17 @@ export const parseAdminCommand = async (inputParams) => {
   const scrapeData = await parseStartCommand(inputParams);
 
   //prevents scrape thats been stopped from overriding shit
-  if (!continueScrape) return "SCRAPE STOPPED";
+  if (!continueScrape) return { text: "SCRAPE STOPPED" };
 
-  return scrapeData;
+  textStr = "FINISHED SUCCESSFUL SCRAPE";
+  console.log(textStr);
+
+  const returnObj = {
+    text: textStr,
+    scrapeId: scrapeData,
+  };
+
+  return returnObj;
 };
 
 export const parseStartCommand = async (inputParams) => {
