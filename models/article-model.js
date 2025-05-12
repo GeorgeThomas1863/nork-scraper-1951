@@ -286,7 +286,7 @@ class Article {
         picArray.push(articlePicURL);
 
         //store url to picDB (so dont have to do again)
-        const picDataModel = new dbModel({ url: articlePicURL }, CONFIG.picURLs);
+        const picDataModel = new dbModel({ url: articlePicURL, scrapeId: scrapeId }, CONFIG.picURLs);
         await picDataModel.storeUniqueURL();
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);

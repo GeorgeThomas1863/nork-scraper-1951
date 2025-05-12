@@ -129,7 +129,7 @@ class Vid {
 
     //store it in picURLs
     try {
-      const picModel = new dbModel({ url: thumbnailURL }, CONFIG.picURLs);
+      const picModel = new dbModel({ url: thumbnailURL, scrapeId: scrapeId }, CONFIG.picURLs);
       const storeData = await picModel.storeUniqueURL();
       console.log(storeData);
     } catch (e) {
@@ -190,7 +190,7 @@ class Vid {
 
     //store it in vidURLs
     try {
-      const storeModel = new dbModel({ url: vidURL }, CONFIG.vidURLs);
+      const storeModel = new dbModel({ url: vidURL, scrapeId: scrapeId }, CONFIG.vidURLs);
       const storeData = await storeModel.storeUniqueURL();
       console.log(storeData);
     } catch (e) {

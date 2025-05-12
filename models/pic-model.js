@@ -170,7 +170,7 @@ class Pic {
         picSetArray.push(picURL);
 
         //store url to picDB (so dont have to do again)
-        const picDataModel = new dbModel({ url: picURL }, CONFIG.picURLs);
+        const picDataModel = new dbModel({ url: picURL, scrapeId: scrapeId }, CONFIG.picURLs);
         await picDataModel.storeUniqueURL();
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
