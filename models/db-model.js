@@ -88,11 +88,12 @@ class dbModel {
     return dataArray;
   }
 
-  /**
-   * Retrieves the most recent items from a collection based on a specified key
-   * @function getLastItemsArray
-   * @returns {Promise<Array<Object>>} Array of the most recent documents
-   */
+  async getUniqueArray() {
+    const { keyToLookup, itemValue } = this.dataObject;
+    const dataArray = await db.dbGet().collection(this.collection).find({ [keyToLookup]: itemValue }).toArray(); //prettier-ignore
+    return dataArray;
+  }
+
   async getLastItemsArray() {
     const keyToLookup = this.dataObject.keyToLookup;
     const howMany = +this.dataObject.howMany;

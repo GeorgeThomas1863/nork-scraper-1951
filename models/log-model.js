@@ -28,17 +28,15 @@ class Log {
     //calc scrape secs
     const scrapeSeconds = +((endTime - startTime) / 1000).toFixed(2);
 
-       //build objs
+    //build objs
     const timeObj = {
       endTime: endTime,
       scrapeSeconds: scrapeSeconds,
     };
 
     //get all stats (loop)
-    const statsModel = {scrapeId: scrapeId}
-    const statsObj = await statsModel.logStats()
-
- 
+    const statsModel = { scrapeId: scrapeId };
+    const statsObj = await statsModel.logStats();
 
     const storeObj = {
       inputObj: timeObj,
@@ -56,9 +54,26 @@ class Log {
     return storeData;
   }
 
-  async logStats(){
+  async logStats() {
     const { scrapeId } = this.dataObject;
+    const { logArr2 } = CONFIG;
+    const lookupObj = {
+      keyToLookup: "scrapeId",
+      itemValue: scrapeId,
+    };
 
+    const returnObj = {};
+    for (let i = 0; i < logArr2.length; i++) {
+      const logItem = logArr2[i];
+      const loopModel = new dbModel(lookupObj, logItem);
+      const dataArray = await loopModel.getUniqueArray();
+      returnObj[logItem] = dataArray.length;
+    }
+
+    console.log("!!!!RETURN OBJ!!!!");
+    console.log(returnObj);
+
+    return returnObj;
   }
 
   async showScrapeTime() {
