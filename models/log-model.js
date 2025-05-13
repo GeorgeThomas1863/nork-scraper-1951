@@ -73,8 +73,8 @@ class Log {
       const loopModel = new dbModel(lookupObj, CONFIG[logItem]);
       const dataArray = await loopModel.getUniqueArray();
       console.log("LOOKUP RETURN");
-      console.log(dataArray);
-      returnObj[logItem] = dataArray.length;
+      console.log(dataArray?.length);
+      returnObj[logItem] = dataArray?.length || 0;
     }
 
     console.log("!!!!RETURN OBJ!!!!");
