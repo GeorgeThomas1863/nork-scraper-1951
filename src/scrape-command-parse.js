@@ -10,7 +10,7 @@ export const parseAdminCommand = async (inputParams) => {
   //if stop scrape
   if (commandType === "admin-stop-scrape") {
     await setContinueScrape(false);
-    textStr = "SCRAPE STOPPED";
+    textStr = "STOPPING SCRAPE";
     console.log(textStr);
     return { text: textStr, scrapeId: scrapeId };
   }
