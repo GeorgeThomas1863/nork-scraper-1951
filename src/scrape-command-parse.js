@@ -1,5 +1,5 @@
 import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA, restartAutoScrape } from "./scrape-control.js";
-import { setContinueScrape, scrapeActive, continueScrape } from "./scrape-util.js";
+import { setContinueScrape, scrapeActive, continueScrape, scrapeId } from "./scrape-util.js";
 
 //could refactor to switch
 export const parseAdminCommand = async (inputParams) => {
@@ -12,14 +12,14 @@ export const parseAdminCommand = async (inputParams) => {
     await setContinueScrape(false);
     textStr = "SCRAPE STOPPED";
     console.log(textStr);
-    return { text: textStr };
+    return { text: textStr, scrapeId: scrapeId };
   }
 
   //check if already scraping, return null (prevents double scrapes)
   if (scrapeActive) {
     textStr = "ALREADY SCRAPING FAGGOT";
     console.log(textStr);
-    return { text: textStr };
+    return { text: textStr, scrapeId: scrapeId };
   }
 
   // reset the stopper
@@ -35,20 +35,15 @@ export const parseAdminCommand = async (inputParams) => {
   if (commandType !== "admin-start-scrape") return null;
 
   //otherwise start scrape
-  const scrapeData = await parseStartCommand(inputParams);
+  await parseStartCommand(inputParams);
 
   //prevents scrape thats been stopped from overriding shit
-  if (!continueScrape) return { text: "SCRAPE STOPPED" };
+  if (!continueScrape) return { text: "SCRAPE STOPPED", scrapeId: scrapeId };
 
   textStr = "FINISHED SUCCESSFUL SCRAPE";
   console.log(textStr);
 
-  const returnObj = {
-    text: textStr,
-    scrapeId: scrapeData,
-  };
-
-  return returnObj;
+  return { text: textStr, scrapeId: scrapeId };
 };
 
 export const parseStartCommand = async (inputParams) => {

@@ -30,7 +30,7 @@ export const scrapeNewKCNA = async () => {
 
   //clear scrape active
   await setScrapeActive(false);
-  return scrapeId;
+  return true;
 };
 
 export const scrapeAllKCNA = async () => {
