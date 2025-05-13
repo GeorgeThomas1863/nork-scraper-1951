@@ -1,6 +1,6 @@
 //TO DO:
 
-//rebuild the fuckign log
+//fix scrape stop
 
 //BUILD GET STATUS INTO DISPLAY ONLY (look up log collection)
 
