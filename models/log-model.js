@@ -38,13 +38,15 @@ class Log {
     const statsModel = new Log({ scrapeId: scrapeId });
     const statsObj = await statsModel.logStats();
 
-    console.log("STATS OBJ");
-    console.log(statsObj);
+    const dataObj = { ...statsObj, ...timeObj };
 
     const storeObj = {
-      inputObj: timeObj,
+      inputObj: dataObj,
       scrapeId: scrapeId,
     };
+
+    console.log("STORE OBJECT");
+    console.log(storeObj);
 
     //store it
     const storeModel = new dbModel(storeObj, CONFIG.log);
@@ -77,8 +79,8 @@ class Log {
       returnObj[logItem] = dataArray?.length || 0;
     }
 
-    console.log("!!!!RETURN OBJ!!!!");
-    console.log(returnObj);
+    // console.log("!!!!RETURN OBJ!!!!");
+    // console.log(returnObj);
 
     return returnObj;
   }
