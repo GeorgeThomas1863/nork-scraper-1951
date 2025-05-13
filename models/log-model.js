@@ -35,8 +35,11 @@ class Log {
     };
 
     //get all stats (loop)
-    const statsModel = { scrapeId: scrapeId };
+    const statsModel = new Log({ scrapeId: scrapeId });
     const statsObj = await statsModel.logStats();
+
+    console.log("STATS OBJ");
+    console.log(statsObj);
 
     const storeObj = {
       inputObj: timeObj,

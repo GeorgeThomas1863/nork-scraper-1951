@@ -25,7 +25,7 @@ export const scrapeNewKCNA = async () => {
 
   //LOG SCRAPE END / show how long it took and write it in readable format
   const endModel = new Log({ scrapeId: scrapeId });
-  await endModel.logScrape();
+  await endModel.logStop();
   console.log("#DONE");
 
   //clear scrape active
