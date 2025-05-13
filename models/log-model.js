@@ -61,15 +61,15 @@ class Log {
 
   async logStats() {
     const { scrapeId } = this.dataObject;
-    const { logArr2 } = CONFIG;
+    const { logArr } = CONFIG;
     const lookupObj = {
       keyToLookup: "scrapeId",
       itemValue: scrapeId,
     };
 
     const returnObj = {};
-    for (let i = 0; i < logArr2.length; i++) {
-      const logItem = logArr2[i];
+    for (let i = 0; i < logArr.length; i++) {
+      const logItem = logArr[i];
       console.log("LOG ITEM");
       console.log(logItem);
       const loopModel = new dbModel(lookupObj, CONFIG[logItem]);
@@ -78,9 +78,6 @@ class Log {
       console.log(dataArray?.length);
       returnObj[logItem] = dataArray?.length || 0;
     }
-
-    // console.log("!!!!RETURN OBJ!!!!");
-    // console.log(returnObj);
 
     return returnObj;
   }
