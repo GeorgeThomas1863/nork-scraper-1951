@@ -52,17 +52,6 @@ export const parseAdminCommand = async (inputParams) => {
   returnObj.runScrape = true;
 
   return returnObj;
-
-  // //otherwise start scrape
-  // await parseStartCommand(inputParams);
-
-  // //prevents scrape thats been stopped from overriding shit
-  // if (!continueScrape) return { text: "SCRAPE STOPPED", scrapeId: scrapeId };
-
-  // textStr = "FINISHED SUCCESSFUL SCRAPE";
-  // console.log(textStr);
-
-  // return { text: textStr, scrapeId: scrapeId };
 };
 
 export const runScrapeCommand = async (inputParams) => {

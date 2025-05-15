@@ -12,5 +12,5 @@ export const apiRoute = async (req, res) => {
     await runScrapeCommand(inputParams);
   }
 
-  return true
+  return true;
 };
