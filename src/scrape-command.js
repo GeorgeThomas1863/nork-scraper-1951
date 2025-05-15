@@ -2,7 +2,7 @@ import Log from "../models/log-model.js";
 import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA, restartAutoScrape } from "./scrape-control.js";
 import { setContinueScrape, scrapeActive, scrapeId, setScrapeId } from "./scrape-util.js";
 
-//could refactor to switch
+//REFACTOR / break into multiple funcitons
 export const parseAdminCommand = async (inputParams) => {
   const { commandType } = inputParams;
   if (!commandType) return null;
@@ -17,6 +17,14 @@ export const parseAdminCommand = async (inputParams) => {
     returnObj.runScrape = null;
 
     console.log(returnObj.textStr);
+    return returnObj;
+  }
+
+  //if just getting status, return same as scrape active
+  if (commandType === "admin-scrape-status") {
+    returnObj.textStr = "SCRAPE STATUS: ";
+    returnObj.scrapeId = scrapeId;
+    returnObj.runScrape = null;
     return returnObj;
   }
 

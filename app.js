@@ -1,8 +1,6 @@
 //TO DO:
 
-//fix scrape stop
-
-//BUILD GET STATUS INTO DISPLAY ONLY (look up log collection)
+//refactor parseAdmin command
 
 //BUILD BACKUP VID DOWNLOAD (normal, 1 at a time)
 
