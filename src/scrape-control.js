@@ -1,6 +1,6 @@
 import Log from "../models/log-model.js";
 
-import { continueScrape, setScrapeActive, setScrapeId } from "./scrape-util.js";
+import { continueScrape, setScrapeActive, scrapeId } from "./scrape-util.js";
 import { scrapeNewURLs } from "./scrape-urls.js";
 import { scrapeNewMedia } from "./scrape-download.js";
 import { uploadNewTG } from "./scrape-upload.js";
@@ -10,18 +10,17 @@ export const scrapeNewKCNA = async () => {
   await setScrapeActive(true);
 
   //log scrape start / set scrape ID
-  const startModel = new Log();
-  const scrapeId = await startModel.logStart();
-  await setScrapeId(scrapeId);
+  // const startModel = new Log();
+  // const scrapeId = await startModel.logStart();
+  // await setScrapeId(scrapeId);
 
   //get and store new urls
-  await scrapeNewURLs(scrapeId);
+  await scrapeNewURLs();
 
   //get new media data AND download it
-  await scrapeNewMedia(scrapeId);
+  await scrapeNewMedia();
 
-  const uploadData = await uploadNewTG(scrapeId);
-  console.log(uploadData);
+  await uploadNewTG();
 
   //LOG SCRAPE END / show how long it took and write it in readable format
   const endModel = new Log({ scrapeId: scrapeId });
