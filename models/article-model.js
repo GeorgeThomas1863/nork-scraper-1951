@@ -7,7 +7,7 @@ import dbModel from "./db-model.js";
 import Pic from "./pic-model.js";
 import UTIL from "./util-model.js";
 
-import { articleTypeListMap } from "../config/map.js";
+import { articleTypeListMap } from "../config/map-scrape.js";
 import { scrapeId } from "../src/scrape-util.js";
 
 /**

@@ -6,7 +6,7 @@ import CONFIG from "../config/config.js";
 import TgReq from "./tgReq-model.js";
 import dbModel from "./db-model.js";
 
-import { articleTypeTitleMap } from "../config/map.js";
+import { articleTypeTitleMap } from "../config/map-scrape.js";
 import { continueScrape } from "../src/scrape-util.js";
 
 class TG {
