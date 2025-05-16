@@ -1,5 +1,7 @@
 //TO DO:
 
+//FAILING TO COUNT DOWNLOAD AND UPLOAD
+
 //refactor parseAdmin command
 
 //BUILD BACKUP VID DOWNLOAD (normal, 1 at a time)
