@@ -197,9 +197,6 @@ class Pic {
     const { inputObj } = this.dataObject;
     const headerObj = { ...inputObj };
 
-    console.log("PIC DATA INPUT OBJ");
-    console.log(headerObj);
-
     //CHECK IF ALREADY HAVE (shouldnt happen, but double check)
     const checkModel = new dbModel(headerObj, CONFIG.pics);
     await checkModel.urlNewCheck();
@@ -219,9 +216,10 @@ class Pic {
     headerObj.scrapeId = scrapeId;
 
     //get pic ID
+    let picId = 0;
     const picIdModel = new dbModel({ keyToLookup: "picId" }, CONFIG.pics);
-    const picId = await picIdModel.findMaxId();
-    if (!picId) return null;
+    const maxId = await picIdModel.findMaxId();
+    if (maxId) picId = maxId + 1;
 
     console.log("PIC ID!!!!");
     console.log(picId);
