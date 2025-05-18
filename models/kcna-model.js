@@ -182,6 +182,9 @@ class KCNA {
     const { vidChunkSize, tempPath } = CONFIG;
     const vidObj = { ...inputObj };
 
+    console.log("!!!VID OBJECT MODEL");
+    console.log(vidObj);
+
     //build temp save path
     const vidTempPath = tempPath + vidId + ".mp4";
     vidObj.vidTempPath = vidTempPath;
