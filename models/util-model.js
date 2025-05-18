@@ -120,8 +120,8 @@ class UTIL {
 
     console.log("MAX ID!!!!");
     console.log(maxId);
-    
-    if (!maxId) return 0;
+
+    if (!maxId) return 1;
 
     return maxId + 1;
   }
