@@ -175,6 +175,7 @@ class KCNA {
   async getVidMultiThread() {
     //get obj data
     const { inputObj } = this.dataObject;
+    const { totalChunks } = inputObj;
     const vidObj = { ...inputObj };
 
     console.log("!!!VID OBJECT MODEL");

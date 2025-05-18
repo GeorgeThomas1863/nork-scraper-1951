@@ -282,7 +282,7 @@ class Vid {
     const { vidChunkSize, tempPath } = CONFIG;
 
     //check if new (not possible in most situations, but adding check to be sure)
-    const checkModel = new dbModel(vidObj, CONFIG.vidsDownloaded);
+    const checkModel = new dbModel(inputObj, CONFIG.vidsDownloaded);
     await checkModel.urlNewCheck(); //throws error if not new (keep out of try block to propogate error)
 
     //get vid size here (PROB NEED TO CHANGE BASED ON FUTURE HEADERS)
