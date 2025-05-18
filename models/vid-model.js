@@ -91,8 +91,8 @@ class Vid {
     const thumbnailURL = await thumbnailModel.getVidThumbnail();
 
     //parse vidId / dateString
-    const kcnaId = +thumbnailURL.substring(thumbnailURL.lastIndexOf("/") + 2, thumbnailURL.lastIndexOf("."));
-    const dateString = thumbnailURL.substring(thumbnailURL.indexOf("video/kp/") + 9, thumbnailURL.indexOf("/V"));
+    // const kcnaId = +thumbnailURL.substring(thumbnailURL.lastIndexOf("/") + 2, thumbnailURL.lastIndexOf("."));
+    // const dateString = thumbnailURL.substring(thumbnailURL.indexOf("video/kp/") + 9, thumbnailURL.indexOf("/V"));
 
     //get date
     const dateModel = new UTIL({ inputItem: listItem });
@@ -107,8 +107,8 @@ class Vid {
     const vidListObj = {
       url: vidPageURL,
       thumbnail: thumbnailURL,
-      kcnaId: kcnaId,
-      dateString: dateString,
+      // kcnaId: kcnaId,
+      // dateString: dateString,
       date: vidDate,
       title: title,
       scrapeId: scrapeId,
