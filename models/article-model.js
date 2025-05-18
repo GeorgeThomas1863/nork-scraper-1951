@@ -45,9 +45,6 @@ class Article {
     const dom = new JSDOM(html);
     const document = dom.window.document;
 
-    console.log("FUCK MY FACE!!!");
-    console.log(this.dataObject);
-
     // Find article-link (wrapper element) extract out all links
     const articleLinkElement = document.querySelector(".article-link");
     const linkElementArray = articleLinkElement?.querySelectorAll("a");
@@ -56,6 +53,7 @@ class Article {
     if (!linkElementArray || !linkElementArray.length) {
       const error = new Error("CANT EXTRACT ARTICLE LIST");
       error.url = CONFIG.articleListURL;
+      error.articleType = type;
       error.function = "getArticleListArray (MODEL)";
       throw error;
     }
