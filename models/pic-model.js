@@ -218,10 +218,6 @@ class Pic {
     //get pic ID
     const picIdModel = new UTIL({ type: "pics" });
     const picId = await picIdModel.getNextId();
-
-    console.log("PIC ID!!!!");
-    console.log(picId);
-
     headerObj.picId = picId;
 
     //store it

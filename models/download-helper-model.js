@@ -5,10 +5,6 @@ import CONFIG from "../config/config.js";
 
 import { randomDelay } from "../config/util.js";
 
-/**
- * @class KCNA
- * @description Does shit on KCNA and with KCNA data
- */
 class DLHelper {
   constructor(dataObject) {
     this.dataObject = dataObject;

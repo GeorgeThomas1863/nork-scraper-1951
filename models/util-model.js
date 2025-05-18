@@ -118,9 +118,6 @@ class UTIL {
 
     const maxId = await dataModel.findMaxId();
 
-    console.log("MAX ID!!!!");
-    console.log(maxId);
-
     if (!maxId) return 1;
 
     return maxId + 1;

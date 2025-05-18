@@ -93,7 +93,7 @@ export const downloadPicSetArray = async (inputArray) => {
     try {
       //add save path to picObj
       const picObj = sortArray[i];
-      const savePath = CONFIG.picPath + picObj.kcnaId + ".jpg";
+      const savePath = CONFIG.picPath + picObj.picId + ".jpg";
       picObj.savePath = savePath;
       const picModel = new Pic({ picObj: picObj });
 

@@ -128,7 +128,7 @@ class KCNA {
 
   //maybe refactor
   async getPicReq() {
-    const { url, savePath, kcnaId } = this.dataObject;
+    const { url, savePath, picId } = this.dataObject;
 
     try {
       // await randomDelay(1);
@@ -152,7 +152,7 @@ class KCNA {
       const mbSize = +(totalSize / 1048576).toFixed(2);
       let downloadedSize = 0;
 
-      const consoleStr = "DOWNLOADING PIC: " + kcnaId + ".jpg | SIZE: " + mbSize + "MB";
+      const consoleStr = "DOWNLOADING PIC: " + picId + ".jpg | SIZE: " + mbSize + "MB";
       console.log(consoleStr);
 
       //download shit
@@ -190,12 +190,12 @@ class KCNA {
 
     //get obj data
     const { inputObj } = this.dataObject;
-    const { vidSizeBytes, kcnaId } = inputObj;
+    const { vidSizeBytes, vidId } = inputObj;
     const { vidChunkSize, tempPath } = CONFIG;
     const vidObj = { ...inputObj };
 
     //build temp save path
-    const vidTempPath = tempPath + kcnaId + ".mp4";
+    const vidTempPath = tempPath + vidId + ".mp4";
     vidObj.vidTempPath = vidTempPath;
 
     //add total chunks
@@ -234,7 +234,7 @@ class KCNA {
 
   //VID RETRY
   async getVidSimple() {
-    const { url, savePath, kcnaId } = this.dataObject;
+    const { url, savePath, vidId } = this.dataObject;
 
     try {
       // await randomDelay(1);
@@ -258,7 +258,7 @@ class KCNA {
       const mbSize = +(totalSize / 1048576).toFixed(2);
       let downloadedSize = 0;
 
-      const consoleStr = "BACKUP VID DOWNLOAD: " + kcnaId + ".mp4 | SIZE: " + mbSize + "MB";
+      const consoleStr = "BACKUP VID DOWNLOAD: " + vidId + ".mp4 | SIZE: " + mbSize + "MB";
       console.log(consoleStr);
 
       //download shit

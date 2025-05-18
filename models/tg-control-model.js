@@ -59,6 +59,7 @@ class TG {
       return beginStr;
     }
 
+    //!!!!UNFUCK HERE
     const { picArray } = inputObj;
     const lastItem = picArray.length - 1;
     const firstKcnaId = +picArray[0].substring(picArray[0].length - 11, picArray[0].length - 4);
@@ -71,7 +72,7 @@ class TG {
 
   async getTypeStr() {
     const { inputObj } = this.dataObject;
-    const { articleType, articleId, picSetId, vidPageId, kcnaId } = inputObj;
+    const { articleType, articleId, picSetId, vidPageId } = inputObj;
 
     if (articleType) {
       const articleTypeStr = await articleTypeTitleMap(articleType);
@@ -83,7 +84,7 @@ class TG {
     }
 
     if (vidPageId || vidPageId === 0) {
-      return "<b>TYPE:</b> Vid | ID: " + kcnaId + "\n\n";
+      return "<b>TYPE:</b> Vid | ID: " + vidPageId + "\n\n";
     }
   }
 
@@ -185,7 +186,7 @@ class TG {
 
   async postPicTG() {
     const { inputObj } = this.dataObject;
-    const { kcnaId, savePath, dateNormal, tgUploadId } = inputObj;
+    const { picId, savePath, dateNormal, tgUploadId } = inputObj;
 
     //post pic
 
@@ -198,7 +199,7 @@ class TG {
     const postData = await postModel.tgPicFS(TgReq.tokenIndex);
     if (!postData || !postData.result) return null;
 
-    const caption = "<b>PIC: " + kcnaId + ".jpg</b>" + "\n" + "<i>" + dateNormal + "</i>";
+    const caption = "<b>PIC: " + picId + ".jpg</b>" + "\n" + "<i>" + dateNormal + "</i>";
 
     //build edit caption params
     const editParams = {
@@ -222,7 +223,7 @@ class TG {
     try {
       const storeModel = new dbModel(storeObj, CONFIG.picsUploaded);
       const storeData = await storeModel.storeUniqueURL();
-      console.log("PIC " + kcnaId + ".jpg UPLOADED AND STORED");
+      console.log("PIC " + picId + ".jpg UPLOADED AND STORED");
       console.log(storeData);
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
@@ -236,7 +237,7 @@ class TG {
 
   async postVidTG() {
     const { inputObj } = this.dataObject;
-    const { kcnaId, vidSizeBytes, titleNormal, dateNormal, url } = inputObj;
+    const { vidId, vidSizeBytes, picId, titleNormal, dateNormal, url } = inputObj;
     const chunkObj = { ...inputObj };
 
     //define chunk size
@@ -244,7 +245,7 @@ class TG {
     chunkObj.totalChunks = Math.ceil(vidSizeBytes / chunkObj.chunkSize);
 
     //build thumbnail path
-    chunkObj.thumbnailPath = CONFIG.picPath + kcnaId + ".jpg";
+    chunkObj.thumbnailPath = CONFIG.picPath + picId + ".jpg";
 
     //posts ALL chunks, edits the caption
     const postChunkModel = new TG({ inputObj: chunkObj });
@@ -296,7 +297,7 @@ class TG {
   //post each chunk, edit captions
   async postVidChunk() {
     const { inputObj } = this.dataObject;
-    const { totalChunks, titleNormal, dateNormal, kcnaId, chunkNumber } = inputObj;
+    const { totalChunks, titleNormal, dateNormal, vidId, chunkNumber } = inputObj;
 
     //get chunk form
     const formModel = new TG({ inputObj: inputObj });
@@ -310,7 +311,7 @@ class TG {
     if (!chunkData || !chunkData.result) return null;
 
     //label the chunk (add caption)
-    const caption = titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + kcnaId + ".mp4; [" + (chunkNumber + 1) + " of " + totalChunks + "]";
+    const caption = titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + vidId + ".mp4; [" + (chunkNumber + 1) + " of " + totalChunks + "]";
 
     //build edit caption params
     const editParams = {
