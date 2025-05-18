@@ -62,6 +62,10 @@ class TG {
     //!!!!UNFUCK HERE
     const { picArray } = inputObj;
     const lastItem = picArray.length - 1;
+
+    console.log("PIC ARRAY!!!");
+    console.log(picArray);
+
     const firstKcnaId = +picArray[0].substring(picArray[0].length - 11, picArray[0].length - 4);
     const lastKcnaId = +picArray[lastItem].substring(picArray[lastItem].length - 11, picArray[lastItem].length - 4);
 
