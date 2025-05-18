@@ -205,8 +205,8 @@ class Pic {
     const headerData = await htmlModel.getMediaHeaders();
     if (!headerData) return null;
 
-    console.log("HEADER DATA!!!!");
-    console.log(headerData);
+    // console.log("HEADER DATA!!!!");
+    // console.log(headerData);
     const dataType = headerData["content-type"];
 
     //if not pic RETURN NULL [KEY FOR PROPER DATE ARRAY ITERATION]
@@ -224,6 +224,9 @@ class Pic {
     }
 
     const picObj = { ...inputObj, ...headerObj };
+
+    console.log("PIC OBJ!!!!!!");
+    console.log(picObj);
 
     //add scrape id here
     picObj.scrapeId = scrapeId;
