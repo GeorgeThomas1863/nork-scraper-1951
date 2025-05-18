@@ -178,9 +178,6 @@ class KCNA {
     const { totalChunks } = inputObj;
     const vidObj = { ...inputObj };
 
-    console.log("!!!VID OBJECT MODEL");
-    console.log(inputObj);
-
     try {
       //find shit already downloaded
       const completedModel = new DLHelper(vidObj);
@@ -197,13 +194,13 @@ class KCNA {
       vidObj.pendingChunkArray = pendingChunkArray;
 
       const processModel = new DLHelper(vidObj);
-      const processVidData = await processModel.processVidQueue();
-      console.log(processVidData);
+      const chunksProessed = await processModel.processVidQueue();
+      vidObj.chunksProessed = chunksProessed;
 
       const mergeModel = new DLHelper(vidObj);
       await mergeModel.mergeChunks();
 
-      return processVidData;
+      return vidObj;
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       //return null on failure

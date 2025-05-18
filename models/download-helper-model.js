@@ -140,7 +140,7 @@ class DLHelper {
       }
     }
 
-    return downloadedChunkArray;
+    return downloadedChunkArray?.length;
   }
 
   async downloadVidChunk() {
