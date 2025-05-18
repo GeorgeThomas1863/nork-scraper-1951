@@ -1,5 +1,9 @@
 //TO DO:
 
+//MAKE SURE VID DOWNLOAD WORKS / stores correct data
+
+//FIX VID UPLOAD
+
 //FAILING TO COUNT DOWNLOAD AND UPLOAD
 
 //refactor parseAdmin command
