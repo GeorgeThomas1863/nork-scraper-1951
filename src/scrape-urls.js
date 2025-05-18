@@ -8,14 +8,14 @@ import { newListMap, newContentMap } from "../config/map-scrape.js";
 
 export const scrapeNewURLs = async () => {
   if (!continueScrape) return null;
+
   //get list array data
   await getNewListArray();
-  // await logData(newListArray, scrapeId, "listArray");
   if (!continueScrape) return null;
 
   //get content array data
   await getNewContentArray();
-  // await logData(newContentArray, scrapeId, "contentArray");
+  if (!continueScrape) return null;
 
   return true;
 };
@@ -23,22 +23,14 @@ export const scrapeNewURLs = async () => {
 export const getNewListArray = async () => {
   const { typeArr } = CONFIG;
 
-  // const newListArray = [];
   for (let i = 0; i < typeArr.length; i++) {
     //try in case url connection fails
     try {
       //stop if needed
       if (!continueScrape) return null;
       const type = typeArr[i];
+      //could add return to an array but dont care
       await getNewListData(type);
-      // const newListData = await getNewListData(type);
-
-      // const newListObj = {
-      //   newListData: newListData,
-      //   type: type,
-      // };
-
-      // newListArray.push(newListObj);
     } catch (e) {
       console.log(e.message + "; F BREAK: getNewListArray; SITE CONNECTION PROB FUCKED");
     }
@@ -70,21 +62,13 @@ export const getNewListData = async (type) => {
 export const getNewContentArray = async () => {
   const { typeArr } = CONFIG;
 
-  // const newContentArray = [];
   for (let i = 0; i < typeArr.length; i++) {
     try {
       //stop if needed
       if (!continueScrape) return null;
       const type = typeArr[i];
+      //could add return to an array but dont care
       await getNewContentData(type);
-      // const newContentData = await getNewContentData(type);
-
-      // const newContentObj = {
-      //   newContentData: newContentData,
-      //   type: type,
-      // };
-
-      // newContentArray.push(newContentObj);
     } catch (e) {
       console.log(e.message + "; F BREAK: getNewContentArray; SITE CONNECTION PROB FUCKED");
     }

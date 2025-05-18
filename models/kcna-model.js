@@ -114,7 +114,7 @@ class KCNA {
 
       const headers = res.headers;
 
-      return headerss;
+      return headers;
     } catch (e) {
       console.log("TRIED FULL REQ, STILL FUCKED");
       // console.log(e);

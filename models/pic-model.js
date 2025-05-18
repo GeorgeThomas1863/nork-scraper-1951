@@ -9,10 +9,6 @@ import UTIL from "./util-model.js";
 
 import { continueScrape, scrapeId } from "../src/scrape-util.js";
 
-/**
- * @class Pic
- * @description Does shit with KCNA Pics (gets them, stores them, uploads, etc)
- */
 class Pic {
   constructor(dataObject) {
     this.dataObject = dataObject;
@@ -204,54 +200,8 @@ class Pic {
     const checkModel = new dbModel(inputObj, CONFIG.pics);
     await checkModel.urlNewCheck();
 
-    //get picParams
-    const paramModel = new Pic({ picURL: inputObj.url });
-    const picParams = await paramModel.getPicParams();
-    if (!picParams) return null;
-
-    // console.log("PIC PARAMS");
-    // console.log(picParams);
-
-    //build picObj
-    const picObjModel = new Pic({ picParams: picParams });
-    const picObj = await picObjModel.getPicObj();
-    if (!picObj) return null;
-
-    //add scrape id here
-    picObj.scrapeId = scrapeId;
-
-    //store it
-    const storeModel = new dbModel(picObj, CONFIG.pics);
-    const storeData = await storeModel.storeUniqueURL();
-    console.log(storeData);
-
-    return picObj;
-  }
-
-  async getPicParams() {
-    const { picURL } = this.dataObject;
-    //extract kcnaId
-    const kcnaId = +picURL.substring(picURL.length - 11, picURL.length - 4);
-
-    //extract out stupid date string
-    const dateString = picURL.substring(picURL.indexOf("/photo/") + "/photo/".length, picURL.indexOf("/PIC", picURL.indexOf("/photo/")));
-
-    const picParams = {
-      url: picURL,
-      kcnaId: kcnaId,
-      dateString: dateString,
-    };
-
-    return picParams;
-  }
-
-  //CAN BREAK UP BELOW / REFACTOR
-
-  async getPicObj() {
-    const { picParams } = this.dataObject;
-
     //throws error on fail
-    const htmlModel = new KCNA(picParams);
+    const htmlModel = new KCNA(inputObj);
     const headerData = await htmlModel.getMediaHeaders();
     if (!headerData) return null;
 
@@ -273,10 +223,68 @@ class Pic {
       throw error;
     }
 
-    const picObj = { ...picParams, ...headerObj };
+    const picObj = { ...inputObj, ...headerObj };
+
+    //add scrape id here
+    picObj.scrapeId = scrapeId;
+
+    //store it
+    const storeModel = new dbModel(picObj, CONFIG.pics);
+    const storeData = await storeModel.storeUniqueURL();
+    console.log(storeData);
 
     return picObj;
   }
+
+  // async getPicParams() {
+  //   const { picURL } = this.dataObject;
+  //   //extract kcnaId
+  //   // const kcnaId = +picURL.substring(picURL.length - 11, picURL.length - 4);
+
+  //   //extract out stupid date string
+  //   // const dateString = picURL.substring(picURL.indexOf("/photo/") + "/photo/".length, picURL.indexOf("/PIC", picURL.indexOf("/photo/")));
+
+  //   const picParams = {
+  //     url: picURL,
+  //     // kcnaId: kcnaId,
+  //     // dateString: dateString,
+  //   };
+
+  //   return picParams;
+  // }
+
+  //CAN BREAK UP BELOW / REFACTOR
+
+  // async getPicObj() {
+  //   // const { picParams } = this.dataObject;
+
+  //   //throws error on fail
+  //   const htmlModel = new KCNA(picParams);
+  //   const headerData = await htmlModel.getMediaHeaders();
+  //   if (!headerData) return null;
+
+  //   console.log("HEADER DATA!!!!");
+  //   console.log(headerData);
+  //   const dataType = headerData["content-type"];
+
+  //   //if not pic RETURN NULL [KEY FOR PROPER DATE ARRAY ITERATION]
+  //   if (!dataType || dataType !== "image/jpeg") return null;
+
+  //   const headerModel = new Pic({ headerData: headerData });
+  //   const headerObj = await headerModel.parsePicHeaders();
+
+  //   //throw error if cant extract pic headers
+  //   if (!headerObj) {
+  //     const error = new Error("CANT EXTRACT PIC HEADERS");
+  //     error.url = picParams.url;
+  //     error.function = "buildPicObj MODEL";
+  //     throw error;
+  //   }
+
+  //   const picObj = { ...picParams, ...headerObj };
+
+  //   return picObj;
+  // }
 
   async parsePicHeaders() {
     const { headerData } = this.dataObject;
@@ -330,11 +338,6 @@ class Pic {
       error.function = "downloadPicFS";
       throw error;
     }
-
-    // //check if new (not possible in most situations, but adding check to be sure)
-    // const checkModel = new dbModel(picObj, CONFIG.picsDownloaded);
-    // //throws error if not new (keep out of try block to propogate error)
-    // await checkModel.urlNewCheck();
 
     const downloadModel = new KCNA(picObj);
     const returnObj = await downloadModel.getPicReq();

@@ -8,6 +8,7 @@ export const apiRoute = async (req, res) => {
   const data = await parseAdminCommand(inputParams);
   res.json(data);
 
+  //RUNS SCRAPE COMMAND
   if (data.runScrape) {
     await runScrapeCommand(inputParams);
   }

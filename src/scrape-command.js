@@ -55,6 +55,7 @@ export const parseAdminCommand = async (inputParams) => {
   const newScrapeId = await newScrapeModel.logStart();
   await setScrapeId(newScrapeId);
 
+  //TELLS ROUTER TO RUN SCRAPE COMMAND
   returnObj.textStr = "SCRAPE STARTED!";
   returnObj.scrapeId = newScrapeId;
   returnObj.runScrape = true;

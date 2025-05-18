@@ -23,7 +23,7 @@ export const buildArticleListByType = async (inputHTML) => {
     const articleListTypeData = await buildArticleList(articleListTypeHTML, articleType);
     if (!articleListTypeData) continue;
 
-    //need spread operator to appropriately append (couild also use concat)
+    //need spread operator to appropriately append (could also use concat)
     articleListTypeArray.push(...articleListTypeData);
   }
 

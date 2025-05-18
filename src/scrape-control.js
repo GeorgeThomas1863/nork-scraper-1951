@@ -9,17 +9,13 @@ export const scrapeNewKCNA = async () => {
   //set scrape active
   await setScrapeActive(true);
 
-  //log scrape start / set scrape ID
-  // const startModel = new Log();
-  // const scrapeId = await startModel.logStart();
-  // await setScrapeId(scrapeId);
-
   //get and store new urls
   await scrapeNewURLs();
 
   //get new media data AND download it
   await scrapeNewMedia();
 
+  //upload to TG
   await uploadNewTG();
 
   //LOG SCRAPE END / show how long it took and write it in readable format
