@@ -98,16 +98,28 @@ class UTIL {
     return articleIdStored + 1;
   }
 
-  // async getPicId() {
-  //   const dataModel = new dbModel({ keyToLookup: "picId" }, CONFIG.pics);
-  //   const picIdStored = await dataModel.findMaxId();
+  async getNextId() {
+    const { type } = this.dataObject;
+    if (!type) return null;
 
-  //   //no id on first lookup
-  //   if (!picIdStored) return 0;
+    switch (type) {
+      case "pics":
+        dataModel = new dbModel({ keyToLookup: "picId" }, CONFIG.pics);
+        break;
 
-  //   //otherwise calculate it
-  //   return picIdStored + 1;
-  //   }
+      case "vids":
+        dataModel = new dbModel({ keyToLookup: "vidId" }, CONFIG.vids);
+        break;
+
+      default:
+        return null;
+    }
+
+    const maxId = await dataModel.findMaxId();
+    if (!maxId) return 0;
+
+    return maxId + 1;
+  }
 
   async getDateArray() {
     const currentDate = new Date();

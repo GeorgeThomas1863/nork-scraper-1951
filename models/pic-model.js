@@ -216,10 +216,8 @@ class Pic {
     headerObj.scrapeId = scrapeId;
 
     //get pic ID
-    let picId = 0;
-    const picIdModel = new dbModel({ keyToLookup: "picId" }, CONFIG.pics);
-    const maxId = await picIdModel.findMaxId();
-    if (maxId) picId = maxId + 1;
+    const picIdModel = new UTIL({ type: "pics" });
+    const picId = await picIdModel.getNextId();
 
     console.log("PIC ID!!!!");
     console.log(picId);

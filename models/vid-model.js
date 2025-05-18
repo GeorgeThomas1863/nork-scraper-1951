@@ -257,10 +257,8 @@ class Vid {
     headerObj.scrapeId = scrapeId;
 
     //get vid ID
-    let vidId = 0
-    const vidIdModel = new dbModel({ keyToLookup: "vidId" }, CONFIG.vids);
-    const maxId = await vidIdModel.findMaxId();
-    if (maxId) vidId = maxId + 1;
+    const vidIdModel = new UTIL({ type: "vids" });
+    const vidId = await vidIdModel.getNextId();
 
     console.log("VID ID!!!!");
     console.log(vidId);
