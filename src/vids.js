@@ -70,7 +70,7 @@ export const buildVidData = async (inputArray) => {
     if (!continueScrape) return vidDataArray;
 
     try {
-      const vidModel = new Vid(inputArray[i]);
+      const vidModel = new Vid({ inputObj: inputArray[i] });
       const vidDataObj = await vidModel.getVidData();
       if (!vidDataObj) continue;
 

@@ -205,8 +205,8 @@ class Pic {
     await checkModel.urlNewCheck();
 
     //throws error on fail
-    const htmlModel = new KCNA(headerObj);
-    const headerData = await htmlModel.getMediaHeaders();
+    const headerModel = new KCNA(headerObj);
+    const headerData = await headerModel.getMediaHeaders();
     if (!headerData) return null;
 
     console.log("HEADER DATA!!!!");

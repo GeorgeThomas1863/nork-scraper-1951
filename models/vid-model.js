@@ -232,93 +232,114 @@ class Vid {
   //VID DATA SECTION
 
   async getVidData() {
-    const { url } = this.dataObject;
-    if (!url) return null;
+    const { inputObj } = this.dataObject;
+    const headerObj = { ...inputObj };
 
-    const paramModel = new Vid({ vidURL: url });
-    const vidParams = await paramModel.getVidParams();
-    if (!vidParams) return null;
+    console.log("VID DATA INPUT OBJ");
+    console.log(headerObj);
+
+    //CHECK IF ALREADY HAVE (shouldnt happen, but double check)
+    const checkModel = new dbModel(headerObj, CONFIG.vids);
+    await checkModel.urlNewCheck();
+
+    //throws error on fail
+    const headerModel = new KCNA(headerObj);
+    const headerData = await headerModel.getMediaHeaders();
+    if (!headerData) return null;
+
+    console.log("VID HEADER DATA!!!!");
+    console.log(headerData);
+
+    //just add entire object in, no need for complex parsing here
+    headerObj.headerData = headerData;
+
+    //add scrape id here
+    headerObj.scrapeId = scrapeId;
+
+    // const paramModel = new Vid({ vidURL: url });
+    // const vidParams = await paramModel.getVidParams();
+    // if (!vidParams) return null;
 
     // console.log("VID PARAMS");
     // console.log(vidParams);
 
-    const vidObjModel = new Vid({ vidParams: vidParams });
-    const vidObj = await vidObjModel.getVidObj();
-    if (!vidObj) return null;
+    // const vidObjModel = new Vid({ vidParams: vidParams });
+    // const vidObj = await vidObjModel.getVidObj();
+    // if (!vidObj) return null;
 
-    //add scrape id
-    vidObj.scrapeId = scrapeId;
+    // //add scrape id
+    // vidObj.scrapeId = scrapeId;
 
-    const storeModel = new dbModel(vidObj, CONFIG.vids);
+    const storeModel = new dbModel(headerObj, CONFIG.vids);
     const storeData = await storeModel.storeUniqueURL();
     console.log(storeData);
 
-    return vidObj;
-  }
-
-  async getVidParams() {
-    const { vidURL } = this.dataObject;
-
-    const kcnaId = +vidURL.substring(vidURL.length - 11, vidURL.length - 4);
-
-    const dateString = vidURL.substring(vidURL.indexOf("/video/") + "/video/kp/".length, vidURL.indexOf("/VID", vidURL.indexOf("/video/")));
-
-    const vidParams = {
-      url: vidURL,
-      kcnaId: kcnaId,
-      dateString: dateString,
-    };
-
-    return vidParams;
-  }
-
-  async getVidObj() {
-    const { vidParams } = this.dataObject;
-
-    const htmlModel = new KCNA(vidParams);
-    const headerData = await htmlModel.getMediaHeaders();
-    if (!headerData) return null;
-
-    const headerModel = new Vid({ headerData: headerData });
-    const headerObj = await headerModel.parseVidHeaders();
-
-    const vidObj = { ...vidParams, ...headerObj };
-
-    return vidObj;
-  }
-
-  async parseVidHeaders() {
-    const { headerData } = this.dataObject;
-
-    console.log("VID HEADER DATA");
-    console.log(headerData);
-
-    const serverData = headerData.server;
-    const eTag = headerData.etag;
-    const vidEditDate = new Date(headerData["last-modified"]);
-    const contentRange = headerData["content-range"];
-
-    //get pic size based on content range
-    //STILL NEED TO TEST THIS LOGIC
-    let vidSizeBytes;
-    if (contentRange) {
-      vidSizeBytes = +contentRange?.substring(contentRange?.lastIndexOf("/") + 1, contentRange?.length);
-    } else {
-      vidSizeBytes = headerData["content-length"];
-    }
-    const vidSizeMB = +(vidSizeBytes / 1048576).toFixed(2);
-
-    const headerObj = {
-      scrapeDate: new Date(),
-      serverData: serverData,
-      eTag: eTag,
-      vidEditDate: vidEditDate,
-      vidSizeBytes: vidSizeBytes,
-      vidSizeMB: vidSizeMB,
-    };
-
     return headerObj;
   }
+
+  // async getVidParams() {
+  //   const { vidURL } = this.dataObject;
+
+  //   const kcnaId = +vidURL.substring(vidURL.length - 11, vidURL.length - 4);
+
+  //   const dateString = vidURL.substring(vidURL.indexOf("/video/") + "/video/kp/".length, vidURL.indexOf("/VID", vidURL.indexOf("/video/")));
+
+  //   const vidParams = {
+  //     url: vidURL,
+  //     kcnaId: kcnaId,
+  //     dateString: dateString,
+  //   };
+
+  //   return vidParams;
+  // }
+
+  // async getVidObj() {
+  //   const { vidParams } = this.dataObject;
+
+  //   const htmlModel = new KCNA(vidParams);
+  //   const headerData = await htmlModel.getMediaHeaders();
+  //   if (!headerData) return null;
+
+  //   const headerModel = new Vid({ headerData: headerData });
+  //   const headerObj = await headerModel.parseVidHeaders();
+
+  //   const vidObj = { ...vidParams, ...headerObj };
+
+  //   return vidObj;
+  // }
+
+  // async parseVidHeaders() {
+  //   const { headerData } = this.dataObject;
+
+  //   console.log("VID HEADER DATA");
+  //   console.log(headerData);
+
+  //   const serverData = headerData.server;
+  //   const eTag = headerData.etag;
+  //   const vidEditDate = new Date(headerData["last-modified"]);
+  //   const contentRange = headerData["content-range"];
+
+  //   //get pic size based on content range
+  //   //STILL NEED TO TEST THIS LOGIC
+  //   let vidSizeBytes;
+  //   if (contentRange) {
+  //     vidSizeBytes = +contentRange?.substring(contentRange?.lastIndexOf("/") + 1, contentRange?.length);
+  //   } else {
+  //     vidSizeBytes = headerData["content-length"];
+  //   }
+  //   const vidSizeMB = +(vidSizeBytes / 1048576).toFixed(2);
+
+  //   const headerObj = {
+  //     scrapeDate: new Date(),
+  //     serverData: serverData,
+  //     eTag: eTag,
+  //     vidEditDate: vidEditDate,
+  //     vidSizeBytes: vidSizeBytes,
+  //     vidSizeMB: vidSizeMB,
+  //   };
+
+  //   return headerObj;
+  // }
 
   //----------------------
 
