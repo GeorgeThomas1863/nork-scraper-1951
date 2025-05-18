@@ -200,7 +200,11 @@ class KCNA {
       const mergeModel = new DLHelper(vidObj);
       await mergeModel.mergeChunks();
 
-      return vidObj;
+      //dont need all the shit in vidObj, so doing inputObj here
+      const returnObj = { ...inputObj };
+      returnObj.chunksProessed = chunksProessed;
+
+      return returnObj;
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       //return null on failure
