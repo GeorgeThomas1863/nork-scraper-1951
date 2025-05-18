@@ -10,16 +10,12 @@ import UTIL from "./util-model.js";
 
 import { scrapeId } from "../src/scrape-util.js";
 
-/**
- * @class Vid
- * @description Does shit with KCNA Vid (gets them, parses html)
- */
 class Vid {
   constructor(dataObject) {
     this.dataObject = dataObject;
   }
 
-  //PARSE VID LIST DATA
+  //VID PAGE LIST SECTION
 
   async getVidListArray() {
     const { html } = this.dataObject;
@@ -90,10 +86,6 @@ class Vid {
     const thumbnailModel = new Vid({ inputItem: listItem });
     const thumbnailURL = await thumbnailModel.getVidThumbnail();
 
-    //parse vidId / dateString
-    // const kcnaId = +thumbnailURL.substring(thumbnailURL.lastIndexOf("/") + 2, thumbnailURL.lastIndexOf("."));
-    // const dateString = thumbnailURL.substring(thumbnailURL.indexOf("video/kp/") + 9, thumbnailURL.indexOf("/V"));
-
     //get date
     const dateModel = new UTIL({ inputItem: listItem });
     const vidDate = await dateModel.parseListDate();
@@ -107,8 +99,6 @@ class Vid {
     const vidListObj = {
       url: vidPageURL,
       thumbnail: thumbnailURL,
-      // kcnaId: kcnaId,
-      // dateString: dateString,
       date: vidDate,
       title: title,
       scrapeId: scrapeId,
@@ -141,6 +131,8 @@ class Vid {
 
   //----------------------
 
+  //VID CONTENT SECTION
+
   async getVidPageObj() {
     const { inputObj } = this.dataObject;
 
@@ -157,7 +149,7 @@ class Vid {
     }
 
     //extract vidURL add to obj
-    const vidURLModel = new Vid({ str: vidPageHTML });
+    const vidURLModel = new Vid({ html: vidPageHTML });
     const vidURL = await vidURLModel.getVidURL();
 
     //add to obj
@@ -176,28 +168,31 @@ class Vid {
 
   //extract vid URL as String
   async getVidURL() {
-    const { str } = this.dataObject;
+    const { html } = this.dataObject;
+
+    console.log("!!!VID PAGE HTML");
+    console.log(html);
     //claude regex that extracts anythng starting with '/siteFiles/video AND ending with .mp4'
-    const regex = /'\/siteFiles\/video[^']*?\.mp4'/;
-    const match = str.match(regex);
-    if (!match) return null;
-    const vidStr = match[0].substring(1, match[0].length - 1); //get rid of leading / trailing quotes
-    if (!vidStr) return null;
+    // const regex = /'\/siteFiles\/video[^']*?\.mp4'/;
+    // const match = str.match(regex);
+    // if (!match) return null;
+    // const vidStr = match[0].substring(1, match[0].length - 1); //get rid of leading / trailing quotes
+    // if (!vidStr) return null;
 
-    //build URL
-    const urlConstant = "http://www.kcna.kp";
-    const vidURL = urlConstant + vidStr;
+    // //build URL
+    // const urlConstant = "http://www.kcna.kp";
+    // const vidURL = urlConstant + vidStr;
 
-    //store it in vidURLs
-    try {
-      const storeModel = new dbModel({ url: vidURL, scrapeId: scrapeId }, CONFIG.vidURLs);
-      const storeData = await storeModel.storeUniqueURL();
-      console.log(storeData);
-    } catch (e) {
-      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-    }
+    // //store it in vidURLs
+    // try {
+    //   const storeModel = new dbModel({ url: vidURL, scrapeId: scrapeId }, CONFIG.vidURLs);
+    //   const storeData = await storeModel.storeUniqueURL();
+    //   console.log(storeData);
+    // } catch (e) {
+    //   console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    // }
 
-    return vidURL;
+    // return vidURL;
   }
 
   //------------------------
