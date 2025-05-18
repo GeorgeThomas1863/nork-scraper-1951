@@ -180,10 +180,11 @@ class Vid {
       throw error;
     }
 
-    console.log("!!!VID PAGE HTML");
-    console.log(html);
-    const scripts = document.querySelectorAll("script");
+    // console.log("!!!VID PAGE HTML");
+    // console.log(html);
     
+    const scripts = document.querySelectorAll("script");
+
     let mp4Link = "";
 
     for (const script of scripts) {
