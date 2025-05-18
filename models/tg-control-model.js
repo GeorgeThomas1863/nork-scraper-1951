@@ -39,7 +39,7 @@ class TG {
 
     const tgModel = new TgReq({ inputObj: postObj });
     const data = await tgModel.tgPost(TgReq.tokenIndex);
-    getCurrentKCNAIdd;
+
     return data;
   }
 

@@ -263,6 +263,7 @@ class Pic {
   //UPLOAD PIC SET SECTION
   async postPicSetObjTG() {
     const { inputObj } = this.dataObject;
+    if (!continueScrape) return null;
 
     if (!inputObj) {
       const error = new Error("PIC SET UPLOAD OBJ FUCKED");
