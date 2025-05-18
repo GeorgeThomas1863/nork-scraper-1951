@@ -59,17 +59,21 @@ class TG {
       return beginStr;
     }
 
-    //!!!!UNFUCK HERE
     const { picArray } = inputObj;
     const lastItem = picArray.length - 1;
 
     console.log("PIC ARRAY!!!");
     console.log(picArray);
 
-    const firstKcnaId = +picArray[0].substring(picArray[0].length - 11, picArray[0].length - 4);
-    const lastKcnaId = +picArray[lastItem].substring(picArray[lastItem].length - 11, picArray[lastItem].length - 4);
+    const firstModel = new dbModel({ keyToLookup: "url", itemValue: picArray[0].url }, CONFIG.picsDownloaded);
+    const firstObj = await firstModel.getUniqueItem();
+    const firstPic = firstObj.picId;
 
-    const endStr = "\n\n" + "<b>" + picArray.length + " PICS</b>" + "\n" + firstKcnaId + ".jpg - " + lastKcnaId + ".jpg" + "\n";
+    const lastModel = new dbModel({ keyToLookup: "url", itemValue: picArray[lastItem].url }, CONFIG.picsDownloaded);
+    const lastObj = await lastModel.getUniqueItem();
+    const lastPic = lastObj.picId;
+
+    const endStr = "\n\n" + "<b>" + picArray.length + " PICS</b>" + "\n" + firstPic + ".jpg - " + lastPic + ".jpg" + "\n";
 
     return beginStr + endStr;
   }
