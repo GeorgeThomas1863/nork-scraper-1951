@@ -13,18 +13,22 @@ export const buildArticleListByType = async (inputHTML) => {
 
   const articleListTypeArray = [];
   for (let i = 0; i < articleTypeArr.length; i++) {
-    //stop if needed
-    if (!continueScrape) return articleListTypeArray;
+    try {
+      //stop if needed
+      if (!continueScrape) return articleListTypeArray;
 
-    const articleType = articleTypeArr[i];
-    const articleListTypeModel = new Article({ type: articleType, html: inputHTML });
-    const articleListTypeHTML = await articleListTypeModel.getArticleListTypeHTML();
+      const articleType = articleTypeArr[i];
+      const articleListTypeModel = new Article({ type: articleType, html: inputHTML });
+      const articleListTypeHTML = await articleListTypeModel.getArticleListTypeHTML();
 
-    const articleListTypeData = await buildArticleList(articleListTypeHTML, articleType);
-    if (!articleListTypeData) continue;
+      const articleListTypeData = await buildArticleList(articleListTypeHTML, articleType);
+      if (!articleListTypeData) continue;
 
-    //need spread operator to appropriately append (could also use concat)
-    articleListTypeArray.push(...articleListTypeData);
+      //need spread operator to appropriately append (could also use concat)
+      articleListTypeArray.push(...articleListTypeData);
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
   }
 
   return articleListTypeArray;
