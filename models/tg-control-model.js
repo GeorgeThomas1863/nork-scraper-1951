@@ -65,14 +65,14 @@ class TG {
     console.log("PIC ARRAY!!!");
     console.log(picArray);
 
-    const firstModel = new dbModel({ keyToLookup: "url", itemValue: picArray[0].url }, CONFIG.picsDownloaded);
+    const firstModel = new dbModel({ keyToLookup: "url", itemValue: picArray[0] }, CONFIG.picsDownloaded);
     const firstObj = await firstModel.getUniqueItem();
     console.log("FIRST OBJ!!!");
     console.log(firstObj);
 
     const firstPic = firstObj.picId;
 
-    const lastModel = new dbModel({ keyToLookup: "url", itemValue: picArray[lastItem].url }, CONFIG.picsDownloaded);
+    const lastModel = new dbModel({ keyToLookup: "url", itemValue: picArray[lastItem] }, CONFIG.picsDownloaded);
     const lastObj = await lastModel.getUniqueItem();
     const lastPic = lastObj.picId;
 
