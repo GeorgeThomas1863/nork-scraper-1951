@@ -371,6 +371,9 @@ class Vid {
     //build vidPageObj
     const vidPageObj = { ...normalObj, ...vidObjData };
 
+    console.log("VID PAGE OBJ");
+    console.log(vidPageObj);
+
     //check if file exists HERE, throw error if it doesnt
     const vidExists = fs.existsSync(vidPageObj.savePath);
     if (!vidExists) {

@@ -62,13 +62,8 @@ class TG {
     const { picArray } = inputObj;
     const lastItem = picArray.length - 1;
 
-    console.log("PIC ARRAY!!!");
-    console.log(picArray);
-
     const firstModel = new dbModel({ keyToLookup: "url", itemValue: picArray[0] }, CONFIG.picsDownloaded);
     const firstObj = await firstModel.getUniqueItem();
-    console.log("FIRST OBJ!!!");
-    console.log(firstObj);
 
     const firstPic = firstObj.picId;
 
@@ -322,7 +317,8 @@ class TG {
     if (!chunkData || !chunkData.result) return null;
 
     //label the chunk (add caption)
-    const caption = titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + vidId + ".mp4; [" + (chunkNumber + 1) + " of " + totalChunks + "]";
+    const caption =
+      titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + vidId + ".mp4; [" + (chunkNumber + 1) + " of " + totalChunks + "]";
 
     //build edit caption params
     const editParams = {
