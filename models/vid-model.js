@@ -150,7 +150,7 @@ class Vid {
 
     //extract vidURL add to obj
     const vidURLModel = new Vid({ html: vidPageHTML });
-    const vidURL = await vidURLModel.getVidURL();
+    const vidURL = await vidURLModel.parseVidURL();
 
     //add to obj
     const vidPageObj = { ...inputObj };
@@ -167,11 +167,40 @@ class Vid {
   }
 
   //extract vid URL as String
-  async getVidURL() {
+  async parseVidURL() {
     const { html } = this.dataObject;
+    const dom = new JSDOM(html);
+    const document = dom.window.document;
+
+    //throw error if no vid Pages found
+    if (!document) {
+      const error = new Error("CANT EXTRACT VID PAGE LIST");
+      error.url = CONFIG.vidListURL;
+      error.function = "getVidListArray (MODEL)";
+      throw error;
+    }
 
     console.log("!!!VID PAGE HTML");
     console.log(html);
+    const scripts = document.querySelectorAll("script");
+    
+    let mp4Link = "";
+
+    for (const script of scripts) {
+      const content = script.textContent;
+      if (content && content.includes("type='video/mp4'")) {
+        //regex looking for the vid type mp4
+        const match = content.match(/source src='([^']+)' type='video\/mp4'/);
+        if (match && match[1]) {
+          mp4Link = match[1];
+          break;
+        }
+      }
+    }
+
+    console.log("!!!MP4 LINK");
+    console.log(mp4Link); 
+
     //claude regex that extracts anythng starting with '/siteFiles/video AND ending with .mp4'
     // const regex = /'\/siteFiles\/video[^']*?\.mp4'/;
     // const match = str.match(regex);
