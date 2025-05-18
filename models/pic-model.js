@@ -218,26 +218,15 @@ class Pic {
     //add scrape id here
     headerObj.scrapeId = scrapeId;
 
-    // const dataType = headerData["content-type"];
+    //get pic ID
+    const picIdModel = new dbModel({ keyToLookup: "picId" }, CONFIG.pics);
+    const picId = await picIdModel.findMaxId();
+    if (!picId) return null;
 
-    // //if not pic RETURN NULL [KEY FOR PROPER DATE ARRAY ITERATION]
-    // if (!dataType || dataType !== "image/jpeg") return null;
+    console.log("PIC ID!!!!");
+    console.log(picId);
 
-    // const headerModel = new Pic({ headerData: headerData });
-    // const headerObj = await headerModel.parsePicHeaders();
-
-    // //throw error if cant extract pic headers
-    // if (!headerObj) {
-    //   const error = new Error("CANT EXTRACT PIC HEADERS");
-    //   error.url = picParams.url;
-    //   error.function = "buildPicObj MODEL";
-    //   throw error;
-    // }
-
-    // const picObj = { ...inputObj, ...headerObj };
-
-    // console.log("PIC OBJ!!!!!!");
-    // console.log(picObj);
+    headerObj.picId = picId;
 
     //store it
     const storeModel = new dbModel(headerObj, CONFIG.pics);
@@ -246,93 +235,6 @@ class Pic {
 
     return headerObj;
   }
-
-  // async getPicParams() {
-  //   const { picURL } = this.dataObject;
-  //   //extract kcnaId
-  //   // const kcnaId = +picURL.substring(picURL.length - 11, picURL.length - 4);
-
-  //   //extract out stupid date string
-  //   // const dateString = picURL.substring(picURL.indexOf("/photo/") + "/photo/".length, picURL.indexOf("/PIC", picURL.indexOf("/photo/")));
-
-  //   const picParams = {
-  //     url: picURL,
-  //     // kcnaId: kcnaId,
-  //     // dateString: dateString,
-  //   };
-
-  //   return picParams;
-  // }
-
-  //CAN BREAK UP BELOW / REFACTOR
-
-  // async getPicObj() {
-  //   // const { picParams } = this.dataObject;
-
-  //   //throws error on fail
-  //   const htmlModel = new KCNA(picParams);
-  //   const headerData = await htmlModel.getMediaHeaders();
-  //   if (!headerData) return null;
-
-  //   console.log("HEADER DATA!!!!");
-  //   console.log(headerData);
-  //   const dataType = headerData["content-type"];
-
-  //   //if not pic RETURN NULL [KEY FOR PROPER DATE ARRAY ITERATION]
-  //   if (!dataType || dataType !== "image/jpeg") return null;
-
-  //   const headerModel = new Pic({ headerData: headerData });
-  //   const headerObj = await headerModel.parsePicHeaders();
-
-  //   //throw error if cant extract pic headers
-  //   if (!headerObj) {
-  //     const error = new Error("CANT EXTRACT PIC HEADERS");
-  //     error.url = picParams.url;
-  //     error.function = "buildPicObj MODEL";
-  //     throw error;
-  //   }
-
-  //   const picObj = { ...picParams, ...headerObj };
-
-  //   return picObj;
-  // }
-
-  // async parsePicHeaders() {
-  //   const { headerData } = this.dataObject;
-  //   if (!headerData) return null;
-
-  //   console.log("PIC HEADER DATA");
-  //   console.log(headerData);
-
-  //   //otherwise get data about pic and add to obj
-  //   const serverData = headerData.server;
-  //   const eTag = headerData.etag;
-  //   const picEditDate = new Date(headerData["last-modified"]);
-  //   const dataType = headerData["content-type"];
-  //   const contentRange = headerData["content-range"];
-
-  //   //get pic size based on content range
-  //   //STILL NEED TO TEST THIS LOGIC
-  //   let picSizeBytes;
-  //   if (contentRange) {
-  //     picSizeBytes = +contentRange?.substring(contentRange?.lastIndexOf("/") + 1, contentRange?.length);
-  //   } else {
-  //     picSizeBytes = headerData["content-length"];
-  //   }
-  //   const picSizeMB = +(picSizeBytes / 1048576).toFixed(2);
-
-  //   const headerObj = {
-  //     scrapeDate: new Date(),
-  //     dataType: dataType,
-  //     serverData: serverData,
-  //     eTag: eTag,
-  //     picEditDate: picEditDate,
-  //     picSizeBytes: picSizeBytes,
-  //     picSizeMB: picSizeMB,
-  //   };
-
-  //   return headerObj;
-  // }
 
   //--------------------
 

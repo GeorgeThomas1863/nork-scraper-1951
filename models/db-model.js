@@ -175,11 +175,6 @@ class dbModel {
     return docArray;
   }
 
-  /**
-   * Finds / returns the maximum value of a specified key in the collection
-   * @function findMaxId
-   * @returns {Promise<number|null>} The maximum value found, or null if collection is empty
-   */
   async findMaxId() {
     const keyToLookup = this.dataObject.keyToLookup;
     const dataObj = await db.dbGet().collection(this.collection).find().sort({ [keyToLookup]: -1 }).limit(1).toArray(); //prettier-ignore

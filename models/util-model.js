@@ -98,16 +98,16 @@ class UTIL {
     return articleIdStored + 1;
   }
 
-  async getCurrentKCNAId() {
-    const dataModel = new dbModel(this.dataObject, CONFIG.pics);
-    const maxId = await dataModel.findMaxId();
+  // async getPicId() {
+  //   const dataModel = new dbModel({ keyToLookup: "picId" }, CONFIG.pics);
+  //   const picIdStored = await dataModel.findMaxId();
 
-    //no id on first lookup
-    if (!maxId || CONFIG.currentId > maxId) return CONFIG.currentId;
+  //   //no id on first lookup
+  //   if (!picIdStored) return 0;
 
-    //otherwise calculate it
-    return maxId;
-  }
+  //   //otherwise calculate it
+  //   return picIdStored + 1;
+  //   }
 
   async getDateArray() {
     const currentDate = new Date();
