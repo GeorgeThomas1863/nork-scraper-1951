@@ -66,7 +66,6 @@ export const buildPicData = async (inputArray) => {
 
     try {
       const picDataModel = new Pic({ inputObj: inputArray[i] });
-
       const picData = await picDataModel.getPicData();
       if (!picData) continue;
 

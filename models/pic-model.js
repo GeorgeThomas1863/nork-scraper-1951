@@ -196,6 +196,9 @@ class Pic {
   async getPicData() {
     const { inputObj } = this.dataObject;
 
+    console.log("PIC DATA INPUT OBJ");
+    console.log(inputObj);
+
     //CHECK IF ALREADY HAVE (shouldnt happen, but double check)
     const checkModel = new dbModel(inputObj, CONFIG.pics);
     await checkModel.urlNewCheck();
@@ -205,8 +208,9 @@ class Pic {
     const headerData = await htmlModel.getMediaHeaders();
     if (!headerData) return null;
 
-    // console.log("HEADER DATA!!!!");
-    // console.log(headerData);
+    console.log("HEADER DATA!!!!");
+    console.log(headerData);
+
     const dataType = headerData["content-type"];
 
     //if not pic RETURN NULL [KEY FOR PROPER DATE ARRAY ITERATION]
