@@ -32,7 +32,8 @@ export const getNewListArray = async () => {
       //could add return to an array but dont care
       await getNewListData(type);
     } catch (e) {
-      console.log(e.message + "; F BREAK: getNewListArray; SITE CONNECTION PROB FUCKED");
+      console.log("!!!!TYPE: " + type + "; " + e.message + "; F BREAK: getNewListArray; SITE CONNECTION PROB FUCKED");
+      // console.log(e.message + "; F BREAK: getNewListArray; SITE CONNECTION PROB FUCKED");
     }
   }
   return true;
