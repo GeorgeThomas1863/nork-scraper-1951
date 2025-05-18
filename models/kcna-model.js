@@ -125,24 +125,20 @@ class KCNA {
   //-------------------
 
   //GET PIC REQ
-
   //maybe refactor
   async getPicReq() {
     const { url, savePath, picId } = this.dataObject;
-
     try {
-      // await randomDelay(1);
       const res = await axios({
         method: "get",
         url: url,
         timeout: 120000, //2 minutes
         responseType: "stream",
       });
-
       if (!res || !res.data) {
         const error = new Error("FETCH FUCKED");
         error.url = url;
-        error.fucntion = "GET HTML AXIOS";
+        error.fucntion = "GET PIC REQ AXIOS";
         throw error;
       }
 
@@ -151,30 +147,30 @@ class KCNA {
 
       const writer = fs.createWriteStream(savePath);
       const stream = res.data.pipe(writer);
-      const totalSize = parseInt(res.headers["content-length"], 10);
-      const mbSize = +(totalSize / 1048576).toFixed(2);
       let downloadedSize = 0;
 
-      const consoleStr = "DOWNLOADING PIC: " + picId + ".jpg | SIZE: " + mbSize + "MB";
-      console.log(consoleStr);
+      // Track downloaded size for chunked transfers
+      console.log("DOWNLOADING PIC: " + picId + ".jpg");
 
-      //download shit
       res.data.on("data", (chunk) => {
+        // Log progress in KB every 100KB
         downloadedSize += chunk.length;
-        if (downloadedSize >= totalSize) {
+        if (downloadedSize % 102400 < chunk.length) {
+          const downloadedKB = Math.floor(downloadedSize / 1024);
+          console.log(`Downloaded: ${downloadedKB}KB`);
         }
       });
-
       await new Promise((resolve, reject) => {
         stream.on("finish", resolve);
         stream.on("error", reject);
       });
 
+      // For chunked transfers, we only know the final size after download completes
       const returnObj = {
         downloadedSize: downloadedSize,
-        totalSize: totalSize,
+        totalSize: downloadedSize,
       };
-
+      console.log(`DOWNLOAD COMPLETE: ${picId}.jpg | FINAL SIZE: ${Math.round(downloadedSize / 1024)}KB`);
       return returnObj;
     } catch (e) {
       console.log(url + "; " + e.message + "; F BREAK: " + e.function);
