@@ -142,15 +142,9 @@ class KCNA {
         throw error;
       }
 
-      console.log("RES HEADERS!!!");
-      console.log(res.headers);
-
       const writer = fs.createWriteStream(savePath);
       const stream = res.data.pipe(writer);
       let downloadedSize = 0;
-
-      // Track downloaded size for chunked transfers
-      console.log("DOWNLOADING PIC: " + picId + ".jpg");
 
       res.data.on("data", (chunk) => {
         // Log progress in KB every 100KB
@@ -165,13 +159,8 @@ class KCNA {
         stream.on("error", reject);
       });
 
-      // For chunked transfers, we only know the final size after download completes
-      const returnObj = {
-        downloadedSize: downloadedSize,
-        totalSize: downloadedSize,
-      };
       console.log(`DOWNLOAD COMPLETE: ${picId}.jpg | FINAL SIZE: ${Math.round(downloadedSize / 1024)}KB`);
-      return returnObj;
+      return { downloadedSize: downloadedSize };
     } catch (e) {
       console.log(url + "; " + e.message + "; F BREAK: " + e.function);
       return null;
