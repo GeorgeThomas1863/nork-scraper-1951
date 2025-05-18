@@ -146,6 +146,9 @@ class KCNA {
         throw error;
       }
 
+      console.log("RES HEADERS!!!");
+      console.log(res.headers);
+
       const writer = fs.createWriteStream(savePath);
       const stream = res.data.pipe(writer);
       const totalSize = parseInt(res.headers["content-length"], 10);
