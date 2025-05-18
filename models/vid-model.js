@@ -180,49 +180,51 @@ class Vid {
       throw error;
     }
 
-    // console.log("!!!VID PAGE HTML");
-    // console.log(html);
-    
-    const scripts = document.querySelectorAll("script");
+    //parse through scripts
+    const scriptArray = document.querySelectorAll("script");
 
-    let mp4Link = "";
+    const vidModel = new Vid({ inputArray: scriptArray });
+    const mp4Link = await vidModel.parseVidScripts();
 
-    for (const script of scripts) {
+    //if cant find vid link return null
+    if (!mp4Link) return null;
+
+    const urlConstant = "http://www.kcna.kp";
+    const vidURL = urlConstant + mp4Link;
+
+    console.log("!!!VID URL");
+    console.log(vidURL);
+
+    //store it in vidURLs
+    try {
+      const storeModel = new dbModel({ url: vidURL, scrapeId: scrapeId }, CONFIG.vidURLs);
+      const storeData = await storeModel.storeUniqueURL();
+      console.log(storeData);
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
+
+    return vidURL;
+  }
+
+  async parseVidScripts() {
+    const { inputArray } = this.dataObject;
+
+    let mp4Link = null;
+
+    for (const script of inputArray) {
       const content = script.textContent;
       if (content && content.includes("type='video/mp4'")) {
         //regex looking for the vid type mp4
         const match = content.match(/source src='([^']+)' type='video\/mp4'/);
         if (match && match[1]) {
           mp4Link = match[1];
-          break;
+          return mp4Link;
         }
       }
     }
 
-    console.log("!!!MP4 LINK");
-    console.log(mp4Link); 
-
-    //claude regex that extracts anythng starting with '/siteFiles/video AND ending with .mp4'
-    // const regex = /'\/siteFiles\/video[^']*?\.mp4'/;
-    // const match = str.match(regex);
-    // if (!match) return null;
-    // const vidStr = match[0].substring(1, match[0].length - 1); //get rid of leading / trailing quotes
-    // if (!vidStr) return null;
-
-    // //build URL
-    // const urlConstant = "http://www.kcna.kp";
-    // const vidURL = urlConstant + vidStr;
-
-    // //store it in vidURLs
-    // try {
-    //   const storeModel = new dbModel({ url: vidURL, scrapeId: scrapeId }, CONFIG.vidURLs);
-    //   const storeData = await storeModel.storeUniqueURL();
-    //   console.log(storeData);
-    // } catch (e) {
-    //   console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-    // }
-
-    // return vidURL;
+    return mp4Link;
   }
 
   //------------------------
