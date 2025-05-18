@@ -18,6 +18,12 @@ class DLHelper {
     const { vidTempPath, totalChunks, vidSizeBytes } = this.dataObject;
     const { vidChunkSize } = CONFIG;
 
+    // Make sure we have all required properties
+    if (!vidTempPath || !totalChunks || !vidSizeBytes) {
+      console.log("Error: Missing required properties for getCompletedVidChunks");
+      return [];
+    }
+
     const completedChunkArray = [];
 
     for (let i = 0; i < totalChunks; i++) {
@@ -41,11 +47,20 @@ class DLHelper {
   async createVidQueue() {
     const { completedChunkArray, totalChunks, vidSizeBytes } = this.dataObject;
     const { vidChunkSize } = CONFIG;
+    
+    // Make sure we have all required properties
+    if (!totalChunks || !vidSizeBytes) {
+      console.log("Error: Missing required properties for createVidQueue");
+      return [];
+    }
+
+    // If completedChunkArray is undefined, initialize as empty array
+    const completedChunks = completedChunkArray || [];
 
     const pendingChunkArray = [];
 
     for (let i = 0; i < totalChunks; i++) {
-      if (!completedChunkArray.includes(i)) {
+      if (!completedChunks.includes(i)) {
         const start = i * vidChunkSize;
         const end = Math.min(start + vidChunkSize - 1, vidSizeBytes - 1);
         const pendingObj = {
@@ -63,7 +78,15 @@ class DLHelper {
   async processVidQueue() {
     const { completedChunkArray, pendingChunkArray, totalChunks } = this.dataObject;
     const { vidConcurrent, vidRetries } = CONFIG;
-    const downloadedChunkArray = [...completedChunkArray];
+    
+    // Make sure we have all required properties
+    if (!totalChunks || !pendingChunkArray) {
+      console.log("Error: Missing required properties for processVidQueue");
+      return [];
+    }
+    
+    // If completedChunkArray is undefined, initialize as empty array
+    const downloadedChunkArray = completedChunkArray ? [...completedChunkArray] : [];
     let remainingChunkArray = [...pendingChunkArray];
 
     // Process chunks with retry attempts recursively
@@ -93,10 +116,10 @@ class DLHelper {
         for (let m = 0; m < results.length; m++) {
           const resultItem = results[m];
 
-          if (resultItem.status === "fulfilled") {
+          if (resultItem.status === "fulfilled" && resultItem.value) {
             downloadedChunkArray.push(resultItem.value.chunkIndex);
           } else {
-            console.error(`Failed chunk ${batch[m].index}: ${resultItem.reason}`);
+            console.error(`Failed chunk ${batch[m].index}: ${resultItem.reason || 'Unknown error'}`);
             failedChunkArray.push(batch[m]);
           }
         }
@@ -123,6 +146,12 @@ class DLHelper {
   async downloadVidChunk() {
     const { url, vidTempPath, chunkIndex, start, end } = this.dataObject;
     const { vidRetries } = CONFIG;
+
+    // Make sure we have all required properties
+    if (!url || !vidTempPath || chunkIndex === undefined || start === undefined || end === undefined) {
+      console.log("Error: Missing required properties for downloadVidChunk");
+      return null;
+    }
 
     for (let retry = 0; retry < vidRetries; retry++) {
       try {

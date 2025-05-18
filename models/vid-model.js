@@ -278,17 +278,33 @@ class Vid {
 
   async downloadVidFS() {
     const { inputObj } = this.dataObject;
+    const { vidId } = inputObj;
+    const { vidChunkSize, tempPath } = CONFIG;
 
     //check if new (not possible in most situations, but adding check to be sure)
-    const checkModel = new dbModel(inputObj, CONFIG.vidsDownloaded);
-    //throws error if not new (keep out of try block to propogate error)
-    await checkModel.urlNewCheck();
+    const checkModel = new dbModel(vidObj, CONFIG.vidsDownloaded);
+    await checkModel.urlNewCheck(); //throws error if not new (keep out of try block to propogate error)
 
-    //add scrapeId
-    inputObj.scrapeId = scrapeId;
+    //get vid size here (PROB NEED TO CHANGE BASED ON FUTURE HEADERS)
+    const vidSizeModel = new Vid({ inputObj: inputObj });
+    const vidSizeBytes = await vidSizeModel.parseVidSize();
+
+    //build temp save path / calc things
+    const vidTempPath = tempPath + vidId + ".mp4";
+    const totalChunks = Math.ceil(vidSizeBytes / vidChunkSize);
+
+    //add to obj, and then vidObj
+    const dataObj = {
+      scrapeId: scrapeId,
+      vidTempPath: vidTempPath,
+      vidSizeBytes: vidSizeBytes,
+      totalChunks: totalChunks,
+    };
+
+    const vidObj = { ...inputObj, ...dataObj };
 
     //download vid multi
-    const downloadModel = new KCNA({ inputObj: inputObj });
+    const downloadModel = new KCNA({ inputObj: vidObj });
     const downloadVidObj = await downloadModel.getVidMultiThread();
 
     //if fucked try other vid download
@@ -298,6 +314,28 @@ class Vid {
     }
 
     return downloadVidObj;
+  }
+
+  //WILL PROB HAVE TO CHANGE BASED ON FUTURE HEADERS
+  async parseVidSize() {
+    const { inputObj } = this.dataObject;
+    const { headerData } = inputObj;
+
+    // Extract video size from content-range header (format: bytes 0-72/36378941)
+    if (headerData && headerData["content-range"]) {
+      const contentRangeMatch = headerData["content-range"].match(/bytes \d+-\d+\/(\d+)/);
+      if (contentRangeMatch && contentRangeMatch[1]) {
+        return parseInt(contentRangeMatch[1], 10);
+      }
+    }
+
+    // If we couldn't get size from content-range, try content-length
+    if (headerData && headerData["content-length"]) {
+      return parseInt(headerData["content-length"], 10);
+    }
+
+    console.log("ERROR: Could not determine video size from headers");
+    return null;
   }
 
   //-----------------------------

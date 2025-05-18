@@ -173,25 +173,12 @@ class KCNA {
 
   //complex multi thread download
   async getVidMultiThread() {
-    console.log("VID DOWNLOAD!!!");
-    console.log(this.dataObject);
-
     //get obj data
     const { inputObj } = this.dataObject;
-    const { vidSizeBytes, vidId } = inputObj;
-    const { vidChunkSize, tempPath } = CONFIG;
     const vidObj = { ...inputObj };
 
     console.log("!!!VID OBJECT MODEL");
-    console.log(vidObj);
-
-    //build temp save path
-    const vidTempPath = tempPath + vidId + ".mp4";
-    vidObj.vidTempPath = vidTempPath;
-
-    //add total chunks
-    const totalChunks = Math.ceil(vidSizeBytes / vidChunkSize);
-    vidObj.totalChunks = totalChunks;
+    console.log(inputObj);
 
     try {
       //find shit already downloaded
