@@ -29,9 +29,9 @@ export const getNewListArray = async () => {
       //stop if needed
       if (!continueScrape) return null;
       const type = typeArr[i];
+      console.log("!!!!TYPE: " + type);
       //could add return to an array but dont care
       await getNewListData(type);
-      console.log("!!!!TYPE: " + type);
     } catch (e) {
       console.log(e.message + "; F BREAK: getNewListArray; SITE CONNECTION PROB FUCKED");
     }
