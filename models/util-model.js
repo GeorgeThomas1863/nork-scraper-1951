@@ -102,6 +102,7 @@ class UTIL {
     const { type } = this.dataObject;
     if (!type) return null;
 
+    let dataModel = "";
     switch (type) {
       case "pics":
         dataModel = new dbModel({ keyToLookup: "picId" }, CONFIG.pics);
