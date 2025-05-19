@@ -246,6 +246,14 @@ class TG {
     const { vidId, vidSizeBytes, picId, titleNormal, dateNormal, url } = inputObj;
     const chunkObj = { ...inputObj };
 
+    console.log("!!!!!!INPUT OBJ");
+    console.log(inputObj);
+
+    //get thumbnail pic id
+    // const thumbnailModel = new dbModel({ keyToLookup: "url", itemValue: thumbnail }, CONFIG.picsDownloaded);
+    // const thumbnailObj = await thumbnailModel.getUniqueItem();
+    // const thumbnailPicId = thumbnailObj.picId;
+
     //define chunk size
     chunkObj.chunkSize = 40 * 1024 * 1024; //40MB
     chunkObj.totalChunks = Math.ceil(vidSizeBytes / chunkObj.chunkSize);
@@ -351,8 +359,8 @@ class TG {
     const { inputObj } = this.dataObject;
     const { savePath, tgUploadId, thumbnailPath, start, end, chunkNumber, totalChunks } = inputObj;
 
-    console.log("!!!!!!INPUT OBJ  ");
-    console.log(inputObj);
+    // console.log("!!!!!!INPUT OBJ  ");
+    // console.log(inputObj);
 
     const readStream = fs.createReadStream(savePath, { start: start, end: end - 1 });
 
