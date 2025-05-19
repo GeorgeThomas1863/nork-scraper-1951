@@ -253,9 +253,6 @@ class TG {
     //build thumbnail path
     chunkObj.thumbnailPath = CONFIG.picPath + picId + ".jpg";
 
-    console.log("!!!!!!CHUNK OBJ");
-    console.log(chunkObj);
-
     //posts ALL chunks, edits the caption
     const postChunkModel = new TG({ inputObj: chunkObj });
     const chunkDataArray = await postChunkModel.postChunkArray();
@@ -292,6 +289,9 @@ class TG {
       chunkObj.start = start;
       chunkObj.end = end;
       chunkObj.chunkNumber = i;
+
+      console.log("!!!!!!CHUNK OBJ");
+      console.log(chunkObj);
 
       const postChunkModel = new TG({ inputObj: chunkObj });
       const postChunkData = await postChunkModel.postVidChunk();
