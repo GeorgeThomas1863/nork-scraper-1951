@@ -251,15 +251,15 @@ class Vid {
     const parseModel = new Vid({ headerData: headerData });
     const headerObj = await parseModel.parseVidHeaders();
 
-    //add vid temp path
-    const vidTempPath = tempPath + vidId + ".mp4";
-    headerObj.vidTempPath = vidTempPath;
-
     //get vid ID / SCRAPE id HERE
     const vidIdModel = new UTIL({ type: "vids" });
     const vidId = await vidIdModel.getNextId();
     headerObj.vidId = vidId;
     headerObj.scrapeId = scrapeId;
+
+    //add vid temp path
+    const vidTempPath = tempPath + vidId + ".mp4";
+    headerObj.vidTempPath = vidTempPath;
 
     const storeModel = new dbModel(headerObj, CONFIG.vids);
     const storeData = await storeModel.storeUniqueURL();
