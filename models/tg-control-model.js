@@ -243,11 +243,9 @@ class TG {
 
   async postVidTG() {
     const { inputObj } = this.dataObject;
-    const { vidId, vidSizeBytes, picId, titleNormal, dateNormal, url, thumbnail } = inputObj;
+    const { vidSizeBytes, thumbnail } = inputObj;
     const chunkObj = { ...inputObj };
-
-    // console.log("!!!!!!INPUT OBJ");
-    // console.log(inputObj);
+    const { uploadChunkSize } = CONFIG;
 
     //get thumbnail pic id
     const thumbnailModel = new dbModel({ keyToLookup: "url", itemValue: thumbnail }, CONFIG.picsDownloaded);
@@ -261,7 +259,7 @@ class TG {
     chunkObj.thumbnailPath = CONFIG.picPath + thumbnailPicId + ".jpg";
 
     //define chunk size
-    chunkObj.chunkSize = 40 * 1024 * 1024; //40MB
+    chunkObj.chunkSize = uploadChunkSize;
     chunkObj.totalChunks = Math.ceil(vidSizeBytes / chunkObj.chunkSize);
 
     //posts ALL chunks, edits the caption
