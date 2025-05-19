@@ -312,8 +312,8 @@ class TG {
     const formModel = new TG({ inputObj: inputObj });
     const chunkForm = await formModel.getChunkForm();
 
-    console.log("!!!!!!CHUNK FORM");
-    console.log(chunkForm);
+    // console.log("!!!!!!CHUNK FORM");
+    // console.log(chunkForm);
 
     console.log("Uploading chunk " + (chunkNumber + 1) + " of " + totalChunks);
 
@@ -350,6 +350,9 @@ class TG {
   async getChunkForm() {
     const { inputObj } = this.dataObject;
     const { savePath, tgUploadId, thumbnailPath, start, end, chunkNumber, totalChunks } = inputObj;
+
+    console.log("!!!!!!INPUT OBJ  ");
+    console.log(inputObj);
 
     const readStream = fs.createReadStream(savePath, { start: start, end: end - 1 });
 
