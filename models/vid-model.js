@@ -233,41 +233,74 @@ class Vid {
 
   async getVidData() {
     const { inputObj } = this.dataObject;
-    const headerObj = { ...inputObj };
-
-    console.log("VID DATA INPUT OBJ");
-    console.log(headerObj);
+    const { tempPath } = CONFIG;
 
     //CHECK IF ALREADY HAVE (shouldnt happen, but double check)
-    const checkModel = new dbModel(headerObj, CONFIG.vids);
+    const checkModel = new dbModel(inputObj, CONFIG.vids);
     await checkModel.urlNewCheck();
 
     //throws error on fail
-    const headerModel = new KCNA(headerObj);
+    const headerModel = new KCNA(inputObj);
     const headerData = await headerModel.getMediaHeaders();
     if (!headerData) return null;
 
     console.log("VID HEADER DATA!!!!");
     console.log(headerData);
 
-    //just add entire object in, no need for complex parsing here
-    headerObj.headerData = headerData;
+    //parse vid headers here [will prob need to change based on future headers]
+    const parseModel = new Vid({ headerData: headerData });
+    const headerObj = await parseModel.parseVidHeaders();
 
-    //add scrape id here
-    headerObj.scrapeId = scrapeId;
+    //add vid temp path
+    const vidTempPath = tempPath + vidId + ".mp4";
+    headerObj.vidTempPath = vidTempPath;
 
-    //get vid ID
+    //get vid ID / SCRAPE id HERE
     const vidIdModel = new UTIL({ type: "vids" });
     const vidId = await vidIdModel.getNextId();
-
-    console.log("VID ID!!!!");
-    console.log(vidId);
-
     headerObj.vidId = vidId;
+    headerObj.scrapeId = scrapeId;
 
     const storeModel = new dbModel(headerObj, CONFIG.vids);
     const storeData = await storeModel.storeUniqueURL();
     console.log(storeData);
+
+    return headerObj;
+  }
+
+  async parseVidHeaders() {
+    const { headerData } = this.dataObject;
+    const { vidChunkSize } = CONFIG;
+
+    console.log("VID HEADER DATA");
+    console.log(headerData);
+
+    const serverData = headerData.server;
+    const eTag = headerData.etag;
+    const vidEditDate = new Date(headerData["last-modified"]);
+    const contentRange = headerData["content-range"];
+
+    //get pic size based on content range
+    let vidSizeBytes;
+    if (contentRange) {
+      vidSizeBytes = +contentRange?.substring(contentRange?.lastIndexOf("/") + 1, contentRange?.length);
+    } else {
+      vidSizeBytes = headerData["content-length"];
+    }
+
+    //calc and add to obj
+    const vidSizeMB = +(vidSizeBytes / 1048576).toFixed(2);
+    const totalChunks = Math.ceil(vidSizeBytes / vidChunkSize);
+
+    const headerObj = {
+      scrapeDate: new Date(),
+      serverData: serverData,
+      eTag: eTag,
+      vidEditDate: vidEditDate,
+      vidSizeBytes: vidSizeBytes,
+      vidSizeMB: vidSizeMB,
+      totalChunks: totalChunks,
+    };
 
     return headerObj;
   }
@@ -278,30 +311,11 @@ class Vid {
 
   async downloadVidFS() {
     const { inputObj } = this.dataObject;
-    const { vidId } = inputObj;
-    const { vidChunkSize, tempPath } = CONFIG;
+    const vidObj = { ...inputObj };
 
     //check if new (not possible in most situations, but adding check to be sure)
-    const checkModel = new dbModel(inputObj, CONFIG.vidsDownloaded);
+    const checkModel = new dbModel(vidObj, CONFIG.vidsDownloaded);
     await checkModel.urlNewCheck(); //throws error if not new (keep out of try block to propogate error)
-
-    //get vid size here (PROB NEED TO CHANGE BASED ON FUTURE HEADERS)
-    const vidSizeModel = new Vid({ inputObj: inputObj });
-    const vidSizeBytes = await vidSizeModel.parseVidSize();
-
-    //build temp save path / calc things
-    const vidTempPath = tempPath + vidId + ".mp4";
-    const totalChunks = Math.ceil(vidSizeBytes / vidChunkSize);
-
-    //add to obj, and then vidObj
-    const dataObj = {
-      scrapeId: scrapeId,
-      vidTempPath: vidTempPath,
-      vidSizeBytes: vidSizeBytes,
-      totalChunks: totalChunks,
-    };
-
-    const vidObj = { ...inputObj, ...dataObj };
 
     //download vid multi
     const downloadModel = new KCNA({ inputObj: vidObj });
@@ -317,26 +331,26 @@ class Vid {
   }
 
   //WILL PROB HAVE TO CHANGE BASED ON FUTURE HEADERS
-  async parseVidSize() {
-    const { inputObj } = this.dataObject;
-    const { headerData } = inputObj;
+  // async parseVidSize() {
+  //   const { inputObj } = this.dataObject;
+  //   const { headerData } = inputObj;
 
-    // Extract video size from content-range header (format: bytes 0-72/36378941)
-    if (headerData && headerData["content-range"]) {
-      const contentRangeMatch = headerData["content-range"].match(/bytes \d+-\d+\/(\d+)/);
-      if (contentRangeMatch && contentRangeMatch[1]) {
-        return parseInt(contentRangeMatch[1], 10);
-      }
-    }
+  //   // Extract video size from content-range header (format: bytes 0-72/36378941)
+  //   if (headerData && headerData["content-range"]) {
+  //     const contentRangeMatch = headerData["content-range"].match(/bytes \d+-\d+\/(\d+)/);
+  //     if (contentRangeMatch && contentRangeMatch[1]) {
+  //       return parseInt(contentRangeMatch[1], 10);
+  //     }
+  //   }
 
-    // If we couldn't get size from content-range, try content-length
-    if (headerData && headerData["content-length"]) {
-      return parseInt(headerData["content-length"], 10);
-    }
+  //   // If we couldn't get size from content-range, try content-length
+  //   if (headerData && headerData["content-length"]) {
+  //     return parseInt(headerData["content-length"], 10);
+  //   }
 
-    console.log("ERROR: Could not determine video size from headers");
-    return null;
-  }
+  //   console.log("ERROR: Could not determine video size from headers");
+  //   return null;
+  // }
 
   //-----------------------------
 
