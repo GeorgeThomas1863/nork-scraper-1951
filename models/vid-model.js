@@ -261,11 +261,13 @@ class Vid {
     const vidTempPath = tempPath + vidId + ".mp4";
     headerObj.vidTempPath = vidTempPath;
 
-    const storeModel = new dbModel(headerObj, CONFIG.vids);
+    const vidObj = { ...headerObj, ...inputObj };
+
+    const storeModel = new dbModel(vidObj, CONFIG.vids);
     const storeData = await storeModel.storeUniqueURL();
     console.log(storeData);
 
-    return headerObj;
+    return vidObj;
   }
 
   async parseVidHeaders() {
