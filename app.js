@@ -1,5 +1,7 @@
 //TO DO:
 
+//multi chunk upload STILL FUCKED
+
 //FIX PIC SET ID SAVE (seems to be failign to store last pic set id)
 
 //FAILING TO COUNT DOWNLOAD AND UPLOAD
