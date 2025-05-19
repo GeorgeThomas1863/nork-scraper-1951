@@ -1,8 +1,6 @@
 //TO DO:
 
-//MAKE SURE VID DOWNLOAD WORKS / stores correct data
-
-//FIX VID UPLOAD
+//FIX PIC SET ID SAVE (seems to be failign to store last pic set id)
 
 //FAILING TO COUNT DOWNLOAD AND UPLOAD
 

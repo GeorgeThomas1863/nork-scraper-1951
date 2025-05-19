@@ -381,9 +381,9 @@ class Vid {
     const tgModel = new TG({ inputObj: vidPageObj });
     await tgModel.postTitleTG();
 
-    //post thumbnail
-    const thumbnailModel = new Vid({ inputObj: normalObj });
-    await thumbnailModel.postVidThumbnail();
+    //post thumbnail [WORKS, but looks stupid, can add back in if needed]
+    // const thumbnailModel = new Vid({ inputObj: normalObj });
+    // await thumbnailModel.postVidThumbnail();
 
     //post vid
     const postVidData = await tgModel.postVidTG();
