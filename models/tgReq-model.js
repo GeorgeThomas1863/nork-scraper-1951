@@ -139,8 +139,8 @@ class TgReq {
   async tgVidFS(tokenIndex = 0) {
     const { form } = this.dataObject;
 
-    console.log("!!!!!!FORM");
-    console.log(form);
+    // console.log("!!!!!!FORM");
+    // console.log(form);
 
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/sendVideo`;
