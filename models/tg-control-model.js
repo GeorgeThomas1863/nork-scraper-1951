@@ -243,23 +243,26 @@ class TG {
 
   async postVidTG() {
     const { inputObj } = this.dataObject;
-    const { vidId, vidSizeBytes, picId, titleNormal, dateNormal, url } = inputObj;
+    const { vidId, vidSizeBytes, picId, titleNormal, dateNormal, url, thumbnail } = inputObj;
     const chunkObj = { ...inputObj };
 
-    console.log("!!!!!!INPUT OBJ");
-    console.log(inputObj);
+    // console.log("!!!!!!INPUT OBJ");
+    // console.log(inputObj);
 
     //get thumbnail pic id
-    // const thumbnailModel = new dbModel({ keyToLookup: "url", itemValue: thumbnail }, CONFIG.picsDownloaded);
-    // const thumbnailObj = await thumbnailModel.getUniqueItem();
-    // const thumbnailPicId = thumbnailObj.picId;
+    const thumbnailModel = new dbModel({ keyToLookup: "url", itemValue: thumbnail }, CONFIG.picsDownloaded);
+    const thumbnailObj = await thumbnailModel.getUniqueItem();
+    const thumbnailPicId = thumbnailObj.picId;
+
+    console.log("!!!!!!THUMBNAIL PIC ID");
+    console.log(thumbnailPicId);
+
+    //build thumbnail path
+    chunkObj.thumbnailPath = CONFIG.picPath + thumbnailPicId + ".jpg";
 
     //define chunk size
     chunkObj.chunkSize = 40 * 1024 * 1024; //40MB
     chunkObj.totalChunks = Math.ceil(vidSizeBytes / chunkObj.chunkSize);
-
-    //build thumbnail path
-    chunkObj.thumbnailPath = CONFIG.picPath + picId + ".jpg";
 
     //posts ALL chunks, edits the caption
     const postChunkModel = new TG({ inputObj: chunkObj });
