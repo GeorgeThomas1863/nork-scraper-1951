@@ -332,28 +332,6 @@ class Vid {
     return downloadVidObj;
   }
 
-  //WILL PROB HAVE TO CHANGE BASED ON FUTURE HEADERS
-  // async parseVidSize() {
-  //   const { inputObj } = this.dataObject;
-  //   const { headerData } = inputObj;
-
-  //   // Extract video size from content-range header (format: bytes 0-72/36378941)
-  //   if (headerData && headerData["content-range"]) {
-  //     const contentRangeMatch = headerData["content-range"].match(/bytes \d+-\d+\/(\d+)/);
-  //     if (contentRangeMatch && contentRangeMatch[1]) {
-  //       return parseInt(contentRangeMatch[1], 10);
-  //     }
-  //   }
-
-  //   // If we couldn't get size from content-range, try content-length
-  //   if (headerData && headerData["content-length"]) {
-  //     return parseInt(headerData["content-length"], 10);
-  //   }
-
-  //   console.log("ERROR: Could not determine video size from headers");
-  //   return null;
-  // }
-
   //-----------------------------
 
   //UPLOAD VIDS
@@ -387,8 +365,8 @@ class Vid {
     //build vidPageObj
     const vidPageObj = { ...normalObj, ...vidObjData };
 
-    console.log("VID PAGE OBJ");
-    console.log(vidPageObj);
+    // console.log("VID PAGE OBJ");
+    // console.log(vidPageObj);
 
     //check if file exists HERE, throw error if it doesnt
     const vidExists = fs.existsSync(vidPageObj.savePath);
@@ -448,6 +426,7 @@ class Vid {
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
+    return true;
   }
 }
 

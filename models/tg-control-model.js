@@ -253,6 +253,9 @@ class TG {
     //build thumbnail path
     chunkObj.thumbnailPath = CONFIG.picPath + picId + ".jpg";
 
+    console.log("!!!!!!CHUNK OBJ");
+    console.log(chunkObj);
+
     //posts ALL chunks, edits the caption
     const postChunkModel = new TG({ inputObj: chunkObj });
     const chunkDataArray = await postChunkModel.postChunkArray();
@@ -317,8 +320,7 @@ class TG {
     if (!chunkData || !chunkData.result) return null;
 
     //label the chunk (add caption)
-    const caption =
-      titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + vidId + ".mp4; [" + (chunkNumber + 1) + " of " + totalChunks + "]";
+    const caption = titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + vidId + ".mp4; [" + (chunkNumber + 1) + " of " + totalChunks + "]";
 
     //build edit caption params
     const editParams = {
