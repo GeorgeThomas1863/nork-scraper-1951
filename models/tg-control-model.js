@@ -290,8 +290,8 @@ class TG {
       chunkObj.end = end;
       chunkObj.chunkNumber = i;
 
-      console.log("!!!!!!CHUNK OBJ");
-      console.log(chunkObj);
+      // console.log("!!!!!!CHUNK OBJ");
+      // console.log(chunkObj);
 
       const postChunkModel = new TG({ inputObj: chunkObj });
       const postChunkData = await postChunkModel.postVidChunk();
@@ -311,6 +311,9 @@ class TG {
     //get chunk form
     const formModel = new TG({ inputObj: inputObj });
     const chunkForm = await formModel.getChunkForm();
+
+    console.log("!!!!!!CHUNK FORM");
+    console.log(chunkForm);
 
     console.log("Uploading chunk " + (chunkNumber + 1) + " of " + totalChunks);
 
