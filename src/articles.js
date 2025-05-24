@@ -50,8 +50,8 @@ export const buildArticleList = async (inputHTML, articleType) => {
   const articleListSort = await sortModel.sortArrayByDate();
 
   //add article ID
-  const idModel = new UTIL({ inputArray: articleListSort });
-  const articleListNormal = await idModel.addListId(CONFIG.articleList, "articleId");
+  const idModel = new UTIL({ inputArray: articleListSort, inputType: "articleId" });
+  const articleListNormal = await idModel.addListId();
 
   //store the sorted array
   try {

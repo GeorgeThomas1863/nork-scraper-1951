@@ -66,36 +66,53 @@ class UTIL {
     return sortArray;
   }
 
-  async addListId(collection, inputType) {
-    const { inputArray } = this.dataObject;
-    if (!inputArray || !inputArray.length) return null;
+  async addListId() {
+    const { inputArray, inputType } = this.dataObject;
+    const { articleList, picSetList, vidPageList } = CONFIG;
+    if (!inputArray || !inputArray.length || !inputType) return null;
 
-    const currentItemId = await this.getArticleId(collection);
+    let collection = "";
+    switch (inputType) {
+      case "articleId":
+        collection = articleList;
+        break;
+
+      case "picSetId":
+        collection = picSetList;
+        break;
+
+      case "vidPageId":
+        collection = vidPageList;
+        break;
+
+      default:
+        return null;
+    }
+
+    const maxModel = new UTIL({ inputType: inputType, collection: collection });
+    const currentId = await maxModel.getCurrentId();
 
     const returnArray = [];
     for (let i = 0; i < inputArray.length; i++) {
-      const inputObj = inputArray[i];
-      const normalObj = { ...inputObj };
+      const normalObj = { ...inputArray[i] };
+      normalObj[inputType] = currentId + i;
 
-      //add in articleId
-      normalObj[inputType] = i + currentItemId;
-
-      // Add to the output array
       returnArray.push(normalObj);
     }
 
     return returnArray;
   }
 
-  async getArticleId(collection) {
-    const dataModel = new dbModel({ keyToLookup: "articleId" }, collection);
-    const articleIdStored = await dataModel.findMaxId();
+  async getCurrentId() {
+    const { inputType, collection } = this.dataObject;
+    const dataModel = new dbModel({ keyToLookup: inputType }, collection);
+    const currentId = await dataModel.findMaxId();
 
     //if doesnt exists
-    if (!articleIdStored) return 0;
+    if (!currentId) return 0;
 
     //otherwise return stored value +1
-    return articleIdStored + 1;
+    return currentId + 1;
   }
 
   async getNextId() {

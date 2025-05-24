@@ -21,8 +21,8 @@ export const buildVidList = async (inputHTML) => {
     const vidListSort = await sortModel.sortArrayByDate();
 
     //add vidPageId
-    const idModel = new UTIL({ inputArray: vidListSort });
-    const vidListNormal = await idModel.addListId(CONFIG.vidPageList, "vidPageId");
+    const idModel = new UTIL({ inputArray: vidListSort, inputType: "vidPageId" });
+    const vidListNormal = await idModel.addListId();
 
     //store it
     const storeDataModel = new dbModel(vidListNormal, CONFIG.vidPageList);

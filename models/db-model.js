@@ -71,11 +71,7 @@ class dbModel {
 
   //GETS STUFF
 
-  /**
-   * Retrieves all documents from the specified collection
-   * @function getAll (!!!CHANGED NAMED FROM findAny)
-   * @returns {Promise<Array<Object>>} Array of all documents in the collection
-   */
+
   async getAll() {
     // await db.dbConnect();
     const arrayData = await db.dbGet().collection(this.collection).find().toArray();
@@ -108,12 +104,6 @@ class dbModel {
 
   //CHECK STUFF
 
-  /**
-   * Checks if URL already exists in the collection (throws error if it does);
-   * NOTE CHANGED NAME TO REMOVE dataObject key input
-   * @function urlNewCheck
-   * @returns {Promise<boolean>} True if the URL is new (not in the collection)
-   */
   async urlNewCheck() {
     const alreadyStored = await db.dbGet().collection(this.collection).findOne({ url: this.dataObject.url });
 
@@ -128,11 +118,6 @@ class dbModel {
     return true;
   }
 
-  /**
-   * Finds URLs in collection1 that don't exist in collection2
-   * @function findNewURLs
-   * @returns {Promise<Array<Object>>} Array of documents with unique URLs
-   */
   async findNewURLs() {
     // await db.dbConnect();
     //putting collections in dataObject for no reason, if hate self refactor rest of project like this
@@ -145,12 +130,7 @@ class dbModel {
     return newURLsArray;
   }
 
-  /**
-   * Finds items in collection1 that either don't exist in collection2
-   * or have a larger size in collection1 than in collection2 (pics that didnt properly download)
-   * @function findNewURLs
-   * @returns {Promise<Array<Object>>} Array of documents with unique URLs
-   */
+
   async findNewPicsBySize() {
     const collection1 = this.dataObject.collection1; //OLD THING (compare against)
     const collection2 = this.dataObject.collection2; //NEW THING (process you are currently doing / handling)

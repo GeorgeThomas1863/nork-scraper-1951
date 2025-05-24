@@ -21,8 +21,8 @@ export const buildPicSetList = async (inputHTML) => {
     const picSetListSort = await sortModel.sortArrayByDate();
 
     //add picSetId ID
-    const idModel = new UTIL({ inputArray: picSetListSort });
-    const picSetListNormal = await idModel.addListId(CONFIG.picSetList, "picSetId");
+    const idModel = new UTIL({ inputArray: picSetListSort, inputType: "picSetId" });
+    const picSetListNormal = await idModel.addListId();
 
     //store it
     const storeDataModel = new dbModel(picSetListNormal, CONFIG.picSetList);
