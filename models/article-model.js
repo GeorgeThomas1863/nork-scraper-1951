@@ -163,8 +163,8 @@ class Article {
       throw error;
     }
 
-    //parse the data from the html
-    const parseModel = new Article({ html: articleHTML });
+    //parse the data from the html [pass in date to store in pic urls]
+    const parseModel = new Article({ html: articleHTML, date: inputObj.date });
     const parseObj = await parseModel.parseArticleHMTL();
     if (!parseObj) return null;
 
@@ -187,11 +187,11 @@ class Article {
    * @returns obj of data extracted from html (including pics if present)
    */
   async parseArticleHMTL() {
-    const { html } = this.dataObject;
+    const { html, date } = this.dataObject;
     const dom = new JSDOM(html);
     const document = dom.window.document;
 
-    const parseObjModel = new Article({ document: document });
+    const parseObjModel = new Article({ document: document, date: date });
     const contentObj = await parseObjModel.getContentObj();
     const articlePicObj = await parseObjModel.getArticlePicObj();
 
@@ -239,7 +239,7 @@ class Article {
   }
 
   async getArticlePicObj() {
-    const { document } = this.dataObject;
+    const { document, date } = this.dataObject;
 
     //get article PAGE (if exists) where all pics are displayed
     const mediaIconElement = document.querySelector(".media-icon");
@@ -250,7 +250,7 @@ class Article {
 
     //otherwise build pic / pic array
     const picPageURL = "http://www.kcna.kp" + picPageHref;
-    const articlePicModel = new Article({ url: picPageURL });
+    const articlePicModel = new Article({ url: picPageURL, date: date });
     const picArray = await articlePicModel.getArticlePicArray();
 
     //if articlePicArray fails to return (load) return null (to download again later)
@@ -265,8 +265,10 @@ class Article {
   }
 
   async getArticlePicArray() {
+    const { url, date } = this.dataObject;
+
     //get article pic html
-    const htmlModel = new KCNA(this.dataObject);
+    const htmlModel = new KCNA({ url: url });
     const html = await htmlModel.getHTML();
 
     //if fails return null
@@ -290,7 +292,7 @@ class Article {
         picArray.push(articlePicURL);
 
         //store url to picDB (so dont have to do again)
-        const picDataModel = new dbModel({ url: articlePicURL, scrapeId: scrapeId }, CONFIG.picURLs);
+        const picDataModel = new dbModel({ url: articlePicURL, scrapeId: scrapeId, date: date }, CONFIG.picURLs);
         await picDataModel.storeUniqueURL();
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
