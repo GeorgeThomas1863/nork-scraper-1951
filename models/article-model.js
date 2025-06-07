@@ -149,6 +149,9 @@ class Article {
     //get html for new article
     const { inputObj } = this.dataObject;
 
+    console.log("GET ARTICLE OBJ MODEL");
+    console.log(inputObj);
+
     const htmlModel = new KCNA(inputObj);
     const articleHTML = await htmlModel.getHTML();
 

@@ -197,8 +197,8 @@ class Pic {
     const { inputObj } = this.dataObject;
     const headerObj = { ...inputObj };
 
-    console.log("HERE WE GO AGAIN");
-    console.log(headerObj);
+    // console.log("HERE WE GO AGAIN");
+    // console.log(headerObj);
 
     //CHECK IF ALREADY HAVE (shouldnt happen, but double check)
     const checkModel = new dbModel(headerObj, CONFIG.pics);
