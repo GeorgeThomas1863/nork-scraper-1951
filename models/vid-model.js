@@ -82,10 +82,6 @@ class Vid {
     const checkModel = new dbModel({ url: vidPageURL }, CONFIG.vidPageList);
     await checkModel.urlNewCheck();
 
-    //extract thmubnail and store it
-    const thumbnailModel = new Vid({ inputItem: listItem });
-    const thumbnailURL = await thumbnailModel.getVidThumbnail();
-
     //get date
     const dateModel = new UTIL({ inputItem: listItem });
     const vidDate = await dateModel.parseListDate();
@@ -95,6 +91,10 @@ class Vid {
     const titleElement = listItem.querySelector(".title a");
     const titleRaw = titleElement.textContent.trim();
     const title = titleRaw.replace(dateElement.textContent, "").trim();
+
+    //extract thmubnail and store it
+    const thumbnailModel = new Vid({ inputItem: listItem, date: vidDate });
+    const thumbnailURL = await thumbnailModel.getVidThumbnail();
 
     const vidListObj = {
       url: vidPageURL,
@@ -108,7 +108,7 @@ class Vid {
   }
 
   async getVidThumbnail() {
-    const { inputItem } = this.dataObject;
+    const { inputItem, date } = this.dataObject;
 
     //get thumbnailURL
     const thumbnailElement = inputItem.querySelector(".img img");
@@ -119,7 +119,7 @@ class Vid {
 
     //store it in picURLs
     try {
-      const picModel = new dbModel({ url: thumbnailURL, scrapeId: scrapeId }, CONFIG.picURLs);
+      const picModel = new dbModel({ url: thumbnailURL, scrapeId: scrapeId, date: date }, CONFIG.picURLs);
       const storeData = await picModel.storeUniqueURL();
       console.log(storeData);
     } catch (e) {
@@ -149,7 +149,7 @@ class Vid {
     }
 
     //extract vidURL add to obj
-    const vidURLModel = new Vid({ html: vidPageHTML });
+    const vidURLModel = new Vid({ html: vidPageHTML, date: inputObj.date });
     const vidURL = await vidURLModel.parseVidURL();
 
     //add to obj
@@ -168,7 +168,7 @@ class Vid {
 
   //extract vid URL as String
   async parseVidURL() {
-    const { html } = this.dataObject;
+    const { html, date } = this.dataObject;
     const dom = new JSDOM(html);
     const document = dom.window.document;
 
@@ -183,7 +183,7 @@ class Vid {
     //parse through scripts
     const scriptArray = document.querySelectorAll("script");
 
-    const vidModel = new Vid({ inputArray: scriptArray });
+    const vidModel = new Vid({ inputArray: scriptArray, date: date });
     const mp4Link = await vidModel.parseVidScripts();
 
     //if cant find vid link return null
@@ -197,7 +197,7 @@ class Vid {
 
     //store it in vidURLs
     try {
-      const storeModel = new dbModel({ url: vidURL, scrapeId: scrapeId }, CONFIG.vidURLs);
+      const storeModel = new dbModel({ url: vidURL, scrapeId: scrapeId, date: date }, CONFIG.vidURLs);
       const storeData = await storeModel.storeUniqueURL();
       console.log(storeData);
     } catch (e) {

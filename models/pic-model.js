@@ -125,7 +125,7 @@ class Pic {
     }
 
     //get picSetArray
-    const parseModel = new Pic({ html: picSetPageHTML });
+    const parseModel = new Pic({ html: picSetPageHTML, date: inputObj.date });
     const picSetArray = await parseModel.parsePicSetHTML();
 
     //add to obj / ADD SCRAPE ID HERE
@@ -142,19 +142,19 @@ class Pic {
   }
 
   async parsePicSetHTML() {
-    const { html } = this.dataObject;
+    const { html, date } = this.dataObject;
     const dom = new JSDOM(html);
     const document = dom.window.document;
 
     const picElementArray = document.querySelectorAll(".content img");
-    const parseModel = new Pic({ inputArray: picElementArray });
+    const parseModel = new Pic({ inputArray: picElementArray, date: date });
     const picSetArray = await parseModel.parsePicElementArray();
 
     return picSetArray;
   }
 
   async parsePicElementArray() {
-    const { inputArray } = this.dataObject;
+    const { inputArray, date } = this.dataObject;
 
     const picSetArray = [];
     for (let i = 0; i < inputArray.length; i++) {
@@ -166,7 +166,7 @@ class Pic {
         picSetArray.push(picURL);
 
         //store url to picDB (so dont have to do again)
-        const picDataModel = new dbModel({ url: picURL, scrapeId: scrapeId }, CONFIG.picURLs);
+        const picDataModel = new dbModel({ url: picURL, scrapeId: scrapeId, date: date }, CONFIG.picURLs);
         await picDataModel.storeUniqueURL();
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
