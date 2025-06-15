@@ -24,6 +24,8 @@ export const deleteEmptyFilesFS = async () => {
     console.log(itemArray);
 
     for (let i = 0; i < itemArray.length; i++) {
+      // const item = itemArray[i];
+
       const filePath = path.join(vidFolder, itemArray[i]);
       console.log("FILE PATH");
       console.log(filePath);
@@ -60,6 +62,7 @@ export const deleteEmptyFilesFS = async () => {
       // }
     }
   } catch (e) {
+    console.log(e);
     // console.error(`Error reading directory ${folderPath}:`, error.message);
   }
 };
