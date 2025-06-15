@@ -93,6 +93,8 @@ export const deleteItemFS = async (filePath, type) => {
     itemSizeCheck: itemSizeCheck,
   };
 
+  //FIGURE OUT WAY TO DELETE FROM SAVED ITEMS IN MONGO (TO retdownload)
+
   //store items deleted for tracking
   const storeModel = new dbModel(deleteObj, "deletedItems");
   const storeData = await storeModel.storeAny();
