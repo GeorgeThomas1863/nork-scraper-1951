@@ -20,6 +20,9 @@ export const deleteEmptyFilesFS = async () => {
     // Read all items in the directory
     const itemArray = await fs.readdir(vidFolder);
 
+    console.log("ITEM ARRAY");
+    console.log(itemArray);
+
     for (let i = 0; i < itemArray.length; i++) {
       const filePath = path.join(vidFolder, itemArray[i]);
       console.log("FILE PATH");
