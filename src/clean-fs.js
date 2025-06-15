@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import dbModel from "../models/db-model.js";
+import Pic from "../models/pic-model.js";
 import { deleteItemsMap } from "../config/map-scrape.js";
 
 export const runCleanFS = async () => {
@@ -208,6 +209,7 @@ export const getItemSizeFS = async (filePath) => {
 export const reDownloadMedia = async () => {
   const typeArr = ["vids", "pics"];
 
+  const redownloadDataArray = [];
   for (let i = 0; i < typeArr.length; i++) {
     //get file Array
     const type = typeArr[i];
@@ -218,9 +220,20 @@ export const reDownloadMedia = async () => {
     const fileArrayDB = await getFileArrayDB(type);
 
     const redownloadArray = await getRedownloadArray(fileArrayFS, fileArrayDB);
-    console.log("RE DOWNLOAD ARRAY");
-    console.log(redownloadArray);
+    if (!redownloadArray || !redownloadArray.length) continue;
+
+    const redownloadData = await reDownloadByType(redownloadArray, type);
+    const redownloadDataObj = {
+      type: type,
+      redownloadArray: redownloadArray,
+      redownloadData: redownloadData,
+    };
+
+    //for tracking
+    redownloadDataArray.push(redownloadDataObj);
   }
+
+  return redownloadDataArray;
 };
 
 //get array of FS files
@@ -268,4 +281,55 @@ export const getRedownloadArray = async (fileArrayFS, fileArrayDB) => {
   }
 
   return redownloadArray;
+};
+
+export const reDownloadByType = async (inputArray, type) => {
+  switch (type) {
+    case "pics":
+      return await reDownloadPics(inputArray);
+    case "vids":
+      return await reDownloadVids(inputArray);
+
+    default:
+      return null;
+  }
+};
+
+export const reDownloadPics = async (inputArray) => {
+  const picDownloadArray = [];
+
+  for (let i = 0; i < inputArray.length; i++) {
+    const savePath = inputArray[i];
+    const url = await getUrlFromPath(savePath, "pics");
+    const picObj = {
+      url: url,
+      savePath: savePath,
+    };
+
+    const picModel = new Pic({ picObj: picObj });
+    const picData = await picModel.downloadPicFS();
+
+    picDownloadArray.push(picData);
+  }
+
+  return picDownloadArray;
+};
+
+export const reDownloadVids = async (inputArray) => {
+  return null;
+};
+
+export const getUrlFromPath = async (inputPath, type) => {
+  const { collectionArr } = await deleteItemsMap(type);
+
+  const params = {
+    keyToLookup: "savePath",
+    itemValue: inputPath,
+  };
+
+  const dataModel = new dbModel(params, collectionArr[0]);
+  const dataItem = await dataModel.getUniqueItem();
+  if (!dataItem || !dataItem.url) return null;
+
+  return dataItem.url;
 };
