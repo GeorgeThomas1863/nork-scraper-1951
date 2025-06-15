@@ -97,8 +97,12 @@ export const deleteItemFS = async (filePath, type) => {
   };
 
   //Delete saved item from mongo
-  const removeData = await removeFromMongo(filePath, type);
-  if (removeData) deleteObj.removeSuccess = removeData;
+  const removeDataArray = await removeFromMongo(filePath, type);
+
+  //add to existing obj
+  if (removeDataArray) {
+    deleteObj.removeDataArray = removeDataArray;
+  }
 
   //store items deleted for tracking
   const storeModel = new dbModel(deleteObj, "deletedItems");
@@ -114,7 +118,7 @@ export const deleteItemFS = async (filePath, type) => {
 
 //size of item in db
 export const getItemSizeCheck = async (filePath, type) => {
-  const { collection } = await deleteItemsMap(type);
+  const { collectionArr } = await deleteItemsMap(type);
 
   //always delete temp files
   if (type === "temp") return 0;
@@ -125,7 +129,7 @@ export const getItemSizeCheck = async (filePath, type) => {
   };
 
   //get item db data
-  const dataModel = new dbModel(itemParams, collection);
+  const dataModel = new dbModel(itemParams, collectionArr[0]);
   const itemData = await dataModel.getUniqueItem();
 
   if (type === "vids") {
@@ -151,19 +155,39 @@ export const getItemSizeFS = async (filePath) => {
 
 //remove blank items from mongo
 export const removeFromMongo = async (filePath, type) => {
-  const { collection } = await deleteItemsMap(type);
+  const { collectionArr } = await deleteItemsMap(type);
 
   if (type === "temp") return null; //avoids error
 
-  const itemParams = {
+  const lookupParams = {
     keyToLookup: "savePath",
     itemValue: filePath,
   };
 
-  const dataModel = new dbModel(itemParams, collection);
-  const removeData = await dataModel.deleteItem();
-  if (!removeData || !removeData.deletedCount) return null;
-  removeData.collection = collection;
+  //lookup data first to delete with url
+  const lookupModel = new dbModel(lookupParams, collectionArr[0]);
+  const lookupData = await lookupModel.getUniqueItem();
+  if (!lookupData || !lookupData.url) return null;
 
-  return removeData;
+  const { url } = lookupData;
+
+  //loop through collections
+  const deleteDataArray = [];
+  for (let i = 0; i < collectionArr.length; i++) {
+    const collection = collectionArr[i];
+    const deleteParams = {
+      keyToLookup: "url",
+      itemValue: url,
+    };
+    const deleteModel = new dbModel(deleteParams, collection);
+    const deleteData = await deleteModel.deleteItem();
+    const deleteDataObj = {
+      collection: collection,
+      url: url,
+      deleteData: deleteData,
+    };
+    deleteDataArray.push(deleteDataObj);
+  }
+
+  return deleteDataArray;
 };
