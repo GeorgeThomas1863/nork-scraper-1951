@@ -5,9 +5,9 @@ import { deleteItemsMap } from "../config/map-scrape.js";
 
 export const runCleanFS = async () => {
   //delete EMPTY FILES
-  const deleteEmptyData = await deleteEmptyFilesFS();
-  console.log("DELETE EMPTY DATA");
-  console.log(deleteEmptyData);
+  await deleteEmptyFilesFS();
+  // console.log("DELETE EMPTY DATA");
+  // console.log(deleteEmptyData);
 
   //DELETE TOO MANY FILES (more than X in folder)
 };
@@ -103,6 +103,8 @@ export const deleteItemFS = async (filePath, type) => {
   //store items deleted for tracking
   const storeModel = new dbModel(deleteObj, "deletedItems");
   const storeData = await storeModel.storeAny();
+  console.log("DELETED ITEM");
+  console.log(deleteObj);
   console.log(storeData);
 
   //return delete obj
