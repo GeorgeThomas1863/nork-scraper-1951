@@ -1,65 +1,132 @@
 import { promises as fs } from "fs";
 import path from "path";
-import CONFIG from "../config/config.js";
 import dbModel from "../models/db-model.js";
+import { deleteItemsMap } from "../config/map-scrape.js";
 
 export const runCleanFS = async () => {
-  //delete BLANK FILES
-  await deleteEmptyFilesFS();
+  //delete EMPTY FILES
+  const deleteEmptyData = await deleteEmptyFilesFS();
+  console.log("DELETE EMPTY DATA");
+  console.log(deleteEmptyData);
 
   //DELETE TOO MANY FILES (more than X in folder)
 };
 
 export const deleteEmptyFilesFS = async () => {
-  const picFolder = CONFIG.picPath;
-  const vidFolder = CONFIG.vidPath;
-  const tempFolder = CONFIG.tempPath;
+  const typeArr = ["vids", "pics", "temp"];
 
-  //test vid folder first
-  try {
-    // Read all items in the directory
-    const itemArray = await fs.readdir(vidFolder);
+  //loop through each type
+  const emptyFilesArray = [];
+  for (let i = 0; i < typeArr.length; i++) {
+    try {
+      //get file Array
+      const type = typeArr[i];
+      const { path } = await deleteItemsMap(type);
+      const fileArray = await fs.readdir(path);
 
-    for (let i = 0; i < itemArray.length; i++) {
-      const filePath = path.join(vidFolder, itemArray[i]);
-
-      const vidParams = {
-        keyToLookup: "savePath",
-        itemValue: filePath,
+      const deleteArrayData = await deleteArrayFS(fileArray, type);
+      const deleteDataObj = {
+        type: type,
+        deleteDataArray: deleteArrayData,
       };
-
-      const vidModel = new dbModel(vidParams, CONFIG.vidsDownloaded);
-      const vidData = await vidModel.getUniqueItem();
-      //set to 0 if cant find vid
-      const vidTrueSize = vidData?.vidSizeBytes || 0;
-      const vidCheckSize = vidTrueSize * 0.8;
-
-      try {
-        // Get file stats
-        const stats = await fs.stat(filePath);
-
-        // Skip if it's a directory
-        if (stats.isDirectory()) {
-          continue;
-        }
-
-        // Delete file if it's smaller than minimum size or doesnt exist
-        if (!stats.size || !vidCheckSize || stats.size < vidCheckSize) {
-          await fs.unlink(filePath);
-          console.log("AHHHHHHHHH");
-          console.log(`Deleted: ${filePath} (${stats.size} bytes)`);
-        } else {
-          console.log(`Kept: ${filePath} (${stats.size} bytes)`);
-        }
-      } catch (e) {
-        console.log(e);
-        // console.error(`Error processing ${filePath}:`, fileError.message);
-      }
+      emptyFilesArray.push(deleteDataObj);
+    } catch (e) {
+      console.log("DELETE TYPE ERROR");
+      console.log(e);
     }
-  } catch (e) {
-    console.log(e);
-    // console.error(`Error reading directory ${folderPath}:`, error.message);
   }
 
-  return true;
+  return emptyFilesArray;
+};
+
+export const deleteArrayFS = async (inputArray, type) => {
+  const deleteDataArray = [];
+  for (let i = 0; i < inputArray.length; i++) {
+    try {
+      const filePath = path.join(path, inputArray[i]);
+      const deleteData = await deleteItemFS(filePath, type);
+      deleteDataArray.push(deleteData);
+    } catch (e) {
+      console.log("DELETE ARRAY / FILE PATH ERROR");
+      console.log(e);
+    }
+  }
+
+  //return for tracking
+  return deleteDataArray;
+};
+
+export const deleteItemFS = async (filePath, type) => {
+  const itemSizeCheck = await getItemSizeCheck(type);
+  const itemSizeFS = await getItemSizeFS(filePath);
+
+  // Delete check (exists and is bigger than db)
+  if (itemSizeFS && itemSizeCheck && itemSizeFS > itemSizeCheck) {
+    //return obj for tracking
+    const keepObj = {
+      status: "keep",
+      filePath: filePath,
+      itemSizeFS: itemSizeFS,
+      itemSizeCheck: itemSizeCheck,
+    };
+    console.log(`Kept: ${filePath} (${itemSizeFS} bytes)`);
+    return keepObj;
+  }
+
+  //otherwise delete
+  await fs.unlink(filePath);
+  console.log("AHHHHHHHHH");
+  console.log(`Deleted: ${filePath} (${stats.size} bytes)`);
+
+  const deleteObj = {
+    status: "delete",
+    filePath: filePath,
+    itemSizeFS: itemSizeFS,
+    itemSizeCheck: itemSizeCheck,
+  };
+
+  //store items deleted for tracking
+  const storeModel = new dbModel(deleteObj, "deletedItems");
+  const storeData = await storeModel.storeAny();
+  console.log(storeData);
+
+  //return delete obj
+  return deleteObj;
+};
+
+//size of item in db
+export const getItemSizeCheck = async (type) => {
+  const { collection } = await deleteItemsMap(type);
+
+  //always delete temp files
+  if (type === "temp") return null;
+
+  const itemParams = {
+    keyToLookup: "savePath",
+    itemValue: filePath,
+  };
+
+  //get item db data
+  const dataModel = new dbModel(itemParams, collection);
+  const itemData = await dataModel.getUniqueItem();
+
+  if (type === "vids") {
+    const vidSize = itemData?.vidSizeBytes || 0;
+    return vidSize * 0.8;
+  }
+
+  //otherwise pics
+  const picSize = itemData?.downloadedSize || 0; //set to 0 if cant find
+  return picSize * 0.8;
+};
+
+//size of item on fs
+export const getItemSizeFS = async (filePath) => {
+  // Get file stats
+  const stats = await fs.stat(filePath);
+
+  // null if a directory
+  if (!stats || stats.isDirectory()) return null;
+
+  return stats.size;
 };
