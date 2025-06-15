@@ -178,6 +178,9 @@ class KCNA {
     const { totalChunks } = inputObj;
     const vidObj = { ...inputObj };
 
+    console.log("FUCK MY FACE");
+    console.log(vidObj);
+
     try {
       //find shit already downloaded
       const completedModel = new DLHelper(vidObj);
