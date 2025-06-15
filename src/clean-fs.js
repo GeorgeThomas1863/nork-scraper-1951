@@ -103,9 +103,10 @@ export const deleteItemFS = async (filePath, type) => {
   //store items deleted for tracking
   const storeModel = new dbModel(deleteObj, "deletedItems");
   const storeData = await storeModel.storeAny();
-  console.log("DELETED ITEM");
-  console.log(deleteObj);
   console.log(storeData);
+
+  // console.log("DELETED ITEM");
+  // console.log(deleteObj);
 
   //return delete obj
   return deleteObj;
