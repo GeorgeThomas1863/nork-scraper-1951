@@ -2,6 +2,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import dbModel from "../models/db-model.js";
 import Pic from "../models/pic-model.js";
+import Vid from "../models/vid-model.js";
 import { deleteItemsMap } from "../config/map-scrape.js";
 
 export const runCleanFS = async () => {
@@ -331,7 +332,38 @@ export const reDownloadPics = async (inputArray) => {
 };
 
 export const reDownloadVids = async (inputArray) => {
-  return null;
+  const vidDownloadArray = [];
+
+  for (let i = 0; i < inputArray.length; i++) {
+    try {
+      const savePath = inputArray[i];
+      // const itemData = await getDataFromPath(savePath, "vids");
+      // if (!itemData) continue;
+
+      const vidObj = await getDataFromPath(savePath, "vids");
+      if (!vidObj) continue;
+
+      //delete to avoid error when downloading (after getting data)
+      await deleteMongoItem(savePath, "vids");
+
+      // const { url, vidId, totalChunks } = itemData;
+
+      // const vidObj = {
+      //   url: url,
+      //   savePath: savePath,
+      //   vidId: vidId,
+      //   totalChunks: totalChunks,
+      // };
+
+      const vidModel = new Vid({ vidObj: vidObj });
+      const vidData = await vidModel.downloadVidFS();
+      vidDownloadArray.push(vidData);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  return vidDownloadArray;
 };
 
 export const getDataFromPath = async (inputPath, type) => {
