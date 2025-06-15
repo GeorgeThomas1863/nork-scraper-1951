@@ -62,6 +62,12 @@ export const deleteItemFS = async (filePath, type) => {
   const itemSizeCheck = await getItemSizeCheck(filePath, type);
   const itemSizeFS = await getItemSizeFS(filePath);
 
+  if (type === "temp") {
+    console.log("TEMP FILE");
+    console.log(itemSizeCheck);
+    console.log(itemSizeFS);
+  }
+
   // Delete check (exists and is bigger than db)
   if (itemSizeFS && itemSizeCheck && itemSizeFS > itemSizeCheck) {
     //return obj for tracking
@@ -71,14 +77,14 @@ export const deleteItemFS = async (filePath, type) => {
       itemSizeFS: itemSizeFS,
       itemSizeCheck: itemSizeCheck,
     };
-    console.log(`Kept: ${filePath} (${itemSizeFS} bytes)`);
+    // console.log(`Kept: ${filePath} (${itemSizeFS} bytes)`);
     return keepObj;
   }
 
   //otherwise delete
   await fs.unlink(filePath);
   console.log("AHHHHHHHHH");
-  console.log(`Deleted: ${filePath} (${itemSizeFS} bytes)`);
+  // console.log(`Deleted: ${filePath} (${itemSizeFS} bytes)`);
 
   const deleteObj = {
     status: "delete",
