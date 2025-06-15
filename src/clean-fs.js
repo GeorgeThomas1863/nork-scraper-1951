@@ -20,15 +20,8 @@ export const deleteEmptyFilesFS = async () => {
     // Read all items in the directory
     const itemArray = await fs.readdir(vidFolder);
 
-    console.log("ITEM ARRAY");
-    console.log(itemArray);
-
     for (let i = 0; i < itemArray.length; i++) {
-      // const item = itemArray[i];
-
       const filePath = path.join(vidFolder, itemArray[i]);
-      console.log("FILE PATH");
-      console.log(filePath);
 
       const vidParams = {
         keyToLookup: "savePath",
@@ -37,32 +30,36 @@ export const deleteEmptyFilesFS = async () => {
 
       const vidModel = new dbModel(vidParams, CONFIG.vidsDownloaded);
       const vidData = await vidModel.getUniqueItem();
+      //set to 0 if cant find vid
+      const vidTrueSize = vidData?.vidSizeBytes || 0;
+      const vidCheckSize = vidTrueSize * 0.8;
 
-      console.log("VID DATA");
-      console.log(vidData);
+      try {
+        // Get file stats
+        const stats = await fs.stat(filePath);
 
-      // try {
-      //   // Get file stats
-      //   const stats = await fs.stat(filePath);
+        // Skip if it's a directory
+        if (stats.isDirectory()) {
+          continue;
+        }
 
-      //   // Skip if it's a directory
-      //   if (stats.isDirectory()) {
-      //     continue;
-      //   }
-
-      //   // Delete file if it's smaller than minimum size
-      //   if (stats.size < minSizeBytes) {
-      //     await fs.unlink(filePath);
-      //     console.log(`Deleted: ${filePath} (${stats.size} bytes)`);
-      //   } else {
-      //     console.log(`Kept: ${filePath} (${stats.size} bytes)`);
-      //   }
-      // } catch (fileError) {
-      //   console.error(`Error processing ${filePath}:`, fileError.message);
-      // }
+        // Delete file if it's smaller than minimum size
+        if (stats.size < vidCheckSize) {
+          await fs.unlink(filePath);
+          console.log("AHHHHHHHHH");
+          console.log(`Deleted: ${filePath} (${stats.size} bytes)`);
+        } else {
+          console.log(`Kept: ${filePath} (${stats.size} bytes)`);
+        }
+      } catch (e) {
+        console.log(e);
+        // console.error(`Error processing ${filePath}:`, fileError.message);
+      }
     }
   } catch (e) {
     console.log(e);
     // console.error(`Error reading directory ${folderPath}:`, error.message);
   }
+
+  return true;
 };
