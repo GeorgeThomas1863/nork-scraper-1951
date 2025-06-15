@@ -84,7 +84,7 @@ export const deleteItemFS = async (filePath, type) => {
   //otherwise delete
   await fs.unlink(filePath);
   console.log("AHHHHHHHHH");
-  // console.log(`Deleted: ${filePath} (${itemSizeFS} bytes)`);
+  console.log(`Deleted: ${filePath} (${itemSizeFS} bytes)`);
 
   const deleteObj = {
     status: "delete",
@@ -107,7 +107,7 @@ export const getItemSizeCheck = async (filePath, type) => {
   const { collection } = await deleteItemsMap(type);
 
   //always delete temp files
-  if (type === "temp") return null;
+  if (type === "temp") return 0;
 
   const itemParams = {
     keyToLookup: "savePath",
