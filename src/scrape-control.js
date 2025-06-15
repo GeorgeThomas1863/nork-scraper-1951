@@ -4,10 +4,14 @@ import { continueScrape, setScrapeActive, scrapeId } from "./scrape-util.js";
 import { scrapeNewURLs } from "./scrape-urls.js";
 import { scrapeNewMedia } from "./scrape-download.js";
 import { uploadNewTG } from "./scrape-upload.js";
+import { runCleanFS } from "./clean-fs.js";
 
 export const scrapeNewKCNA = async () => {
   //set scrape active
   await setScrapeActive(true);
+
+  //delete empty files
+  await runCleanFS();
 
   //get and store new urls
   await scrapeNewURLs();
