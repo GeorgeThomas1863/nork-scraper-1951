@@ -10,6 +10,9 @@ export const scrapeNewKCNA = async () => {
   //set scrape active
   await setScrapeActive(true);
 
+  //delete empty / fucked files
+  await runCleanFS();
+
   //get and store new urls
   await scrapeNewURLs();
 
@@ -18,9 +21,6 @@ export const scrapeNewKCNA = async () => {
 
   //upload to TG
   await uploadNewTG();
-
-  //delete empty / fucked files (for next scrape)
-  await runCleanFS();
 
   //LOG SCRAPE END / show how long it took and write it in readable format
   const endModel = new Log({ scrapeId: scrapeId });
