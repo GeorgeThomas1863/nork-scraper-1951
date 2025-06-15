@@ -35,7 +35,7 @@ export const deleteEmptyFilesFS = async () => {
         itemValue: filePath,
       };
 
-      const vidModel = await dbModel(vidParams, CONFIG.vidsDownloaded);
+      const vidModel = new dbModel(vidParams, CONFIG.vidsDownloaded);
       const vidData = await vidModel.getUniqueItem();
 
       console.log("VID DATA");
