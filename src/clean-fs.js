@@ -163,6 +163,7 @@ export const removeFromMongo = async (filePath, type) => {
   const dataModel = new dbModel(itemParams, collection);
   const removeData = await dataModel.deleteItem();
   if (!removeData || !removeData.deletedCount) return null;
+  removeData.collection = collection;
 
   return removeData;
 };
