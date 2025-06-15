@@ -98,7 +98,7 @@ export const deleteItemFS = async (filePath, type) => {
 
   //Delete saved item from mongo
   const removeData = await removeFromMongo(filePath, type);
-  deleteObj.removeSuccess = removeData;
+  if (removeData) deleteObj.removeSuccess = removeData;
 
   //store items deleted for tracking
   const storeModel = new dbModel(deleteObj, "deletedItems");
@@ -157,7 +157,7 @@ export const removeFromMongo = async (filePath, type) => {
 
   const dataModel = new dbModel(itemParams, collection);
   const removeData = await dataModel.deleteItem();
-  // if (!removeData) return false;
+  if (!removeData || !removeData.deletedCount) return false;
 
   return removeData;
 };
