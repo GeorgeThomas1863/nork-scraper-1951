@@ -47,7 +47,7 @@ export const deleteArrayFS = async (inputArray, type) => {
       const deleteData = await deleteItemFS(filePath, type);
       deleteDataArray.push(deleteData);
     } catch (e) {
-      console.log("DELETE ARRAY / FILE PATH ERROR");
+      console.log("DELETE ITEM / FILE PATH ERROR");
       console.log(e);
     }
   }
