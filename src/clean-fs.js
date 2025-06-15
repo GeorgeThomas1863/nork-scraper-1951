@@ -5,11 +5,13 @@ import { deleteItemsMap } from "../config/map-scrape.js";
 
 export const runCleanFS = async () => {
   //delete EMPTY FILES
-  await deleteEmptyFilesFS();
-  // console.log("DELETE EMPTY DATA");
-  // console.log(deleteEmptyData);
+  const deleteEmptyArray = await deleteEmptyFilesFS();
+  console.log("DELETE EMPTY DATA");
+  console.log(deleteEmptyArray);
 
-  await reDownloadMedia();
+  const reDownloadData = await reDownloadMedia();
+  console.log("RE DOWNLOAD DATA");
+  console.log(reDownloadData);
 
   //DELETE TOO MANY FILES (more than X in folder)
 };
@@ -203,4 +205,18 @@ export const getItemSizeFS = async (filePath) => {
 //   return deleteDataArray;
 // };
 
-export const reDownloadMedia = async () => {};
+export const reDownloadMedia = async () => {
+  const typeArr = ["vids", "pics"];
+
+  for (let i = 0; i < typeArr.length; i++) {
+    //get file Array
+    const type = typeArr[i];
+    console.log("TYPE");
+    console.log(type);
+    const { basePath } = await deleteItemsMap(type);
+
+    const fileArray = await fs.readdir(basePath);
+    console.log("FILE ARRAY");
+    console.log(fileArray);
+  }
+};
