@@ -59,7 +59,7 @@ export const deleteArrayFS = async (inputArray, type) => {
 };
 
 export const deleteItemFS = async (filePath, type) => {
-  const itemSizeCheck = await getItemSizeCheck(type);
+  const itemSizeCheck = await getItemSizeCheck(filePath, type);
   const itemSizeFS = await getItemSizeFS(filePath);
 
   // Delete check (exists and is bigger than db)
@@ -78,7 +78,7 @@ export const deleteItemFS = async (filePath, type) => {
   //otherwise delete
   await fs.unlink(filePath);
   console.log("AHHHHHHHHH");
-  console.log(`Deleted: ${filePath} (${stats.size} bytes)`);
+  console.log(`Deleted: ${filePath} (${itemSizeFS} bytes)`);
 
   const deleteObj = {
     status: "delete",
@@ -97,7 +97,7 @@ export const deleteItemFS = async (filePath, type) => {
 };
 
 //size of item in db
-export const getItemSizeCheck = async (type) => {
+export const getItemSizeCheck = async (filePath, type) => {
   const { collection } = await deleteItemsMap(type);
 
   //always delete temp files
