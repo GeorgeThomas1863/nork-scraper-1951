@@ -105,8 +105,8 @@ export const deleteItemFS = async (filePath, type) => {
   const storeData = await storeModel.storeAny();
   console.log(storeData);
 
-  // console.log("DELETED ITEM");
-  // console.log(deleteObj);
+  console.log("DELETED ITEM");
+  console.log(deleteObj);
 
   //return delete obj
   return deleteObj;
