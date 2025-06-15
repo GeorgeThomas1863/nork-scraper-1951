@@ -71,7 +71,6 @@ class dbModel {
 
   //GETS STUFF
 
-
   async getAll() {
     // await db.dbConnect();
     const arrayData = await db.dbGet().collection(this.collection).find().toArray();
@@ -130,7 +129,6 @@ class dbModel {
     return newURLsArray;
   }
 
-
   async findNewPicsBySize() {
     const collection1 = this.dataObject.collection1; //OLD THING (compare against)
     const collection2 = this.dataObject.collection2; //NEW THING (process you are currently doing / handling)
@@ -162,6 +160,16 @@ class dbModel {
     if (!dataObj || !dataObj[0]) return null;
 
     return +dataObj[0][keyToLookup];
+  }
+
+  //-------------
+
+  //DELETE STUFF
+
+  async deleteItem() {
+    const { keyToLookup, itemValue } = this.dataObject;
+    const deleteData = await db.dbGet().collection(this.collection).deleteOne({ [keyToLookup]: itemValue }); //prettier-ignore
+    return deleteData;
   }
 }
 

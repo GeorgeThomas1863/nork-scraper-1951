@@ -46,8 +46,9 @@ export const deleteArrayFS = async (inputArray, type) => {
   for (let i = 0; i < inputArray.length; i++) {
     try {
       const filePath = path.join(basePath, inputArray[i]);
-      const deleteData = await deleteItemFS(filePath, type);
-      deleteDataArray.push(deleteData);
+      const deleteDataObj = await deleteItemFS(filePath, type);
+
+      deleteDataArray.push(deleteDataObj);
     } catch (e) {
       console.log("DELETE ITEM / FILE PATH ERROR");
       console.log(e);
@@ -74,6 +75,7 @@ export const deleteItemFS = async (filePath, type) => {
     const keepObj = {
       status: "keep",
       filePath: filePath,
+      fileType: type,
       itemSizeFS: itemSizeFS,
       itemSizeCheck: itemSizeCheck,
     };
@@ -89,11 +91,14 @@ export const deleteItemFS = async (filePath, type) => {
   const deleteObj = {
     status: "delete",
     filePath: filePath,
+    fileType: type,
     itemSizeFS: itemSizeFS,
     itemSizeCheck: itemSizeCheck,
   };
 
-  //FIGURE OUT WAY TO DELETE FROM SAVED ITEMS IN MONGO (TO retdownload)
+  //Delete saved item from mongo
+  const removeData = await removeFromMongo(filePath, type);
+  deleteObj.removeSuccess = removeData;
 
   //store items deleted for tracking
   const storeModel = new dbModel(deleteObj, "deletedItems");
@@ -139,4 +144,20 @@ export const getItemSizeFS = async (filePath) => {
   if (!stats || stats.isDirectory()) return null;
 
   return stats.size;
+};
+
+//remove blank items from mongo
+export const removeFromMongo = async (filePath, type) => {
+  const { collection } = await deleteItemsMap(type);
+
+  const itemParams = {
+    keyToLookup: "savePath",
+    itemValue: filePath,
+  };
+
+  const dataModel = new dbModel(itemParams, collection);
+  const removeData = await dataModel.deleteItem();
+  // if (!removeData) return false;
+
+  return removeData;
 };
