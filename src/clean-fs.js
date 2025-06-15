@@ -300,10 +300,14 @@ export const reDownloadPics = async (inputArray) => {
 
   for (let i = 0; i < inputArray.length; i++) {
     const savePath = inputArray[i];
-    const url = await getUrlFromPath(savePath, "pics");
+    const itemData = await getDataFromPath(savePath, "pics");
+    if (!itemData) continue;
+    const { url, picId } = itemData;
+
     const picObj = {
       url: url,
       savePath: savePath,
+      picId: picId,
     };
 
     const picModel = new Pic({ picObj: picObj });
@@ -319,7 +323,7 @@ export const reDownloadVids = async (inputArray) => {
   return null;
 };
 
-export const getUrlFromPath = async (inputPath, type) => {
+export const getDataFromPath = async (inputPath, type) => {
   const { collectionArr } = await deleteItemsMap(type);
 
   const params = {
@@ -328,8 +332,7 @@ export const getUrlFromPath = async (inputPath, type) => {
   };
 
   const dataModel = new dbModel(params, collectionArr[0]);
-  const dataItem = await dataModel.getUniqueItem();
-  if (!dataItem || !dataItem.url) return null;
+  const data = await dataModel.getUniqueItem();
 
-  return dataItem.url;
+  return data;
 };
