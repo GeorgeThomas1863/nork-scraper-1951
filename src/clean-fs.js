@@ -34,11 +34,6 @@ export const deleteEmptyFilesFS = async () => {
       const vidTrueSize = vidData?.vidSizeBytes || 0;
       const vidCheckSize = vidTrueSize * 0.8;
 
-      console.log("FILE PATH");
-      console.log(filePath);
-      console.log("VID CHECK SIZE");
-      console.log(vidCheckSize);
-
       try {
         // Get file stats
         const stats = await fs.stat(filePath);
@@ -48,8 +43,8 @@ export const deleteEmptyFilesFS = async () => {
           continue;
         }
 
-        // Delete file if it's smaller than minimum size
-        if (stats.size < vidCheckSize) {
+        // Delete file if it's smaller than minimum size or doesnt exist
+        if (!stats.size || !vidCheckSize || stats.size < vidCheckSize) {
           await fs.unlink(filePath);
           console.log("AHHHHHHHHH");
           console.log(`Deleted: ${filePath} (${stats.size} bytes)`);
