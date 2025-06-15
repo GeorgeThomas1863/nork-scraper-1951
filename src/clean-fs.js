@@ -150,6 +150,8 @@ export const getItemSizeFS = async (filePath) => {
 export const removeFromMongo = async (filePath, type) => {
   const { collection } = await deleteItemsMap(type);
 
+  if (type === "temp") return null; //avoids error
+
   const itemParams = {
     keyToLookup: "savePath",
     itemValue: filePath,
@@ -157,7 +159,7 @@ export const removeFromMongo = async (filePath, type) => {
 
   const dataModel = new dbModel(itemParams, collection);
   const removeData = await dataModel.deleteItem();
-  if (!removeData || !removeData.deletedCount) return false;
+  if (!removeData || !removeData.deletedCount) return null;
 
   return removeData;
 };
