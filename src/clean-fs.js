@@ -213,10 +213,59 @@ export const reDownloadMedia = async () => {
     const type = typeArr[i];
     console.log("TYPE");
     console.log(type);
-    const { basePath } = await deleteItemsMap(type);
 
-    const fileArray = await fs.readdir(basePath);
-    console.log("FILE ARRAY");
-    console.log(fileArray);
+    const fileArrayFS = await getFileArrayFS(type);
+    const fileArrayDB = await getFileArrayDB(type);
+
+    const redownloadArray = await getRedownloadArray(fileArrayFS, fileArrayDB);
+    console.log("RE DOWNLOAD ARRAY");
+    console.log(redownloadArray);
   }
+};
+
+//get array of FS files
+export const getFileArrayFS = async (type) => {
+  const { basePath } = await deleteItemsMap(type);
+  const itemArray = await fs.readdir(basePath);
+
+  //needed bc readdir ONLY returns file names
+  const fileArrayFS = [];
+  for (let i = 0; i < itemArray.length; i++) {
+    const item = itemArray[i];
+    const filePath = path.join(basePath, item);
+
+    fileArrayFS.push(filePath);
+  }
+
+  return fileArrayFS;
+};
+
+//get array of DB files
+export const getFileArrayDB = async (type) => {
+  const { collectionArr } = await deleteItemsMap(type);
+
+  const dataModel = new dbModel("", collectionArr[0]);
+  const itemArray = await dataModel.getAll();
+
+  const fileArrayDB = [];
+  for (let i = 0; i < itemArray.length; i++) {
+    const item = itemArray[i];
+    const filePath = item.savePath;
+    fileArrayDB.push(filePath);
+  }
+
+  return fileArrayDB;
+};
+
+export const getRedownloadArray = async (fileArrayFS, fileArrayDB) => {
+  const redownloadArray = [];
+  for (let j = 0; j < fileArrayDB.length; j++) {
+    const itemDB = fileArrayDB[j];
+    if (fileArrayFS.includes(itemDB)) continue;
+
+    //otherwise add to array
+    redownloadArray.push(itemDB);
+  }
+
+  return redownloadArray;
 };
