@@ -34,6 +34,11 @@ export const deleteEmptyFilesFS = async () => {
       const vidTrueSize = vidData?.vidSizeBytes || 0;
       const vidCheckSize = vidTrueSize * 0.8;
 
+      console.log("FILE PATH");
+      console.log(filePath);
+      console.log("VID CHECK SIZE");
+      console.log(vidCheckSize);
+
       try {
         // Get file stats
         const stats = await fs.stat(filePath);
