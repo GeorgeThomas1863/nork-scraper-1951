@@ -184,8 +184,7 @@ export const removeFromMongo = async (filePath, type) => {
       itemValue: url,
     };
 
-    //deal wiht differnt formats
-    if (collection === "vidsUploaded") {
+    if (collection === "vidPageContent" || collection === "vidPagesUploaded") {
       deleteParams.keyToLookup = "vidURL";
     }
 
