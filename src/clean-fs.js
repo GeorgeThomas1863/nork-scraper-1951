@@ -21,8 +21,8 @@ export const deleteEmptyFilesFS = async () => {
     try {
       //get file Array
       const type = typeArr[i];
-      const { path } = await deleteItemsMap(type);
-      const fileArray = await fs.readdir(path);
+      const { basePath } = await deleteItemsMap(type);
+      const fileArray = await fs.readdir(basePath);
 
       const deleteArrayData = await deleteArrayFS(fileArray, type);
       const deleteDataObj = {
@@ -40,10 +40,12 @@ export const deleteEmptyFilesFS = async () => {
 };
 
 export const deleteArrayFS = async (inputArray, type) => {
+  const { basePath } = await deleteItemsMap(type);
+
   const deleteDataArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     try {
-      const filePath = path.join(path, inputArray[i]);
+      const filePath = path.join(basePath, inputArray[i]);
       const deleteData = await deleteItemFS(filePath, type);
       deleteDataArray.push(deleteData);
     } catch (e) {
