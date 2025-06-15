@@ -22,8 +22,6 @@ export const deleteEmptyFilesFS = async () => {
       //get file Array
       const type = typeArr[i];
       const { basePath } = await deleteItemsMap(type);
-      console.log("BASEPATH");
-      console.log(basePath);
 
       const fileArray = await fs.readdir(basePath);
 
