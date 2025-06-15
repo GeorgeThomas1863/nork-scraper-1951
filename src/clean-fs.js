@@ -56,7 +56,7 @@ export const deleteEmptyFilesFS = async () => {
       //   console.error(`Error processing ${filePath}:`, fileError.message);
       // }
     }
-  } catch (error) {
-    console.error(`Error reading directory ${folderPath}:`, error.message);
+  } catch (e) {
+    // console.error(`Error reading directory ${folderPath}:`, error.message);
   }
 };
