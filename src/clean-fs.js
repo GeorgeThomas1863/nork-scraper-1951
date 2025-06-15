@@ -284,6 +284,10 @@ export const getRedownloadArray = async (fileArrayFS, fileArrayDB) => {
 };
 
 export const reDownloadByType = async (inputArray, type) => {
+  console.log("RE DOWNLOAD BY TYPE");
+  console.log(type);
+  console.log(inputArray);
+
   switch (type) {
     case "pics":
       return await reDownloadPics(inputArray);
@@ -302,6 +306,10 @@ export const reDownloadPics = async (inputArray) => {
     const savePath = inputArray[i];
     const itemData = await getDataFromPath(savePath, "pics");
     if (!itemData) continue;
+
+    //delete to avoid error when downloading (after getting data)
+    await deleteMongoItem(savePath, "pics");
+
     const { url, picId } = itemData;
 
     const picObj = {
@@ -310,10 +318,14 @@ export const reDownloadPics = async (inputArray) => {
       picId: picId,
     };
 
-    const picModel = new Pic({ picObj: picObj });
-    const picData = await picModel.downloadPicFS();
+    try {
+      const picModel = new Pic({ picObj: picObj });
+      await picModel.downloadPicFS();
+    } catch (e) {
+      console.log(e);
+    }
 
-    picDownloadArray.push(picData);
+    picDownloadArray.push(picObj);
   }
 
   return picDownloadArray;
@@ -333,6 +345,20 @@ export const getDataFromPath = async (inputPath, type) => {
 
   const dataModel = new dbModel(params, collectionArr[0]);
   const data = await dataModel.getUniqueItem();
+
+  return data;
+};
+
+export const deleteMongoItem = async (inputPath, type) => {
+  const { collectionArr } = await deleteItemsMap(type);
+
+  const params = {
+    keyToLookup: "savePath",
+    itemValue: inputPath,
+  };
+
+  const dataModel = new dbModel(params, collectionArr[0]);
+  const data = await dataModel.deleteItem();
 
   return data;
 };
