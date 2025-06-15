@@ -22,6 +22,9 @@ export const deleteEmptyFilesFS = async () => {
       //get file Array
       const type = typeArr[i];
       const { basePath } = await deleteItemsMap(type);
+      console.log("BASEPATH");
+      console.log(basePath);
+
       const fileArray = await fs.readdir(basePath);
 
       const deleteArrayData = await deleteArrayFS(fileArray, type);
@@ -41,9 +44,6 @@ export const deleteEmptyFilesFS = async () => {
 
 export const deleteArrayFS = async (inputArray, type) => {
   const { basePath } = await deleteItemsMap(type);
-
-  console.log("BASEPATH");
-  console.log(basePath);
 
   const deleteDataArray = [];
   for (let i = 0; i < inputArray.length; i++) {
