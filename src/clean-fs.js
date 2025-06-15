@@ -343,6 +343,9 @@ export const reDownloadVids = async (inputArray) => {
       const vidObj = await getDataFromPath(savePath, "vids");
       if (!vidObj) continue;
 
+      console.log("VID OBJ");
+      console.log(vidObj);
+
       //delete to avoid error when downloading (after getting data)
       await deleteMongoItem(savePath, "vids");
 
