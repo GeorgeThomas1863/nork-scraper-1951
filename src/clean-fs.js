@@ -9,6 +9,8 @@ export const runCleanFS = async () => {
   // console.log("DELETE EMPTY DATA");
   // console.log(deleteEmptyData);
 
+  await reDownloadMedia();
+
   //DELETE TOO MANY FILES (more than X in folder)
 };
 
@@ -97,13 +99,13 @@ export const deleteItemFS = async (filePath, type) => {
     itemSizeCheck: itemSizeCheck,
   };
 
-  //Delete saved item from mongo
-  const removeDataArray = await removeFromMongo(filePath, type);
+  // //Delete saved item from mongo
+  // const removeDataArray = await removeFromMongo(filePath, type);
 
-  //add to existing obj
-  if (removeDataArray) {
-    deleteObj.removeDataArray = removeDataArray;
-  }
+  // //add to existing obj
+  // if (removeDataArray) {
+  //   deleteObj.removeDataArray = removeDataArray;
+  // }
 
   //store items deleted for tracking
   const storeModel = new dbModel(deleteObj, "deletedItems");
@@ -154,49 +156,51 @@ export const getItemSizeFS = async (filePath) => {
   return stats.size;
 };
 
-//remove blank items from mongo
-export const removeFromMongo = async (filePath, type) => {
-  const { collectionArr } = await deleteItemsMap(type);
+// //remove blank items from mongo
+// export const removeFromMongo = async (filePath, type) => {
+//   const { collectionArr } = await deleteItemsMap(type);
 
-  if (type === "temp") return null; //avoids error
+//   if (type === "temp") return null; //avoids error
 
-  const lookupParams = {
-    keyToLookup: "savePath",
-    itemValue: filePath,
-  };
+//   const lookupParams = {
+//     keyToLookup: "savePath",
+//     itemValue: filePath,
+//   };
 
-  //lookup data first to delete with url
-  const lookupModel = new dbModel(lookupParams, collectionArr[0]);
-  const lookupData = await lookupModel.getUniqueItem();
-  if (!lookupData || !lookupData.url) return null;
+//   //lookup data first to delete with url
+//   const lookupModel = new dbModel(lookupParams, collectionArr[0]);
+//   const lookupData = await lookupModel.getUniqueItem();
+//   if (!lookupData || !lookupData.url) return null;
 
-  const { url } = lookupData;
+//   const { url } = lookupData;
 
-  //loop through collections
-  const deleteDataArray = [];
-  for (let i = 0; i < collectionArr.length; i++) {
-    const collection = collectionArr[i];
-    console.log("COLLECTION");
-    console.log(collection);
+//   //loop through collections
+//   const deleteDataArray = [];
+//   for (let i = 0; i < collectionArr.length; i++) {
+//     const collection = collectionArr[i];
+//     console.log("COLLECTION");
+//     console.log(collection);
 
-    const deleteParams = {
-      keyToLookup: "url",
-      itemValue: url,
-    };
+//     const deleteParams = {
+//       keyToLookup: "url",
+//       itemValue: url,
+//     };
 
-    if (collection === "vidPageContent" || collection === "vidPagesUploaded") {
-      deleteParams.keyToLookup = "vidURL";
-    }
+//     if (collection === "vidPageContent" || collection === "vidPagesUploaded") {
+//       deleteParams.keyToLookup = "vidURL";
+//     }
 
-    const deleteModel = new dbModel(deleteParams, collection);
-    const deleteData = await deleteModel.deleteItem();
-    const deleteDataObj = {
-      collection: collection,
-      url: url,
-      deleteData: deleteData,
-    };
-    deleteDataArray.push(deleteDataObj);
-  }
+//     const deleteModel = new dbModel(deleteParams, collection);
+//     const deleteData = await deleteModel.deleteItem();
+//     const deleteDataObj = {
+//       collection: collection,
+//       url: url,
+//       deleteData: deleteData,
+//     };
+//     deleteDataArray.push(deleteDataObj);
+//   }
 
-  return deleteDataArray;
-};
+//   return deleteDataArray;
+// };
+
+export const reDownloadMedia = async () => {};

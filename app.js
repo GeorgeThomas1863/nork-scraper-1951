@@ -1,5 +1,7 @@
 //TO DO:
 
+//BUILD REDOWNLOAD CAPABILITY (DOWNLOAD SHIT IF NOT in DB BUT NOT FS)
+
 //multi chunk upload STILL FUCKED
 
 //FIX PIC SET ID SAVE (seems to be failign to store last pic set id)
