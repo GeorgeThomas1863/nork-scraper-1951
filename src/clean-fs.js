@@ -176,10 +176,19 @@ export const removeFromMongo = async (filePath, type) => {
   const deleteDataArray = [];
   for (let i = 0; i < collectionArr.length; i++) {
     const collection = collectionArr[i];
+    console.log("COLLECTION");
+    console.log(collection);
+
     const deleteParams = {
       keyToLookup: "url",
       itemValue: url,
     };
+
+    //deal wiht differnt formats
+    if (collection === "vidsUploaded") {
+      deleteParams.keyToLookup = "vidURL";
+    }
+
     const deleteModel = new dbModel(deleteParams, collection);
     const deleteData = await deleteModel.deleteItem();
     const deleteDataObj = {
