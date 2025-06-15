@@ -303,29 +303,28 @@ export const reDownloadPics = async (inputArray) => {
   const picDownloadArray = [];
 
   for (let i = 0; i < inputArray.length; i++) {
-    const savePath = inputArray[i];
-    const itemData = await getDataFromPath(savePath, "pics");
-    if (!itemData) continue;
-
-    //delete to avoid error when downloading (after getting data)
-    await deleteMongoItem(savePath, "pics");
-
-    const { url, picId } = itemData;
-
-    const picObj = {
-      url: url,
-      savePath: savePath,
-      picId: picId,
-    };
-
     try {
+      const savePath = inputArray[i];
+      const itemData = await getDataFromPath(savePath, "pics");
+      if (!itemData) continue;
+
+      //delete to avoid error when downloading (after getting data)
+      await deleteMongoItem(savePath, "pics");
+
+      const { url, picId } = itemData;
+
+      const picObj = {
+        url: url,
+        savePath: savePath,
+        picId: picId,
+      };
+
       const picModel = new Pic({ picObj: picObj });
-      await picModel.downloadPicFS();
+      const picData = await picModel.downloadPicFS();
+      picDownloadArray.push(picData);
     } catch (e) {
       console.log(e);
     }
-
-    picDownloadArray.push(picObj);
   }
 
   return picDownloadArray;
