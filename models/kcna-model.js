@@ -197,15 +197,15 @@ class KCNA {
       vidObj.pendingChunkArray = pendingChunkArray;
 
       const processModel = new DLHelper(vidObj);
-      const chunksProessed = await processModel.processVidQueue();
-      vidObj.chunksProessed = chunksProessed;
+      const chunksProcessed = await processModel.processVidQueue();
+      vidObj.chunksProcessed = chunksProcessed;
 
       const mergeModel = new DLHelper(vidObj);
       await mergeModel.mergeChunks();
 
       //dont need all the shit in vidObj, so doing inputObj here
       const returnObj = { ...inputObj };
-      returnObj.chunksProessed = chunksProessed;
+      returnObj.chunksProcessed = chunksProcessed;
 
       return returnObj;
     } catch (e) {

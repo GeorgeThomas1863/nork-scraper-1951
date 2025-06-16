@@ -343,6 +343,9 @@ export const reDownloadVids = async (inputArray) => {
       const vidObj = await getDataFromPath(savePath, "vids");
       if (!vidObj) continue;
 
+      //try resetting chunk processed (might not make a diff)
+      vidObj.chunksProcessed = 0;
+
       console.log("VID OBJ");
       console.log(vidObj);
 
@@ -351,14 +354,15 @@ export const reDownloadVids = async (inputArray) => {
 
       // const { url, vidId, totalChunks } = itemData;
 
-      // const vidObj = {
+      // const vidObj = {.
+
       //   url: url,
       //   savePath: savePath,
-      //   vidId: vidId,
+      //   vidId: vidId,s
       //   totalChunks: totalChunks,
       // };
 
-      const vidModel = new Vid({ vidObj: vidObj });
+      const vidModel = new Vid({ inputObj: vidObj });
       const vidData = await vidModel.downloadVidFS();
       vidDownloadArray.push(vidData);
     } catch (e) {
