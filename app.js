@@ -1,5 +1,7 @@
 //TO DO:
 
+//try deploying, but keep testing redownload
+
 //REFACTOR clean-fs.js
 
 //BUILD REDOWNLOAD CAPABILITY (DOWNLOAD SHIT IF NOT in DB BUT NOT FS)
