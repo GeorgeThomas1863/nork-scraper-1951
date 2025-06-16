@@ -3,7 +3,9 @@ import KCNA from "../models/kcna-model.js";
 import Vid from "../models/vid-model.js";
 import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
+
 import { continueScrape, getDataFromPath } from "./scrape-util.js";
+import { deleteItemsMap } from "../config/map-scrape.js";
 
 //FIND VID PAGES / GET VID URLs SECTION
 
