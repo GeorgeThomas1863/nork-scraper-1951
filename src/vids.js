@@ -196,6 +196,9 @@ export const reDownloadVids = async (inputArray) => {
       //get vid headers
       const headerObj = await reDownloadVidHeaders(fuckedObj);
 
+      console.log("!!!HEADER OBJ");
+      console.log(headerObj);
+
       //redownload vid
       const vidModel = new Vid({ inputObj: headerObj });
       const vidObj = await vidModel.downloadVidFS();
