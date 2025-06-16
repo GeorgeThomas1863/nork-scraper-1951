@@ -1,4 +1,5 @@
 import CONFIG from "../config/config.js";
+import KCNA from "../models/kcna-model.js";
 import Vid from "../models/vid-model.js";
 import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
@@ -171,31 +172,84 @@ export const uploadVidPageArrayTG = async (inputArray) => {
 //REDOWNLOAD VIDS
 
 export const reDownloadVids = async (inputArray) => {
-  const vidDownloadArray = [];
+  const { collectionArr } = await deleteItemsMap("vids");
 
+  const vidDownloadArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     try {
       const savePath = inputArray[i];
+      const fuckedObj = await getDataFromPath(savePath, "vids");
+      if (!fuckedObj || !fuckedObj.url) continue;
+      const { url } = fuckedObj;
 
-      const vidObj = await getDataFromPath(savePath, "vids");
-      if (!vidObj) continue;
+      const deleteParams = {
+        keyToLookup: "url",
+        itemValue: url,
+      };
 
-      //try resetting chunk processed (might not make a diff)
-      vidObj.chunksProcessed = 0;
+      //loop through to delete from each collection
+      for (let j = 0; j < collectionArr.length; j++) {
+        const dataModel = new dbModel(deleteParams, collectionArr[j]);
+        await dataModel.deleteItem();
+      }
 
-      console.log("VID OBJ");
-      console.log(vidObj);
+      //get vid headers
+      const headerObj = await reDownloadVidHeaders(fuckedObj);
 
-      //delete to avoid error when downloading (after getting data)
-      await deleteMongoItem(savePath, "vids");
+      //redownload vid
+      const vidModel = new Vid({ inputObj: headerObj });
+      const vidObj = await vidModel.downloadVidFS();
+      if (!vidObj || !vidObj.chunksProcessed) continue;
 
-      const vidModel = new Vid({ inputObj: vidObj });
-      const vidData = await vidModel.downloadVidFS();
-      vidDownloadArray.push(vidData);
+      //build return obj
+      const storeObj = { ...headerObj };
+      storeObj.chunksProcessed = vidObj.chunksProcessed;
+
+      //store it
+      const storeModel = new dbModel(storeObj, CONFIG.vidsDownloaded);
+      await storeModel.storeUniqueURL();
+
+      vidDownloadArray.push(storeObj);
     } catch (e) {
       console.log(e);
     }
   }
 
   return vidDownloadArray;
+};
+
+export const reDownloadVidHeaders = async (inputObj) => {
+  const { url, vidId, scrapeId, date } = inputObj;
+
+  //redo getting headers
+  const headerParams = {
+    url: url,
+  };
+
+  const headerModel = new KCNA(headerParams);
+  const headerData = await headerModel.getMediaHeaders();
+  if (!headerData) return null;
+
+  console.log("VID HEADER DATA!!!!");
+  console.log(headerData);
+
+  //parse vid headers here [will prob need to change based on future headers]
+  const parseModel = new Vid({ headerData: headerData });
+  const headerObj = await parseModel.parseVidHeaders();
+
+  //add vid temp path
+  const vidTempPath = CONFIG.tempPath + vidId + ".mp4";
+
+  //add back to obj
+  headerObj.url = url;
+  headerObj.vidId = vidId;
+  headerObj.scrapeId = scrapeId;
+  headerObj.date = date;
+  headerObj.vidTempPath = vidTempPath;
+
+  //store it again
+  const storeModel = new dbModel(headerObj, CONFIG.vids);
+  await storeModel.storeUniqueURL();
+
+  return headerObj;
 };

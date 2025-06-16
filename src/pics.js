@@ -1,4 +1,5 @@
 import CONFIG from "../config/config.js";
+import KCNA from "../models/kcna-model.js";
 import Pic from "../models/pic-model.js";
 import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
@@ -155,18 +156,34 @@ export const uploadPicSetArrayTG = async (inputArray) => {
 
 //REDOWNLOAD PICS
 export const reDownloadPics = async (inputArray) => {
+  const { collectionArr } = await deleteItemsMap("pics");
   const picDownloadArray = [];
 
   for (let i = 0; i < inputArray.length; i++) {
     try {
       const savePath = inputArray[i];
-      const itemObj = await getDataFromPath(savePath, "pics");
-      if (!itemObj) continue;
 
-      //delete to avoid error when downloading (after getting data)
-      await deleteMongoItem(savePath, "pics");
+      //get data from old pic entry before deleting
+      const fuckedObj = await getDataFromPath(savePath, "pics");
+      if (!fuckedObj || !fuckedObj.url) continue;
+      const { url } = fuckedObj;
 
-      const picModel = new Pic({ picObj: itemObj });
+      const deleteParams = {
+        keyToLookup: "url",
+        itemValue: url,
+      };
+
+      //loop through to delete from each collection
+      for (let j = 0; j < collectionArr.length; j++) {
+        const dataModel = new dbModel(deleteParams, collectionArr[j]);
+        await dataModel.deleteItem();
+      }
+
+      //redownload / store headers
+      const headerObj = await reDownloadPicHeaders(fuckedObj);
+
+      //redownload pic
+      const picModel = new Pic({ picObj: headerObj });
       const picData = await picModel.downloadPicFS();
       picDownloadArray.push(picData);
     } catch (e) {
@@ -175,4 +192,32 @@ export const reDownloadPics = async (inputArray) => {
   }
 
   return picDownloadArray;
+};
+
+export const reDownloadPicHeaders = async (inputObj) => {
+  const { url, picId, scrapeId, date } = inputObj;
+
+  //redo getting headers
+  const headerParams = {
+    url: url,
+  };
+
+  const headerModel = new KCNA(headerParams);
+  const headerData = await headerModel.getMediaHeaders();
+  if (!headerData) return null;
+
+  //rebuild obj
+  const headerObj = {
+    url: url,
+    scrapeId: scrapeId,
+    date: date,
+    headerData: headerData,
+    picId: picId,
+  };
+
+  //store it again
+  const storeModel = new dbModel(headerObj, CONFIG.pics);
+  await storeModel.storeUniqueURL();
+
+  return headerObj;
 };

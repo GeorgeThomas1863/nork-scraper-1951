@@ -184,16 +184,16 @@ export const reDownloadByType = async (inputArray, type) => {
   }
 };
 
-export const deleteMongoItem = async (inputPath, type) => {
-  const { collectionArr } = await deleteItemsMap(type);
+// export const deleteMongoItem = async (inputPath, type) => {
+//   const { collectionArr } = await deleteItemsMap(type);
 
-  const params = {
-    keyToLookup: "savePath",
-    itemValue: inputPath,
-  };
+//   const params = {
+//     keyToLookup: "savePath",
+//     itemValue: inputPath,
+//   };
 
-  const dataModel = new dbModel(params, collectionArr[0]);
-  const data = await dataModel.deleteItem();
+//   const dataModel = new dbModel(params, collectionArr[0]);
+//   const data = await dataModel.deleteItem();
 
-  return data;
-};
+//   return data;
+// };
