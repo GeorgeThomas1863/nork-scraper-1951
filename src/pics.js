@@ -3,7 +3,8 @@ import Pic from "../models/pic-model.js";
 import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
 
-import { continueScrape } from "./scrape-util.js";
+import { continueScrape, getDataFromPath } from "./scrape-util.js";
+import { deleteMongoItem } from "./clean-fs.js";
 
 //FIND PICS / GET PICURLS SECTION
 
@@ -148,4 +149,30 @@ export const uploadPicSetArrayTG = async (inputArray) => {
   }
 
   return uploadDataArray;
+};
+
+//------------------------------
+
+//REDOWNLOAD PICS
+export const reDownloadPics = async (inputArray) => {
+  const picDownloadArray = [];
+
+  for (let i = 0; i < inputArray.length; i++) {
+    try {
+      const savePath = inputArray[i];
+      const itemObj = await getDataFromPath(savePath, "pics");
+      if (!itemObj) continue;
+
+      //delete to avoid error when downloading (after getting data)
+      await deleteMongoItem(savePath, "pics");
+
+      const picModel = new Pic({ picObj: itemObj });
+      const picData = await picModel.downloadPicFS();
+      picDownloadArray.push(picData);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  return picDownloadArray;
 };

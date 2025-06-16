@@ -3,7 +3,8 @@ import Vid from "../models/vid-model.js";
 import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
 
-import { continueScrape } from "./scrape-util.js";
+import { continueScrape, getDataFromPath } from "./scrape-util.js";
+import { deleteMongoItem } from "./clean-fs.js";
 
 //FIND VID PAGES / GET VID URLs SECTION
 
@@ -163,4 +164,38 @@ export const uploadVidPageArrayTG = async (inputArray) => {
   }
 
   return uploadDataArray;
+};
+
+//---------------------------
+
+//REDOWNLOAD VIDS
+
+export const reDownloadVids = async (inputArray) => {
+  const vidDownloadArray = [];
+
+  for (let i = 0; i < inputArray.length; i++) {
+    try {
+      const savePath = inputArray[i];
+
+      const vidObj = await getDataFromPath(savePath, "vids");
+      if (!vidObj) continue;
+
+      //try resetting chunk processed (might not make a diff)
+      vidObj.chunksProcessed = 0;
+
+      console.log("VID OBJ");
+      console.log(vidObj);
+
+      //delete to avoid error when downloading (after getting data)
+      await deleteMongoItem(savePath, "vids");
+
+      const vidModel = new Vid({ inputObj: vidObj });
+      const vidData = await vidModel.downloadVidFS();
+      vidDownloadArray.push(vidData);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  return vidDownloadArray;
 };

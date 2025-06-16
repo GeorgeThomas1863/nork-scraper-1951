@@ -1,9 +1,11 @@
 import { promises as fs } from "fs";
 import path from "path";
 import dbModel from "../models/db-model.js";
-import Pic from "../models/pic-model.js";
-import Vid from "../models/vid-model.js";
 import { deleteItemsMap } from "../config/map-scrape.js";
+
+import { getItemSizeCheck, getItemSizeFS, getFileArrayFS, getFileArrayDB } from "./scrape-util.js";
+import { reDownloadPics } from "./pics.js";
+import { reDownloadVids } from "./vids.js";
 
 export const runCleanFS = async () => {
   //delete EMPTY FILES
@@ -17,6 +19,10 @@ export const runCleanFS = async () => {
 
   //DELETE TOO MANY FILES (more than X in folder)
 };
+
+//------------------------------
+
+//DELETE EMPTY FILES SECTION
 
 export const deleteEmptyFilesFS = async () => {
   const typeArr = ["vids", "pics", "temp"];
@@ -103,14 +109,6 @@ export const deleteItemFS = async (filePath, type) => {
     itemSizeCheck: itemSizeCheck,
   };
 
-  // //Delete saved item from mongo
-  // const removeDataArray = await removeFromMongo(filePath, type);
-
-  // //add to existing obj
-  // if (removeDataArray) {
-  //   deleteObj.removeDataArray = removeDataArray;
-  // }
-
   //store items deleted for tracking
   const storeModel = new dbModel(deleteObj, "deletedItems");
   const storeData = await storeModel.storeAny();
@@ -123,89 +121,9 @@ export const deleteItemFS = async (filePath, type) => {
   return deleteObj;
 };
 
-//size of item in db
-export const getItemSizeCheck = async (filePath, type) => {
-  const { collectionArr } = await deleteItemsMap(type);
+//--------------------------------
 
-  //always delete temp files
-  if (type === "temp") return 0;
-
-  const itemParams = {
-    keyToLookup: "savePath",
-    itemValue: filePath,
-  };
-
-  //get item db data
-  const dataModel = new dbModel(itemParams, collectionArr[0]);
-  const itemData = await dataModel.getUniqueItem();
-
-  if (type === "vids") {
-    const vidSize = itemData?.vidSizeBytes || 0;
-    return vidSize * 0.8;
-  }
-
-  //otherwise pics
-  const picSize = itemData?.downloadedSize || 0; //set to 0 if cant find
-  return picSize * 0.8;
-};
-
-//size of item on fs
-export const getItemSizeFS = async (filePath) => {
-  // Get file stats
-  const stats = await fs.stat(filePath);
-
-  // null if a directory
-  if (!stats || stats.isDirectory()) return null;
-
-  return stats.size;
-};
-
-// //remove blank items from mongo
-// export const removeFromMongo = async (filePath, type) => {
-//   const { collectionArr } = await deleteItemsMap(type);
-
-//   if (type === "temp") return null; //avoids error
-
-//   const lookupParams = {
-//     keyToLookup: "savePath",
-//     itemValue: filePath,
-//   };
-
-//   //lookup data first to delete with url
-//   const lookupModel = new dbModel(lookupParams, collectionArr[0]);
-//   const lookupData = await lookupModel.getUniqueItem();
-//   if (!lookupData || !lookupData.url) return null;
-
-//   const { url } = lookupData;
-
-//   //loop through collections
-//   const deleteDataArray = [];
-//   for (let i = 0; i < collectionArr.length; i++) {
-//     const collection = collectionArr[i];
-//     console.log("COLLECTION");
-//     console.log(collection);
-
-//     const deleteParams = {
-//       keyToLookup: "url",
-//       itemValue: url,
-//     };
-
-//     if (collection === "vidPageContent" || collection === "vidPagesUploaded") {
-//       deleteParams.keyToLookup = "vidURL";
-//     }
-
-//     const deleteModel = new dbModel(deleteParams, collection);
-//     const deleteData = await deleteModel.deleteItem();
-//     const deleteDataObj = {
-//       collection: collection,
-//       url: url,
-//       deleteData: deleteData,
-//     };
-//     deleteDataArray.push(deleteDataObj);
-//   }
-
-//   return deleteDataArray;
-// };
+//RE DOWNLOAD MEDIA SECTION
 
 export const reDownloadMedia = async () => {
   const typeArr = ["vids", "pics"];
@@ -237,40 +155,6 @@ export const reDownloadMedia = async () => {
   return redownloadDataArray;
 };
 
-//get array of FS files
-export const getFileArrayFS = async (type) => {
-  const { basePath } = await deleteItemsMap(type);
-  const itemArray = await fs.readdir(basePath);
-
-  //needed bc readdir ONLY returns file names
-  const fileArrayFS = [];
-  for (let i = 0; i < itemArray.length; i++) {
-    const item = itemArray[i];
-    const filePath = path.join(basePath, item);
-
-    fileArrayFS.push(filePath);
-  }
-
-  return fileArrayFS;
-};
-
-//get array of DB files
-export const getFileArrayDB = async (type) => {
-  const { collectionArr } = await deleteItemsMap(type);
-
-  const dataModel = new dbModel("", collectionArr[0]);
-  const itemArray = await dataModel.getAll();
-
-  const fileArrayDB = [];
-  for (let i = 0; i < itemArray.length; i++) {
-    const item = itemArray[i];
-    const filePath = item.savePath;
-    fileArrayDB.push(filePath);
-  }
-
-  return fileArrayDB;
-};
-
 export const getRedownloadArray = async (fileArrayFS, fileArrayDB) => {
   const redownloadArray = [];
   for (let j = 0; j < fileArrayDB.length; j++) {
@@ -298,93 +182,6 @@ export const reDownloadByType = async (inputArray, type) => {
     default:
       return null;
   }
-};
-
-export const reDownloadPics = async (inputArray) => {
-  const picDownloadArray = [];
-
-  for (let i = 0; i < inputArray.length; i++) {
-    try {
-      const savePath = inputArray[i];
-      const itemData = await getDataFromPath(savePath, "pics");
-      if (!itemData) continue;
-
-      //delete to avoid error when downloading (after getting data)
-      await deleteMongoItem(savePath, "pics");
-
-      const { url, picId } = itemData;
-
-      const picObj = {
-        url: url,
-        savePath: savePath,
-        picId: picId,
-      };
-
-      const picModel = new Pic({ picObj: picObj });
-      const picData = await picModel.downloadPicFS();
-      picDownloadArray.push(picData);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  return picDownloadArray;
-};
-
-export const reDownloadVids = async (inputArray) => {
-  const vidDownloadArray = [];
-
-  for (let i = 0; i < inputArray.length; i++) {
-    try {
-      const savePath = inputArray[i];
-      // const itemData = await getDataFromPath(savePath, "vids");
-      // if (!itemData) continue;
-
-      const vidObj = await getDataFromPath(savePath, "vids");
-      if (!vidObj) continue;
-
-      //try resetting chunk processed (might not make a diff)
-      vidObj.chunksProcessed = 0;
-
-      console.log("VID OBJ");
-      console.log(vidObj);
-
-      //delete to avoid error when downloading (after getting data)
-      await deleteMongoItem(savePath, "vids");
-
-      // const { url, vidId, totalChunks } = itemData;
-
-      // const vidObj = {.
-
-      //   url: url,
-      //   savePath: savePath,
-      //   vidId: vidId,s
-      //   totalChunks: totalChunks,
-      // };
-
-      const vidModel = new Vid({ inputObj: vidObj });
-      const vidData = await vidModel.downloadVidFS();
-      vidDownloadArray.push(vidData);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  return vidDownloadArray;
-};
-
-export const getDataFromPath = async (inputPath, type) => {
-  const { collectionArr } = await deleteItemsMap(type);
-
-  const params = {
-    keyToLookup: "savePath",
-    itemValue: inputPath,
-  };
-
-  const dataModel = new dbModel(params, collectionArr[0]);
-  const data = await dataModel.getUniqueItem();
-
-  return data;
 };
 
 export const deleteMongoItem = async (inputPath, type) => {
