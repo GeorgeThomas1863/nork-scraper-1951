@@ -315,6 +315,9 @@ class Vid {
     const { inputObj } = this.dataObject;
     const vidObj = { ...inputObj };
 
+    console.log("DOWNLOADING VIDEO INPUT OBJ");
+    console.log(vidObj);
+
     //check if new (not possible in most situations, but adding check to be sure)
     const checkModel = new dbModel(vidObj, CONFIG.vidsDownloaded);
     await checkModel.urlNewCheck(); //throws error if not new (keep out of try block to propogate error)
