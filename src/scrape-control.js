@@ -5,7 +5,7 @@ import { scrapeNewURLs } from "./scrape-urls.js";
 import { scrapeNewMedia } from "./scrape-download.js";
 import { uploadNewTG } from "./scrape-upload.js";
 import { runCleanFS } from "./clean-fs.js";
-import { startScheduler, stopScheduler, getSchedulerStatus } from "./scrape-scheduler.js";
+// import { startScheduler, stopScheduler } from "./scrape-scheduler.js";
 
 export const scrapeNewKCNA = async () => {
   //set scrape active
@@ -44,25 +44,25 @@ export const scrapeUrlKCNA = async (url) => {
   console.log("build");
 };
 
-export const restartAutoScrape = async (inputParams) => {
-    const { intervalMinutes } = inputParams;
-    
-    // If no interval specified, stop the scheduler
-    if (!intervalMinutes) {
-        await stopScheduler();
-        return {
-            textStr: "AUTO SCRAPE STOPPED",
-            scrapeId: scrapeId,
-            runScrape: false
-        };
-    }
+// export const restartAutoScrape = async (inputParams) => {
+//   const { intervalMinutes } = inputParams;
 
-    // Start scheduler with specified interval
-    await startScheduler(parseInt(intervalMinutes));
-    
-    return {
-        textStr: `AUTO SCRAPE STARTED (${intervalMinutes} minutes)`,
-        scrapeId: scrapeId,
-        runScrape: false
-    };
-};
+//   // If no interval specified, stop the scheduler
+//   if (!intervalMinutes) {
+//     await stopScheduler();
+//     return {
+//       textStr: "AUTO SCRAPE STOPPED",
+//       scrapeId: scrapeId,
+//       runScrape: false,
+//     };
+//   }
+
+//   // Start scheduler with specified interval
+//   await startScheduler(parseInt(intervalMinutes));
+
+//   return {
+//     textStr: `AUTO SCRAPE STARTED (${intervalMinutes} minutes)`,
+//     scrapeId: scrapeId,
+//     runScrape: false,
+//   };
+// };

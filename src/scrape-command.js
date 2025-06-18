@@ -1,7 +1,7 @@
 import Log from "../models/log-model.js";
-import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA, restartAutoScrape } from "./scrape-control.js";
+import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA } from "./scrape-control.js";
 import { setContinueScrape, scrapeActive, scrapeId, setScrapeId } from "./scrape-util.js";
-import { getSchedulerStatus } from "./scrape-scheduler.js";
+import { startScheduler, stopScheduler } from "./scrape-scheduler.js";
 
 //REFACTOR / break into multiple funcitons
 export const parseAdminCommand = async (inputParams) => {
@@ -21,14 +21,36 @@ export const parseAdminCommand = async (inputParams) => {
     return returnObj;
   }
 
-  //if just getting status, return same as scrape active
-  if (commandType === "admin-scrape-status") {
-    const schedulerStatus = getSchedulerStatus();
-    returnObj.textStr = `SCRAPE STATUS: ${scrapeActive ? "ACTIVE" : "INACTIVE"}. SCHEDULER: ${schedulerStatus.isActive ? `ACTIVE (${schedulerStatus.interval}min)` : "INACTIVE"}`;
+  if (commandType === "admin-stop-scheduler") {
+    await stopScheduler();
+    returnObj.textStr = "STOPPING SCHEDULER";
     returnObj.scrapeId = scrapeId;
     returnObj.runScrape = null;
+
+    console.log(returnObj.textStr);
     return returnObj;
   }
+
+  //if reset auto
+  if (commandType === "admin-start-scheduler") {
+    await startScheduler();
+    returnObj.textStr = "STARTING SCHEDULER";
+    returnObj.scrapeId = scrapeId;
+    returnObj.runScrape = null;
+
+    console.log(returnObj.textStr);
+    return returnObj;
+  }
+
+  //deal with later
+  //if just getting status, return same as scrape active
+  // if (commandType === "admin-scrape-status") {
+  //   const schedulerStatus = getSchedulerStatus();
+  //   returnObj.textStr = `SCRAPE STATUS: ${scrapeActive ? "ACTIVE" : "INACTIVE"}. SCHEDULER: ${schedulerStatus.isActive ? `ACTIVE (${schedulerStatus.interval}min)` : "INACTIVE"}`;
+  //   returnObj.scrapeId = scrapeId;
+  //   returnObj.runScrape = null;
+  //   return returnObj;
+  // }
 
   //if already scraping
   if (scrapeActive) {
@@ -40,17 +62,7 @@ export const parseAdminCommand = async (inputParams) => {
     return returnObj;
   }
 
-  // reset the stopper
   await setContinueScrape(true);
-
-  //if reset auto
-  if (commandType === "admin-reset-auto") {
-    const restartData = await restartAutoScrape({ intervalMinutes });
-    return restartData;
-  }
-
-  //handle other entries
-  if (commandType !== "admin-start-scrape") return null;
 
   //otherwise SET scrape ID here
   const newScrapeModel = new Log();
