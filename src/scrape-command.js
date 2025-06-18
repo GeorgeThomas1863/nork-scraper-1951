@@ -1,10 +1,11 @@
 import Log from "../models/log-model.js";
 import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA, restartAutoScrape } from "./scrape-control.js";
 import { setContinueScrape, scrapeActive, scrapeId, setScrapeId } from "./scrape-util.js";
+import { getSchedulerStatus } from "./scrape-scheduler.js";
 
 //REFACTOR / break into multiple funcitons
 export const parseAdminCommand = async (inputParams) => {
-  const { commandType } = inputParams;
+  const { commandType, intervalMinutes } = inputParams;
   if (!commandType) return null;
   const returnObj = {};
 
@@ -22,7 +23,8 @@ export const parseAdminCommand = async (inputParams) => {
 
   //if just getting status, return same as scrape active
   if (commandType === "admin-scrape-status") {
-    returnObj.textStr = "SCRAPE STATUS: ";
+    const schedulerStatus = getSchedulerStatus();
+    returnObj.textStr = `SCRAPE STATUS: ${scrapeActive ? "ACTIVE" : "INACTIVE"}. SCHEDULER: ${schedulerStatus.isActive ? `ACTIVE (${schedulerStatus.interval}min)` : "INACTIVE"}`;
     returnObj.scrapeId = scrapeId;
     returnObj.runScrape = null;
     return returnObj;
@@ -43,7 +45,7 @@ export const parseAdminCommand = async (inputParams) => {
 
   //if reset auto
   if (commandType === "admin-reset-auto") {
-    const restartData = await restartAutoScrape(inputParams);
+    const restartData = await restartAutoScrape({ intervalMinutes });
     return restartData;
   }
 
