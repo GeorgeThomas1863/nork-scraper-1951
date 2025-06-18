@@ -9,7 +9,7 @@ export const apiRoute = async (req, res) => {
   res.json(data);
 
   //RUNS SCRAPE COMMAND
-  if (data.runScrape) {
+  if (data && data.runScrape) {
     await runScrapeCommand(inputParams);
   }
 
