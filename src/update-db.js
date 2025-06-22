@@ -292,7 +292,7 @@ export const updateVidDB = async () => {
 
 export const updateVidItem = async (inputObj, collection) => {
   if (!inputObj || inputObj.vidData) return null; //return if already has vidData
-  const { vidURL } = inputObj;
+  const { url, vidURL } = inputObj;
   const { vidsDownloaded } = CONFIG;
 
   //get update data
@@ -310,7 +310,7 @@ export const updateVidItem = async (inputObj, collection) => {
   //update it
   const updateParams = {
     keyToLookup: "url",
-    itemValue: vidURL,
+    itemValue: url,
     insertKey: "vidData",
     updateObj: updateObj,
   };
