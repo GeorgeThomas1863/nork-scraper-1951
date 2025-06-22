@@ -252,8 +252,8 @@ class TG {
     const thumbnailObj = await thumbnailModel.getUniqueItem();
     const thumbnailPicId = thumbnailObj.picId;
 
-    console.log("!!!!!!THUMBNAIL PIC ID");
-    console.log(thumbnailPicId);
+    // console.log("!!!!!!THUMBNAIL PIC ID");
+    // console.log(thumbnailPicId);
 
     //build thumbnail path
     chunkObj.thumbnailPath = CONFIG.picPath + thumbnailPicId + ".jpg";

@@ -237,6 +237,8 @@ export const updateThumbnailItem = async (inputObj, collection) => {
   const { thumbnail } = inputObj;
   const { picsDownloaded } = CONFIG;
 
+  console.log("UPDATE THUMBNAIL ITEM!!!!");
+  
   //get update data
   const dataParams = {
     keyToLookup: "url",
@@ -256,6 +258,9 @@ export const updateThumbnailItem = async (inputObj, collection) => {
     insertKey: "thumbnailData",
     updateObj: updateObj,
   };
+
+  console.log("UPDATE THUMBNAIL PARAMS");
+  console.log(updateParams);
 
   const updateModel = new dbModel(updateParams, collection);
   const updateItemData = await updateModel.updateObjInsert();

@@ -192,8 +192,8 @@ class Vid {
     const urlConstant = "http://www.kcna.kp";
     const vidURL = urlConstant + mp4Link;
 
-    console.log("!!!VID URL");
-    console.log(vidURL);
+    // console.log("!!!VID URL");
+    // console.log(vidURL);
 
     //store it in vidURLs
     try {
