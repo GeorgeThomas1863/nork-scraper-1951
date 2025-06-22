@@ -253,11 +253,12 @@ export const updateThumbnailItem = async (inputObj, collection) => {
   const updateParams = {
     keyToLookup: "url",
     itemValue: thumbnail,
+    insertKey: "thumbnailData",
     updateObj: updateObj,
   };
 
   const updateModel = new dbModel(updateParams, collection);
-  const updateItemData = await updateModel.updateObjItem();
+  const updateItemData = await updateModel.updateObjInsert();
 
   return updateItemData;
 };
@@ -316,7 +317,7 @@ export const updateVidItem = async (inputObj, collection) => {
   };
 
   const updateModel = new dbModel(updateParams, collection);
-  const updateItemData = await updateModel.updateObjItem();
+  const updateItemData = await updateModel.updateObjInsert();
 
   return updateItemData;
 };
