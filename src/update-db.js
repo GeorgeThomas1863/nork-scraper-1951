@@ -48,8 +48,14 @@ export const updatePicItem = async (inputObj) => {
   };
 
   const dataModel = new dbModel(dataParams, picsDownloaded);
-  const updateObj = await dataModel.getUniqueItem();
-  if (!updateObj) return null;
+  const updateData = await dataModel.getUniqueItem();
+  if (!updateData) return null;
+  const { savePath, downloadedSize } = updateData;
+
+  const updateObj = {
+    savePath: savePath,
+    downloadedSize: downloadedSize,
+  };
 
   //update it
   const updateParams = {
@@ -59,9 +65,9 @@ export const updatePicItem = async (inputObj) => {
   };
 
   const updateModel = new dbModel(updateParams, pics);
-  const updateData = await updateModel.updateObjItem();
+  const updateItemData = await updateModel.updateObjItem();
 
-  return updateData;
+  return updateItemData;
 };
 
 //-------------------------------
