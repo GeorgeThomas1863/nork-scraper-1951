@@ -234,11 +234,11 @@ export const updateThumbnailDBs = async () => {
 
 export const updateThumbnailItem = async (inputObj, collection) => {
   if (!inputObj || !inputObj.thumbnail) return null;
-  const { thumbnail } = inputObj;
+  const { url, thumbnail } = inputObj;
   const { picsDownloaded } = CONFIG;
 
   console.log("UPDATE THUMBNAIL ITEM!!!!");
-  
+
   //get update data
   const dataParams = {
     keyToLookup: "url",
@@ -254,7 +254,7 @@ export const updateThumbnailItem = async (inputObj, collection) => {
   //update it
   const updateParams = {
     keyToLookup: "url",
-    itemValue: thumbnail,
+    itemValue: url,
     insertKey: "thumbnailData",
     updateObj: updateObj,
   };
@@ -264,6 +264,9 @@ export const updateThumbnailItem = async (inputObj, collection) => {
 
   const updateModel = new dbModel(updateParams, collection);
   const updateItemData = await updateModel.updateObjInsert();
+
+  console.log("UPDATE THUMBNAIL ITEM DATA");
+  console.log(updateItemData);
 
   return updateItemData;
 };
