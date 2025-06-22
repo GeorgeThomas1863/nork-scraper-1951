@@ -3,7 +3,9 @@ import dbModel from "../models/db-model.js";
 
 export const updateMongo = async () => {
   console.log("!!! UPDATING MONGO !!!");
-  //   const updatePicData = await updatePicDBs();
+  const updatePicData = await updatePicDB();
+  console.log("UPDATE PIC DATA");
+  console.log(updatePicData);
   const updatePicArrayData = await updatePicArrayDBs();
   console.log("UPDATE PIC ARRAY DATA");
   console.log(updatePicArrayData);
@@ -13,7 +15,56 @@ export const updateMongo = async () => {
 };
 
 //updates pics
-export const updatePicDBs = async () => {};
+export const updatePicDB = async () => {
+  const { pics } = CONFIG;
+
+  //get all pic data
+  const picModel = new dbModel("", pics);
+  const picDataArray = await picModel.getAll();
+
+  //loop through and check that each have all data
+  const returnArray = [];
+  for (let i = 0; i < picDataArray.length; i++) {
+    const picDocObj = picDataArray[i];
+    const updatePicData = await updatePicItem(picDocObj);
+    if (!updatePicData) continue;
+
+    //return for tracking
+    returnArray.push(updatePicData);
+  }
+
+  return returnArray;
+};
+
+export const updatePicItem = async (inputObj) => {
+  if (!inputObj || inputObj.savePath) return null; //return if already has save Path
+  const { url } = inputObj;
+  const { pics, picsDownloaded } = CONFIG;
+
+  //get update data
+  const dataParams = {
+    keyToLookup: "url",
+    itemValue: url,
+  };
+
+  const dataModel = new dbModel(dataParams, picsDownloaded);
+  const updateObj = await dataModel.getUniqueItem();
+  if (!updateObj) return null;
+
+  //update it
+  const updateParams = {
+    keyToLookup: "url",
+    itemValue: url,
+    updateObj: updateObj,
+  };
+
+  const updateModel = new dbModel(updateParams, pics);
+  const updateData = await updateModel.updateObjItem();
+
+  return updateData;
+};
+
+//-------------------------------
 
 //updates articles and picSetContent
 export const updatePicArrayDBs = async () => {
@@ -90,9 +141,6 @@ export const updateNestedItem = async (inputObj, collection) => {
     updateKey: "picArray",
     updateArray: rebuiltPicArray,
   };
-
-  console.log("PARAMS");
-  console.log(params);
 
   const updateModel = new dbModel(params, collection);
   const updateData = await updateModel.updateArrayNested();
