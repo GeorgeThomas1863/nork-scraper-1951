@@ -73,6 +73,12 @@ class dbModel {
     return updateData;
   }
 
+  async updateObjInsert() {
+    const { keyToLookup, itemValue, insertKey, updateObj } = this.dataObject;
+    const updateData = await db.dbGet().collection(this.collection).updateOne({ [keyToLookup]: itemValue }, { $set: { [insertKey]: updateObj } }); //prettier-ignore
+    return updateData;
+  }
+
   async updateArrayNested() {
     const { docKey, docValue, updateKey, updateArray } = this.dataObject;
     const updateData = await db.dbGet().collection(this.collection).updateOne({ [docKey]: docValue }, { $set: { [updateKey]: updateArray } }); //prettier-ignore

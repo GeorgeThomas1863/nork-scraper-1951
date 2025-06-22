@@ -11,9 +11,9 @@ export const updateMongo = async () => {
   console.log("UPDATE THUMBNAIL DATA");
   console.log(updateThumbnailData);
 
-  //   const updateVidData = await updateVidDBs();
-  //   console.log("UPDATE VID DATA");
-  //   console.log(updateVidData);
+  const updateVidData = await updateVidDB();
+  console.log("UPDATE VID DATA");
+  console.log(updateVidData);
 };
 
 //updates pics
@@ -27,12 +27,18 @@ export const updatePicDB = async () => {
   //loop through and check that each have all data
   const returnArray = [];
   for (let i = 0; i < picDataArray.length; i++) {
-    const picDocObj = picDataArray[i];
-    const updatePicData = await updatePicItem(picDocObj);
-    if (!updatePicData) continue;
+    try {
+      const picDocObj = picDataArray[i];
+      const updatePicData = await updatePicItem(picDocObj);
+      if (!updatePicData) continue;
 
-    //return for tracking
-    returnArray.push(updatePicData);
+      //return for tracking
+      returnArray.push(updatePicData);
+    } catch (e) {
+      console.log("UPDATE PIC DB FUCKED");
+      console.log(e);
+      continue;
+    }
   }
 
   return returnArray;
@@ -67,59 +73,6 @@ export const updatePicItem = async (inputObj) => {
   };
 
   const updateModel = new dbModel(updateParams, pics);
-  const updateItemData = await updateModel.updateObjItem();
-
-  return updateItemData;
-};
-
-//-------------------------------
-
-//adds pic data to thumbnail in vidPageContent ONLY (not to vids or vid downloaded)
-export const updateThumbnailDBs = async () => {
-  const { vidPageContent } = CONFIG;
-
-  //get all data from collection
-  const collectionModel = new dbModel("", vidPageContent);
-  const collectionDataArray = await collectionModel.getAll();
-  if (!collectionDataArray || !collectionDataArray.length) return null;
-
-  //loop through each doc in collection
-  const returnArray = [];
-  for (let i = 0; i < collectionDataArray.length; i++) {
-    const docObj = collectionDataArray[i];
-    const updateData = await updateThumbnailItem(docObj, vidPageContent);
-    if (!updateData) continue;
-    returnArray.push(updateData);
-  }
-
-  return returnArray;
-};
-
-export const updateThumbnailItem = async (inputObj, collection) => {
-  if (!inputObj || !inputObj.thumbnail) return null;
-  const { thumbnail } = inputObj;
-  const { picsDownloaded } = CONFIG;
-
-  //get update data
-  const dataParams = {
-    keyToLookup: "url",
-    itemValue: thumbnail,
-  };
-
-  const dataModel = new dbModel(dataParams, picsDownloaded);
-  const updateObj = await dataModel.getUniqueItem();
-  if (!updateObj) return null;
-  //get rid of the id
-  delete updateObj._id;
-
-  //update it
-  const updateParams = {
-    keyToLookup: "url",
-    itemValue: thumbnail,
-    updateObj: updateObj,
-  };
-
-  const updateModel = new dbModel(updateParams, collection);
   const updateItemData = await updateModel.updateObjItem();
 
   return updateItemData;
@@ -250,4 +203,120 @@ export const rebuildPicArray = async (inputArray) => {
   return rebuiltPicArray;
 };
 
-export const updateVidDBs = async () => {};
+//-------------------------------
+
+//adds pic data to thumbnail in vidPageContent ONLY (not to vids or vid downloaded)
+export const updateThumbnailDBs = async () => {
+  const { vidPageContent } = CONFIG;
+
+  //get all data from collection
+  const collectionModel = new dbModel("", vidPageContent);
+  const collectionDataArray = await collectionModel.getAll();
+  if (!collectionDataArray || !collectionDataArray.length) return null;
+
+  //loop through each doc in collection
+  const returnArray = [];
+  for (let i = 0; i < collectionDataArray.length; i++) {
+    try {
+      const docObj = collectionDataArray[i];
+      const updateData = await updateThumbnailItem(docObj, vidPageContent);
+      if (!updateData) continue;
+      returnArray.push(updateData);
+    } catch (e) {
+      console.log("UPDATE THUMBNAIL DB FUCKED");
+      console.log(e);
+      continue;
+    }
+  }
+
+  return returnArray;
+};
+
+export const updateThumbnailItem = async (inputObj, collection) => {
+  if (!inputObj || !inputObj.thumbnail) return null;
+  const { thumbnail } = inputObj;
+  const { picsDownloaded } = CONFIG;
+
+  //get update data
+  const dataParams = {
+    keyToLookup: "url",
+    itemValue: thumbnail,
+  };
+
+  const dataModel = new dbModel(dataParams, picsDownloaded);
+  const updateObj = await dataModel.getUniqueItem();
+  if (!updateObj) return null;
+  //get rid of the id
+  delete updateObj._id;
+
+  //update it
+  const updateParams = {
+    keyToLookup: "url",
+    itemValue: thumbnail,
+    updateObj: updateObj,
+  };
+
+  const updateModel = new dbModel(updateParams, collection);
+  const updateItemData = await updateModel.updateObjItem();
+
+  return updateItemData;
+};
+
+//----------------------------------
+
+export const updateVidDB = async () => {
+  const { vidPageContent } = CONFIG;
+
+  //get all data from collection
+  const collectionModel = new dbModel("", vidPageContent);
+  const collectionDataArray = await collectionModel.getAll();
+  if (!collectionDataArray || !collectionDataArray.length) return null;
+
+  //loop through each doc in collection
+  const returnArray = [];
+  for (let i = 0; i < collectionDataArray.length; i++) {
+    try {
+      const docObj = collectionDataArray[i];
+      const updateData = await updateVidItem(docObj, vidPageContent);
+      if (!updateData) continue;
+      returnArray.push(updateData);
+    } catch (e) {
+      console.log("UPDATE VID DB FUCKED");
+      console.log(e);
+      continue;
+    }
+  }
+
+  return returnArray;
+};
+
+export const updateVidItem = async (inputObj, collection) => {
+  if (!inputObj || inputObj.vidData) return null; //return if already has vidData
+  const { vidURL } = inputObj;
+  const { vidsDownloaded } = CONFIG;
+
+  //get update data
+  const dataParams = {
+    keyToLookup: "url",
+    itemValue: vidURL,
+  };
+
+  const dataModel = new dbModel(dataParams, vidsDownloaded);
+  const updateObj = await dataModel.getUniqueItem();
+  if (!updateObj) return null;
+  //get rid of the id
+  delete updateObj._id;
+
+  //update it
+  const updateParams = {
+    keyToLookup: "url",
+    itemValue: vidURL,
+    insertKey: "vidData",
+    updateObj: updateObj,
+  };
+
+  const updateModel = new dbModel(updateParams, collection);
+  const updateItemData = await updateModel.updateObjItem();
+
+  return updateItemData;
+};
