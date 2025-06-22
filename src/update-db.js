@@ -2,14 +2,17 @@ import CONFIG from "../config/config.js";
 import dbModel from "../models/db-model.js";
 
 export const updateMongo = async () => {
-  const updatePicData = await updatePicDBs();
+  console.log("!!! UPDATING MONGO !!!");
+  //   const updatePicData = await updatePicDBs();
   const updatePicArrayData = await updatePicArrayDBs();
-  const updateThumbnailData = await updateThumbnailDBs();
+  console.log("UPDATE PIC ARRAY DATA");
+  console.log(updatePicArrayData);
+  //   const updateThumbnailData = await updateThumbnailDBs();
 
-  const updateVidData = await updateVidDBs();
+  //   const updateVidData = await updateVidDBs();
 };
 
-//updates articles, pics, picSetContent, vidPageContent (thumbnail)
+//updates pics
 export const updatePicDBs = async () => {};
 
 //updates articles and picSetContent
@@ -54,11 +57,10 @@ export const updateNestedCollection = async (collection) => {
       //if no picArray, skip
       if (!docObj || !docObj.picArray || !docObj.picArray.length) continue;
 
-      const updateData = await updateNestedItem(docObj)
+      const updateData = await updateNestedItem(docObj, collection);
       if (!updateData) continue;
 
       returnArray.push(updateData);
-      
     } catch (e) {
       console.log("UPDATE NESTED COLLECTION FUCKED");
       console.log(e);
@@ -68,22 +70,55 @@ export const updateNestedCollection = async (collection) => {
   return returnArray;
 };
 
-//update item
-//   const itemModel = new dbModel(itemDB, picArrayCollection);
-//   const itemData = await itemModel.updateObjItem();
-//   console.log(itemData);
-
 //takes picArray as input
-export const updateNestedItem = async (inputObj) => {
+export const updateNestedItem = async (inputObj, collection) => {
   if (!inputObj || !inputObj.picArray || !inputObj.picArray.length) return null;
   const { url, picArray } = inputObj;
 
-  //HERE
+  //check if the picArray has ANY non objs (only rebuild if it does) [this will REQUIRE a few rewrites elsewhere]
+  //NEED TO TEST THIS
+  const hasNonObjs = picArray.some((item) => typeof item !== "object");
+  if (!hasNonObjs) return null;
+
+  //otherwise rebuild picArray
+  const rebuiltPicArray = await rebuildPicArray(picArray);
+  if (!rebuiltPicArray || !rebuiltPicArray.length) return null;
+
+  const params = {
+    docKey: "url",
+    docValue: url,
+    nestedKey: "picArray",
+    nestedValue: picArray,
+    updateObj: rebuiltPicArray,
+  };
+
+  console.log("PARAMS");
+  console.log(params);
+
+  const updateModel = new dbModel(params, collection);
+  const updateData = await updateModel.updateObjNested();
+
+  console.log("UPDATE DATA");
+  console.log(updateData);
+
+  return updateData;
+};
+
+//rebuilds picArray with full data
+export const rebuildPicArray = async (inputArray) => {
+  if (!inputArray || !inputArray.length) return null;
 
   //rebuild the picArray
   const rebuiltPicArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     try {
+      //check if item is already an obj, add to return if so
+      if (typeof inputArray[i] === "object") {
+        rebuiltPicArray.push(inputArray[i]);
+        continue;
+      }
+
+      //otherwise list of picURLs
       const picURL = inputArray[i];
 
       //get data to update
@@ -106,5 +141,7 @@ export const updateNestedItem = async (inputObj) => {
 
   return rebuiltPicArray;
 };
+
+export const updateThumbnailData = async () => {};
 
 export const updateVidDBs = async () => {};
