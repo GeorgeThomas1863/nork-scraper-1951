@@ -132,8 +132,7 @@ export const updateNestedItem = async (inputObj, collection) => {
   if (!inputObj || !inputObj.picArray || !inputObj.picArray.length) return null;
   const { url, picArray } = inputObj;
 
-  //check if the picArray has ANY non objs (only rebuild if it does) [this will REQUIRE a few rewrites elsewhere]
-  //NEED TO TEST THIS
+  //check if the picArray has ANY non objs (only rebuild if it does)
   const hasNonObjs = picArray.some((item) => typeof item !== "object");
   if (!hasNonObjs) return null;
 
