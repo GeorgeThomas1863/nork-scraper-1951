@@ -107,6 +107,7 @@ export const updateNestedItem = async (inputObj, collection) => {
 //rebuilds picArray with full data
 export const rebuildPicArray = async (inputArray) => {
   if (!inputArray || !inputArray.length) return null;
+  const { picsDownloaded } = CONFIG;
 
   //rebuild the picArray
   const rebuiltPicArray = [];
