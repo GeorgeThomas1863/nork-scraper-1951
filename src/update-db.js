@@ -87,16 +87,15 @@ export const updateNestedItem = async (inputObj, collection) => {
   const params = {
     docKey: "url",
     docValue: url,
-    nestedKey: "picArray",
-    nestedValue: picArray,
-    updateObj: rebuiltPicArray,
+    updateKey: "picArray",
+    updateArray: rebuiltPicArray,
   };
 
   console.log("PARAMS");
   console.log(params);
 
   const updateModel = new dbModel(params, collection);
-  const updateData = await updateModel.updateObjNested();
+  const updateData = await updateModel.updateArrayNested();
 
   console.log("UPDATE DATA");
   console.log(updateData);

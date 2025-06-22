@@ -73,18 +73,24 @@ class dbModel {
     return updateData;
   }
 
-  async updateObjNested() {
-    const { docKey, docValue, nestedKey, nestedValue, updateObj } = this.dataObject;
-
-    //removes nested url from picArray
-    const pullData = await db.dbGet().collection(this.collection).updateOne({ [docKey]: docValue }, { $pull: { picArray: { [nestedKey]: nestedValue } } }); //prettier-ignore
-    if (!pullData) return null;
-
-    //adds new nested obj to picArray
-    const pushData = await db.dbGet().collection(this.collection).updateOne({ [docKey]: docValue }, { $push: { picArray: { ...updateObj } } }); //prettier-ignore
-
-    return pushData;
+  async updateArrayNested() {
+    const { docKey, docValue, updateKey, updateArray } = this.dataObject;
+    const updateData = await db.dbGet().collection(this.collection).updateOne({ [docKey]: docValue }, { $set: { [updateKey]: updateArray } }); //prettier-ignore
+    return updateData;
   }
+
+  // async updateObjNested() {
+  //   const { docKey, docValue, nestedKey, nestedValue, updateObj } = this.dataObject;
+
+  //   //removes nested url from picArray
+  //   const pullData = await db.dbGet().collection(this.collection).updateOne({ [docKey]: docValue }, { $pull: { picArray: { [nestedKey]: nestedValue } } }); //prettier-ignore
+  //   if (!pullData) return null;
+
+  //   //adds new nested obj to picArray
+  //   const pushData = await db.dbGet().collection(this.collection).updateOne({ [docKey]: docValue }, { $push: { picArray: { ...updateObj } } }); //prettier-ignore
+
+  //   return pushData;
+  // }
 
   //--------------
 
