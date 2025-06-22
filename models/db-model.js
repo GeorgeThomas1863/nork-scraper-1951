@@ -67,6 +67,25 @@ class dbModel {
     return updateData;
   }
 
+  async updateObjItem() {
+    const { keyToLookup, itemValue, updateObj } = this.dataObject;
+    const updateData = await db.dbGet().collection(this.collection).updateOne({ [keyToLookup]: itemValue }, { $set: { ...updateObj } }); //prettier-ignore
+    return updateData;
+  }
+
+  async updateObjNested() {
+    const { docKey, docValue, nestedKey, nestedValue, updateObj } = this.dataObject;
+
+    //removes nested url from picArray
+    const pullData = await db.dbGet().collection(this.collection).updateOne({ [docKey]: docValue }, { $pull: { picArray: { [nestedKey]: nestedValue } } }); //prettier-ignore
+    if (!pullData) return null;
+
+    //adds new nested obj to picArray
+    const pushData = await db.dbGet().collection(this.collection).updateOne({ [docKey]: docValue }, { $push: { picArray: { ...updateObj } } }); //prettier-ignore
+
+    return pushData;
+  }
+
   //--------------
 
   //GETS STUFF

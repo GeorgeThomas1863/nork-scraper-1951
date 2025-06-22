@@ -5,6 +5,7 @@ import { scrapeNewURLs } from "./scrape-urls.js";
 import { scrapeNewMedia } from "./scrape-download.js";
 import { uploadNewTG } from "./scrape-upload.js";
 import { runCleanFS } from "./clean-fs.js";
+import { updateMongo } from "./update-db.js";
 // import { startScheduler, stopScheduler } from "./scrape-scheduler.js";
 
 export const scrapeNewKCNA = async () => {
@@ -22,6 +23,9 @@ export const scrapeNewKCNA = async () => {
 
   //upload to TG
   await uploadNewTG();
+
+  //update mongo with ALL relevant data
+  await updateMongo();
 
   //LOG SCRAPE END / show how long it took and write it in readable format
   const endModel = new Log({ scrapeId: scrapeId });

@@ -1,8 +1,8 @@
 import { promises as fs } from "fs";
 import path from "path";
-import dbModel from "../models/db-model.js";
 import { deleteItemsMap } from "../config/map-scrape.js";
 
+import dbModel from "../models/db-model.js";
 import { getItemSizeCheck, getItemSizeFS, getFileArrayFS, getFileArrayDB } from "./scrape-util.js";
 import { reDownloadPics } from "./pics.js";
 import { reDownloadVids } from "./vids.js";
