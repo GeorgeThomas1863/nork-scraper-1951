@@ -21,7 +21,7 @@ import express from "express";
 import cors from "cors";
 
 import routes from "./routes/router.js";
-import * as db from "./data/db.js";
+import * as db from "./config/db.js";
 
 import { scrapeNewKCNA } from "./src/scrape-control.js";
 

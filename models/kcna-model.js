@@ -1,6 +1,6 @@
 import axios from "axios";
 import fs from "fs";
-import CONFIG from "../config/config.js";
+// import CONFIG from "../config/config.js";
 
 import DLHelper from "./download-helper-model.js";
 

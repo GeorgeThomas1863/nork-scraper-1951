@@ -1,5 +1,5 @@
 //import mongo
-import * as db from "../data/db.js";
+import * as db from "../config/db.js";
 
 //connect to db AGAIN here just to be safe
 await db.dbConnect();
