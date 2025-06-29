@@ -5,11 +5,11 @@ import { scrapeCommandMap } from "../config/map-scrape.js";
 export const apiRoute = async (req, res) => {
   const inputParams = req.body;
 
-  console.log("!!!!API ROUTE");
-  console.log(inputParams);
-
   //returns the scrapeState
   const data = await parseAdminCommand(inputParams);
+  console.log("RETURN DATA");
+  console.log(data);
+
   res.json(data);
 
   //RUNS SCRAPE COMMAND
