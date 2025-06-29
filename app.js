@@ -10,8 +10,6 @@
 
 //FIX PIC SET ID SAVE (seems to be failign to store last pic set id)
 
-//FAILING TO COUNT DOWNLOAD AND UPLOAD
-
 //refactor parseAdmin command
 
 //BUILD BACKUP VID DOWNLOAD (normal, 1 at a time)
