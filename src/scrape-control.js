@@ -29,7 +29,7 @@ export const scrapeNewKCNA = async () => {
   await updateMongo();
 
   //LOG SCRAPE END / show how long it took and write it in readable format
-  const endModel = new Log({ scrapeId: scrapeState.scrapeId });
+  const endModel = new Log({ scrapeState: scrapeState });
   await endModel.logStop();
   console.log("#DONE");
 

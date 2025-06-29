@@ -7,26 +7,30 @@ class Log {
   }
 
   async logStart() {
+    const { log } = CONFIG;
     const startScrapeTime = new Date();
     console.log("STARTING NEW KCNA SCRAPE AT " + startScrapeTime);
-    const startModel = new dbModel({ startTime: startScrapeTime }, CONFIG.log);
+    const startModel = new dbModel({ startTime: startScrapeTime }, log);
     const startData = await startModel.storeAny();
-    const startScrapeId = startData.insertedId;
+    const newScrapeId = startData.insertedId;
 
-    return startScrapeId;
+    const returnObj = {
+      scrapeId: newScrapeId,
+      scrapeStartTime: startScrapeTime,
+    };
+
+    return returnObj;
   }
 
   async logStop() {
-    const { scrapeId } = this.dataObject;
+    const { scrapeState } = this.dataObject;
+    const { scrapeId, scrapeStartTime } = scrapeState;
 
     //get end time / start time
     const endTime = new Date();
-    const findModel = new dbModel({ keyToLookup: "_id", itemValue: scrapeId }, CONFIG.log);
-    const findData = await findModel.getUniqueItem();
-    const startTime = findData.startTime;
 
     //calc scrape secs
-    const scrapeSeconds = +((endTime - startTime) / 1000).toFixed(2);
+    const scrapeSeconds = +((endTime - scrapeStartTime) / 1000).toFixed(2);
 
     //build objs
     const timeObj = {

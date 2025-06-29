@@ -5,7 +5,10 @@ export const scrapeState = {
   scrapeActive: false,
   schedulerActive: false,
   textStr: null,
-  runScrape: null,
+  runScrape: false,
+
+  scrapeStartTime: null,
+  scrapeEndTime: null,
 };
 
 export const updateScrapeStateByCommand = async (inputType) => {
