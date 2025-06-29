@@ -1,6 +1,7 @@
 import Log from "../models/log-model.js";
 
-import { continueScrape, setScrapeActive, scrapeId } from "./scrape-util.js";
+// import { continueScrape, setScrapeActive, scrapeId } from "./scrape-util.js";
+import { scrapeState } from "./scrape-state.js";
 import { scrapeNewURLs } from "./scrape-urls.js";
 import { scrapeNewMedia } from "./scrape-download.js";
 import { uploadNewTG } from "./scrape-upload.js";
@@ -10,7 +11,7 @@ import { updateMongo } from "./update-db.js";
 
 export const scrapeNewKCNA = async () => {
   //set scrape active
-  await setScrapeActive(true);
+  scrapeState.scrapeActive = true;
 
   //delete empty / fucked files
   await runCleanFS();
@@ -28,22 +29,22 @@ export const scrapeNewKCNA = async () => {
   await updateMongo();
 
   //LOG SCRAPE END / show how long it took and write it in readable format
-  const endModel = new Log({ scrapeId: scrapeId });
+  const endModel = new Log({ scrapeId: scrapeState.scrapeId });
   await endModel.logStop();
   console.log("#DONE");
 
   //clear scrape active
-  await setScrapeActive(false);
+  scrapeState.scrapeActive = false;
   return true;
 };
 
 export const scrapeAllKCNA = async () => {
-  if (!continueScrape) return null;
+  if (!scrapeState.scrapeActive) return null;
   console.log("BUILD");
 };
 
 export const scrapeUrlKCNA = async (url) => {
-  if (!continueScrape) return null;
+  if (!scrapeState.scrapeActive) return null;
   //figure out type based on html of URL
   console.log("build");
 };

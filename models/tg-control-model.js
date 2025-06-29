@@ -7,7 +7,7 @@ import TgReq from "./tgReq-model.js";
 import dbModel from "./db-model.js";
 
 import { articleTypeTitleMap } from "../config/map-scrape.js";
-import { continueScrape } from "../src/scrape-util.js";
+import { scrapeState } from "../src/scrape-state.js";
 
 class TG {
   static tokenIndex = 0;
@@ -290,7 +290,7 @@ class TG {
     const chunkDataArray = [];
     for (let i = 0; i < totalChunks; i++) {
       //STOP HERE if needed
-      if (!continueScrape) return chunkDataArray;
+      if (!scrapeState.scrapeActive) return chunkDataArray;
 
       //define chunk
       const start = i * chunkSize;
@@ -332,7 +332,8 @@ class TG {
     if (!chunkData || !chunkData.result) return null;
 
     //label the chunk (add caption)
-    const caption = titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + vidId + ".mp4; [" + (chunkNumber + 1) + " of " + totalChunks + "]";
+    const caption =
+      titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + vidId + ".mp4; [" + (chunkNumber + 1) + " of " + totalChunks + "]";
 
     //build edit caption params
     const editParams = {

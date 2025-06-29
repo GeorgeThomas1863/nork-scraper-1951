@@ -2,8 +2,6 @@ import { textStrMap, runScrapeMap, startStopMap } from "../config/map-scrape.js"
 
 export const scrapeState = {
   scrapeId: null,
-  //   stopScrape: false,
-  //   stopScheduler: false,
   scrapeActive: false,
   schedulerActive: false,
   textStr: null,

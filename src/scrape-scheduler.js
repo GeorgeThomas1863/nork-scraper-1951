@@ -1,6 +1,9 @@
 import CONFIG from "../config/config.js";
 import { scrapeNewKCNA } from "./scrape-control.js";
-import { scrapeActive } from "./scrape-util.js";
+// import { scrapeActive } from "./scrape-util.js";
+import { scrapeState } from "./scrape-state.js";
+
+//FIX 
 
 let schedulerInterval = null;
 let isSchedulerActive = false;
@@ -16,7 +19,7 @@ export const startScheduler = async () => {
   // Start the scheduler
   schedulerInterval = setInterval(async () => {
     // Only run if not already scraping
-    if (!scrapeActive) {
+    if (!scrapeState.scrapeActive) {
       try {
         await scrapeNewKCNA();
       } catch (error) {

@@ -2,8 +2,8 @@ import Log from "../models/log-model.js";
 import { textStrMap } from "../config/map-scrape.js";
 import { scrapeState, updateScrapeStateByCommand } from "./scrape-state.js";
 import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA } from "./scrape-control.js";
-import { setContinueScrape } from "./scrape-util.js";
-import { startScheduler, stopScheduler } from "./scrape-scheduler.js";
+// import { setContinueScrape } from "./scrape-util.js";
+// import { startScheduler, stopScheduler } from "./scrape-scheduler.js";
 
 //REFACTOR / break into multiple funcitons
 export const parseAdminCommand = async (inputParams) => {
@@ -21,28 +21,30 @@ export const parseAdminCommand = async (inputParams) => {
   //
 
   //if already scraping
-  if (scrapeActive) {
-    returnObj.textStr = "ALREADY SCRAPING FAGGOT";
-    returnObj.scrapeId = scrapeId;
-    returnObj.runScrape = null;
+  // if (scrapeActive) {
+  //   returnObj.textStr = "ALREADY SCRAPING FAGGOT";
+  //   returnObj.scrapeId = scrapeId;
+  //   returnObj.runScrape = null;
 
-    console.log(returnObj.textStr);
-    return returnObj;
-  }
+  //   console.log(returnObj.textStr);
+  //   return returnObj;
+  // }
 
-  await setContinueScrape(true);
+  // await setContinueScrape(true);
 
-  //otherwise SET scrape ID here
-  const newScrapeModel = new Log();
-  const newScrapeId = await newScrapeModel.logStart();
-  await setScrapeId(newScrapeId);
+  // //otherwise SET scrape ID here
+  // const newScrapeModel = new Log();
+  // const newScrapeId = await newScrapeModel.logStart();
+  // await setScrapeId(newScrapeId);
 
-  //TELLS ROUTER TO RUN SCRAPE COMMAND
-  returnObj.textStr = "SCRAPE STARTED!";
-  returnObj.scrapeId = newScrapeId;
-  returnObj.runScrape = true;
+  // //TELLS ROUTER TO RUN SCRAPE COMMAND
+  // returnObj.textStr = "SCRAPE STARTED!";
+  // returnObj.scrapeId = newScrapeId;
+  // returnObj.runScrape = true;
 
-  return returnObj;
+  // return returnObj;
+
+  //-----------------------
 
   // const returnObj = {};
   // switch (commandType) {

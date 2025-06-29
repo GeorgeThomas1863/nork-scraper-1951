@@ -4,8 +4,9 @@ import Pic from "../models/pic-model.js";
 import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
 
-import { continueScrape, getDataFromPath } from "./scrape-util.js";
+import { getDataFromPath } from "./scrape-util.js";
 import { deleteItemsMap } from "../config/map-scrape.js";
+import { scrapeState } from "./scrape-state.js";
 
 //FIND PICS / GET PICURLS SECTION
 
@@ -13,7 +14,7 @@ import { deleteItemsMap } from "../config/map-scrape.js";
 export const buildPicSetList = async (inputHTML) => {
   try {
     //stop if needed
-    if (!continueScrape) return null;
+    if (!scrapeState.scrapeActive) return null;
 
     const picSetModel = new Pic({ html: inputHTML });
     const picSetListArray = await picSetModel.getPicSetListArray();
@@ -43,7 +44,7 @@ export const buildPicSetContent = async (inputArray) => {
   const picSetArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     //stop if needed
-    if (!continueScrape) return picSetArray;
+    if (!scrapeState.scrapeActive) return picSetArray;
     try {
       const picSetModel = new Pic({ inputObj: inputArray[i] });
       const picSetObj = await picSetModel.getPicSetObj();
@@ -64,7 +65,7 @@ export const buildPicSetContent = async (inputArray) => {
 export const buildPicData = async (inputArray) => {
   const picDataArray = [];
   for (let i = 0; i < inputArray.length; i++) {
-    if (!continueScrape) return picDataArray;
+    if (!scrapeState.scrapeActive) return picDataArray;
 
     try {
       const picDataModel = new Pic({ inputObj: inputArray[i] });
@@ -91,7 +92,7 @@ export const downloadPicSetArray = async (inputArray) => {
   const downloadPicDataArray = [];
   for (let i = 0; i < sortArray.length; i++) {
     //stop if needed
-    if (!continueScrape) return downloadPicDataArray;
+    if (!scrapeState.scrapeActive) return downloadPicDataArray;
     try {
       //add save path to picObj
       const picObj = sortArray[i];
@@ -124,7 +125,7 @@ export const uploadPicSetArrayTG = async (inputArray) => {
   const uploadDataArray = [];
   for (let i = 0; i < sortArray.length; i++) {
     //stop if needed
-    if (!continueScrape) return uploadDataArray;
+    if (!scrapeState.scrapeActive) return uploadDataArray;
     try {
       const inputObj = sortArray[i];
       const uploadModel = new Pic({ inputObj: inputObj });

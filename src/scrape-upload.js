@@ -1,12 +1,13 @@
 import CONFIG from "../config/config.js";
 import dbModel from "../models/db-model.js";
 
-import { continueScrape } from "./scrape-util.js";
+// import { continueScrape } from "./scrape-util.js";
+import { scrapeState } from "./scrape-state.js";
 import { newUploadMap } from "../config/map-scrape.js";
 // import { logData } from "./scrape-log.js";
 
 export const uploadNewTG = async () => {
-  if (!continueScrape) return null;
+  if (!scrapeState.scrapeActive) return null;
   await uploadMediaArrayTG();
   // await logData(uploadMediaData, scrapeId, "uploadMedia");
 
@@ -18,7 +19,7 @@ export const uploadMediaArrayTG = async () => {
 
   // const uploadDataArray = [];
   for (let i = 0; i < typeArr.length; i++) {
-    if (!continueScrape) return null;
+    if (!scrapeState.scrapeActive) return null;
     const type = typeArr[i];
     await uploadByTypeTG(type);
     // const uploadMediaData = await uploadByTypeTG(type);

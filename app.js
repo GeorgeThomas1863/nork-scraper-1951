@@ -23,7 +23,7 @@ import cors from "cors";
 import routes from "./routes/router.js";
 import * as db from "./config/db.js";
 
-import { scrapeNewKCNA } from "./src/scrape-control.js";
+// import { scrapeNewKCNA } from "./src/scrape-control.js";
 
 //FIRST CONNECT TO DB
 // (need this HERE bc main function will execute before express and fuck everything)

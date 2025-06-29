@@ -4,7 +4,7 @@ import Article from "../models/article-model.js";
 import UTIL from "../models/util-model.js";
 import dbModel from "../models/db-model.js";
 
-import { continueScrape } from "./scrape-util.js";
+import { scrapeState } from "./scrape-state.js";
 
 //ARTICLE LIST SECTION
 
@@ -15,7 +15,7 @@ export const buildArticleListByType = async (inputHTML) => {
   for (let i = 0; i < articleTypeArr.length; i++) {
     try {
       //stop if needed
-      if (!continueScrape) return articleListTypeArray;
+      if (!scrapeState.scrapeActive) return articleListTypeArray;
 
       const articleType = articleTypeArr[i];
       const articleListTypeModel = new Article({ type: articleType, html: inputHTML });
@@ -75,7 +75,7 @@ export const buildArticleContent = async (inputArray) => {
   const articleObjArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     //stop if needed
-    if (!continueScrape) return articleObjArray;
+    if (!scrapeState.scrapeActive) return articleObjArray;
     try {
       const articleObjModel = new Article({ inputObj: inputArray[i] });
       const articleObj = await articleObjModel.getArticleObj();
@@ -102,7 +102,7 @@ export const uploadArticleArrayTG = async (inputArray) => {
   const uploadDataArray = [];
   for (let i = 0; i < sortArray.length; i++) {
     //stop if needed
-    if (!continueScrape) return uploadDataArray;
+    if (!scrapeState.scrapeActive) return uploadDataArray;
     try {
       const inputObj = sortArray[i];
       const uploadModel = new Article({ inputObj: inputObj });

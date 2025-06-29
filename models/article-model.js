@@ -8,7 +8,7 @@ import Pic from "./pic-model.js";
 import UTIL from "./util-model.js";
 
 import { articleTypeListMap } from "../config/map-scrape.js";
-import { scrapeId } from "../src/scrape-util.js";
+import { scrapeState } from "../src/scrape-state.js";
 
 /**
  * @class Article
@@ -88,7 +88,7 @@ class Article {
 
         //ADD ARTICLE TYPE HERE AND SCRAPE ID HERE
         articleListObj.articleType = type;
-        articleListObj.scrapeId = scrapeId;
+        articleListObj.scrapeId = scrapeState.scrapeId;
 
         articleListArray.push(articleListObj); //add to array
       } catch (e) {
@@ -171,7 +171,7 @@ class Article {
     const articleObj = { ...inputObj, ...parseObj };
 
     //add scrapeId here
-    articleObj.scrapeId = scrapeId;
+    articleObj.scrapeId = scrapeState.scrapeId;
 
     const storeModel = new dbModel(articleObj, CONFIG.articles);
     const storeData = await storeModel.storeUniqueURL();
@@ -292,7 +292,7 @@ class Article {
         picArray.push(articlePicURL);
 
         //store url to picDB (so dont have to do again)
-        const picDataModel = new dbModel({ url: articlePicURL, scrapeId: scrapeId, date: date }, CONFIG.picURLs);
+        const picDataModel = new dbModel({ url: articlePicURL, scrapeId: scrapeState.scrapeId, date: date }, CONFIG.picURLs);
         await picDataModel.storeUniqueURL();
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
@@ -334,7 +334,7 @@ class Article {
 
     //add channel to post to / SRAPE ID  HERE
     articleObj.tgUploadId = CONFIG.tgUploadId;
-    articleObj.scrapeId = scrapeId;
+    articleObj.scrapeId = scrapeState.scrapeId;
 
     //post title
     const titleModel = new TG({ inputObj: articleObj });

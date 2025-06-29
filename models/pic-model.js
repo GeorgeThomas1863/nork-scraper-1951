@@ -7,7 +7,7 @@ import TG from "./tg-control-model.js";
 import dbModel from "./db-model.js";
 import UTIL from "./util-model.js";
 
-import { continueScrape, scrapeId } from "../src/scrape-util.js";
+import { scrapeState } from "../src/scrape-state.js";
 
 class Pic {
   constructor(dataObject) {
@@ -94,7 +94,7 @@ class Pic {
       url: picSetURL,
       title: title,
       date: picSetDate,
-      scrapeId: scrapeId,
+      scrapeId: scrapeState.scrapeId,
     };
 
     return picSetListObj;
@@ -131,7 +131,7 @@ class Pic {
     //add to obj / ADD SCRAPE ID HERE
     const picSetObj = { ...inputObj };
     picSetObj.picArray = picSetArray;
-    picSetObj.scrapeId = scrapeId;
+    picSetObj.scrapeId = scrapeState.scrapeId;
 
     //store it
     const storePicSetModel = new dbModel(picSetObj, CONFIG.picSetContent);
@@ -166,7 +166,7 @@ class Pic {
         picSetArray.push(picURL);
 
         //store url to picDB (so dont have to do again)
-        const picDataModel = new dbModel({ url: picURL, scrapeId: scrapeId, date: date }, CONFIG.picURLs);
+        const picDataModel = new dbModel({ url: picURL, scrapeId: scrapeState.scrapeId, date: date }, CONFIG.picURLs);
         await picDataModel.storeUniqueURL();
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
@@ -213,7 +213,7 @@ class Pic {
     headerObj.headerData = headerData;
 
     //add scrape id here
-    headerObj.scrapeId = scrapeId;
+    headerObj.scrapeId = scrapeState.scrapeId;
 
     //get pic ID
     const picIdModel = new UTIL({ type: "pics" });
@@ -249,7 +249,7 @@ class Pic {
     const downloadPicObj = { ...picObj, ...returnObj };
 
     //add scrape id
-    downloadPicObj.scrapeId = scrapeId;
+    downloadPicObj.scrapeId = scrapeState.scrapeId;
 
     //store it
     const storeModel = new dbModel(downloadPicObj, CONFIG.picsDownloaded);
@@ -263,7 +263,7 @@ class Pic {
   //UPLOAD PIC SET SECTION
   async postPicSetObjTG() {
     const { inputObj } = this.dataObject;
-    if (!continueScrape) return null;
+    if (!scrapeState.scrapeActive) return null;
 
     if (!inputObj) {
       const error = new Error("PIC SET UPLOAD OBJ FUCKED");
@@ -278,7 +278,7 @@ class Pic {
 
     //add channel to post to AND scrape ID here
     picSetObj.tgUploadId = CONFIG.tgUploadId;
-    picSetObj.scrapeId = scrapeId;
+    picSetObj.scrapeId = scrapeState.scrapeId;
 
     //post title
     const titleModel = new TG({ inputObj: picSetObj });
@@ -307,7 +307,7 @@ class Pic {
     for (let i = 0; i < picArray.length; i++) {
       try {
         //stop here if needed
-        if (!continueScrape) return postPicDataArray;
+        if (!scrapeState.scrapeActive) return postPicDataArray;
 
         //get full picObj
         const picURL = picArray[i];

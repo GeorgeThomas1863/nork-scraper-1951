@@ -4,7 +4,8 @@ import Vid from "../models/vid-model.js";
 import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
 
-import { continueScrape, getDataFromPath } from "./scrape-util.js";
+import { getDataFromPath } from "./scrape-util.js";
+import { scrapeState } from "./scrape-state.js";
 import { deleteItemsMap } from "../config/map-scrape.js";
 
 //FIND VID PAGES / GET VID URLs SECTION
@@ -12,7 +13,7 @@ import { deleteItemsMap } from "../config/map-scrape.js";
 export const buildVidList = async (inputHTML) => {
   try {
     //stop if needed
-    if (!continueScrape) return null;
+    if (!scrapeState.scrapeActive) return null;
 
     // Parse the HTML using JSDOM
     const vidListModel = new Vid({ html: inputHTML });
@@ -45,7 +46,7 @@ export const buildVidPageContent = async (inputArray) => {
   const vidPageArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     //stop if needed
-    if (!continueScrape) return vidPageArray;
+    if (!scrapeState.scrapeActive) return vidPageArray;
 
     try {
       const vidPageModel = new Vid({ inputObj: inputArray[i] });
@@ -69,7 +70,7 @@ export const buildVidData = async (inputArray) => {
   const vidDataArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     //stop if needed
-    if (!continueScrape) return vidDataArray;
+    if (!scrapeState.scrapeActive) return vidDataArray;
 
     try {
       const vidModel = new Vid({ inputObj: inputArray[i] });
@@ -97,7 +98,7 @@ export const downloadVidPageArray = async (inputArray) => {
   // for (let i = 0; i < 1; i++) { //download 1 for TESTING
   for (let i = 0; i < sortArray.length; i++) {
     //stop if needed
-    if (!continueScrape) return downloadVidDataArray;
+    if (!scrapeState.scrapeActive) return downloadVidDataArray;
 
     try {
       //add save path to picObj
@@ -139,7 +140,7 @@ export const uploadVidPageArrayTG = async (inputArray) => {
   const uploadDataArray = [];
   for (let i = 0; i < sortArray.length; i++) {
     //stop if needed
-    if (!continueScrape) return uploadDataArray;
+    if (!scrapeState.scrapeActive) return uploadDataArray;
     try {
       const inputObj = sortArray[i];
       const uploadModel = new Vid({ inputObj: inputObj });

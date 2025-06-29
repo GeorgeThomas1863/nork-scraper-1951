@@ -2,20 +2,22 @@ import CONFIG from "../config/config.js";
 import KCNA from "../models/kcna-model.js";
 import dbModel from "../models/db-model.js";
 
-import { continueScrape } from "./scrape-util.js";
+// import { continueScrape } from "./scrape-util.js";
+import { scrapeState } from "./scrape-state.js";
 import { newListMap, newContentMap } from "../config/map-scrape.js";
 // import { logData } from "./scrape-log.js";
 
 export const scrapeNewURLs = async () => {
-  if (!continueScrape) return null;
+  const { scrapeActive } = scrapeState;
+  if (!scrapeActive) return null;
 
   //get list array data
   await getNewListArray();
-  if (!continueScrape) return null;
+  if (!scrapeActive) return null;
 
   //get content array data
   await getNewContentArray();
-  if (!continueScrape) return null;
+  if (!scrapeActive) return null;
 
   return true;
 };
@@ -27,7 +29,7 @@ export const getNewListArray = async () => {
     //try in case url connection fails
     try {
       //stop if needed
-      if (!continueScrape) return null;
+      if (!scrapeState.scrapeActive) return null;
       const type = typeArr[i];
       //could add return to an array but dont care
       await getNewListData(type);
@@ -66,7 +68,7 @@ export const getNewContentArray = async () => {
   for (let i = 0; i < typeArr.length; i++) {
     try {
       //stop if needed
-      if (!continueScrape) return null;
+      if (!scrapeState.scrapeActive) return null;
       const type = typeArr[i];
       //could add return to an array but dont care
       await getNewContentData(type);

@@ -8,7 +8,7 @@ import Pic from "./pic-model.js";
 import dbModel from "./db-model.js";
 import UTIL from "./util-model.js";
 
-import { scrapeId } from "../src/scrape-util.js";
+import { scrapeState } from "../src/scrape-state.js";
 
 class Vid {
   constructor(dataObject) {
@@ -101,7 +101,7 @@ class Vid {
       thumbnail: thumbnailURL,
       date: vidDate,
       title: title,
-      scrapeId: scrapeId,
+      scrapeId: scrapeState.scrapeId,
     };
 
     return vidListObj;
@@ -119,7 +119,7 @@ class Vid {
 
     //store it in picURLs
     try {
-      const picModel = new dbModel({ url: thumbnailURL, scrapeId: scrapeId, date: date }, CONFIG.picURLs);
+      const picModel = new dbModel({ url: thumbnailURL, scrapeId: scrapeState.scrapeId, date: date }, CONFIG.picURLs);
       const storeData = await picModel.storeUniqueURL();
       console.log(storeData);
     } catch (e) {
@@ -155,7 +155,7 @@ class Vid {
     //add to obj
     const vidPageObj = { ...inputObj };
     vidPageObj.vidURL = vidURL;
-    vidPageObj.scrapeId = scrapeId;
+    vidPageObj.scrapeId = scrapeState.scrapeId;
 
     //store obj
     const storeModel = new dbModel(vidPageObj, CONFIG.vidPageContent);
@@ -197,7 +197,7 @@ class Vid {
 
     //store it in vidURLs
     try {
-      const storeModel = new dbModel({ url: vidURL, scrapeId: scrapeId, date: date }, CONFIG.vidURLs);
+      const storeModel = new dbModel({ url: vidURL, scrapeId: scrapeState.scrapeId, date: date }, CONFIG.vidURLs);
       const storeData = await storeModel.storeUniqueURL();
       console.log(storeData);
     } catch (e) {
@@ -255,7 +255,7 @@ class Vid {
     const vidIdModel = new UTIL({ type: "vids" });
     const vidId = await vidIdModel.getNextId();
     headerObj.vidId = vidId;
-    headerObj.scrapeId = scrapeId;
+    headerObj.scrapeId = scrapeState.scrapeId;
 
     //add vid temp path
     const vidTempPath = tempPath + vidId + ".mp4";
@@ -351,7 +351,7 @@ class Vid {
 
     //add channel to post to HERE
     inputObj.tgUploadId = CONFIG.tgUploadId;
-    inputObj.scrapeId = scrapeId;
+    inputObj.scrapeId = scrapeState.scrapeId;
 
     //normalizes obj
     const normalModel = new UTIL({ inputObj: inputObj });
@@ -418,7 +418,7 @@ class Vid {
           url: thumbnail,
           kcnaId: kcnaId,
           savePath: thumbnailObj.savePath,
-          scrapeId: scrapeId,
+          scrapeId: scrapeState.scrapeId,
         };
         const picModel = new Pic({ picObj: picParams });
         await picModel.downloadPicFS();
