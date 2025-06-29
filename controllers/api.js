@@ -14,12 +14,12 @@ export const apiRoute = async (req, res) => {
 
   //RUNS SCRAPE COMMAND
   if (data && data.runScrape) {
+    const { howMuch } = inputParams;
     console.log("AHHHHHHHHHHHHHHHHHHHH");
     console.log(data);
     console.log(inputParams);
 
-    const { commandType } = inputParams;
-    const scrapeCommand = scrapeCommandMap[commandType];
+    const scrapeCommand = scrapeCommandMap[howMuch];
     console.log("SCRAPE COMMAND");
     console.log(scrapeCommand);
 
