@@ -15,14 +15,8 @@ export const apiRoute = async (req, res) => {
   //RUNS SCRAPE COMMAND
   if (data && data.runScrape) {
     const { howMuch } = inputParams;
-    console.log("AHHHHHHHHHHHHHHHHHHHH");
-    console.log(data);
-    console.log(inputParams);
 
     const scrapeCommand = scrapeCommandMap[howMuch];
-    console.log("SCRAPE COMMAND");
-    console.log(scrapeCommand);
-
     if (!scrapeCommand) return null;
 
     //param only needed for scrapeUrlKCNA (js ignores unneeded param automatically)
