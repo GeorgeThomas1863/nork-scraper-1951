@@ -20,6 +20,9 @@ export const apiRoute = async (req, res) => {
 
     const { commandType } = inputParams;
     const scrapeCommand = scrapeCommandMap[commandType];
+    console.log("SCRAPE COMMAND");
+    console.log(scrapeCommand);
+
     if (!scrapeCommand) return null;
 
     //param only needed for scrapeUrlKCNA (js ignores unneeded param automatically)
