@@ -8,15 +8,15 @@ class Log {
 
   async logStart() {
     const { log } = CONFIG;
-    const startScrapeTime = new Date();
-    console.log("STARTING NEW KCNA SCRAPE AT " + startScrapeTime);
-    const startModel = new dbModel({ startTime: startScrapeTime }, log);
+    const scrapeStartTime = new Date();
+    console.log("STARTING NEW KCNA SCRAPE AT " + scrapeStartTime);
+    const startModel = new dbModel({ startTime: scrapeStartTime }, log);
     const startData = await startModel.storeAny();
-    const newScrapeId = startData.insertedId;
+    const scrapeId = startData.insertedId;
 
     const returnObj = {
-      scrapeId: newScrapeId,
-      scrapeStartTime: startScrapeTime,
+      scrapeId: scrapeId,
+      scrapeStartTime: scrapeStartTime,
     };
 
     return returnObj;
