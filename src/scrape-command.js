@@ -32,6 +32,9 @@ export const parseAdminCommand = async (inputParams) => {
     return scrapeState;
   }
 
+  console.log("NEW SCRAPE OBJ");
+  console.log(newScrapeObj);
+
   const { scrapeId, scrapeStartTime } = newScrapeObj;
 
   scrapeState.scrapeId = scrapeId;
