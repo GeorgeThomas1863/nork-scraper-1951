@@ -21,8 +21,8 @@ export const parseAdminCommand = async (inputParams) => {
   //update scrape state
   await updateScrapeStateByCommand(commandType);
 
-  console.log("SCRAPE STATE");
-  console.log(scrapeState);
+  console.log("RUN SCRAPE");
+  console.log(runScrape);
 
   //if not scraping return here
   if (!runScrape) return scrapeState;
