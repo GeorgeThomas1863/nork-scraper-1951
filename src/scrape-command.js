@@ -9,7 +9,6 @@ import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA } from "./scrape-control.js
 export const parseAdminCommand = async (inputParams) => {
   const { commandType } = inputParams;
   if (!commandType) return null;
-  const { runScrape } = scrapeState;
 
   // console.log("SCRAPE INPUT PARAMS");
   // console.log(inputParams);
@@ -21,11 +20,11 @@ export const parseAdminCommand = async (inputParams) => {
   //update scrape state
   await updateScrapeStateByCommand(commandType);
 
-  console.log("RUN SCRAPE");
-  console.log(runScrape);
+  // console.log("RUN SCRAPE");
+  // console.log(runScrape);
 
-  //if not scraping return here
-  if (!runScrape) return scrapeState;
+  //if not scraping return here [DONT DESTRUCTURE BC RUNSCRAPE CHANGES]
+  if (!scrapeState.runScrape) return scrapeState;
 
   //otherwise SET scrape ID here
   const newScrapeModel = new Log();
