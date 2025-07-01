@@ -14,6 +14,9 @@ export const scrapeState = {
 export const updateScrapeStateByCommand = async (inputType) => {
   if (!inputType) return null;
 
+  console.log("UPDATE SCRAPE STATE BY COMMAND");
+  console.log(inputType);
+
   //set the textStr
   scrapeState.textStr = textStrMap[inputType];
   scrapeState.runScrape = runScrapeMap[inputType];
