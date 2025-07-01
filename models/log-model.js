@@ -7,6 +7,7 @@ class Log {
   }
 
   async logStart() {
+    console.log("AHHHHHHHHHHHHHHHHHH")
     const { log } = CONFIG;
     const scrapeStartTime = new Date();
     console.log("STARTING NEW KCNA SCRAPE AT " + scrapeStartTime);
