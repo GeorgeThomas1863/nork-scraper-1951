@@ -27,9 +27,15 @@ export const parseAdminCommand = async (inputParams) => {
   //otherwise SET scrape ID here
   const newScrapeModel = new Log();
   const newScrapeObj = await newScrapeModel.logStart();
+  if (!newScrapeObj || !newScrapeObj.scrapeId || !newScrapeObj.scrapeStartTime) {
+    scrapeState.textStr = "ERROR STARTING SCRAPE (defining scrapeId)";
+    return scrapeState;
+  }
 
-  scrapeState.scrapeId = newScrapeObj?.scrapeId || null;
-  scrapeState.scrapeStartTime = newScrapeObj?.scrapeStartTime || null;
+  const { scrapeId, scrapeStartTime } = newScrapeObj;
+
+  scrapeState.scrapeId = scrapeId;
+  scrapeState.scrapeStartTime = scrapeStartTime;
 
   return scrapeState;
 };
