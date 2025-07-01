@@ -21,8 +21,8 @@ export const parseAdminCommand = async (inputParams) => {
   //update scrape state
   await updateScrapeStateByCommand(commandType);
 
-  console.log("SCRAPE STATE");
-  console.log(scrapeState);
+  // console.log("SCRAPE STATE");
+  // console.log(scrapeState);
 
   //if not scraping return here
   if (!runScrape) return scrapeState;
@@ -30,6 +30,9 @@ export const parseAdminCommand = async (inputParams) => {
   //otherwise SET scrape ID here
   const newScrapeModel = new Log();
   const newScrapeObj = await newScrapeModel.logStart();
+  console.log("NEW SCRAPE OBJ");
+  console.log(newScrapeObj);
+
   if (!newScrapeObj || !newScrapeObj.scrapeId || !newScrapeObj.scrapeStartTime) {
     scrapeState.textStr = "ERROR STARTING SCRAPE (defining scrapeId)";
     return scrapeState;
