@@ -1,19 +1,17 @@
 import { parseAdminCommand } from "../src/scrape-command.js";
 import { scrapeCommandMap } from "../config/map-scrape.js";
+import { scrapeState } from "../src/scrape-state.js";
 
 //moved everything to src
 export const apiRoute = async (req, res) => {
   const inputParams = req.body;
 
-  //returns the scrapeState
-  const data = await parseAdminCommand(inputParams);
-  console.log("RETURN DATA");
-  console.log(data);
-
-  res.json(data);
+  //updates the scrapeState on parse
+  await parseAdminCommand(inputParams);
+  res.json(scrapeState);
 
   //RUNS SCRAPE COMMAND
-  if (data && data.runScrape) {
+  if (scrapeState && scrapeState.runScrape) {
     const { howMuch } = inputParams;
 
     const scrapeCommand = scrapeCommandMap[howMuch];
