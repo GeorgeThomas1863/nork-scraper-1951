@@ -43,8 +43,8 @@ export const apiStreamRoute = async (req, res) => {
   console.log("SCRAPE STATE");
   console.log(scrapeState);
 
-  // Send multiple messages [format required for "server-sent events"]
-  res.write(`data: ${JSON.stringify(scrapeState)}\n\n`);
+  // Send multiple messages
+  res.write(scrapeState);
 
   //RUNS SCRAPE COMMAND
   if (scrapeState && scrapeState.runScrape) {
@@ -55,7 +55,7 @@ export const apiStreamRoute = async (req, res) => {
 
     // Send updates every minute
     const progressInterval = setInterval(() => {
-      res.write(`data: ${JSON.stringify(scrapeState)}\n\n`);
+      res.write(scrapeState);
     }, 60 * 1000);
 
     //param only needed for scrapeUrlKCNA (js ignores unneeded param automatically)
@@ -64,7 +64,7 @@ export const apiStreamRoute = async (req, res) => {
     // Clean up and send final response
     clearInterval(progressInterval);
   }
-  res.write(`data: ${JSON.stringify(scrapeState)}\n\n`);
+  res.write(scrapeState);
 
   res.end();
   return true;
