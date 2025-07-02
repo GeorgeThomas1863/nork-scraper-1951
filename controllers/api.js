@@ -3,7 +3,7 @@ import { scrapeCommandMap } from "../config/map-scrape.js";
 import { scrapeState } from "../src/scrape-state.js";
 
 //moved everything to src
-export const apiRoute = async (req, res) => {
+export const apiStart = async (req, res) => {
   const inputParams = req.body;
 
   //updates the scrapeState on parse
@@ -22,4 +22,8 @@ export const apiRoute = async (req, res) => {
   }
 
   return true;
+};
+
+export const apiUpdate = async (req, res) => {
+//BUILD
 };
