@@ -8,8 +8,12 @@ import { scrapeState } from "./scrape-state.js";
 let schedulerInterval = null;
 
 export const startScheduler = async () => {
-  const { scrapeDelay } = CONFIG;
+  const { scrapeInterval } = CONFIG;
   const { schedulerActive, scrapeActive } = scrapeState;
+
+  console.log("FUCK YOU!!!!!!!!")
+  console.log("SCRAPE STATE")
+  console.log(scrapeState)
 
   // If scheduler is already running, stop it first
   if (schedulerActive) {
@@ -30,7 +34,7 @@ export const startScheduler = async () => {
         console.error("Scheduled scrape failed:", error);
       }
     }
-  }, scrapeDelay);
+  }, scrapeInterval);
 
   scrapeState.schedulerActive = true;
   return true;
