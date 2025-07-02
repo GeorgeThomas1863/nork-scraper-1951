@@ -25,5 +25,8 @@ export const apiStart = async (req, res) => {
 };
 
 export const apiUpdate = async (req, res) => {
-//BUILD
+  console.log("AHHHHHHHHHHHHHHHHHHHHH");
+  console.log(req.body);
+
+  //BUILD
 };
