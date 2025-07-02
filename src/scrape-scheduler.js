@@ -11,9 +11,9 @@ export const startScheduler = async () => {
   const { scrapeInterval } = CONFIG;
   const { schedulerActive, scrapeActive } = scrapeState;
 
-  console.log("FUCK YOU!!!!!!!!")
-  console.log("SCRAPE STATE")
-  console.log(scrapeState)
+  console.log("FUCK YOU!!!!!!!!");
+  console.log("SCRAPE STATE");
+  console.log(scrapeState);
 
   // If scheduler is already running, stop it first
   if (schedulerActive) {
@@ -37,6 +37,10 @@ export const startScheduler = async () => {
   }, scrapeInterval);
 
   scrapeState.schedulerActive = true;
+
+  console.log("SCRAPE STATE AFTER STARTING");
+  console.log(scrapeState);
+
   return true;
 };
 
