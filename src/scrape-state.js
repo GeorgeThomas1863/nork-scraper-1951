@@ -22,7 +22,7 @@ export const updateScrapeStateByCommand = async (inputType) => {
   scrapeState.runScrape = runScrapeMap[inputType];
   startStopMap[inputType]?.();
 
-  //set scrapeId if null
+  //set scrapeId if its null
   if (!scrapeId) {
     const params = {
       keyToLookup: "startTime",
@@ -31,13 +31,8 @@ export const updateScrapeStateByCommand = async (inputType) => {
 
     const logModel = new dbModel(params, log);
     const logArray = await logModel.getLastItemsArray();
-    console.log("!!!!!!!logArray");
-    console.log(logArray);
 
     const scrapeIdLog = logArray[0]._id.toString();
-
-    console.log("****scrapeIdLog");
-    console.log(scrapeIdLog);
 
     scrapeState.scrapeId = scrapeIdLog;
   }
