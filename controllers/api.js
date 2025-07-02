@@ -8,8 +8,6 @@ export const apiRoute = async (req, res) => {
 
   //updates the scrapeState on parse
   await parseAdminCommand(inputParams);
-  console.log("SCRAPE STATE");
-  console.log(scrapeState);
   res.json(scrapeState);
 
   //RUNS SCRAPE COMMAND
