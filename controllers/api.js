@@ -12,18 +12,18 @@ export const apiSingleRoute = async (req, res) => {
   console.log(scrapeState);
   res.json(scrapeState);
 
-  //RUNS SCRAPE COMMAND
-  if (scrapeState && scrapeState.runScrape) {
-    const { howMuch } = inputParams;
+  // //RUNS SCRAPE COMMAND
+  // if (scrapeState && scrapeState.runScrape) {
+  //   const { howMuch } = inputParams;
 
-    const scrapeCommand = scrapeCommandMap[howMuch];
-    if (!scrapeCommand) return null;
+  //   const scrapeCommand = scrapeCommandMap[howMuch];
+  //   if (!scrapeCommand) return null;
 
-    //param only needed for scrapeUrlKCNA (js ignores unneeded param automatically)
-    await scrapeCommand(inputParams);
-  }
+  //   //param only needed for scrapeUrlKCNA (js ignores unneeded param automatically)
+  //   await scrapeCommand(inputParams);
+  // }
 
-  return true;
+  // return true;
 };
 
 //STREAMING ROUTE TEST
@@ -32,7 +32,7 @@ export const apiStreamRoute = async (req, res) => {
 
   console.log("AHHHHHHHHHHHHHHHHHHHHHH");
 
-  await parseAdminCommand(inputParams);
+  // await parseAdminCommand(inputParams);
 
   res.writeHead(200, {
     "Content-Type": "text/event-stream",
