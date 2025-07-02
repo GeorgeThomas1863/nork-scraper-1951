@@ -40,11 +40,8 @@ export const apiStreamRoute = async (req, res) => {
     Connection: "keep-alive",
   });
 
-  console.log("SCRAPE STATE");
-  console.log(scrapeState);
-
   // Send multiple messages
-  res.write(scrapeState);
+  res.write(JSON.stringify(scrapeState));
 
   //RUNS SCRAPE COMMAND
   if (scrapeState && scrapeState.runScrape) {
@@ -55,7 +52,7 @@ export const apiStreamRoute = async (req, res) => {
 
     // Send updates every minute
     const progressInterval = setInterval(() => {
-      res.write(scrapeState);
+      res.write(JSON.stringify(scrapeState));
     }, 60 * 1000);
 
     //param only needed for scrapeUrlKCNA (js ignores unneeded param automatically)
@@ -64,7 +61,7 @@ export const apiStreamRoute = async (req, res) => {
     // Clean up and send final response
     clearInterval(progressInterval);
   }
-  res.write(scrapeState);
+  res.write(JSON.stringify(scrapeState));
 
   res.end();
   return true;
