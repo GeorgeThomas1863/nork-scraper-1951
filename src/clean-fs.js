@@ -6,13 +6,17 @@ import dbModel from "../models/db-model.js";
 import { getItemSizeCheck, getItemSizeFS, getFileArrayFS, getFileArrayDB } from "./scrape-util.js";
 import { reDownloadPics } from "./pics.js";
 import { reDownloadVids } from "./vids.js";
+import { scrapeState } from "./scrape-state.js";
 
 export const runCleanFS = async () => {
   //delete EMPTY FILES
+  if (!scrapeState.scrapeActive) return true;
+
   const deleteEmptyArray = await deleteEmptyFilesFS();
   console.log("DELETE EMPTY DATA");
   console.log(deleteEmptyArray);
 
+  if (!scrapeState.scrapeActive) return true;
   const reDownloadData = await reDownloadMedia();
   console.log("RE DOWNLOAD DATA");
   console.log(reDownloadData);
@@ -31,6 +35,7 @@ export const deleteEmptyFilesFS = async () => {
   const emptyFilesArray = [];
   for (let i = 0; i < typeArr.length; i++) {
     try {
+      if (!scrapeState.scrapeActive) return true;
       //get file Array
       const type = typeArr[i];
       const { basePath } = await deleteItemsMap(type);
@@ -58,6 +63,7 @@ export const deleteArrayFS = async (inputArray, type) => {
   const deleteDataArray = [];
   for (let i = 0; i < inputArray.length; i++) {
     try {
+      if (!scrapeState.scrapeActive) return true;
       const filePath = path.join(basePath, inputArray[i]);
       const deleteDataObj = await deleteItemFS(filePath, type);
 
@@ -130,26 +136,32 @@ export const reDownloadMedia = async () => {
 
   const redownloadDataArray = [];
   for (let i = 0; i < typeArr.length; i++) {
-    //get file Array
-    const type = typeArr[i];
-    console.log("TYPE");
-    console.log(type);
+    try {
+      if (!scrapeState.scrapeActive) return true;
+      //get file Array
+      const type = typeArr[i];
+      console.log("TYPE");
+      console.log(type);
 
-    const fileArrayFS = await getFileArrayFS(type);
-    const fileArrayDB = await getFileArrayDB(type);
+      const fileArrayFS = await getFileArrayFS(type);
+      const fileArrayDB = await getFileArrayDB(type);
 
-    const redownloadArray = await getRedownloadArray(fileArrayFS, fileArrayDB);
-    if (!redownloadArray || !redownloadArray.length) continue;
+      const redownloadArray = await getRedownloadArray(fileArrayFS, fileArrayDB);
+      if (!redownloadArray || !redownloadArray.length) continue;
 
-    const redownloadData = await reDownloadByType(redownloadArray, type);
-    const redownloadDataObj = {
-      type: type,
-      redownloadArray: redownloadArray,
-      redownloadData: redownloadData,
-    };
+      const redownloadData = await reDownloadByType(redownloadArray, type);
+      const redownloadDataObj = {
+        type: type,
+        redownloadArray: redownloadArray,
+        redownloadData: redownloadData,
+      };
 
-    //for tracking
-    redownloadDataArray.push(redownloadDataObj);
+      //for tracking
+      redownloadDataArray.push(redownloadDataObj);
+    } catch (e) {
+      console.log("RE DOWNLOAD DATA ARRAY ERROR");
+      console.log(e);
+    }
   }
 
   return redownloadDataArray;
@@ -158,11 +170,17 @@ export const reDownloadMedia = async () => {
 export const getRedownloadArray = async (fileArrayFS, fileArrayDB) => {
   const redownloadArray = [];
   for (let j = 0; j < fileArrayDB.length; j++) {
-    const itemDB = fileArrayDB[j];
-    if (fileArrayFS.includes(itemDB)) continue;
+    try {
+      if (!scrapeState.scrapeActive) return true;
+      const itemDB = fileArrayDB[j];
+      if (fileArrayFS.includes(itemDB)) continue;
 
-    //otherwise add to array
-    redownloadArray.push(itemDB);
+      //otherwise add to array
+      redownloadArray.push(itemDB);
+    } catch (e) {
+      console.log("RE DOWNLOAD ARRAY ERROR");
+      console.log(e);
+    }
   }
 
   return redownloadArray;
