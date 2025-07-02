@@ -6,6 +6,9 @@ import { scrapeState } from "../src/scrape-state.js";
 export const apiStart = async (req, res) => {
   const inputParams = req.body;
 
+  console.log("API START");
+  console.log(inputParams);
+
   //updates the scrapeState on parse
   await parseAdminCommand(inputParams);
   res.json(scrapeState);
