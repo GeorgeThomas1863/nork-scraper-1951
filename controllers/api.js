@@ -30,6 +30,8 @@ export const apiSingleRoute = async (req, res) => {
 export const apiStreamRoute = async (req, res) => {
   const inputParams = req.body;
 
+  console.log("AHHHHHHHHHHHHHHHHHHHHHH");
+
   await parseAdminCommand(inputParams);
 
   res.writeHead(200, {
