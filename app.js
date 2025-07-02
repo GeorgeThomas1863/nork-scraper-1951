@@ -1,5 +1,9 @@
 //TO DO:
 
+// THROWING OUT 2 hours of work
+
+//CREATE A POLL CAPABILITY
+
 //UNFUCK SCRAPE ID PROBLEM, FIND WHERE YOU START / GET IT
 
 //UNFUCK THE RE-DOWNLOAD (pic seemingly fucked, keep testing vids)
