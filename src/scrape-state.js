@@ -1,3 +1,4 @@
+import CONFIG from "../config/config.js";
 import { textStrMap, runScrapeMap, startStopMap } from "../config/map-scrape.js";
 import dbModel from "../models/db-model.js";
 
@@ -14,6 +15,7 @@ export const scrapeState = {
 
 export const updateScrapeStateByCommand = async (inputType) => {
   if (!inputType) return null;
+  const { log } = CONFIG;
   const { scrapeId } = scrapeState;
   //set the textStr
   scrapeState.textStr = textStrMap[inputType];
@@ -27,7 +29,8 @@ export const updateScrapeStateByCommand = async (inputType) => {
       howMany: 1,
     };
 
-    const logArray = await dbModel.getLastItemsArray(params);
+    const logModel = new dbModel(params, log);
+    const logArray = await logModel.getLastItemsArray();
     console.log("!!!!!!!logArray");
     console.log(logArray);
 
