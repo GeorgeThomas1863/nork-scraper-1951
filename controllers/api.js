@@ -31,5 +31,7 @@ export const apiUpdate = async (req, res) => {
   console.log("AHHHHHHHHHHHHHHHHHHHHH");
   console.log(req.body);
 
+  res.json({ finished: true });
+
   //BUILD
 };
