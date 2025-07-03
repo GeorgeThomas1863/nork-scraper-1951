@@ -12,6 +12,7 @@ import { updateMongo } from "./update-db.js";
 export const scrapeNewKCNA = async () => {
   //set scrape active
   scrapeState.scrapeActive = true;
+  scrapeState.finished = false;
 
   //delete empty / fucked files
   await runCleanFS();
@@ -35,6 +36,7 @@ export const scrapeNewKCNA = async () => {
 
   //clear scrape active
   scrapeState.scrapeActive = false;
+  scrapeState.finished = true;
   return true;
 };
 

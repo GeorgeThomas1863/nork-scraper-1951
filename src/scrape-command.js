@@ -18,7 +18,10 @@ export const parseAdminCommand = async (inputParams) => {
   await updateScrapeStateByCommand(commandType);
 
   //if not scraping return here [DONT DESTRUCTURE BC RUNSCRAPE CHANGES]
-  if (!scrapeState.runScrape) return true;
+  if (!scrapeState.runScrape) {
+    scrapeState.finished = true;
+    return true;
+  }
 
   //otherwise SET scrape ID here
   const newScrapeModel = new Log();
@@ -26,6 +29,7 @@ export const parseAdminCommand = async (inputParams) => {
 
   if (!newScrapeObj || !newScrapeObj.scrapeId || !newScrapeObj.scrapeStartTime) {
     scrapeState.textStr = "ERROR STARTING SCRAPE (defining scrapeId)";
+    scrapeState.finished = true;
     return true;
   }
 
@@ -70,11 +74,13 @@ export const checkScrapeAlreadyRunning = async (commandType) => {
   //check if already scraping
   if (commandType === "admin-start-scrape" && scrapeActive) {
     scrapeState.textStr = "ALREADY SCRAPING FAGGOT";
+    scrapeState.finished = true;
     return null;
   }
   // check if already scraping / scheduled
   if (commandType === "admin-start-scheduler" && schedulerActive) {
     scrapeState.textStr = "ALREADY SCHEDULED FAGGOT";
+    scrapeState.finished = true;
     return null;
   }
 
