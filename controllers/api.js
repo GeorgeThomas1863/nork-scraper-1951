@@ -28,10 +28,10 @@ export const apiStart = async (req, res) => {
 };
 
 export const apiUpdate = async (req, res) => {
-  console.log("AHHHHHHHHHHHHHHHHHHHHH");
-  console.log(req.body);
+  console.log("API UPDATE");
+  console.log(scrapeState);
 
-  res.json({ finished: true });
+  res.json(scrapeState);
 
   //BUILD
 };

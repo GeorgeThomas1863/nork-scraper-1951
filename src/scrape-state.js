@@ -11,6 +11,7 @@ export const scrapeState = {
 
   scrapeStartTime: null,
   scrapeEndTime: null,
+  finished: false,
 };
 
 export const updateScrapeStateByCommand = async (inputType) => {
