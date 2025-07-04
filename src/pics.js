@@ -191,8 +191,6 @@ export const reDownloadPics = async (inputArray) => {
       //redownload pic
       const picModel = new Pic({ picObj: headerObj });
       const picData = await picModel.downloadPicFS();
-      console.log("PIC DATA");
-      console.log(picData);
       if (!picData) continue;
 
       picDownloadArray.push(picData);
