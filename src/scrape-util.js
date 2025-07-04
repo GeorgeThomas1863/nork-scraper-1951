@@ -72,6 +72,7 @@ export const getFileArrayDB = async (type) => {
     const item = itemArray[i];
     const filePath = item.savePath;
     if (!filePath) continue;
+    
     fileArrayDB.push(filePath);
   }
 
