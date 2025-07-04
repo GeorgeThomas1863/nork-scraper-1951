@@ -189,8 +189,8 @@ export const reDownloadPics = async (inputArray) => {
       const headerObj = await reDownloadPicHeaders(fuckedObj);
       if (!headerObj) continue;
 
-      console.log("HEADER OBJ");
-      console.log(headerObj);
+      //add BACK IN SAVE PATH
+      headerObj.savePath = savePath;
 
       //redownload pic
       const picModel = new Pic({ picObj: headerObj });
