@@ -41,13 +41,11 @@ export const updateScrapeStateByCommand = async (inputType) => {
 
     const logModel = new dbModel(params, log);
     const logArray = await logModel.getLastItemsArray();
+    if (!logArray || !logArray.length) return null;
 
-    console.log("LOG ARRAY");
-    console.log(logArray);
-
-    const scrapeIdLog = logArray[0]._id.toString();
-
-    scrapeState.scrapeId = scrapeIdLog;
+    scrapeState.scrapeId = logArray[0]._id.toString() || null;
+    scrapeState.scrapeStartTime = logArray[0].startTime || null;
+    scrapeState.scrapeEndTime = logArray[0].endTime || null;
   }
 
   // console.log("SCRAPE STATE AFTER");
