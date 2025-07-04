@@ -1,5 +1,6 @@
 import CONFIG from "../config/config.js";
 import dbModel from "./db-model.js";
+import { scrapeState } from "../src/scrape-state.js";
 
 class UTIL {
   constructor(dataObject) {
@@ -163,8 +164,10 @@ class UTIL {
     return dateArray;
   }
 
+  //ADD TIME based on scrape start here
   async parseListDate() {
     const { inputItem } = this.dataObject;
+    const { scrapeStartTime } = scrapeState;
 
     const dateElement = inputItem.querySelector(".publish-time");
     if (!dateElement) return null;
@@ -185,6 +188,16 @@ class UTIL {
     if (isNaN(year) || isNaN(month) || isNaN(day)) return null;
 
     const normalDate = new Date(year, month - 1, day);
+
+    //if no startTime return just date
+    if (!scrapeStartTime) return normalDate;
+
+    const scrapeHour = scrapeStartTime.getHours();
+    const scrapeMinute = scrapeStartTime.getMinutes();
+
+    normalDate.setHours(scrapeHour);
+    normalDate.setMinutes(scrapeMinute);
+
     return normalDate;
   }
 
