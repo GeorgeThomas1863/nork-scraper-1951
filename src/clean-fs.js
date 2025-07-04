@@ -145,6 +145,10 @@ export const reDownloadMedia = async () => {
       console.log(type);
 
       const fileArrayFS = await getFileArrayFS(type);
+
+      console.log("FILE ARRAY FS");
+      console.log(fileArrayFS);
+
       const fileArrayDB = await getFileArrayDB(type);
 
       const redownloadArray = await getRedownloadArray(fileArrayFS, fileArrayDB);

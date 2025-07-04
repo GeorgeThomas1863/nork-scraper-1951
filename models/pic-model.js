@@ -233,9 +233,6 @@ class Pic {
   //DOWNLOAD PIC SECTION
   async downloadPicFS() {
     const { picObj } = this.dataObject;
-    console.log("!!!PIC OBJ");
-    console.log(picObj);
-
     const { url, savePath } = picObj;
 
     //!!!!HAVE IT CHECK IF ITS ALREADY SAVED TO FILE PATH (instead of Mongo lookup)

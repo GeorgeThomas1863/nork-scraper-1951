@@ -179,10 +179,6 @@ export const reDownloadPics = async (inputArray) => {
       for (let j = 0; j < collectionArr.length; j++) {
         const dataModel = new dbModel(deleteParams, collectionArr[j]);
         await dataModel.deleteItem();
-        // const testData = await dataModel.deleteItem();
-        // console.log("TEST DATA");
-        // console.log(collectionArr[j]);
-        // console.log(testData);
       }
 
       //redownload / store headers
