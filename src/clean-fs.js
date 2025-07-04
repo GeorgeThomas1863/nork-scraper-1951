@@ -13,8 +13,8 @@ export const runCleanFS = async () => {
   if (!scrapeState.scrapeActive) return true;
 
   const deleteEmptyArray = await deleteEmptyFilesFS();
-  console.log("DELETE EMPTY DATA");
-  console.log(deleteEmptyArray);
+  // console.log("DELETE EMPTY DATA");
+  // console.log(deleteEmptyArray);
 
   if (!scrapeState.scrapeActive) return true;
   const reDownloadData = await reDownloadMedia();
@@ -54,9 +54,6 @@ export const deleteEmptyFilesFS = async () => {
       console.log(e);
     }
   }
-
-  console.log("EMPTY FILES ARRAY");
-  console.log(emptyFilesArray);
 
   return emptyFilesArray;
 };
@@ -148,6 +145,10 @@ export const reDownloadMedia = async () => {
       console.log(type);
 
       const fileArrayFS = await getFileArrayFS(type);
+
+      console.log("FILE ARRAY FS");
+      console.log(fileArrayFS);
+
       const fileArrayDB = await getFileArrayDB(type);
 
       const redownloadArray = await getRedownloadArray(fileArrayFS, fileArrayDB);
