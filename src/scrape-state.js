@@ -18,6 +18,13 @@ export const updateScrapeStateByCommand = async (inputType) => {
   if (!inputType) return null;
   const { log } = CONFIG;
   const { scrapeId } = scrapeState;
+
+  console.log("UPDATE SCRAPE STATE BY COMMAND");
+  console.log(inputType);
+
+  console.log("SCRAPE STATE");
+  console.log(scrapeState);
+
   //set the textStr
   scrapeState.textStr = textStrMap[inputType];
   scrapeState.runScrape = runScrapeMap[inputType];
@@ -37,6 +44,9 @@ export const updateScrapeStateByCommand = async (inputType) => {
 
     scrapeState.scrapeId = scrapeIdLog;
   }
+
+  console.log("SCRAPE STATE AFTER");
+  console.log(scrapeState);
 
   return true;
 };
