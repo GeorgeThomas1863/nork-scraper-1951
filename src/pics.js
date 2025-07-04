@@ -178,14 +178,18 @@ export const reDownloadPics = async (inputArray) => {
       //loop through to delete from each collection
       for (let j = 0; j < collectionArr.length; j++) {
         const dataModel = new dbModel(deleteParams, collectionArr[j]);
-        const testData = await dataModel.deleteItem();
-        console.log("TEST DATA");
-        console.log(collectionArr[j]);
-        console.log(testData);  
+        await dataModel.deleteItem();
+        // const testData = await dataModel.deleteItem();
+        // console.log("TEST DATA");
+        // console.log(collectionArr[j]);
+        // console.log(testData);  
       }
 
       //redownload / store headers
       const headerObj = await reDownloadPicHeaders(fuckedObj);
+
+      console.log("HEADER OBJ");
+      console.log(headerObj);
 
       //redownload pic
       const picModel = new Pic({ picObj: headerObj });
