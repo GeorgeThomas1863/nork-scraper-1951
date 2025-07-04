@@ -172,11 +172,7 @@ export const getRedownloadArray = async (fileArrayFS, fileArrayDB) => {
   const redownloadArray = [];
   for (let i = 0; i < fileArrayDB.length; i++) {
     if (!scrapeState.scrapeActive) return true;
-    const itemDB = fileArrayDB[i];
     if (fileArrayFS.includes(fileArrayDB[i])) continue;
-
-    console.log("ITEM DB");
-    console.log(itemDB);
 
     //otherwise add to array
     redownloadArray.push(fileArrayDB[i]);
