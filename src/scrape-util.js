@@ -52,6 +52,7 @@ export const getFileArrayFS = async (type) => {
   for (let i = 0; i < itemArray.length; i++) {
     const item = itemArray[i];
     const filePath = path.join(basePath, item);
+    if (!filePath) continue;
 
     fileArrayFS.push(filePath);
   }
@@ -70,6 +71,7 @@ export const getFileArrayDB = async (type) => {
   for (let i = 0; i < itemArray.length; i++) {
     const item = itemArray[i];
     const filePath = item.savePath;
+    if (!filePath) continue;
     fileArrayDB.push(filePath);
   }
 
