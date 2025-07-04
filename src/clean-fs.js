@@ -148,10 +148,6 @@ export const reDownloadMedia = async () => {
       const fileArrayDB = await getFileArrayDB(type);
 
       const redownloadArray = await getRedownloadArray(fileArrayFS, fileArrayDB);
-
-      console.log("REDOWNLOAD ARRAY");
-      console.log(redownloadArray);
-
       if (!redownloadArray || !redownloadArray.length) continue;
 
       const redownloadData = await reDownloadByType(redownloadArray, type);
@@ -178,6 +174,9 @@ export const getRedownloadArray = async (fileArrayFS, fileArrayDB) => {
     try {
       if (!scrapeState.scrapeActive) return true;
       const itemDB = fileArrayDB[j];
+      console.log("ITEM DB");
+      console.log(itemDB);
+
       if (fileArrayFS.includes(itemDB)) continue;
 
       //otherwise add to array
