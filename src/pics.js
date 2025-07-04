@@ -160,15 +160,16 @@ export const reDownloadPics = async (inputArray) => {
   const { collectionArr } = await deleteItemsMap("pics");
   const picDownloadArray = [];
 
-  console.log("RE DOWNLOAD PICS");
-  console.log(inputArray);
-
   for (let i = 0; i < inputArray.length; i++) {
     try {
       const savePath = inputArray[i];
 
       //get data from old pic entry before deleting
       const fuckedObj = await getDataFromPath(savePath, "pics");
+
+      console.log("FUCKED OBJ");
+      console.log(fuckedObj);
+
       if (!fuckedObj || !fuckedObj.url) continue;
       const { url } = fuckedObj;
 
