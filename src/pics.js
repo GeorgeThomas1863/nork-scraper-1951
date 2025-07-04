@@ -167,9 +167,6 @@ export const reDownloadPics = async (inputArray) => {
       //get data from old pic entry before deleting
       const fuckedObj = await getDataFromPath(savePath, "pics");
 
-      console.log("FUCKED OBJ");
-      console.log(fuckedObj);
-
       if (!fuckedObj || !fuckedObj.url) continue;
       const { url } = fuckedObj;
 
@@ -181,7 +178,10 @@ export const reDownloadPics = async (inputArray) => {
       //loop through to delete from each collection
       for (let j = 0; j < collectionArr.length; j++) {
         const dataModel = new dbModel(deleteParams, collectionArr[j]);
-        await dataModel.deleteItem();
+        const testData = await dataModel.deleteItem();
+        console.log("TEST DATA");
+        console.log(collectionArr[j]);
+        console.log(testData);  
       }
 
       //redownload / store headers
