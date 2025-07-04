@@ -182,18 +182,19 @@ export const reDownloadPics = async (inputArray) => {
         // const testData = await dataModel.deleteItem();
         // console.log("TEST DATA");
         // console.log(collectionArr[j]);
-        // console.log(testData);  
+        // console.log(testData);
       }
 
       //redownload / store headers
       const headerObj = await reDownloadPicHeaders(fuckedObj);
 
-      console.log("HEADER OBJ");
-      console.log(headerObj);
-
       //redownload pic
       const picModel = new Pic({ picObj: headerObj });
       const picData = await picModel.downloadPicFS();
+      console.log("PIC DATA");
+      console.log(picData);
+      if (!picData) continue;
+
       picDownloadArray.push(picData);
     } catch (e) {
       console.log(e);
