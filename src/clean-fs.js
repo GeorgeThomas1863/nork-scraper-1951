@@ -44,9 +44,6 @@ export const deleteEmptyFilesFS = async () => {
 
       const deleteArrayData = await deleteArrayFS(fileArray, type);
 
-      console.log("DELETE ARRAY DATA");
-      console.log(deleteArrayData);
-
       const deleteDataObj = {
         type: type,
         deleteDataArray: deleteArrayData,
@@ -57,6 +54,9 @@ export const deleteEmptyFilesFS = async () => {
       console.log(e);
     }
   }
+
+  console.log("EMPTY FILES ARRAY");
+  console.log(emptyFilesArray);
 
   return emptyFilesArray;
 };
