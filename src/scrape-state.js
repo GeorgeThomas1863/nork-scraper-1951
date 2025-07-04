@@ -11,6 +11,7 @@ export const scrapeState = {
 
   scrapeStartTime: null,
   scrapeEndTime: null,
+  scrapeCommand: null,
   finished: false,
 };
 
@@ -25,7 +26,8 @@ export const updateScrapeStateByCommand = async (inputType) => {
   console.log("SCRAPE STATE");
   console.log(scrapeState);
 
-  //set the textStr
+  //update the scrapeState
+  scrapeState.scrapeCommand = inputType;
   scrapeState.textStr = textStrMap[inputType];
   scrapeState.runScrape = runScrapeMap[inputType];
   startStopMap[inputType]?.();
