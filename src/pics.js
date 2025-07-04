@@ -187,6 +187,10 @@ export const reDownloadPics = async (inputArray) => {
 
       //redownload / store headers
       const headerObj = await reDownloadPicHeaders(fuckedObj);
+      if (!headerObj) continue;
+
+      console.log("HEADER OBJ");
+      console.log(headerObj);
 
       //redownload pic
       const picModel = new Pic({ picObj: headerObj });
