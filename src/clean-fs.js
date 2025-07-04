@@ -169,19 +169,17 @@ export const reDownloadMedia = async () => {
 };
 
 export const getRedownloadArray = async (fileArrayFS, fileArrayDB) => {
-  console.log("FILE ARRAY FS");
-  console.log(fileArrayFS);
-  console.log("FILE ARRAY DB");
-  console.log(fileArrayDB);
-
   const redownloadArray = [];
   for (let i = 0; i < fileArrayDB.length; i++) {
     if (!scrapeState.scrapeActive) return true;
     const itemDB = fileArrayDB[i];
-    if (fileArrayFS.includes(itemDB)) continue;
+    if (fileArrayFS.includes(fileArrayDB[i])) continue;
+
+    console.log("ITEM DB");
+    console.log(itemDB);
 
     //otherwise add to array
-    redownloadArray.push(itemDB);
+    redownloadArray.push(fileArrayDB[i]);
   }
 
   console.log("REDOWNLOAD ARRAY");
