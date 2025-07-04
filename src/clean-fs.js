@@ -178,8 +178,8 @@ export const getRedownloadArray = async (fileArrayFS, fileArrayDB) => {
     redownloadArray.push(fileArrayDB[i]);
   }
 
-  console.log("REDOWNLOAD ARRAY");
-  console.log(redownloadArray);
+  // console.log("REDOWNLOAD ARRAY");
+  // console.log(redownloadArray);
 
   return redownloadArray;
 };
