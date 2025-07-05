@@ -22,12 +22,12 @@ export const getItemSizeCheck = async (filePath, type) => {
   const itemData = await dataModel.getUniqueItem();
 
   if (type === "vids") {
-    const vidSize = itemData?.vidSizeBytes || 0;
+    const vidSize = itemData?.vidSizeBytes;
     return vidSize * 0.8;
   }
 
   //otherwise pics
-  const picSize = itemData?.downloadedSize || 0; //set to 0 if cant find
+  const picSize = itemData?.downloadedSize;
   return picSize * 0.8;
 };
 
@@ -72,7 +72,7 @@ export const getFileArrayDB = async (type) => {
     const item = itemArray[i];
     const filePath = item.savePath;
     if (!filePath) continue;
-    
+
     fileArrayDB.push(filePath);
   }
 
