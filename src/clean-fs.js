@@ -13,13 +13,15 @@ export const runCleanFS = async () => {
   if (!scrapeState.scrapeActive) return true;
 
   const deleteEmptyArray = await deleteEmptyFilesFS();
-  // console.log("DELETE EMPTY DATA");
-  // console.log(deleteEmptyArray);
+  console.log("DELETE EMPTY DATA");
+  console.log(deleteEmptyArray);
 
   if (!scrapeState.scrapeActive) return true;
   const reDownloadData = await reDownloadMedia();
   console.log("RE DOWNLOAD DATA");
   console.log(reDownloadData);
+
+  //BUILD CLEAN / UPDATE DATABASE
 
   //DELETE TOO MANY FILES (more than X in folder)
 };

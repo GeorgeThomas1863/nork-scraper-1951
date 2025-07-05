@@ -2,6 +2,8 @@
 
 //UNFUCK SCRAPE ID PROBLEM, FIND WHERE YOU START / GET IT
 
+//in CLEAN-FS BUILD A WAY TO CLEAN / UPDATE THE MONGO DB [way to see if anything is missing and add if it is]
+
 //re-download should be unfucked? going to deploy and try
 
 //-------------------
