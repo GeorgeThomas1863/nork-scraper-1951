@@ -20,14 +20,17 @@ export const getItemSizeCheck = async (filePath, type) => {
   //get item db data
   const dataModel = new dbModel(itemParams, collectionArr[0]);
   const itemData = await dataModel.getUniqueItem();
+  if (!itemData) return null;
 
   if (type === "vids") {
-    const vidSize = itemData?.vidSizeBytes;
+    if (!itemData.vidSizeBytes) return null;
+    const vidSize = itemData.vidSizeBytes;
     return vidSize * 0.8;
   }
 
   //otherwise pics
-  const picSize = itemData?.downloadedSize;
+  if (!itemData.downloadedSize) return null;
+  const picSize = itemData.downloadedSize;
   return picSize * 0.8;
 };
 
