@@ -89,7 +89,7 @@ export const deleteItemFS = async (filePath, type) => {
     console.log(itemSizeFS);
   }
 
-  // Delete check (exists and is bigger than db)
+  // KEEP CHECK
   if (itemSizeFS && itemSizeCheck && itemSizeFS > itemSizeCheck) {
     //return obj for tracking
     const keepObj = {
