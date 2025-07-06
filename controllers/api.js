@@ -1,6 +1,4 @@
 import { parseAdminCommand, runScrapeCommand } from "../src/scrape-command.js";
-
-// import { scrapeCommandMap } from "../config/map-scrape.js";
 import { startScheduler } from "../src/scrape-scheduler.js";
 
 //moved everything to src
@@ -22,13 +20,6 @@ export const apiRoute = async (req, res) => {
   if (data && data.runScrape) {
     await runScrapeCommand(inputParams);
     return true;
-    // const { howMuch } = inputParams;
-
-    // // const scrapeCommand = scrapeCommandMap[howMuch];
-    // if (!scrapeCommand) return null;
-
-    // //param only needed for scrapeUrlKCNA (js ignores unneeded param automatically)
-    // await scrapeCommand(inputParams);
   }
 
   //otherwise return
