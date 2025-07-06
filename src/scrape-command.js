@@ -46,23 +46,19 @@ export const runScrapeCommand = async (inputParams) => {
   switch (scrapeCommand) {
     case "admin-start-scrape":
       await runNewScrape(inputParams);
-      scrapeState.textStr = "SCRAPE STARTED";
       break;
 
     case "admin-stop-scrape":
       const stopLogModel = new Log();
       await stopLogModel.logStop();
-      scrapeState.textStr = "SCRAPE STOPPED";
       break;
 
     case "admin-start-scheduler":
       await startScheduler();
-      scrapeState.textStr = "SCHEDULER STARTED";
       break;
 
     case "admin-stop-scheduler":
       await stopScheduler();
-      scrapeState.textStr = "SCHEDULER STOPPED";
       break;
 
     default:

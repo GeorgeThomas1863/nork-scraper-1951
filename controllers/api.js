@@ -16,7 +16,5 @@ export const apiRoute = async (req, res) => {
   //runs the command sent
   const result = await runScrapeCommand(data);
 
-  res.json(result);
-
   return result;
 };
