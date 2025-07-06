@@ -20,7 +20,7 @@ export const parseAdminCommand = async (inputParams) => {
   //if not scraping return here [DONT DESTRUCTURE BC RUNSCRAPE CHANGES]
   if (!scrapeState.runScrape) {
     scrapeState.finished = true;
-    return true;
+    return scrapeState;
   }
 
   //otherwise SET scrape ID here
@@ -30,7 +30,7 @@ export const parseAdminCommand = async (inputParams) => {
   if (!newScrapeObj || !newScrapeObj.scrapeId || !newScrapeObj.scrapeStartTime) {
     scrapeState.textStr = "ERROR STARTING SCRAPE (defining scrapeId)";
     scrapeState.finished = true;
-    return true;
+    return scrapeState;
   }
 
   const { scrapeId, scrapeStartTime } = newScrapeObj;
@@ -38,7 +38,7 @@ export const parseAdminCommand = async (inputParams) => {
   scrapeState.scrapeId = scrapeId;
   scrapeState.scrapeStartTime = scrapeStartTime;
 
-  return true;
+  return scrapeState;
 };
 
 export const runScrapeCommand = async (inputParams) => {
