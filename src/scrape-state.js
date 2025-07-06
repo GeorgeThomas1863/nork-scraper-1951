@@ -20,11 +20,11 @@ export const updateScrapeStateByCommand = async (inputType) => {
   const { log } = CONFIG;
   const { scrapeId } = scrapeState;
 
-  // console.log("UPDATE SCRAPE STATE BY COMMAND");
-  // console.log(inputType);
+  console.log("UPDATE SCRAPE STATE BY COMMAND");
+  console.log(inputType);
 
-  // console.log("SCRAPE STATE");
-  // console.log(scrapeState);
+  console.log("SCRAPE STATE");
+  console.log(scrapeState);
 
   //update the scrapeState
   scrapeState.scrapeCommand = inputType;
@@ -48,8 +48,8 @@ export const updateScrapeStateByCommand = async (inputType) => {
     scrapeState.scrapeEndTime = logArray[0].endTime || null;
   }
 
-  // console.log("SCRAPE STATE AFTER");
-  // console.log(scrapeState);
+  console.log("SCRAPE STATE AFTER");
+  console.log(scrapeState);
 
   return true;
 };
