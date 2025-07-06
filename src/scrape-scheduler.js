@@ -16,6 +16,9 @@ export const startScheduler = async () => {
     await scrapeNewKCNA();
   }, scrapeInterval);
 
+  console.log("INTERVAL ID");
+  console.log(intervalId);
+
   scrapeState.intervalId = intervalId;
   scrapeState.schedulerActive = true;
   return true;
