@@ -15,6 +15,10 @@ export const parseAdminCommand = async (inputParams) => {
 
   //check if already running and command to start
   const scrapeAvailable = await checkScrapeAlreadyRunning(commandType);
+
+  console.log("SCRAPE AVAILABLE");
+  console.log(scrapeAvailable);
+  
   if (!scrapeAvailable) return true;
 
   //update scrape state
