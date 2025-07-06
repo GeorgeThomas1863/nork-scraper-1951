@@ -9,6 +9,9 @@ export const apiRoute = async (req, res) => {
   //updates the scrapeState
   const data = await parseAdminCommand(inputParams);
 
+  console.log("DATA");
+  console.log(data);
+
   //send back the current updated STATE
   res.json(scrapeState);
 

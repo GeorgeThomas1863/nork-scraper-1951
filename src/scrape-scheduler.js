@@ -7,7 +7,7 @@ export const startScheduler = async () => {
   const { scrapeInterval } = CONFIG;
 
   console.log("STARTING SCHEDULER");
-  console.log(scrapeState);
+  console.log(new Date().toISOString());
 
   const intervalId = setInterval(async () => {
     if (!scrapeState?.schedulerActive) return null;
@@ -25,8 +25,8 @@ export const stopScheduler = async () => {
   if (!scrapeState || !scrapeState.intervalId) return null;
   const { intervalId } = scrapeState;
 
-  // console.log("STOPPING SCHEDULER AT:");
-  // console.log(new Date().toISOString());
+  console.log("STOPPING SCHEDULER AT:");
+  console.log(new Date().toISOString());
 
   clearInterval(intervalId);
   scrapeState.intervalId = null;
