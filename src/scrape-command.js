@@ -100,18 +100,18 @@ export const runNewScrape = async (inputParams) => {
 
   //START NEW SCRAPE, CREATE LOG HERE
   const newScrapeModel = new Log();
-  const newScrapeObj = await newScrapeModel.logStart();
+  await newScrapeModel.logStart();
 
-  if (!newScrapeObj || !newScrapeObj.scrapeId || !newScrapeObj.scrapeStartTime) {
-    scrapeState.textStr = "ERROR STARTING SCRAPE (defining scrapeId)";
-    scrapeState.finished = true;
-    return scrapeState;
-  }
+  // if (!newScrapeObj || !newScrapeObj.scrapeId || !newScrapeObj.scrapeStartTime) {
+  //   scrapeState.textStr = "ERROR STARTING SCRAPE (defining scrapeId)";
+  //   scrapeState.finished = true;
+  //   return scrapeState;
+  // }
 
-  const { scrapeId, scrapeStartTime } = newScrapeObj;
+  // const { scrapeId, scrapeStartTime } = newScrapeObj;
 
-  scrapeState.scrapeId = scrapeId;
-  scrapeState.scrapeStartTime = scrapeStartTime;
+  // scrapeState.scrapeId = scrapeId;
+  // scrapeState.scrapeStartTime = scrapeStartTime;
 
   let data = "";
   switch (howMuch) {
