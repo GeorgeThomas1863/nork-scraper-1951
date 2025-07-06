@@ -1,6 +1,7 @@
 import Log from "../models/log-model.js";
 import { scrapeState, updateScrapeStateByCommand } from "./scrape-state.js";
 import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA } from "./scrape-control.js";
+import { startScheduler, stopScheduler } from "./scrape-scheduler.js";
 
 //REFACTOR / break into multiple funcitons
 export const parseAdminCommand = async (inputParams) => {

@@ -1,5 +1,4 @@
 import { parseAdminCommand, runScrapeCommand } from "../src/scrape-command.js";
-import { startScheduler } from "../src/scrape-scheduler.js";
 import { scrapeState } from "../src/scrape-state.js";
 
 //moved everything to src
