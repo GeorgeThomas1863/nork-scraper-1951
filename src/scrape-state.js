@@ -34,7 +34,8 @@ export const updateScrapeStateByCommand = async (inputType) => {
   //update textstr
   let updateTextStr = "";
   if (inputType === "admin-scrape-status") {
-    updateTextStr = `SCRAPE STATUS: ${scrapeState.scrapeActive ? "ACTIVE" : "INACTIVE"}. SCHEDULER: ${scrapeState.schedulerActive ? "ACTIVE" : "INACTIVE"}`;
+    console.log("AHHHHHHHHHHHH")
+    updateTextStr = `SCRAPE STATUS: ${scrapeState.scrapeActive}. SCHEDULER: ${scrapeState.schedulerActive}`;
   } else {
     updateTextStr = textStrMap[inputType];
   }
