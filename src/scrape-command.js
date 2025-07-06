@@ -1,14 +1,14 @@
 import Log from "../models/log-model.js";
-import { textStrMap } from "../config/map-scrape.js";
 import { scrapeState, updateScrapeStateByCommand } from "./scrape-state.js";
 import { scrapeNewKCNA, scrapeAllKCNA, scrapeUrlKCNA } from "./scrape-control.js";
-// import { setContinueScrape } from "./scrape-util.js";
-// import { startScheduler, stopScheduler } from "./scrape-scheduler.js";
 
 //REFACTOR / break into multiple funcitons
 export const parseAdminCommand = async (inputParams) => {
   const { commandType } = inputParams;
   if (!commandType) return null;
+
+  console.log("PARSE ADMIN COMMAND");
+  console.log(inputParams);
 
   //check if already running and command to start
   const scrapeAvailable = await checkScrapeAlreadyRunning(commandType);
