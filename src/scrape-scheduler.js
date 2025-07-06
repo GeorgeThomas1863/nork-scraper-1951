@@ -6,11 +6,12 @@ import { scrapeState } from "./scrape-state.js";
 export const startScheduler = async () => {
   const { scrapeInterval } = CONFIG;
 
+  console.log("STARTING SCHEDULER");
+  console.log(scrapeState);
+
   const intervalId = setInterval(async () => {
     if (!scrapeState?.schedulerActive) return null;
-
-    console.log("STARTING SCHEDULER AT:");
-    console.log(new Date().toISOString());
+    if (scrapeState.scrapeActive) return null;
 
     await scrapeNewKCNA();
   }, scrapeInterval);
@@ -24,8 +25,8 @@ export const stopScheduler = async () => {
   if (!scrapeState || !scrapeState.intervalId) return null;
   const { intervalId } = scrapeState;
 
-  console.log("STOPPING SCHEDULER AT:");
-  console.log(new Date().toISOString());
+  // console.log("STOPPING SCHEDULER AT:");
+  // console.log(new Date().toISOString());
 
   clearInterval(intervalId);
   scrapeState.intervalId = null;
