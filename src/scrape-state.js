@@ -26,8 +26,6 @@ export const updateScrapeStateByCommand = async (inputParams) => {
   if (!inputParams || !inputParams.commandType) return null;
   const { commandType } = inputParams;
 
-  // const { scrapeId } = scrapeState;
-
   //update the scrapeState
   scrapeState.commandReq = inputParams; //track all params
   scrapeState.scrapeCommand = commandType;
@@ -42,22 +40,6 @@ export const updateScrapeStateByCommand = async (inputParams) => {
     updateTextStr = textStrMap[commandType];
   }
   scrapeState.textStr = updateTextStr;
-
-  // console.log("SCRAPE ID");
-  // console.log(scrapeId);
-
-  // //if stopping create log
-  // if (inputType === "admin-stop-scrape") {
-  //   const stopLogModel = new Log();
-  //   await stopLogModel.logStop();
-
-  //   scrapeState.textStr = "SCRAPE STOPPED";
-  // }
-
-  // //stop scheduler
-  // if (inputType === "admin-stop-scheduler") {
-  //   await stopScheduler();
-  // }
 
   return true;
 };

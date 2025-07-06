@@ -1,20 +1,12 @@
 //TO DO:
 
-//BUILD BACK IN WAY TO TURN OFF SCHEDULER
+//KEEP TESTING SCHEDULER; RUN ON BLANK DB (AND SEE IF WORKS AFTER AN HOUR) [change interval test]
 
-//in CLEAN-FS BUILD A WAY TO CLEAN / UPDATE THE MONGO DB [way to see if anything is missing and add if it is]
+//in CLEAN-FS UPDATE THE MONGO DB CLEANUP AT END [way to see if anything is missing and add if it is]
 
 //re-download should be unfucked? going to deploy and try
 
 //-------------------
-
-//try deploying, but keep testing redownload
-
-//multi chunk upload STILL FUCKED?
-
-//FIX PIC SET ID SAVE (seems to be failign to store last pic set id)
-
-//refactor parseAdmin command
 
 //BUILD BACKUP VID DOWNLOAD (normal, 1 at a time)
 
@@ -40,12 +32,8 @@ app.use(cors());
 
 app.use(routes);
 
-//RUN FUNCTION
-// scrapeNewKCNA(); //turn off for testing
-
 //PORT to listen
 app.listen(CONFIG.scrapePort);
-// app.listen(1951);
 
 //CATCH CODE (for ref)
 // console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);

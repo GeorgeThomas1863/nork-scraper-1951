@@ -5,8 +5,4 @@ const router = express.Router();
 
 router.post("/nork", apiRoute);
 
-// router.post("/norkStart", apiStart);
-
-// router.get("/norkUpdate", apiUpdate);
-
 export default router;

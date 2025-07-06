@@ -1,13 +1,10 @@
 import Log from "../models/log-model.js";
-
-// import { continueScrape, setScrapeActive, scrapeId } from "./scrape-util.js";
 import { scrapeState } from "./scrape-state.js";
 import { scrapeNewURLs } from "./scrape-urls.js";
 import { scrapeNewMedia } from "./scrape-download.js";
 import { uploadNewTG } from "./scrape-upload.js";
 import { runCleanFS } from "./clean-fs.js";
 import { updateMongo } from "./update-db.js";
-// import { startScheduler, stopScheduler } from "./scrape-scheduler.js";
 
 export const scrapeNewKCNA = async () => {
   //delete empty / fucked files
@@ -43,26 +40,3 @@ export const scrapeUrlKCNA = async (url) => {
   //figure out type based on html of URL
   console.log("build");
 };
-
-// export const restartAutoScrape = async (inputParams) => {
-//   const { intervalMinutes } = inputParams;
-
-//   // If no interval specified, stop the scheduler
-//   if (!intervalMinutes) {
-//     await stopScheduler();
-//     return {
-//       textStr: "AUTO SCRAPE STOPPED",
-//       scrapeId: scrapeId,
-//       runScrape: false,
-//     };
-//   }
-
-//   // Start scheduler with specified interval
-//   await startScheduler(parseInt(intervalMinutes));
-
-//   return {
-//     textStr: `AUTO SCRAPE STARTED (${intervalMinutes} minutes)`,
-//     scrapeId: scrapeId,
-//     runScrape: false,
-//   };
-// };
