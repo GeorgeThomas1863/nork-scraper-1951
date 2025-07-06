@@ -28,9 +28,17 @@ export const updateScrapeStateByCommand = async (inputType) => {
 
   //update the scrapeState
   scrapeState.scrapeCommand = inputType;
-  scrapeState.textStr = textStrMap[inputType];
   scrapeState.runScrape = runScrapeMap[inputType];
   startStopMap[inputType]?.();
+
+  //update textstr
+  let updateTextStr = "";
+  if (inputType === "admin-scrape-status") {
+    updateTextStr = `SCRAPE STATUS: ${scrapeState.scrapeActive ? "ACTIVE" : "INACTIVE"}. SCHEDULER: ${scrapeState.schedulerActive ? "ACTIVE" : "INACTIVE"}`;
+  } else {
+    updateTextStr = textStrMap[inputType];
+  }
+  scrapeState.textStr = updateTextStr;
 
   //set scrapeId if its null
   if (!scrapeId) {
