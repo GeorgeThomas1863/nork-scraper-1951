@@ -40,32 +40,40 @@ export const parseAdminCommand = async (inputParams) => {
 };
 
 export const runScrapeCommand = async (inputData) => {
-  // if (!inputData) return null;
+  if (!inputData) return null;
 
   console.log("RUN SCRAPE COMMAND");
   console.log(inputData);
 
-  // const { scrapeCommand } = inputData;
+  const { scrapeCommand } = inputData;
 
-  // switch (scrapeCommand) {
-  //   case "admin-start-scrape":
-  //     await runNewScrape(inputData);
-  //     break;
+  switch (scrapeCommand) {
+    case "admin-start-scrape":
+      await runNewScrape(inputData);
+      scrapeState.textStr = "SCRAPE STARTED";
+      break;
 
-  //   case "admin-stop-scrape":
-  //     const stopLogModel = new Log();
-  //     await stopLogModel.logStop();
-  //     scrapeState.textStr = "SCRAPE STOPPED";
-  //     break;
+    case "admin-stop-scrape":
+      const stopLogModel = new Log();
+      await stopLogModel.logStop();
+      scrapeState.textStr = "SCRAPE STOPPED";
+      break;
 
-  //   case "admin-start-scheduler":
-  //     await startScheduler();
-  //     break;
+    case "admin-start-scheduler":
+      await startScheduler();
+      scrapeState.textStr = "SCHEDULER STARTED";
+      break;
 
-  //   case "admin-stop-scheduler":
-  //     await stopScheduler();
-  //     break;
-  // }
+    case "admin-stop-scheduler":
+      await stopScheduler();
+      scrapeState.textStr = "SCHEDULER STOPPED";
+      break;
+
+    default:
+      return null;
+  }
+
+  return true;
 
   // if (inputType === "admin-stop-scrape") {
 
