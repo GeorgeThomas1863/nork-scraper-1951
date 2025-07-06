@@ -7,8 +7,8 @@ export const parseAdminCommand = async (inputParams) => {
   const { commandType } = inputParams;
   if (!commandType) return null;
 
-  // console.log("PARSE ADMIN COMMAND");
-  // console.log(inputParams);
+  console.log("PARSE ADMIN COMMAND");
+  console.log(inputParams);
 
   //check if already running and command to start
   const scrapeAvailable = await checkScrapeAlreadyRunning(commandType);
@@ -18,12 +18,19 @@ export const parseAdminCommand = async (inputParams) => {
   await updateScrapeStateByCommand(commandType);
 
   //if not scraping return here [DONT DESTRUCTURE BC RUNSCRAPE CHANGES]
-  if (!scrapeState.runScrape) {
-    scrapeState.finished = true;
-    return scrapeState;
-  }
+  // if (!scrapeState.runScrape) {
+  //   scrapeState.finished = true;
+  //   return scrapeState;
+  // }
 
-  //otherwise SET scrape ID here
+  return scrapeState;
+};
+
+export const runScrapeCommand = async (inputParams) => {
+  const { howMuch, urlInput } = inputParams;
+  if (!howMuch) return null;
+
+  //START NEW SCRAPE, CREATE LOG HERE
   const newScrapeModel = new Log();
   const newScrapeObj = await newScrapeModel.logStart();
 
@@ -37,14 +44,6 @@ export const parseAdminCommand = async (inputParams) => {
 
   scrapeState.scrapeId = scrapeId;
   scrapeState.scrapeStartTime = scrapeStartTime;
-
-  return scrapeState;
-};
-
-export const runScrapeCommand = async (inputParams) => {
-  const { howMuch, urlInput } = inputParams;
-
-  if (!howMuch) return null;
 
   let data = "";
   switch (howMuch) {

@@ -1,5 +1,6 @@
 import CONFIG from "../config/config.js";
 import dbModel from "./db-model.js";
+import { scrapeState } from "../src/scrape-state.js";
 
 class Log {
   constructor(dataObject) {
@@ -7,24 +8,25 @@ class Log {
   }
 
   async logStart() {
-    console.log("AHHHHHHHHHHHHHHHHHH")
+    console.log("AHHHHHHHHHHHHHHHHHH");
     const { log } = CONFIG;
     const scrapeStartTime = new Date();
+
     console.log("STARTING NEW KCNA SCRAPE AT " + scrapeStartTime);
     const startModel = new dbModel({ startTime: scrapeStartTime }, log);
     const startData = await startModel.storeAny();
     const scrapeId = startData.insertedId;
 
-    const returnObj = {
-      scrapeId: scrapeId,
-      scrapeStartTime: scrapeStartTime,
-    };
+    //update fucking state HERE
+    scrapeState.scrapeId = scrapeId;
+    scrapeState.scrapeStartTime = scrapeStartTime;
+    scrapeState.scrapeActive = true;
+    scrapeState.finished = false;
 
-    return returnObj;
+    return true;
   }
 
   async logStop() {
-    const { scrapeState } = this.dataObject;
     const { scrapeId, scrapeStartTime } = scrapeState;
 
     //get end time / start time
@@ -32,6 +34,15 @@ class Log {
 
     //calc scrape secs
     const scrapeSeconds = +((endTime - scrapeStartTime) / 1000).toFixed(2);
+    const scrapeMinutes = +(scrapeSeconds / 60).toFixed(2);
+
+    //update fucking state HERE
+    scrapeState.scrapeEndTime = endTime;
+    scrapeState.scrapeSeconds = scrapeSeconds;
+    scrapeState.scrapeMinutes = scrapeMinutes;
+    scrapeState.scrapeActive = false;
+    scrapeState.finished = true;
+    scrapeState.textStr = "SCRAPE FINISHED"
 
     //build objs
     const timeObj = {

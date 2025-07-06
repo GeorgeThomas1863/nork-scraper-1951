@@ -11,8 +11,8 @@ import { updateMongo } from "./update-db.js";
 
 export const scrapeNewKCNA = async () => {
   //set scrape active
-  scrapeState.scrapeActive = true;
-  scrapeState.finished = false;
+  // scrapeState.scrapeActive = true;
+  // scrapeState.finished = false;
 
   //delete empty / fucked files
   await runCleanFS();
@@ -30,7 +30,7 @@ export const scrapeNewKCNA = async () => {
   await updateMongo();
 
   //LOG SCRAPE END / show how long it took and write it in readable format
-  const endModel = new Log({ scrapeState: scrapeState });
+  const endModel = new Log();
   await endModel.logStop();
   console.log("#DONE");
 

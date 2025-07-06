@@ -11,6 +11,9 @@ export const scrapeState = {
 
   scrapeStartTime: null,
   scrapeEndTime: null,
+  scrapeSeconds: 0,
+  scrapeMinutes: 0,
+
   scrapeCommand: null,
   finished: false,
 };
@@ -40,21 +43,24 @@ export const updateScrapeStateByCommand = async (inputType) => {
   }
   scrapeState.textStr = updateTextStr;
 
+  console.log("SCRAPE ID");
+  console.log(scrapeId);
+
   //set scrapeId if its null
-  if (!scrapeId) {
-    const params = {
-      keyToLookup: "startTime",
-      howMany: 1,
-    };
+  // if (!scrapeId) {
+  //   const params = {
+  //     keyToLookup: "startTime",
+  //     howMany: 1,
+  //   };
 
-    const logModel = new dbModel(params, log);
-    const logArray = await logModel.getLastItemsArray();
-    if (!logArray || !logArray.length) return null;
+  //   const logModel = new dbModel(params, log);
+  //   const logArray = await logModel.getLastItemsArray();
+  //   if (!logArray || !logArray.length) return null;
 
-    scrapeState.scrapeId = logArray[0]._id.toString() || null;
-    scrapeState.scrapeStartTime = logArray[0].startTime || null;
-    scrapeState.scrapeEndTime = logArray[0].endTime || null;
-  }
+  //   scrapeState.scrapeId = logArray[0]._id.toString() || null;
+  //   scrapeState.scrapeStartTime = logArray[0].startTime || null;
+  //   scrapeState.scrapeEndTime = logArray[0].endTime || null;
+  // }
 
   // console.log("SCRAPE STATE AFTER");
   // console.log(scrapeState);
