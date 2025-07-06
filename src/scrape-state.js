@@ -7,6 +7,8 @@ export const scrapeState = {
   scrapeId: null,
   scrapeActive: false,
   schedulerActive: false,
+  intervalId: null,
+
   textStr: null,
   runScrape: false,
 
@@ -40,13 +42,18 @@ export const updateScrapeStateByCommand = async (inputType) => {
   // console.log("SCRAPE ID");
   // console.log(scrapeId);
 
-  //if stopping create log
-  if (inputType === "admin-stop-scrape") {
-    const stopLogModel = new Log();
-    await stopLogModel.logStop();
+  // //if stopping create log
+  // if (inputType === "admin-stop-scrape") {
+  //   const stopLogModel = new Log();
+  //   await stopLogModel.logStop();
 
-    scrapeState.textStr = "SCRAPE STOPPED";
-  }
+  //   scrapeState.textStr = "SCRAPE STOPPED";
+  // }
+
+  // //stop scheduler
+  // if (inputType === "admin-stop-scheduler") {
+  //   await stopScheduler();
+  // }
 
   return true;
 };

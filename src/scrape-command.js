@@ -17,6 +17,19 @@ export const parseAdminCommand = async (inputParams) => {
   //update scrape state
   await updateScrapeStateByCommand(commandType);
 
+  // //if stopping create log
+  // if (inputType === "admin-stop-scrape") {
+  //   const stopLogModel = new Log();
+  //   await stopLogModel.logStop();
+
+  //   scrapeState.textStr = "SCRAPE STOPPED";
+  // }
+
+  // //stop scheduler
+  // if (inputType === "admin-stop-scheduler") {
+  //   await stopScheduler();
+  // }
+
   //if not scraping return here [DONT DESTRUCTURE BC RUNSCRAPE CHANGES]
   // if (!scrapeState.runScrape) {
   //   scrapeState.finished = true;
@@ -26,7 +39,24 @@ export const parseAdminCommand = async (inputParams) => {
   return scrapeState;
 };
 
-export const runScrapeCommand = async (inputParams) => {
+export const runScrapeCommand = async (inputData) => {
+  console.log("RUN SCRAPE COMMAND");
+  console.log(inputData);
+
+  // //start scheduler
+  // if (data && data.scrapeCommand === "admin-start-scheduler") {
+  //   await startScheduler();
+  //   return true;
+  // }
+
+  // //RUN NEW SCRAPE
+  // if (data && data.runScrape) {
+  //   await runNewScrape(inputParams);
+  //   return true;
+  // }
+};
+
+export const runNewScrape = async (inputParams) => {
   const { howMuch, urlInput } = inputParams;
   if (!howMuch) return null;
 

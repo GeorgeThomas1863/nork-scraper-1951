@@ -7,24 +7,14 @@ import { scrapeState } from "../src/scrape-state.js";
 export const apiRoute = async (req, res) => {
   const inputParams = req.body;
 
-  //updates the scrapeState on parse
+  //updates the scrapeState
   const data = await parseAdminCommand(inputParams);
-  
+
   //send back the current updated STATE
   res.json(scrapeState);
 
-  //start scheduler
-  if (data && data.scrapeCommand === "admin-start-scheduler") {
-    await startScheduler();
-    return true;
-  }
+  //runs the command sent
+  await runScrapeCommand(data);
 
-  //RUN NEW SCRAPE
-  if (data && data.runScrape) {
-    await runScrapeCommand(inputParams);
-    return true;
-  }
-
-  //otherwise return
   return true;
 };
