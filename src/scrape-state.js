@@ -18,24 +18,28 @@ export const scrapeState = {
   scrapeMinutes: 0,
 
   scrapeCommand: null,
+  commandReq: null, //all params sent to command
   finished: false,
 };
 
-export const updateScrapeStateByCommand = async (inputType) => {
-  if (!inputType) return null;
+export const updateScrapeStateByCommand = async (inputParams) => {
+  if (!inputParams || !inputParams.commandType) return null;
+  const { commandType } = inputParams;
+
   // const { scrapeId } = scrapeState;
 
   //update the scrapeState
-  scrapeState.scrapeCommand = inputType;
-  scrapeState.runScrape = runScrapeMap[inputType];
-  startStopMap[inputType]?.();
+  scrapeState.commandReq = inputParams; //track all params
+  scrapeState.scrapeCommand = commandType;
+  scrapeState.runScrape = runScrapeMap[commandType];
+  startStopMap[commandType]?.();
 
   //update textstr
   let updateTextStr = "";
-  if (inputType === "admin-scrape-status") {
+  if (commandType === "admin-scrape-status") {
     updateTextStr = `SCRAPE ACTIVE: ${scrapeState.scrapeActive}. <br> SCHEDULER ACTIVE: ${scrapeState.schedulerActive}`;
   } else {
-    updateTextStr = textStrMap[inputType];
+    updateTextStr = textStrMap[commandType];
   }
   scrapeState.textStr = updateTextStr;
 

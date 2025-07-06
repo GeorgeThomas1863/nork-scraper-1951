@@ -15,7 +15,7 @@ export const parseAdminCommand = async (inputParams) => {
   if (!scrapeAvailable) return true;
 
   //update scrape state
-  await updateScrapeStateByCommand(commandType);
+  await updateScrapeStateByCommand(inputParams);
 
   // //if stopping create log
   // if (inputType === "admin-stop-scrape") {
@@ -39,17 +39,13 @@ export const parseAdminCommand = async (inputParams) => {
   return scrapeState;
 };
 
-export const runScrapeCommand = async (inputData) => {
-  if (!inputData) return null;
-
-  console.log("RUN SCRAPE COMMAND");
-  console.log(inputData);
-
-  const { scrapeCommand } = inputData;
+export const runScrapeCommand = async (inputParams) => {
+  if (!inputParams || !inputParams.scrapeCommand) return null;
+  const { scrapeCommand } = inputParams;
 
   switch (scrapeCommand) {
     case "admin-start-scrape":
-      await runNewScrape(inputData);
+      await runNewScrape(inputParams);
       scrapeState.textStr = "SCRAPE STARTED";
       break;
 
@@ -98,8 +94,9 @@ export const runScrapeCommand = async (inputData) => {
 };
 
 export const runNewScrape = async (inputParams) => {
-  const { howMuch, urlInput } = inputParams;
-  if (!howMuch) return null;
+  if (!inputParams || !inputParams.commandReq || !inputParams.commandReq.howMuch) return null;
+  const { commandReq } = inputParams;
+  const { howMuch, urlInput } = commandReq;
 
   //START NEW SCRAPE, CREATE LOG HERE
   const newScrapeModel = new Log();
