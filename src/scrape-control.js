@@ -10,10 +10,6 @@ import { updateMongo } from "./update-db.js";
 // import { startScheduler, stopScheduler } from "./scrape-scheduler.js";
 
 export const scrapeNewKCNA = async () => {
-  //set scrape active
-  // scrapeState.scrapeActive = true;
-  // scrapeState.finished = false;
-
   //delete empty / fucked files
   await runCleanFS();
 
@@ -26,7 +22,7 @@ export const scrapeNewKCNA = async () => {
   //upload to TG
   await uploadNewTG();
 
-  //update mongo with ALL relevant data
+  //update mongo with ALL relevant data [unfuck / check it here]
   await updateMongo();
 
   //LOG SCRAPE END / show how long it took and write it in readable format
@@ -34,9 +30,6 @@ export const scrapeNewKCNA = async () => {
   await endModel.logStop();
   console.log("#DONE");
 
-  //clear scrape active
-  scrapeState.scrapeActive = false;
-  scrapeState.finished = true;
   return true;
 };
 

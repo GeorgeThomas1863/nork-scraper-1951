@@ -14,6 +14,8 @@ export const updateMongo = async () => {
   const updateVidData = await updateVidDB();
   console.log("UPDATE VID DATA");
   console.log(updateVidData);
+
+  //ADD CHECK HERE TO DELETE SHIT THAT DIDNT UPDATE
 };
 
 //updates pics
