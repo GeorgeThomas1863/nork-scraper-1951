@@ -1,5 +1,6 @@
 import { parseAdminCommand, runScrapeCommand } from "../src/scrape-command.js";
 import { startScheduler } from "../src/scrape-scheduler.js";
+import { scrapeState } from "../src/scrape-state.js";
 
 //moved everything to src
 // export const apiStart = async (req, res) => {
@@ -8,7 +9,9 @@ export const apiRoute = async (req, res) => {
 
   //updates the scrapeState on parse
   const data = await parseAdminCommand(inputParams);
-  res.json(data);
+  
+  //send back the current updated STATE
+  res.json(scrapeState);
 
   //start scheduler
   if (data && data.scrapeCommand === "admin-start-scheduler") {

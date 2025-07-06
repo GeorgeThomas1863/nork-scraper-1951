@@ -56,8 +56,8 @@ export const updateScrapeStateByCommand = async (inputType) => {
     scrapeState.scrapeEndTime = logArray[0].endTime || null;
   }
 
-  console.log("SCRAPE STATE AFTER");
-  console.log(scrapeState);
+  // console.log("SCRAPE STATE AFTER");
+  // console.log(scrapeState);
 
   return true;
 };
