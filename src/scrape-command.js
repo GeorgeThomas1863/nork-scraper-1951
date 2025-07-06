@@ -44,6 +44,8 @@ export const runScrapeCommand = async (inputParams) => {
   if (!inputParams || !inputParams.scrapeCommand) return null;
   const { scrapeCommand } = inputParams;
 
+  if (scrapeCommand === "admin-scrape-status") return true;
+
   switch (scrapeCommand) {
     case "admin-start-scrape":
       await runNewScrape(inputParams);
