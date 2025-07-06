@@ -1,6 +1,6 @@
 //TO DO:
 
-//UNFUCK SCRAPE ID PROBLEM, FIND WHERE YOU START / GET IT
+//BUILD BACK IN WAY TO TURN OFF SCHEDULER
 
 //in CLEAN-FS BUILD A WAY TO CLEAN / UPDATE THE MONGO DB [way to see if anything is missing and add if it is]
 
