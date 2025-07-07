@@ -7,7 +7,6 @@ export const scrapeState = {
   scrapeId: null,
   scrapeActive: false,
   schedulerActive: false,
-  intervalId: null,
 
   textStr: null,
   runScrape: false,
@@ -20,6 +19,11 @@ export const scrapeState = {
   scrapeCommand: null,
   commandReq: null, //all params sent to command
   finished: false,
+};
+
+//track separately to avoid fucking stateObj
+export const intervalObj = {
+  intervalId: null,
 };
 
 export const updateScrapeStateByCommand = async (inputParams) => {

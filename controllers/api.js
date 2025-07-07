@@ -7,12 +7,8 @@ export const apiRoute = async (req, res) => {
   //updates the scrapeState
   const data = await parseAdminCommand(inputParams);
 
-  //dumb way to prevent intervalId from throwing error
-  const returnObj = { ...scrapeState };
-  returnObj.intervalId = null;
-
   //return to displayer
-  res.json(returnObj);
+  res.json(scrapeState);
 
   //runs the command sent
   const result = await runScrapeCommand(data);

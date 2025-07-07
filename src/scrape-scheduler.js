@@ -1,6 +1,6 @@
 import CONFIG from "../config/config.js";
 import { scrapeNewKCNA } from "./scrape-control.js";
-import { scrapeState } from "./scrape-state.js";
+import { scrapeState, intervalObj } from "./scrape-state.js";
 
 //async not needed, but can keep
 export const startScheduler = async () => {
@@ -16,23 +16,19 @@ export const startScheduler = async () => {
     await scrapeNewKCNA();
   }, scrapeInterval);
 
-  console.log("INTERVAL ID");
-  console.log(intervalId);
-
-  scrapeState.intervalId = intervalId;
+  intervalObj.intervalId = intervalId;
   scrapeState.schedulerActive = true;
   return true;
 };
 
 export const stopScheduler = async () => {
-  if (!scrapeState || !scrapeState.intervalId) return null;
-  const { intervalId } = scrapeState;
+  if (!intervalObj || !intervalObj.intervalId) return null;
 
   console.log("STOPPING SCHEDULER AT:");
   console.log(new Date().toISOString());
 
-  clearInterval(intervalId);
-  scrapeState.intervalId = null;
+  clearInterval(intervalObj.intervalId);
+  intervalObj.intervalId = null;
   scrapeState.schedulerActive = false;
 
   return true;
