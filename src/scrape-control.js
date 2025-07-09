@@ -10,7 +10,8 @@ export const scrapeNewKCNA = async () => {
   //delete empty / fucked files
   await runCleanFS();
 
-  console.log("CLEANED FS");
+  console.log("SCRAPE STATE");
+  console.log(scrapeState);
 
   //get and store new urls
   await scrapeNewURLs();
