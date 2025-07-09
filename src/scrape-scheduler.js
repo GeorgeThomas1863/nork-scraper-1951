@@ -1,4 +1,5 @@
 import CONFIG from "../config/config.js";
+import Log from "../models/log-model.js";
 import { scrapeNewKCNA } from "./scrape-control.js";
 import { scrapeState, intervalObj } from "./scrape-state.js";
 
@@ -18,6 +19,8 @@ export const startScheduler = async () => {
     if (scrapeState.scrapeActive) return null;
 
     console.log("STARTING NEW SCRAPE");
+    const newScrapeModel = new Log();
+    await newScrapeModel.logStart();
 
     await scrapeNewKCNA();
   }, testInterval); //RESET
