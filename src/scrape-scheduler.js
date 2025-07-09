@@ -14,7 +14,7 @@ export const startScheduler = async () => {
   const intervalId = setInterval(async () => {
     console.log("AHHHHHHHHH");
     console.log(scrapeState);
-    if (!scrapeState?.schedulerActive) return null;
+    // if (!scrapeState?.schedulerActive) return null;
     if (scrapeState.scrapeActive) return null;
 
     console.log("STARTING NEW SCRAPE");
