@@ -57,6 +57,9 @@ export const runNewScrape = async (inputParams) => {
   const { commandReq } = inputParams;
   const { howMuch, urlInput } = commandReq;
 
+  console.log("RUN NEW SCRAPE");
+  console.log(inputParams);
+
   //START NEW SCRAPE, CREATE LOG HERE
   const newScrapeModel = new Log();
   await newScrapeModel.logStart();
