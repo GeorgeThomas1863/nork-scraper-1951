@@ -7,7 +7,7 @@ import { scrapeState, intervalObj } from "./scrape-state.js";
 export const startScheduler = async () => {
   const { scrapeInterval } = CONFIG;
 
-  // const testInterval = 5000;
+  const testInterval = 5000;
 
   console.log("STARTING SCHEDULER");
   console.log(new Date().toISOString());
@@ -20,7 +20,7 @@ export const startScheduler = async () => {
     await newScrapeModel.logStart();
 
     await scrapeNewKCNA();
-  }, scrapeInterval); //RESET
+  }, testInterval); //RESET
 
   intervalObj.intervalId = intervalId;
   scrapeState.schedulerActive = true;
