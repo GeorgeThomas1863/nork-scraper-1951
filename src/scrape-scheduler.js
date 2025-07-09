@@ -6,13 +6,14 @@ import { scrapeState, intervalObj } from "./scrape-state.js";
 export const startScheduler = async () => {
   const { scrapeInterval } = CONFIG;
 
-  const testInterval = 5000;
+  const testInterval = 10000;
 
   console.log("STARTING SCHEDULER");
   console.log(new Date().toISOString());
 
   const intervalId = setInterval(async () => {
     console.log("AHHHHHHHHH");
+    console.log(scrapeState);
     if (!scrapeState?.schedulerActive) return null;
     if (scrapeState.scrapeActive) return null;
 
