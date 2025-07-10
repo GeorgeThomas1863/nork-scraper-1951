@@ -2,6 +2,8 @@
 
 //SCHEDULER STILL FUCKED, maybe not starting log right?? FIX
 
+//FIX HOW THE VID FAIL WORKS
+
 //KEEP TESTING SCHEDULER; RUN ON BLANK DB (AND SEE IF WORKS AFTER AN HOUR) [change interval test]
 
 //in CLEAN-FS UPDATE THE MONGO DB CLEANUP AT END [way to see if anything is missing and add if it is]
