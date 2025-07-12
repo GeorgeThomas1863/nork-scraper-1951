@@ -8,16 +8,15 @@ import { newListMap, newContentMap } from "../config/map-scrape.js";
 // import { logData } from "./scrape-log.js";
 
 export const scrapeNewURLs = async () => {
-  const { scrapeActive } = scrapeState;
-  if (!scrapeActive) return null;
+  if (!scrapeState.scrapeActive) return null;
 
   //get list array data
   await getNewListArray();
-  if (!scrapeActive) return null;
+  if (!scrapeState.scrapeActive) return null;
 
   //get content array data
   await getNewContentArray();
-  if (!scrapeActive) return null;
+  if (!scrapeState.scrapeActive) return null;
 
   return true;
 };
