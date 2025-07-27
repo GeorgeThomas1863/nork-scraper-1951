@@ -107,7 +107,7 @@ export const downloadVidPageArray = async (inputArray) => {
       //add save path to picObj
       const vidObj = sortArray[i];
       const { vidName } = vidObj;
-      const savePath = vidPath + vidName + ".mp4";
+      const savePath = vidPath + vidName;
       vidObj.savePath = savePath;
       const vidModel = new Vid({ inputObj: vidObj });
 
