@@ -211,12 +211,12 @@ class KCNA {
       await mergeModel.mergeChunks();
 
       //check if vid exists delete it if fucked
-      if (!fs.existsSync(vidSavePath)) return null;
-      const vidSize = fs.statSync(vidSavePath).size;
-      if (vidSize * 1.2 < vidSizeBytes) {
-        fs.unlinkSync(vidSavePath);
-        return null;
-      }
+      // if (!fs.existsSync(vidSavePath)) return null;
+      // const vidSize = fs.statSync(vidSavePath).size;
+      // if (vidSize * 1.2 < vidSizeBytes) {
+      //   fs.unlinkSync(vidSavePath);
+      //   return null;
+      // }
 
       return vidObj;
     } catch (e) {
