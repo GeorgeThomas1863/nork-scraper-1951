@@ -238,17 +238,17 @@ export const uploadVidPageArrayTG = async (inputArray) => {
       // if (!postVidPageObjData) continue;
 
       //Build store obj (just store object for first text chunk)
-      const storeObj = { ...inputObj };
-      storeObj.chat = postVidPageObjData?.chat;
-      storeObj.message_id = postVidPageObjData?.message_id;
-      storeObj.sender_chat = postVidPageObjData?.sender_chat;
+      // const storeObj = { ...inputObj };
+      // storeObj.chat = postVidPageObjData?.chat;
+      // storeObj.message_id = postVidPageObjData?.message_id;
+      // storeObj.sender_chat = postVidPageObjData?.sender_chat;
 
-      //store data
-      const storeModel = new dbModel(storeObj, CONFIG.vidPagesUploaded);
-      const storeData = await storeModel.storeUniqueURL();
-      console.log(storeData);
+      // //store data
+      // const storeModel = new dbModel(storeObj, CONFIG.vidPagesUploaded);
+      // const storeData = await storeModel.storeUniqueURL();
+      // console.log(storeData);
 
-      uploadDataArray.push(storeObj);
+      // uploadDataArray.push(storeObj);
     } catch (e) {
       // console.log(e);
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
