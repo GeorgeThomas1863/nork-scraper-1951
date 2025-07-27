@@ -251,14 +251,16 @@ class Vid {
     const parseModel = new Vid({ headerData: headerData });
     const headerObj = await parseModel.parseVidHeaders();
 
-    //get vid ID / SCRAPE id HERE
+    //get vid ID / SCRAPE id HERE / AND a FUCKING NAME HERE
     const vidIdModel = new UTIL({ type: "vids" });
     const vidId = await vidIdModel.getNextId();
+    const vidName = `kcna_${vidId}`;
     headerObj.vidId = vidId;
     headerObj.scrapeId = scrapeState.scrapeId;
+    headerObj.vidName = vidName;
 
     //add vid temp path
-    const vidTempPath = tempPath + vidId + ".mp4";
+    const vidTempPath = tempPath + vidName + ".mp4";
     headerObj.vidTempPath = vidTempPath;
 
     const vidObj = { ...headerObj, ...inputObj };

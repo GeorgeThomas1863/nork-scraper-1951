@@ -207,7 +207,7 @@ class KCNA {
       // const returnObj = { ...inputObj };
       // returnObj.chunksProcessed = chunksProcessed;
 
-      return returnObj;
+      // return returnObj;
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       //return null on failure

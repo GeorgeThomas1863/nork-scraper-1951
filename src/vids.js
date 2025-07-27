@@ -89,6 +89,9 @@ export const buildVidData = async (inputArray) => {
 
 //DOWNLOAD VID SECTION
 export const downloadVidPageArray = async (inputArray) => {
+  if (!inputArray || !inputArray.length) return null;
+  const { vidPath } = CONFIG;
+
   //download just first item (below necessary for obj to be seen as array)
   const sortModel = new UTIL({ inputArray: inputArray });
   const sortArray = await sortModel.sortArrayByKcnaId();
@@ -103,7 +106,8 @@ export const downloadVidPageArray = async (inputArray) => {
     try {
       //add save path to picObj
       const vidObj = sortArray[i];
-      const savePath = CONFIG.vidPath + vidObj.vidId + ".mp4";
+      const { vidName } = vidObj;
+      const savePath = vidPath + vidName + ".mp4";
       vidObj.savePath = savePath;
       const vidModel = new Vid({ inputObj: vidObj });
 
