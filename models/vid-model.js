@@ -327,10 +327,10 @@ class Vid {
     const downloadVidObj = await downloadModel.getVidMultiThread();
 
     //if fucked try other vid download //NOT SURE IF WORKS
-    if (!downloadVidObj) {
-      const retryObj = await downloadModel.getVidSimple();
-      return retryObj;
-    }
+    // if (!downloadVidObj) {
+    //   const retryObj = await downloadModel.getVidSimple();
+    //   return retryObj;
+    // }
 
     return downloadVidObj;
   }

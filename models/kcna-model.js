@@ -178,6 +178,9 @@ class KCNA {
     const { totalChunks } = inputObj;
     const vidObj = { ...inputObj };
 
+    console.log("DOWNLOAD VID MULTI THREAD INPUT OBJ");
+    console.log(inputObj);
+
     try {
       //find shit already downloaded
       const completedModel = new DLHelper(vidObj);
@@ -201,8 +204,8 @@ class KCNA {
       await mergeModel.mergeChunks();
 
       //dont need all the shit in vidObj, so doing inputObj here
-      const returnObj = { ...inputObj };
-      returnObj.chunksProcessed = chunksProcessed;
+      // const returnObj = { ...inputObj };
+      // returnObj.chunksProcessed = chunksProcessed;
 
       return returnObj;
     } catch (e) {
@@ -213,57 +216,57 @@ class KCNA {
   }
 
   //VID RETRY
-  async getVidSimple() {
-    const { url, savePath, vidId } = this.dataObject;
+  // async getVidSimple() {
+  //   const { url, savePath, vidId } = this.dataObject;
 
-    try {
-      // await randomDelay(1);
-      const res = await axios({
-        method: "get",
-        url: url,
-        timeout: 15 * 1000, //15 seconds
-        responseType: "stream",
-      });
+  //   try {
+  //     // await randomDelay(1);
+  //     const res = await axios({
+  //       method: "get",
+  //       url: url,
+  //       timeout: 15 * 1000, //15 seconds
+  //       responseType: "stream",
+  //     });
 
-      if (!res || !res.data) {
-        const error = new Error("FETCH FUCKED");
-        error.url = url;
-        error.fucntion = "VID REQ BACKUP";
-        throw error;
-      }
+  //     if (!res || !res.data) {
+  //       const error = new Error("FETCH FUCKED");
+  //       error.url = url;
+  //       error.fucntion = "VID REQ BACKUP";
+  //       throw error;
+  //     }
 
-      const writer = fs.createWriteStream(savePath);
-      const stream = res.data.pipe(writer);
-      const totalSize = parseInt(res.headers["content-length"], 10);
-      const mbSize = +(totalSize / 1048576).toFixed(2);
-      let downloadedSize = 0;
+  //     const writer = fs.createWriteStream(savePath);
+  //     const stream = res.data.pipe(writer);
+  //     const totalSize = parseInt(res.headers["content-length"], 10);
+  //     const mbSize = +(totalSize / 1048576).toFixed(2);
+  //     let downloadedSize = 0;
 
-      const consoleStr = "BACKUP VID DOWNLOAD: " + vidId + ".mp4 | SIZE: " + mbSize + "MB";
-      console.log(consoleStr);
+  //     const consoleStr = "BACKUP VID DOWNLOAD: " + vidId + ".mp4 | SIZE: " + mbSize + "MB";
+  //     console.log(consoleStr);
 
-      //download shit
-      res.data.on("data", (chunk) => {
-        downloadedSize += chunk.length;
-        if (downloadedSize >= totalSize) {
-        }
-      });
+  //     //download shit
+  //     res.data.on("data", (chunk) => {
+  //       downloadedSize += chunk.length;
+  //       if (downloadedSize >= totalSize) {
+  //       }
+  //     });
 
-      await new Promise((resolve, reject) => {
-        stream.on("finish", resolve);
-        stream.on("error", reject);
-      });
+  //     await new Promise((resolve, reject) => {
+  //       stream.on("finish", resolve);
+  //       stream.on("error", reject);
+  //     });
 
-      const returnObj = {
-        downloadedSize: downloadedSize,
-        totalSize: totalSize,
-      };
+  //     const returnObj = {
+  //       downloadedSize: downloadedSize,
+  //       totalSize: totalSize,
+  //     };
 
-      return returnObj;
-    } catch (e) {
-      console.log(url + "; " + e.message + "; F BREAK: " + e.function);
-      return null;
-    }
-  }
+  //     return returnObj;
+  //   } catch (e) {
+  //     console.log(url + "; " + e.message + "; F BREAK: " + e.function);
+  //     return null;
+  //   }
+  // }
 }
 
 export default KCNA;

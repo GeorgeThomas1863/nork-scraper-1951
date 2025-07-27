@@ -111,6 +111,8 @@ export const downloadVidPageArray = async (inputArray) => {
       const downloadVidObj = await vidModel.downloadVidFS();
       if (!downloadVidObj) continue;
 
+      //rechunk vid HERE
+
       //STORE HERE
       const storeObj = { ...vidObj, ...downloadVidObj };
       const storeModel = new dbModel(storeObj, CONFIG.vidsDownloaded);
