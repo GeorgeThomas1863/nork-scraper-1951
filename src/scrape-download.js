@@ -81,7 +81,7 @@ export const downloadNewMediaByType = async (type) => {
     return null;
   }
 
-  console.log("GETTING DATA FOR " + downloadArray?.length + " " + type.toUpperCase());
+  console.log("DOWNLOADING " + downloadArray?.length + " " + type.toUpperCase());
   const downloadDataArray = await downloadObj.func(downloadArray);
   if (!downloadDataArray || !downloadDataArray.length) return null;
 

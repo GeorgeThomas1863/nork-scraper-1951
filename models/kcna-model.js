@@ -198,6 +198,13 @@ class KCNA {
 
       const processModel = new DLHelper(vidObj);
       const chunksProcessed = await processModel.processVidQueue();
+
+      //ensure all chunks were processed otherwise run again
+      if (chunksProcessed !== totalChunks) {
+        const reDownloadModel = new KCNA({ inputObj: vidObj });
+        await reDownloadModel.getVidMultiThread();
+      }
+
       vidObj.chunksProcessed = chunksProcessed;
 
       const mergeModel = new DLHelper(vidObj);
