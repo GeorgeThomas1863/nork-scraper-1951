@@ -8,6 +8,7 @@ import dbModel from "./db-model.js";
 
 import { articleTypeTitleMap } from "../config/map-scrape.js";
 import { scrapeState } from "../src/scrape-state.js";
+import { getVidChunksFromFolder, uploadCombinedVidChunk } from "../src/vids.js";
 
 class TG {
   static tokenIndex = 0;
@@ -241,45 +242,69 @@ class TG {
 
   //POST VIDS
 
-  async postVidTG() {
-    const { inputObj } = this.dataObject;
-    const { vidSizeBytes, thumbnail } = inputObj;
-    const chunkObj = { ...inputObj };
-    const { uploadChunkSize } = CONFIG;
+  // async postVidTG() {
+  //   const { inputObj } = this.dataObject;
+  //   const { vidSizeBytes, thumbnail } = inputObj;
+  //   const uploadObj = { ...inputObj };
+  //   const { uploadChunkSize } = CONFIG;
 
-    //get thumbnail pic id
-    const thumbnailModel = new dbModel({ keyToLookup: "url", itemValue: thumbnail }, CONFIG.picsDownloaded);
-    const thumbnailObj = await thumbnailModel.getUniqueItem();
-    const thumbnailPicId = thumbnailObj.picId;
+  //   // //get thumbnail pic id
+  //   // const thumbnailModel = new dbModel({ keyToLookup: "url", itemValue: thumbnail }, CONFIG.picsDownloaded);
+  //   // const thumbnailObj = await thumbnailModel.getUniqueItem();
+  //   // const thumbnailPicId = thumbnailObj.picId;
 
-    // console.log("!!!!!!THUMBNAIL PIC ID");
-    // console.log(thumbnailPicId);
+  //   // // console.log("!!!!!!THUMBNAIL PIC ID");
+  //   // // console.log(thumbnailPicId);
 
-    //build thumbnail path
-    chunkObj.thumbnailPath = CONFIG.picPath + thumbnailPicId + ".jpg";
+  //   // //build thumbnail path
+  //   // chunkObj.thumbnailPath = CONFIG.picPath + thumbnailPicId + ".jpg";
 
-    //define chunk size
-    chunkObj.chunkSize = uploadChunkSize;
-    chunkObj.totalChunks = Math.ceil(vidSizeBytes / chunkObj.chunkSize);
+  //   //define chunk size
+  //   uploadObj.chunkSize = uploadChunkSize;
+  //   // chunkObj.totalChunks = Math.ceil(vidSizeBytes / chunkObj.chunkSize);
 
-    //posts ALL chunks, edits the caption
-    const postChunkModel = new TG({ inputObj: chunkObj });
-    const chunkDataArray = await postChunkModel.postChunkArray();
+  //   const vidChunkArray = await getVidChunksFromFolder(uploadObj);
+  //   if (!vidChunkArray || !vidChunkArray.length) return null;
 
-    //STORE HERE
-    if (!chunkDataArray || !chunkDataArray.length) return null;
-    const storeObj = { ...inputObj, ...chunkDataArray[0] };
-    storeObj.chunksUploaded = chunkDataArray.length;
-    try {
-      const storeModel = new dbModel(storeObj, CONFIG.vidsUploaded);
-      const storeData = await storeModel.storeUniqueURL();
-      console.log(storeData);
-    } catch (e) {
-      // console.log(e);
-      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-    }
-    return storeObj;
-  }
+  //   const chunksToUpload = vidChunkArray.length;
+  //   uploadObj.chunksToUpload = chunksToUpload;
+
+  //   //loop through each array of chunk arrays to upload
+  //   const uploadVidDataArray = [];
+  //   for (let i = 0; i < vidChunkArray.length; i++) {
+  //     if (!scrapeState.scrapeActive) return null;
+
+  //     uploadObj.uploadIndex = i + 1;
+  //     const uploadVidData = await uploadCombinedVidChunk(vidChunkArray[i], uploadObj);
+  //     if (!uploadVidData) continue;
+
+  //     console.log("RETURN PARAMS");
+  //     console.log(uploadVidData);
+
+  //     uploadVidDataArray.push(uploadVidData);
+  //   }
+
+  //   if (!uploadVidDataArray || !uploadVidDataArray.length) return null;
+
+  //   //loop through array of arrays and combine / post
+
+  //   // const postChunkModel = new TG({ inputObj: chunkObj });
+  //   // const chunkDataArray = await postChunkModel.postChunkArray();
+
+  //   // //STORE HERE
+  //   // if (!chunkDataArray || !chunkDataArray.length) return null;
+  //   // const storeObj = { ...inputObj, ...chunkDataArray[0] };
+  //   // storeObj.chunksUploaded = chunkDataArray.length;
+  //   // try {
+  //   //   const storeModel = new dbModel(storeObj, CONFIG.vidsUploaded);
+  //   //   const storeData = await storeModel.storeUniqueURL();
+  //   //   console.log(storeData);
+  //   // } catch (e) {
+  //   //   // console.log(e);
+  //   //   console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+  //   // }
+  //   // return storeObj;
+  // }
 
   async postChunkArray() {
     const { inputObj } = this.dataObject;
@@ -332,8 +357,7 @@ class TG {
     if (!chunkData || !chunkData.result) return null;
 
     //label the chunk (add caption)
-    const caption =
-      titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + vidId + ".mp4; [" + (chunkNumber + 1) + " of " + totalChunks + "]";
+    const caption = titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + vidId + ".mp4; [" + (chunkNumber + 1) + " of " + totalChunks + "]";
 
     //build edit caption params
     const editParams = {

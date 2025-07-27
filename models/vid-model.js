@@ -335,61 +335,47 @@ class Vid {
   //-----------------------------
 
   //UPLOAD VIDS
-  async postVidPageObj() {
-    const { inputObj } = this.dataObject;
-    const { url, vidURL, thumbnail } = inputObj;
+  // async postVidPageObj() {
+  //   const { inputObj } = this.dataObject;
+  //   const { url, vidURL, thumbnail, vidSaveFolder } = inputObj;
+  //   const { tgUploadId } = CONFIG;
 
-    if (!inputObj) {
-      const error = new Error("VID PAGE UPLOAD FUCKED");
-      error.url = url;
-      error.function = "postVidPageObj";
-      throw error;
-    }
+  //   if (!inputObj) {
+  //     const error = new Error("VID PAGE UPLOAD FUCKED");
+  //     error.url = url;
+  //     error.function = "postVidPageObj";
+  //     throw error;
+  //   }
 
-    //add channel to post to HERE
-    inputObj.tgUploadId = CONFIG.tgUploadId;
-    inputObj.scrapeId = scrapeState.scrapeId;
+  //   //add channel to post to HERE
 
-    //normalizes obj
-    const normalModel = new UTIL({ inputObj: inputObj });
-    const normalObj = await normalModel.normalizeInputsTG();
+  //   //get vid obj data (extra data for each vid)
+  //   // const lookupParams = {
+  //   //   keyToLookup: "url",
+  //   //   itemValue: vidURL,
+  //   // };
+  //   // const vidObjModel = new dbModel(lookupParams, CONFIG.vidsDownloaded);
+  //   // const vidObjData = await vidObjModel.getUniqueItem();
 
-    //get vid obj data (extra data for each vid)
-    const lookupParams = {
-      keyToLookup: "url",
-      itemValue: vidURL,
-    };
-    const vidObjModel = new dbModel(lookupParams, CONFIG.vidsDownloaded);
-    const vidObjData = await vidObjModel.getUniqueItem();
+  //   // //build vidPageObj
+  //   // const vidPageObj = { ...normalObj, ...vidObjData };
 
-    //build vidPageObj
-    const vidPageObj = { ...normalObj, ...vidObjData };
+  //   // console.log("VID PAGE OBJ");
+  //   // console.log(vidPageObj);
 
-    // console.log("VID PAGE OBJ");
-    // console.log(vidPageObj);
+  //   //check if file exists HERE, throw error if it doesnt
 
-    //check if file exists HERE, throw error if it doesnt
-    const vidExists = fs.existsSync(vidPageObj.savePath);
-    if (!vidExists) {
-      const error = new Error("VID NOT YET DOWNLOADED");
-      error.url = url;
-      error.function = "postVidPageObj";
-      throw error;
-    }
+  //   //otherwise post title
 
-    //otherwise post title
-    const tgModel = new TG({ inputObj: vidPageObj });
-    await tgModel.postTitleTG();
+  //   //post thumbnail [WORKS, but looks stupid, can add back in if needed]
+  //   // const thumbnailModel = new Vid({ inputObj: normalObj });
+  //   // await thumbnailModel.postVidThumbnail();
 
-    //post thumbnail [WORKS, but looks stupid, can add back in if needed]
-    // const thumbnailModel = new Vid({ inputObj: normalObj });
-    // await thumbnailModel.postVidThumbnail();
+  //   //post vid
+  //   const postVidData = await tgModel.postVidTG();
 
-    //post vid
-    const postVidData = await tgModel.postVidTG();
-
-    return postVidData;
-  }
+  //   return postVidData;
+  // }
 
   async postVidThumbnail() {
     const { inputObj } = this.dataObject;

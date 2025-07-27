@@ -8,13 +8,6 @@ import { newUploadMap } from "../config/map-scrape.js";
 
 export const uploadNewTG = async () => {
   if (!scrapeState.scrapeActive) return null;
-  await uploadMediaArrayTG();
-  // await logData(uploadMediaData, scrapeId, "uploadMedia");
-
-  return true;
-};
-
-export const uploadMediaArrayTG = async () => {
   const { typeArr } = CONFIG;
 
   // const uploadDataArray = [];
@@ -22,15 +15,6 @@ export const uploadMediaArrayTG = async () => {
     if (!scrapeState.scrapeActive) return null;
     const type = typeArr[i];
     await uploadByTypeTG(type);
-    // const uploadMediaData = await uploadByTypeTG(type);
-
-    // const uploadDataObj = {
-    //   type: type,
-    //   uploadMediaData: uploadMediaData,
-    // };
-
-    // //otherwise add to array
-    // uploadDataArray.push(uploadDataObj);
   }
 
   return true;

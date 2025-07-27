@@ -1,4 +1,5 @@
 import fs from "fs";
+import fsPromises from "fs/promises";
 import path from "path";
 
 import CONFIG from "../config/config.js";
@@ -183,7 +184,6 @@ export const chunkVidByLength = async (inputPath, outputFolder) => {
   const { chunkLengthSeconds } = CONFIG;
 
   const outputPattern = path.join(outputFolder, "chunk_%03d.mp4");
-  // const command = `ffmpeg -i "${inputPath}" -c copy -segment_time ${chunkLengthSeconds} -f segment -segment_start_number 1 -reset_timestamps 1 "${outputPattern}"`;
   const command = `ffmpeg -i "${inputPath}" -c copy -segment_time ${chunkLengthSeconds} -f segment -reset_timestamps 1 "${outputPattern}"`;
 
   const { stderr } = await execAsync(command);
@@ -198,6 +198,8 @@ export const chunkVidByLength = async (inputPath, outputFolder) => {
 //UPLOAD SHIT
 
 export const uploadVidPageArrayTG = async (inputArray) => {
+  if (!inputArray || !inputArray.length) return null;
+
   // console.log("!!!!!!!UPLOAD VID PAGE ARRAY");
   // console.log(inputArray);
 
@@ -210,10 +212,11 @@ export const uploadVidPageArrayTG = async (inputArray) => {
     //stop if needed
     if (!scrapeState.scrapeActive) return uploadDataArray;
     try {
-      const inputObj = sortArray[i];
-      const uploadModel = new Vid({ inputObj: inputObj });
-      const postVidPageObjData = await uploadModel.postVidPageObj();
-      if (!postVidPageObjData) continue;
+      const vidUploadObj = await uploadVidFS(sortArray[i]);
+
+      // const uploadModel = new Vid({ inputObj: inputObj });
+      // const postVidPageObjData = await uploadModel.postVidPageObj();
+      // if (!postVidPageObjData) continue;
 
       //Build store obj (just store object for first text chunk)
       const storeObj = { ...inputObj };
@@ -234,6 +237,158 @@ export const uploadVidPageArrayTG = async (inputArray) => {
   }
 
   return uploadDataArray;
+};
+
+export const uploadVidFS = async (inputObj) => {
+  if (!inputObj) return null;
+  const { vidSaveFolder, url } = inputObj;
+  const { tgUploadId } = CONFIG;
+
+  const uploadObj = { ...inputObj };
+  uploadObj.tgUploadId = tgUploadId;
+  uploadObj.scrapeId = scrapeState.scrapeId;
+
+  const vidFolderExists = fs.existsSync(vidSaveFolder);
+  if (!vidFolderExists) {
+    const error = new Error("VID NOT YET DOWNLOADED");
+    error.url = url;
+    error.function = "uploadVidFS";
+    throw error;
+  }
+
+  console.log("UPLOAD VID OBJ");
+  console.log(uploadObj);
+
+  //post title
+  // const tgModel = new TG({ inputObj: uploadObj });
+  // await tgModel.postTitleTG();
+};
+
+export const getVidChunksFromFolder = async (inputObj) => {
+  if (!inputObj || !inputObj.vidSaveFolder) return null;
+  const { vidSaveFolder } = inputObj;
+  const { vidUploadNumber } = CONFIG;
+
+  const chunkNameArrayRaw = await fsPromises.readdir(vidSaveFolder);
+  if (!chunkNameArrayRaw || !chunkNameArrayRaw.length) return null;
+
+  //loop through and pull out arrays of JUST vid chunks with length vidUploadNumber
+  const vidChunkArray = [];
+  let combineArray = [];
+  for (let i = 0; i < chunkNameArrayRaw.length; i++) {
+    const chunkName = chunkNameArrayRaw[i];
+    const chunkPath = `${vidSaveFolder}${chunkName}`;
+
+    //fail conditions
+    if (!fs.existsSync(chunkPath) || !chunkName.endsWith(".mp4") || !chunkName.startsWith("chunk_")) continue;
+    combineArray.push(chunkPath);
+
+    if (combineArray.length !== vidUploadNumber) continue;
+    vidChunkArray.push(combineArray);
+    combineArray = [];
+  }
+
+  //add last item to array
+  if (combineArray.length) vidChunkArray.push(combineArray);
+
+  return vidChunkArray;
+};
+
+export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
+  if (!inputArray || !inputArray.length || !inputObj);
+  const { uploadIndex, chunksToUpload, vidSaveFolder, vidName, tgUploadId, title, type } = inputObj;
+
+  console.log(`UPLOADING VID CHUNK ${uploadIndex} OF ${chunksToUpload}`);
+
+  //STEP 1: COMBINE VID CHUNKS
+  const combineChunkParams = {
+    inputArray: inputArray,
+    vidSaveFolder: vidSaveFolder,
+    vidName: vidName,
+    uploadIndex: uploadIndex,
+  };
+
+  const combineVidObj = await combineVidChunks(combineChunkParams);
+  if (!combineVidObj) return null;
+
+  //STEP 2: BUILD FORM
+  const formParams = {
+    uploadPath: combineVidObj.uploadPath,
+    uploadFileName: combineVidObj.uploadFileName,
+    tgUploadId: tgUploadId,
+  };
+
+  const vidForm = await buildVidForm(formParams);
+  if (!vidForm) return null;
+
+  //STEP 3: UPLOAD THE VID
+  const uploadData = await tgPostVidFS({ form: vidForm });
+  if (!uploadData || !uploadData.ok) return null;
+
+  //STEP 4: EDIT VID CAPTION
+  const captionParams = {
+    uploadIndex: uploadIndex,
+    chunksToUpload: chunksToUpload,
+    title: title,
+    type: type,
+  };
+
+  const vidCaption = await buildCaptionText(captionParams, "vid");
+  if (!vidCaption) return null;
+
+  const editCaptionParams = {
+    editChannelId: uploadData.result.chat.id,
+    messageId: uploadData.result.message_id,
+    caption: vidCaption,
+  };
+
+  const editVidData = await tgEditMessageCaption(editCaptionParams);
+  if (!editVidData || !editVidData.ok) return null;
+
+  //STEP 5: DELETE THE VID
+  fs.unlinkSync(combineVidObj.uploadPath);
+
+  const returnObj = { ...combineVidObj, ...uploadData.result };
+
+  return returnObj;
+};
+
+//loop through and upload in groups of 10 (5 min vids)
+export const combineVidChunks = async (inputObj) => {
+  if (!inputObj) return null;
+  const { vidSaveFolder, vidName, inputArray, uploadIndex } = inputObj;
+
+  //CREATE THE CONCAT LIST
+  let concatList = "";
+  for (const chunk of inputArray) {
+    concatList += `file '${chunk}' \n`;
+  }
+
+  fs.writeFileSync(`${vidSaveFolder}concat_list.txt`, concatList);
+
+  //creat vid upload path
+  const outputFileName = `${vidName}_${uploadIndex}.mp4`;
+  const combineVidPath = `${vidSaveFolder}${outputFileName}`;
+
+  //build ffmpeg cmd and execute
+  const cmd = `ffmpeg -f concat -safe 0 -i ${vidSaveFolder}concat_list.txt -c copy ${combineVidPath}`;
+  await execAsync(cmd);
+
+  fs.unlinkSync(`${vidSaveFolder}concat_list.txt`);
+
+  const returnObj = {
+    uploadFileName: outputFileName,
+    uploadPath: combineVidPath,
+  };
+
+  if (!returnObj || !fs.existsSync(combineVidPath)) {
+    const error = new Error("COMBINE VID FUCKED, COMBINED VID DOESNT EXIST");
+    error.content = "COMBINE COMMAND: " + cmd;
+    error.function = "combineVidChunks";
+    throw error;
+  }
+
+  return returnObj;
 };
 
 //---------------------------
@@ -269,8 +424,9 @@ export const reDownloadVids = async (inputArray) => {
       console.log(headerObj);
 
       //redownload vid
-      const vidModel = new Vid({ inputObj: headerObj });
-      const vidObj = await vidModel.downloadVidItem();
+      // const vidModel = new Vid({ inputObj: headerObj });
+      // const vidObj = await vidModel.downloadVidItem();
+      const vidObj = await downloadVidFS(headerObj);
       if (!vidObj || !vidObj.chunksProcessed) continue;
 
       //build return obj
