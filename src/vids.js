@@ -151,10 +151,10 @@ export const downloadVidFS = async (inputObj) => {
 
   const vidModel = new KCNA({ inputObj: params });
   const vidObj = await vidModel.getVidMultiThread();
-  if (!vidObj) return null;
 
   console.log("DOWNLOAD VID OBJ");
   console.log(vidObj);
+  if (!vidObj) return null;
 
   //make folder to save vid chunks
   const vidSaveFolder = `${vidPath}${vidName}_chunks/`;
