@@ -239,7 +239,7 @@ export const updateThumbnailItem = async (inputObj, collection) => {
   const { url, thumbnail } = inputObj;
   const { picsDownloaded } = CONFIG;
 
-  console.log("UPDATE THUMBNAIL ITEM!!!!");
+  // console.log("UPDATE THUMBNAIL ITEM!!!!");
 
   //get update data
   const dataParams = {
@@ -261,14 +261,14 @@ export const updateThumbnailItem = async (inputObj, collection) => {
     updateObj: updateObj,
   };
 
-  console.log("UPDATE THUMBNAIL PARAMS");
-  console.log(updateParams);
+  // console.log("UPDATE THUMBNAIL PARAMS");
+  // console.log(updateParams);
 
   const updateModel = new dbModel(updateParams, collection);
   const updateItemData = await updateModel.updateObjInsert();
 
-  console.log("UPDATE THUMBNAIL ITEM DATA");
-  console.log(updateItemData);
+  // console.log("UPDATE THUMBNAIL ITEM DATA");
+  // console.log(updateItemData);
 
   return updateItemData;
 };
