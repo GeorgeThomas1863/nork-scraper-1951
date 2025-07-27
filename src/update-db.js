@@ -8,12 +8,12 @@ export const updateMongo = async () => {
   await updatePicArrayDBs();
 
   const updateThumbnailData = await updateThumbnailDBs();
-  console.log("UPDATE THUMBNAIL DATA");
-  console.log(updateThumbnailData);
+  // console.log("UPDATE THUMBNAIL DATA");
+  // console.log(updateThumbnailData);
 
   const updateVidData = await updateVidDB();
-  console.log("UPDATE VID DATA");
-  console.log(updateVidData);
+  // console.log("UPDATE VID DATA");
+  // console.log(updateVidData);
 
   //ADD CHECK HERE TO DELETE SHIT THAT DIDNT UPDATE
 };
