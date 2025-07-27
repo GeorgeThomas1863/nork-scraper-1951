@@ -175,11 +175,11 @@ class KCNA {
   async getVidMultiThread() {
     //get obj data
     const { inputObj } = this.dataObject;
-    const { totalChunks } = inputObj;
+    const { totalChunks, savePath, vidSizeBytes } = inputObj;
     const vidObj = { ...inputObj };
 
-    console.log("DOWNLOAD VID MULTI THREAD INPUT OBJ");
-    console.log(inputObj);
+    // console.log("DOWNLOAD VID MULTI THREAD INPUT OBJ");
+    // console.log(inputObj);
 
     try {
       //find shit already downloaded
@@ -203,11 +203,15 @@ class KCNA {
       const mergeModel = new DLHelper(vidObj);
       await mergeModel.mergeChunks();
 
-      //dont need all the shit in vidObj, so doing inputObj here
-      // const returnObj = { ...inputObj };
-      // returnObj.chunksProcessed = chunksProcessed;
+      //check if vid exists delete it if fucked
+      if (!fs.existsSync(savePath)) return null;
+      const vidSize = fs.statSync(savePath).size;
+      if (vidSize * 1.2 < vidSizeBytes) {
+        fs.unlinkSync(savePath);
+        return null;
+      }
 
-      // return returnObj;
+      return vidObj;
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
       //return null on failure

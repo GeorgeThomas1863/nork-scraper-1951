@@ -329,6 +329,9 @@ class Vid {
     const downloadModel = new KCNA({ inputObj: vidObj });
     const downloadVidObj = await downloadModel.getVidMultiThread();
 
+    console.log("DOWNLOAD VID OBJ");
+    console.log(downloadVidObj);
+
     //if fucked try other vid download //NOT SURE IF WORKS
     // if (!downloadVidObj) {
     //   const retryObj = await downloadModel.getVidSimple();
