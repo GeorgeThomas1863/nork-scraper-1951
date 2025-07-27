@@ -219,11 +219,15 @@ export const chunkVidByLength = async (inputPath, outputFolder) => {
 export const uploadVidPageArrayTG = async (inputArray) => {
   if (!inputArray || !inputArray.length) return null;
 
-  console.log("!!!!!!!UPLOAD VID PAGE ARRAY");
-  console.log(inputArray);
+  // console.log("!!!!!!!UPLOAD VID PAGE ARRAY");
+  // console.log(inputArray);
 
   const sortModel = new UTIL({ inputArray: inputArray });
   const sortArray = await sortModel.sortArrayByDate();
+
+  console.log("SORT ARRAY");
+  console.log(sortArray);
+
   if (!sortArray || !sortArray.length) return null;
 
   const uploadDataArray = [];
