@@ -7,8 +7,8 @@ import { runCleanFS } from "./clean-fs.js";
 import { updateMongo } from "./update-db.js";
 
 export const scrapeNewKCNA = async () => {
-  //delete empty / fucked files
-  await runCleanFS();
+  // //delete empty / fucked files
+  // await runCleanFS();
 
   console.log("SCRAPE STATE");
   console.log(scrapeState);
