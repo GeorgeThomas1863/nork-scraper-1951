@@ -178,8 +178,8 @@ class KCNA {
     const { totalChunks, vidSavePath, vidSizeBytes } = inputObj;
     const vidObj = { ...inputObj };
 
-    console.log("DOWNLOAD VID MULTI THREAD INPUT OBJ");
-    console.log(inputObj);
+    // console.log("DOWNLOAD VID MULTI THREAD INPUT OBJ");
+    // console.log(inputObj);
 
     try {
       //find shit already downloaded

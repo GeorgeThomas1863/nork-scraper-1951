@@ -25,12 +25,14 @@ class DLHelper {
     }
 
     const completedChunkArray = [];
-
     for (let i = 0; i < totalChunks; i++) {
       const chunkSavePath = `${tempPath}chunk_${i + 1}.mp4`;
 
       if (fs.existsSync(chunkSavePath)) {
         const stats = fs.statSync(chunkSavePath);
+
+        console.log("STATS");
+        console.log(stats);
 
         const expectedSize = i < totalChunks - 1 ? vidChunkSize : vidSizeBytes - i * vidChunkSize;
         if (stats.size === expectedSize) {
