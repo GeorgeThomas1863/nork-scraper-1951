@@ -254,7 +254,7 @@ class Vid {
     //get vid ID / SCRAPE id HERE / AND a FUCKING NAME HERE
     const vidIdModel = new UTIL({ type: "vids" });
     const vidId = await vidIdModel.getNextId();
-    const vidName = `kcna_${vidId}.mp4`;
+    const vidName = `kcna_${vidId}`;
     headerObj.vidId = vidId;
     headerObj.scrapeId = scrapeState.scrapeId;
     headerObj.vidName = vidName;
