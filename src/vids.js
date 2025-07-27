@@ -141,6 +141,8 @@ export const downloadVidFS = async (inputObj) => {
   //download output path
   const vidSavePath = `${vidPath}${vidName}.mp4`;
 
+  console.log(`CURRENTLY DOWNLOADING VID: ${vidSavePath}`);
+
   //check if vid already exists there and delete it here if its fucked
   if (fs.existsSync(vidSavePath)) {
     const vidSize = fs.statSync(vidSavePath).size;
