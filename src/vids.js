@@ -1,3 +1,6 @@
+import fs from "fs";
+import path from "path";
+
 import CONFIG from "../config/config.js";
 import KCNA from "../models/kcna-model.js";
 import Vid from "../models/vid-model.js";
@@ -7,6 +10,11 @@ import UTIL from "../models/util-model.js";
 import { getDataFromPath } from "./scrape-util.js";
 import { scrapeState } from "./scrape-state.js";
 import { deleteItemsMap } from "../config/map-scrape.js";
+
+import { exec } from "child_process";
+import { promisify } from "util";
+
+const execAsync = promisify(exec);
 
 //FIND VID PAGES / GET VID URLs SECTION
 
@@ -90,6 +98,7 @@ export const buildVidData = async (inputArray) => {
 //DOWNLOAD VID SECTION
 export const downloadVidPageArray = async (inputArray) => {
   if (!inputArray || !inputArray.length) return null;
+  const { vidsDownloaded } = CONFIG;
 
   //download just first item (below necessary for obj to be seen as array)
   const sortModel = new UTIL({ inputArray: inputArray });
@@ -106,7 +115,14 @@ export const downloadVidPageArray = async (inputArray) => {
       const downloadVidObj = await downloadVidFS(sortArray[i]);
       if (!downloadVidObj) continue;
 
-      downloadVidDataArray.push(downloadVidObj);
+      //store it
+      const storeObj = { ...sortArray[i], ...downloadVidObj };
+      const storeModel = new dbModel(storeObj, vidsDownloaded);
+      const storeData = await storeModel.storeUniqueURL();
+      console.log("DOWNLOAD VID STORE DATA");
+      console.log(storeData);
+
+      downloadVidDataArray.push(storeObj);
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
@@ -139,18 +155,41 @@ export const downloadVidFS = async (inputObj) => {
   console.log("DOWNLOAD VID OBJ");
   console.log(vidObj);
 
-  // const vidModel = new Vid({ inputObj: vidObj });
+  //make folder to save vid chunks
+  const vidSaveFolder = `${vidPath}${vidName}_chunks/`;
+  if (!fs.existsSync(vidSaveFolder)) {
+    fs.mkdirSync(vidSaveFolder, { recursive: true });
+  }
 
-  // //download the vid
-  // const downloadVidObj = await vidModel.downloadVidItem();
-  // if (!downloadVidObj) return null;
+  //NOW RECHUNK THE MOTHERFUCKER WITH FFMPEG
+  const vidChunkData = await chunkVidByLength(vidSavePath, vidSaveFolder);
+  if (!vidChunkData) return null;
 
-  // //rechunk vid HERE
+  //delete vid to avoid saving twice
+  if (!fs.existsSync(vidSavePath)) return null;
+  fs.unlinkSync(vidSavePath);
 
-  // //STORE HERE
-  // const storeObj = { ...vidObj, ...downloadVidObj };
-  // const storeModel = new dbModel(storeObj, CONFIG.vidsDownloaded);
-  // await storeModel.storeUniqueURL();
+  const returnObj = {
+    vidDownloaded: true,
+    chunksProcessed: vidObj.chunksProcessed,
+    vidSaveFolder: vidSaveFolder,
+  };
+
+  return returnObj;
+};
+
+export const chunkVidByLength = async (inputPath, outputFolder) => {
+  if (!fs.existsSync(outputFolder) || !fs.existsSync(inputPath)) return null;
+  const { chunkLengthSeconds } = CONFIG;
+
+  const outputPattern = path.join(outputFolder, "chunk_%03d.mp4");
+  const command = `ffmpeg -i "${inputPath}" -c copy -segment_time ${chunkLengthSeconds} -f segment -reset_timestamps 1 "${outputPattern}"`;
+
+  const { stderr } = await execAsync(command);
+  console.log("DONE CHUNKING");
+  console.log(stderr); // FFmpeg outputs progress to stderr
+
+  return true;
 };
 
 //---------------------
@@ -285,3 +324,5 @@ export const reDownloadVidHeaders = async (inputObj) => {
 
   return headerObj;
 };
+
+// Split video into segments of specified duration
