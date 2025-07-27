@@ -225,8 +225,8 @@ export const uploadVidPageArrayTG = async (inputArray) => {
   const sortModel = new UTIL({ inputArray: inputArray });
   const sortArray = await sortModel.sortArrayByDate();
 
-  console.log("SORT ARRAY");
-  console.log(sortArray);
+  // console.log("SORT ARRAY");
+  // console.log(sortArray);
 
   if (!sortArray || !sortArray.length) return null;
 
@@ -267,6 +267,9 @@ export const uploadVidFS = async (inputObj) => {
   const { vidSaveFolder, url } = inputObj;
   const { tgUploadId } = CONFIG;
 
+  console.log("UPLOAD VID FS");
+  console.log(inputObj);
+
   const uploadObj = { ...inputObj };
   uploadObj.tgUploadId = tgUploadId;
   uploadObj.scrapeId = scrapeState.scrapeId;
@@ -278,9 +281,6 @@ export const uploadVidFS = async (inputObj) => {
     error.function = "uploadVidFS";
     throw error;
   }
-
-  console.log("UPLOAD VID OBJ");
-  console.log(uploadObj);
 
   //post title
   // const tgModel = new TG({ inputObj: uploadObj });
