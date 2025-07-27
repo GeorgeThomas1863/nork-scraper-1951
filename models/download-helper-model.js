@@ -193,6 +193,10 @@ class DLHelper {
 
     for (let i = 0; i < totalChunks; i++) {
       const chunkSavePath = `${tempPath}chunk_${i + 1}.mp4`;
+      if (!fs.existsSync(chunkSavePath)) continue;
+
+      console.log(`MERGING CHUNK ${i + 1} OF ${totalChunks}`);
+
       const chunkData = fs.readFileSync(chunkSavePath);
       writeStream.write(chunkData);
       fs.unlinkSync(chunkSavePath); // Clean up temp file
