@@ -31,8 +31,8 @@ class DLHelper {
       if (fs.existsSync(chunkSavePath)) {
         const stats = fs.statSync(chunkSavePath);
 
-        console.log("STATS");
-        console.log(stats);
+        // console.log("STATS");
+        // console.log(stats);
 
         const expectedSize = i < totalChunks - 1 ? vidChunkSize : vidSizeBytes - i * vidChunkSize;
         if (stats.size === expectedSize) {
@@ -186,10 +186,10 @@ class DLHelper {
   }
 
   async mergeChunks() {
-    const { savePath, tempPath, totalChunks } = this.dataObject;
+    const { vidSavePath, tempPath, totalChunks } = this.dataObject;
 
     console.log("Merging chunks...");
-    const writeStream = fs.createWriteStream(savePath);
+    const writeStream = fs.createWriteStream(vidSavePath);
 
     for (let i = 0; i < totalChunks; i++) {
       const chunkSavePath = `${tempPath}chunk_${i + 1}.mp4`;
