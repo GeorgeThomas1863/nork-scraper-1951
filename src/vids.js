@@ -117,13 +117,24 @@ export const downloadVidPageArray = async (inputArray) => {
 
 export const downloadVidFS = async (inputObj) => {
   if (!inputObj) return null;
-  const { vidName } = inputObj;
-  const { vidPath } = CONFIG;
+  const { vidName, url, totalChunks, vidSizeBytes } = inputObj;
+  const { vidPath, tempPath } = CONFIG;
 
-  const savePath = `${vidPath}${vidName}.mp4`;
+  //download output path
+  const vidSavePath = `${vidPath}${vidName}.mp4`;
 
-  const vidObj = { ...inputObj };
-  vidObj.savePath = savePath;
+  const params = {
+    url: url,
+    tempPath: tempPath,
+    vidSavePath: vidSavePath,
+    totalChunks: totalChunks,
+    vidSizeBytes: vidSizeBytes,
+    vidName: vidName,
+  };
+
+  const vidModel = new KCNA({ inputObj: params });
+  const vidObj = await vidModel.getVidMultiThread();
+  if (!vidObj) return null;
 
   console.log("DOWNLOAD VID OBJ");
   console.log(vidObj);
@@ -258,15 +269,15 @@ export const reDownloadVidHeaders = async (inputObj) => {
   const parseModel = new Vid({ headerData: headerData });
   const headerObj = await parseModel.parseVidHeaders();
 
-  //add vid temp path
-  const vidTempPath = CONFIG.tempPath + vidId + ".mp4";
+  // //add vid temp path
+  // const vidTempPath = CONFIG.tempPath + vidId + ".mp4";
 
   //add back to obj
   headerObj.url = url;
   headerObj.vidId = vidId;
   headerObj.scrapeId = scrapeId;
   headerObj.date = date;
-  headerObj.vidTempPath = vidTempPath;
+  // headerObj.vidTempPath = vidTempPath;
 
   //store it again
   const storeModel = new dbModel(headerObj, CONFIG.vids);

@@ -259,9 +259,9 @@ class Vid {
     headerObj.scrapeId = scrapeState.scrapeId;
     headerObj.vidName = vidName;
 
-    //add vid temp path
-    const vidTempPath = tempPath + vidName;
-    headerObj.vidTempPath = vidTempPath;
+    // //add vid temp path
+    // const vidTempPath = tempPath + vidName;
+    // headerObj.vidTempPath = vidTempPath;
 
     const vidObj = { ...headerObj, ...inputObj };
 

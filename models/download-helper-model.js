@@ -15,11 +15,11 @@ class DLHelper {
   //UTIL for multi thread vid download
 
   async getCompletedVidChunks() {
-    const { vidTempPath, totalChunks, vidSizeBytes } = this.dataObject;
+    const { tempPath, totalChunks, vidSizeBytes } = this.dataObject;
     const { vidChunkSize } = CONFIG;
 
     // Make sure we have all required properties
-    if (!vidTempPath || !totalChunks) {
+    if (!tempPath || !totalChunks) {
       console.log("Error: Missing required properties for getCompletedVidChunks");
       return [];
     }
@@ -27,7 +27,7 @@ class DLHelper {
     const completedChunkArray = [];
 
     for (let i = 0; i < totalChunks; i++) {
-      const chunkSavePath = `${vidTempPath}chunk_${i + 1}.mp4`;
+      const chunkSavePath = `${tempPath}chunk_${i + 1}.mp4`;
 
       if (fs.existsSync(chunkSavePath)) {
         const stats = fs.statSync(chunkSavePath);
@@ -45,12 +45,12 @@ class DLHelper {
   }
 
   async createVidQueue() {
-    const { totalChunks, vidSizeBytes, vidTempPath } = this.dataObject;
+    const { totalChunks, vidSizeBytes, tempPath } = this.dataObject;
     const { vidChunkSize } = CONFIG;
 
     const pendingChunkArray = [];
     for (let i = 0; i < totalChunks; i++) {
-      const chunkSavePath = `${vidTempPath}chunk_${i + 1}.mp4`;
+      const chunkSavePath = `${tempPath}chunk_${i + 1}.mp4`;
       if (fs.existsSync(chunkSavePath)) continue;
 
       const start = i * vidChunkSize;
@@ -184,13 +184,13 @@ class DLHelper {
   }
 
   async mergeChunks() {
-    const { savePath, vidTempPath, totalChunks } = this.dataObject;
+    const { savePath, tempPath, totalChunks } = this.dataObject;
 
     console.log("Merging chunks...");
     const writeStream = fs.createWriteStream(savePath);
 
     for (let i = 0; i < totalChunks; i++) {
-      const chunkSavePath = `${vidTempPath}chunk_${i + 1}.mp4`;
+      const chunkSavePath = `${tempPath}chunk_${i + 1}.mp4`;
       const chunkData = fs.readFileSync(chunkSavePath);
       writeStream.write(chunkData);
       fs.unlinkSync(chunkSavePath); // Clean up temp file
@@ -211,10 +211,10 @@ class DLHelper {
   }
 
   async cleanupTempVidFiles() {
-    const { vidTempPath, totalChunks } = this.dataObject;
+    const { tempPath, totalChunks } = this.dataObject;
 
     for (let i = 0; i < totalChunks; i++) {
-      const chunkSavePath = `${vidTempPath}chunk_${i + 1}.mp4`;
+      const chunkSavePath = `${tempPath}chunk_${i + 1}.mp4`;
       if (fs.existsSync(chunkSavePath)) {
         fs.unlinkSync(chunkSavePath);
       }

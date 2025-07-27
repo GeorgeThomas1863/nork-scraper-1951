@@ -175,7 +175,7 @@ class KCNA {
   async getVidMultiThread() {
     //get obj data
     const { inputObj } = this.dataObject;
-    const { totalChunks, savePath, vidSizeBytes } = inputObj;
+    const { totalChunks, vidSavePath, vidSizeBytes } = inputObj;
     const vidObj = { ...inputObj };
 
     console.log("DOWNLOAD VID MULTI THREAD INPUT OBJ");
@@ -204,10 +204,10 @@ class KCNA {
       await mergeModel.mergeChunks();
 
       //check if vid exists delete it if fucked
-      if (!fs.existsSync(savePath)) return null;
-      const vidSize = fs.statSync(savePath).size;
+      if (!fs.existsSync(vidSavePath)) return null;
+      const vidSize = fs.statSync(vidSavePath).size;
       if (vidSize * 1.2 < vidSizeBytes) {
-        fs.unlinkSync(savePath);
+        fs.unlinkSync(vidSavePath);
         return null;
       }
 
