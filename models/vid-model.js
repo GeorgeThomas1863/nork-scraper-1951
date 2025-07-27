@@ -314,44 +314,23 @@ class Vid {
 
   //DOWNLOAD VID SECTION
 
-  async downloadVidFS() {
-    const { inputObj } = this.dataObject;
-    const vidObj = { ...inputObj };
+  // async downloadVidItem() {
+  //   const { inputObj } = this.dataObject;
+  //   const vidObj = { ...inputObj };
 
-    console.log("DOWNLOADING VIDEO INPUT OBJ");
-    console.log(vidObj);
+  //   console.log("DOWNLOADING VIDEO INPUT OBJ");
+  //   console.log(vidObj);
 
-    //check if new (not possible in most situations, but adding check to be sure)
-    const checkModel = new dbModel(vidObj, CONFIG.vidsDownloaded);
-    await checkModel.urlNewCheck(); //throws error if not new (keep out of try block to propogate error)
+  //   //check if new (not possible in most situations, but adding check to be sure)
+  //   const checkModel = new dbModel(vidObj, CONFIG.vidsDownloaded);
+  //   await checkModel.urlNewCheck(); //throws error if not new (keep out of try block to propogate error)
 
-    //download vid multi
-    const downloadModel = new KCNA({ inputObj: vidObj });
-    const downloadVidObj = await downloadModel.getVidMultiThread();
+  //   //download vid multi
+  //   const downloadModel = new KCNA({ inputObj: vidObj });
+  //   const downloadVidObj = await downloadModel.getVidMultiThread();
 
-    console.log("DOWNLOAD VID OBJ");
-    console.log(downloadVidObj);
-
-    //!!!!!!!
-    //HERE
-    //!!!!!!!!!
-
-    //CHANGE DL HELPER MODEL TO USE CORRECT PROMISE FORMAT (like other one does)
-
-    //ONCE ABOVE WORKING, THEN 
-
-    //CREATE VID SAVE FOLDER WITH CHUNKS, ENSURE VID WAS DOWNLOADED / EXISTS 
-
-    //CREATE A RETURN OBJ AND RECHUNK IN vids.js
-
-    //if fucked try other vid download //NOT SURE IF WORKS
-    // if (!downloadVidObj) {
-    //   const retryObj = await downloadModel.getVidSimple();
-    //   return retryObj;
-    // }
-
-    return downloadVidObj;
-  }
+  //   return downloadVidObj;
+  // }
 
   //-----------------------------
 

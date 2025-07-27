@@ -90,7 +90,6 @@ export const buildVidData = async (inputArray) => {
 //DOWNLOAD VID SECTION
 export const downloadVidPageArray = async (inputArray) => {
   if (!inputArray || !inputArray.length) return null;
-  const { vidPath } = CONFIG;
 
   //download just first item (below necessary for obj to be seen as array)
   const sortModel = new UTIL({ inputArray: inputArray });
@@ -104,31 +103,43 @@ export const downloadVidPageArray = async (inputArray) => {
     if (!scrapeState.scrapeActive) return downloadVidDataArray;
 
     try {
-      //add save path to picObj
-      const vidObj = sortArray[i];
-      const { vidName } = vidObj;
-      const savePath = vidPath + vidName;
-      vidObj.savePath = savePath;
-      const vidModel = new Vid({ inputObj: vidObj });
-
-      //download the vid
-      const downloadVidObj = await vidModel.downloadVidFS();
+      const downloadVidObj = await downloadVidFS(sortArray[i]);
       if (!downloadVidObj) continue;
 
-      //rechunk vid HERE
-
-      //STORE HERE
-      const storeObj = { ...vidObj, ...downloadVidObj };
-      const storeModel = new dbModel(storeObj, CONFIG.vidsDownloaded);
-      await storeModel.storeUniqueURL();
-
-      downloadVidDataArray.push(storeObj);
+      downloadVidDataArray.push(downloadVidObj);
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
   }
 
   return downloadVidDataArray;
+};
+
+export const downloadVidFS = async (inputObj) => {
+  if (!inputObj) return null;
+  const { vidName } = inputObj;
+  const { vidPath } = CONFIG;
+
+  const savePath = `${vidPath}${vidName}.mp4`;
+
+  const vidObj = { ...inputObj };
+  vidObj.savePath = savePath;
+
+  console.log("DOWNLOAD VID OBJ");
+  console.log(vidObj);
+
+  // const vidModel = new Vid({ inputObj: vidObj });
+
+  // //download the vid
+  // const downloadVidObj = await vidModel.downloadVidItem();
+  // if (!downloadVidObj) return null;
+
+  // //rechunk vid HERE
+
+  // //STORE HERE
+  // const storeObj = { ...vidObj, ...downloadVidObj };
+  // const storeModel = new dbModel(storeObj, CONFIG.vidsDownloaded);
+  // await storeModel.storeUniqueURL();
 };
 
 //---------------------
@@ -208,7 +219,7 @@ export const reDownloadVids = async (inputArray) => {
 
       //redownload vid
       const vidModel = new Vid({ inputObj: headerObj });
-      const vidObj = await vidModel.downloadVidFS();
+      const vidObj = await vidModel.downloadVidItem();
       if (!vidObj || !vidObj.chunksProcessed) continue;
 
       //build return obj
