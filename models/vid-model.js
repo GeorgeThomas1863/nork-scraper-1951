@@ -265,6 +265,7 @@ class Vid {
 
     const vidObj = { ...headerObj, ...inputObj };
 
+    //store to VIDS collection
     const storeModel = new dbModel(vidObj, CONFIG.vids);
     const storeData = await storeModel.storeUniqueURL();
     console.log(storeData);
