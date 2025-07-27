@@ -164,7 +164,12 @@ export const downloadVidFS = async (inputObj) => {
 
   //NOW RECHUNK THE MOTHERFUCKER WITH FFMPEG
   const vidChunkData = await chunkVidByLength(vidSavePath, vidSaveFolder);
-  if (!vidChunkData) return null;
+
+  //if shit fails redownload
+  if (!vidChunkData) {
+    const reDownloadModel = new KCNA({ inputObj: vidObj });
+    await reDownloadModel.getVidMultiThread();
+  }
 
   //delete vid to avoid saving twice
   if (!fs.existsSync(vidSavePath)) return null;
