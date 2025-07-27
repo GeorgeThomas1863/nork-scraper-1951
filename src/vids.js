@@ -141,6 +141,14 @@ export const downloadVidFS = async (inputObj) => {
   //download output path
   const vidSavePath = `${vidPath}${vidName}.mp4`;
 
+  //check if vid already exists there and delete it here if its fucked
+  if (fs.existsSync(vidSavePath)) {
+    const vidSize = fs.statSync(vidSavePath).size;
+    if (vidSize * 1.2 < vidSizeBytes) {
+      fs.unlinkSync(vidSavePath);
+    }
+  }
+
   const params = {
     url: url,
     tempPath: tempPath,
@@ -167,14 +175,9 @@ export const downloadVidFS = async (inputObj) => {
   const vidChunkData = await chunkVidByLength(vidSavePath, vidSaveFolder);
 
   //if shit fails redownload without continuous loop
-  if (!vidChunkData) {
-    if (retryCount < vidRetries) {
-      await downloadVidFS(inputObj);
-      retryCount++;
-    } else {
-      retryCount = 0;
-      return null;
-    }
+  if (!vidChunkData && retryCount < vidRetries) {
+    await downloadVidFS(inputObj);
+    retryCount++;
   }
 
   //delete vid to avoid saving twice
@@ -186,6 +189,9 @@ export const downloadVidFS = async (inputObj) => {
     chunksProcessed: vidObj.chunksProcessed,
     vidSaveFolder: vidSaveFolder,
   };
+
+  //reset retry count
+  retryCount = 0;
 
   return returnObj;
 };
