@@ -332,6 +332,18 @@ class Vid {
     console.log("DOWNLOAD VID OBJ");
     console.log(downloadVidObj);
 
+    //!!!!!!!
+    //HERE
+    //!!!!!!!!!
+
+    //CHANGE DL HELPER MODEL TO USE CORRECT PROMISE FORMAT (like other one does)
+
+    //ONCE ABOVE WORKING, THEN 
+
+    //CREATE VID SAVE FOLDER WITH CHUNKS, ENSURE VID WAS DOWNLOADED / EXISTS 
+
+    //CREATE A RETURN OBJ AND RECHUNK IN vids.js
+
     //if fucked try other vid download //NOT SURE IF WORKS
     // if (!downloadVidObj) {
     //   const retryObj = await downloadModel.getVidSimple();
