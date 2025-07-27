@@ -132,10 +132,11 @@ export const downloadVidPageArray = async (inputArray) => {
   return downloadVidDataArray;
 };
 
+let retryCount = 0;
 export const downloadVidFS = async (inputObj) => {
   if (!inputObj) return null;
   const { vidName, url, totalChunks, vidSizeBytes } = inputObj;
-  const { vidPath, tempPath } = CONFIG;
+  const { vidPath, tempPath, vidRetries } = CONFIG;
 
   //download output path
   const vidSavePath = `${vidPath}${vidName}.mp4`;
@@ -165,10 +166,15 @@ export const downloadVidFS = async (inputObj) => {
   //NOW RECHUNK THE MOTHERFUCKER WITH FFMPEG
   const vidChunkData = await chunkVidByLength(vidSavePath, vidSaveFolder);
 
-  //if shit fails redownload
+  //if shit fails redownload without continuous loop
   if (!vidChunkData) {
-    const reDownloadModel = new KCNA({ inputObj: vidObj });
-    await reDownloadModel.getVidMultiThread();
+    if (retryCount < vidRetries) {
+      await downloadVidFS(inputObj);
+      retryCount++;
+    } else {
+      retryCount = 0;
+      return null;
+    }
   }
 
   //delete vid to avoid saving twice
