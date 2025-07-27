@@ -183,7 +183,8 @@ export const chunkVidByLength = async (inputPath, outputFolder) => {
   const { chunkLengthSeconds } = CONFIG;
 
   const outputPattern = path.join(outputFolder, "chunk_%03d.mp4");
-  const command = `ffmpeg -i "${inputPath}" -c copy -segment_time ${chunkLengthSeconds} -f segment -segment_start_number 1 -reset_timestamps 1 "${outputPattern}"`;
+  // const command = `ffmpeg -i "${inputPath}" -c copy -segment_time ${chunkLengthSeconds} -f segment -segment_start_number 1 -reset_timestamps 1 "${outputPattern}"`;
+  const command = `ffmpeg -i "${inputPath}" -c copy -segment_time ${chunkLengthSeconds} -f segment -reset_timestamps 1 "${outputPattern}"`;
 
   const { stderr } = await execAsync(command);
   console.log("DONE CHUNKING");
