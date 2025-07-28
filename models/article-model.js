@@ -348,8 +348,8 @@ class Article {
       return noPicsData;
     }
 
-    console.log("ARTICLE OBJ");
-    console.log(articleObj);
+    // console.log("ARTICLE OBJ");
+    // console.log(articleObj);
 
     //otherwise post pics then content
     const picModel = new Pic({ inputObj: articleObj });
