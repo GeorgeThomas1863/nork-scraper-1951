@@ -23,7 +23,7 @@ export const scrapeNewKCNA = async () => {
   await uploadNewTG();
 
   //update mongo with ALL relevant data [unfuck / check it here]
-  await updateMongo();
+  // await updateMongo();
 
   //LOG SCRAPE END / show how long it took and write it in readable format
   const endModel = new Log();

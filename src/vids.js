@@ -7,6 +7,7 @@ import KCNA from "../models/kcna-model.js";
 import Vid from "../models/vid-model.js";
 import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
+import TG from "../models/tg-model.js";
 
 import { getDataFromPath } from "./scrape-util.js";
 import { scrapeState } from "./scrape-state.js";
@@ -270,9 +271,15 @@ export const uploadVidFS = async (inputObj) => {
   console.log("UPLOAD VID FS");
   console.log(inputObj);
 
-  const uploadObj = { ...inputObj };
+  const normalModel = new UTIL({ inputObj: inputObj });
+  const normalObj = await normalModel.normalizeInputsTG();
+
+  const uploadObj = { ...inputObj, ...normalObj };
   uploadObj.tgUploadId = tgUploadId;
   uploadObj.scrapeId = scrapeState.scrapeId;
+
+  console.log("UPLOAD OBJ");
+  console.log(uploadObj);
 
   const vidFolderExists = fs.existsSync(vidSaveFolder);
   if (!vidFolderExists) {
@@ -282,7 +289,7 @@ export const uploadVidFS = async (inputObj) => {
     throw error;
   }
 
-  //post title
+  // post title
   // const tgModel = new TG({ inputObj: uploadObj });
   // await tgModel.postTitleTG();
 };
