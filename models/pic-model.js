@@ -309,18 +309,18 @@ class Pic {
         //stop here if needed
         if (!scrapeState.scrapeActive) return postPicDataArray;
 
-        //get full picObj
-        // const picURL = picArray[i];
+        // get full picObj
+        const picURL = picArray[i];
 
-        // //get full pic Data (from pic db, combine in with inputObj) //get full pic Data (from pic db, combine in with inputObj)
-        // const lookupParams = {
-        //   keyToLookup: "url",
-        //   itemValue: picURL,
-        // };
+        //get full pic Data (from pic db, combine in with inputObj) //get full pic Data (from pic db, combine in with inputObj)
+        const lookupParams = {
+          keyToLookup: "url",
+          itemValue: picURL,
+        };
 
-        // const picDataModel = new dbModel(lookupParams, CONFIG.picsDownloaded);
-        // const picObj = await picDataModel.getUniqueItem();
-        // if (!picObj) continue;
+        const picDataModel = new dbModel(lookupParams, CONFIG.picsDownloaded);
+        const picObj = await picDataModel.getUniqueItem();
+        if (!picObj) continue;
 
         const uploadPicObj = { ...inputObj, ...picArray[i] };
 
