@@ -1,5 +1,7 @@
 //TO DO:
 
+//PIC UPLOAD FUCKED, fAILING TO FIND PIC ID SOMEHOW, CHECK ARTICLE PICS
+
 //working on upload, in the vids.js file, title posts, now need vid 
 
 //SCHEDULER STILL FUCKED, maybe not starting log right?? FIX
