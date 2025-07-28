@@ -325,14 +325,14 @@ class Pic {
 
         const uploadPicObj = { ...inputObj, ...picObj };
 
-        console.log("UPLOAD PIC OBJ");
-        console.log(uploadPicObj);
+        // console.log("UPLOAD PIC OBJ");
+        // console.log(uploadPicObj);
 
-        // const postPicModel = new TG({ inputObj: uploadPicObj });
-        // const postPicData = await postPicModel.postPicTG();
-        // if (!postPicData) continue;
+        const postPicModel = new TG({ inputObj: uploadPicObj });
+        const postPicData = await postPicModel.postPicTG();
+        if (!postPicData) continue;
 
-        // postPicDataArray.push(postPicData);
+        postPicDataArray.push(postPicData);
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
         // console.log(e);
