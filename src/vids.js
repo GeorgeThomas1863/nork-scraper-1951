@@ -299,29 +299,29 @@ export const uploadVidFS = async (inputObj) => {
   //!!!!!
 
   //define chunk size
-  // uploadObj.chunkSize = uploadChunkSize;
-  // // chunkObj.totalChunks = Math.ceil(vidSizeBytes / chunkObj.chunkSize);
+  uploadObj.chunkSize = uploadChunkSize;
+  // chunkObj.totalChunks = Math.ceil(vidSizeBytes / chunkObj.chunkSize);
 
-  // const vidChunkArray = await getVidChunksFromFolder(uploadObj);
-  // if (!vidChunkArray || !vidChunkArray.length) return null;
+  const vidChunkArray = await getVidChunksFromFolder(uploadObj);
+  if (!vidChunkArray || !vidChunkArray.length) return null;
 
-  // const chunksToUpload = vidChunkArray.length;
-  // uploadObj.chunksToUpload = chunksToUpload;
+  const chunksToUpload = vidChunkArray.length;
+  uploadObj.chunksToUpload = chunksToUpload;
 
-  // //loop through each array of chunk arrays to upload
-  // const uploadVidDataArray = [];
-  // for (let i = 0; i < vidChunkArray.length; i++) {
-  //   if (!scrapeState.scrapeActive) return null;
+  //loop through each array of chunk arrays to upload
+  const uploadVidDataArray = [];
+  for (let i = 0; i < vidChunkArray.length; i++) {
+    if (!scrapeState.scrapeActive) return null;
 
-  //   uploadObj.uploadIndex = i + 1;
-  //   const uploadVidData = await uploadCombinedVidChunk(vidChunkArray[i], uploadObj);
-  //   if (!uploadVidData) continue;
+    uploadObj.uploadIndex = i + 1;
+    const uploadVidData = await uploadCombinedVidChunk(vidChunkArray[i], uploadObj);
+    if (!uploadVidData) continue;
 
-  //   console.log("RETURN PARAMS");
-  //   console.log(uploadVidData);
+    console.log("RETURN PARAMS");
+    console.log(uploadVidData);
 
-  //   uploadVidDataArray.push(uploadVidData);
-  // }
+    uploadVidDataArray.push(uploadVidData);
+  }
 };
 
 export const getVidChunksFromFolder = async (inputObj) => {
