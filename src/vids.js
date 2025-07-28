@@ -268,8 +268,8 @@ export const uploadVidFS = async (inputObj) => {
   const { vidSaveFolder, url } = inputObj;
   const { tgUploadId, uploadChunkSize } = CONFIG;
 
-  // console.log("UPLOAD VID FS");
-  // console.log(inputObj);
+  console.log("UPLOAD VID FS");
+  console.log(inputObj);
 
   const vidFolderExists = fs.existsSync(vidSaveFolder);
   if (!vidFolderExists) {
