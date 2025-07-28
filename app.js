@@ -1,6 +1,6 @@
 //TO DO:
 
-//DOWNLOAD MOSTLY WORKS NOW NEED TO DO UPLOAD
+//working on upload, in the vids.js file, title posts, now need vid 
 
 //SCHEDULER STILL FUCKED, maybe not starting log right?? FIX
 

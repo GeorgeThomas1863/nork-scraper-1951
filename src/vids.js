@@ -294,6 +294,10 @@ export const uploadVidFS = async (inputObj) => {
   const tgModel = new TG({ inputObj: uploadObj });
   await tgModel.postTitleTG();
 
+  //!!!!!!!!!!
+  //HERE
+  //!!!!!
+
   //define chunk size
   // uploadObj.chunkSize = uploadChunkSize;
   // // chunkObj.totalChunks = Math.ceil(vidSizeBytes / chunkObj.chunkSize);
