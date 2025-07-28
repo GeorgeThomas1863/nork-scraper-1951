@@ -198,6 +198,9 @@ class TG {
     const { inputObj } = this.dataObject;
     const { picId, savePath, dateNormal, tgUploadId } = inputObj;
 
+    console.log("POST PIC TG");
+    console.log(inputObj);
+
     //post pic
 
     const postParams = {
