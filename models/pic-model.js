@@ -322,13 +322,16 @@ class Pic {
         const picObj = await picDataModel.getUniqueItem();
         if (!picObj) continue;
 
-        const uploadPicObj = { ...inputObj, ...picArray[i] };
+        console.log("PIC OBJ");
+        console.log(picObj);
 
-        const postPicModel = new TG({ inputObj: uploadPicObj });
-        const postPicData = await postPicModel.postPicTG();
-        if (!postPicData) continue;
+        // const uploadPicObj = { ...inputObj, ...picObj };
 
-        postPicDataArray.push(postPicData);
+        // const postPicModel = new TG({ inputObj: uploadPicObj });
+        // const postPicData = await postPicModel.postPicTG();
+        // if (!postPicData) continue;
+
+        // postPicDataArray.push(postPicData);
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
         // console.log(e);
