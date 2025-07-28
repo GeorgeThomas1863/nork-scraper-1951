@@ -265,7 +265,8 @@ export const uploadVidPageArrayTG = async (inputArray) => {
 
 export const uploadVidFS = async (inputObj) => {
   if (!inputObj) return null;
-  const { vidSaveFolder, url } = inputObj;
+  const { vidData, url } = inputObj;
+  const { vidSaveFolder } = vidData;
   const { tgUploadId, uploadChunkSize } = CONFIG;
 
   console.log("UPLOAD VID FS");
