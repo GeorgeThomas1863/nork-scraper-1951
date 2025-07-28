@@ -269,59 +269,59 @@ export const uploadVidFS = async (inputObj) => {
   const { vidSaveFolder } = vidData;
   const { tgUploadId, uploadChunkSize } = CONFIG;
 
-  console.log("UPLOAD VID FS");
+  console.log("UPLOAD VID FS!!!!!!!!!!!!!");
   console.log(inputObj);
 
-  const vidFolderExists = fs.existsSync(vidSaveFolder);
-  if (!vidFolderExists) {
-    const error = new Error("VID NOT YET DOWNLOADED");
-    error.url = url;
-    error.function = "uploadVidFS";
-    throw error;
-  }
+  // const vidFolderExists = fs.existsSync(vidSaveFolder);
+  // if (!vidFolderExists) {
+  //   const error = new Error("VID NOT YET DOWNLOADED");
+  //   error.url = url;
+  //   error.function = "uploadVidFS";
+  //   throw error;
+  // }
 
-  const normalModel = new UTIL({ inputObj: inputObj });
-  const normalObj = await normalModel.normalizeInputsTG();
+  // const normalModel = new UTIL({ inputObj: inputObj });
+  // const normalObj = await normalModel.normalizeInputsTG();
 
-  const uploadObj = { ...inputObj, ...normalObj };
-  uploadObj.tgUploadId = tgUploadId;
-  uploadObj.scrapeId = scrapeState.scrapeId;
+  // const uploadObj = { ...inputObj, ...normalObj };
+  // uploadObj.tgUploadId = tgUploadId;
+  // uploadObj.scrapeId = scrapeState.scrapeId;
 
-  console.log("UPLOAD OBJ");
-  console.log(uploadObj);
+  // console.log("UPLOAD OBJ");
+  // console.log(uploadObj);
 
-  // post title
-  const tgModel = new TG({ inputObj: uploadObj });
-  await tgModel.postTitleTG();
+  // // post title
+  // const tgModel = new TG({ inputObj: uploadObj });
+  // await tgModel.postTitleTG();
 
-  //!!!!!!!!!!
-  //HERE
-  //!!!!!
+  // //!!!!!!!!!!
+  // //HERE
+  // //!!!!!
 
-  //define chunk size
-  uploadObj.chunkSize = uploadChunkSize;
-  // chunkObj.totalChunks = Math.ceil(vidSizeBytes / chunkObj.chunkSize);
+  // //define chunk size
+  // uploadObj.chunkSize = uploadChunkSize;
+  // // chunkObj.totalChunks = Math.ceil(vidSizeBytes / chunkObj.chunkSize);
 
-  const vidChunkArray = await getVidChunksFromFolder(uploadObj);
-  if (!vidChunkArray || !vidChunkArray.length) return null;
+  // const vidChunkArray = await getVidChunksFromFolder(uploadObj);
+  // if (!vidChunkArray || !vidChunkArray.length) return null;
 
-  const chunksToUpload = vidChunkArray.length;
-  uploadObj.chunksToUpload = chunksToUpload;
+  // const chunksToUpload = vidChunkArray.length;
+  // uploadObj.chunksToUpload = chunksToUpload;
 
-  //loop through each array of chunk arrays to upload
-  const uploadVidDataArray = [];
-  for (let i = 0; i < vidChunkArray.length; i++) {
-    if (!scrapeState.scrapeActive) return null;
+  // //loop through each array of chunk arrays to upload
+  // const uploadVidDataArray = [];
+  // for (let i = 0; i < vidChunkArray.length; i++) {
+  //   if (!scrapeState.scrapeActive) return null;
 
-    uploadObj.uploadIndex = i + 1;
-    const uploadVidData = await uploadCombinedVidChunk(vidChunkArray[i], uploadObj);
-    if (!uploadVidData) continue;
+  //   uploadObj.uploadIndex = i + 1;
+  //   const uploadVidData = await uploadCombinedVidChunk(vidChunkArray[i], uploadObj);
+  //   if (!uploadVidData) continue;
 
-    console.log("RETURN PARAMS");
-    console.log(uploadVidData);
+  //   console.log("RETURN PARAMS");
+  //   console.log(uploadVidData);
 
-    uploadVidDataArray.push(uploadVidData);
-  }
+  //   uploadVidDataArray.push(uploadVidData);
+  // }
 };
 
 export const getVidChunksFromFolder = async (inputObj) => {
