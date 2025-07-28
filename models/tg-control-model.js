@@ -24,6 +24,9 @@ class TG {
     if (!inputObj) return null;
     const { tgUploadId } = inputObj;
 
+    console.log("POST TITLE TG");
+    console.log(inputObj);
+
     const textModel = new TG({ inputObj: inputObj });
     const titleText = await textModel.buildTitleText();
 
@@ -357,7 +360,8 @@ class TG {
     if (!chunkData || !chunkData.result) return null;
 
     //label the chunk (add caption)
-    const caption = titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + vidId + ".mp4; [" + (chunkNumber + 1) + " of " + totalChunks + "]";
+    const caption =
+      titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + vidId + ".mp4; [" + (chunkNumber + 1) + " of " + totalChunks + "]";
 
     //build edit caption params
     const editParams = {
