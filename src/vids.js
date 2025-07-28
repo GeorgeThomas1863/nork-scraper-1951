@@ -7,7 +7,7 @@ import KCNA from "../models/kcna-model.js";
 import Vid from "../models/vid-model.js";
 import dbModel from "../models/db-model.js";
 import UTIL from "../models/util-model.js";
-import TG from "../models/tg-model.js";
+import TG from "../models/tg-control-model.js";
 
 import { getDataFromPath } from "./scrape-util.js";
 import { scrapeState } from "./scrape-state.js";
