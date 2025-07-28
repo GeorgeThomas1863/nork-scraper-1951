@@ -322,10 +322,11 @@ class Pic {
         const picObj = await picDataModel.getUniqueItem();
         if (!picObj) continue;
 
-        console.log("PIC OBJ");
-        console.log(picObj);
 
-        // const uploadPicObj = { ...inputObj, ...picObj };
+        const uploadPicObj = { ...inputObj, ...picObj };
+
+        console.log("UPLOAD PIC OBJ");
+        console.log(uploadPicObj);
 
         // const postPicModel = new TG({ inputObj: uploadPicObj });
         // const postPicData = await postPicModel.postPicTG();
