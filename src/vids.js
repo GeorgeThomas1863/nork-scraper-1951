@@ -438,14 +438,13 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
     captionText: captionText,
   };
 
-  console.log("EDIT CAPTION PARAMS");
-  console.log(editCaptionParams);
+  // console.log("EDIT CAPTION PARAMS");
+  // console.log(editCaptionParams);
 
   const editCaptionModel = new TG(editCaptionParams);
-  const editCaptionData = await editCaptionModel.tgEditMessageCaption();
+  const editCaptionData = await editCaptionModel.editVidCaption();
   if (!editCaptionData || !editCaptionData.ok) return null;
 
-  // //STEP 5: DELETE THE VID
   fs.unlinkSync(combineVidPath);
 
   const returnObj = { ...inputObj, ...uploadData.result };
