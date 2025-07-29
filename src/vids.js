@@ -376,9 +376,9 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
 
   console.log(`UPLOADING VID CHUNK ${uploadIndex} OF ${chunksToUpload}`);
 
-  // console.log("UPLOAD COMBINED VID CHUNK");
-  // console.log(inputArray);
-  // console.log(inputObj);
+  console.log("UPLOAD COMBINED VID CHUNK");
+  console.log(inputArray);
+  console.log(inputObj);
 
   //STEP 1: COMBINE VID CHUNKS
   const combineChunkParams = {

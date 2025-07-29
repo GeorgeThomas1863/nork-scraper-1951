@@ -139,7 +139,7 @@ class TgReq {
   async tgVidFS(tokenIndex = 0) {
     const { form } = this.dataObject;
 
-    console.log("!!!!!!DATA OBJECT");
+    console.log("!!!!!!TG VID FS OBJECT");
     console.log(this.dataObject);
 
     console.log("!!!!!!FORM");
