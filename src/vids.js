@@ -233,11 +233,12 @@ export const uploadVidPageArrayTG = async (inputArray) => {
     if (!scrapeState.scrapeActive) return uploadDataArray;
     try {
       const vidUploadObj = await uploadVidFS(sortArray[i]);
+      if (!vidUploadObj) continue;
 
       console.log("VID UPLOAD OBJ");
       console.log(vidUploadObj);
 
-      //STORE REGARDLESS OF WHETHER RETURN (FIX THIS)
+      //STORE REGARDLESS OF WHETHER RETURN (UNFUCK THIS LOGIC)
       const storeModel = new dbModel(vidUploadObj, vidPagesUploaded);
       const storeData = await storeModel.storeUniqueURL();
       console.log("VID PAGE STORE DATA");
@@ -245,8 +246,8 @@ export const uploadVidPageArrayTG = async (inputArray) => {
 
       uploadVidPageArray.push(vidUploadObj);
     } catch (e) {
-      // console.log(e);
-      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      console.log(e);
+      // console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
   }
 
