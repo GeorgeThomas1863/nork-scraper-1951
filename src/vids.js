@@ -424,13 +424,13 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
 
   //STEP 4: EDIT VID CAPTION
   //just build stupid caption text here
-  const titleLabel = `<b>Video Titled:</b>`;
+  // const titleLabel = `<b>Video Titled:</b>`;
   const titleStr = "🇰🇵 🇰🇵 🇰🇵";
   let captionText = "";
   if (chunksToUpload > 1) {
-    captionText = `<b>Chunk:</b> ${uploadIndex} of ${chunksToUpload}\n\n${titleLabel} ${titleStr} ${title} ${titleStr}`;
+    captionText = `<b>Chunk:</b> ${uploadIndex} of ${chunksToUpload}\n\n${titleStr}<b>${title}</b>${titleStr}`;
   } else {
-    captionText = `${titleLabel} ${titleStr} ${title} ${titleStr} `;
+    captionText = `${titleStr}<b>${title}</b>${titleStr} `;
   }
 
   const editCaptionParams = {
