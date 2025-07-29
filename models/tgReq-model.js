@@ -169,6 +169,11 @@ class TgReq {
         const elapsed = (Date.now() - startTime) / 1000;
         const speedMBps = bytes / (1024 * 1024) / elapsed;
 
+        console.log("BYTES");
+        console.log(bytes);
+        console.log("TOTAL LENGTH");
+        console.log(totalLength);
+
         console.log(`Upload Progress: ${percent}% (${mbUploaded}MB / ${totalMB}MB) - ${speedMBps.toFixed(2)} MB/s`);
       }
     }, 2000); // Every 2 seconds
