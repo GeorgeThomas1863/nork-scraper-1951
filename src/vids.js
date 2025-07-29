@@ -389,7 +389,7 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
   };
 
   const combineVidObj = await combineVidChunks(combineChunkParams);
-  if (!combineVidObj) return null;
+  // if (!combineVidObj) return null;
 
   console.log("COMBINE VID OBJ");
   console.log(combineVidObj);
