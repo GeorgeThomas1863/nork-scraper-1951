@@ -372,7 +372,7 @@ export const getVidChunksFromFolder = async (inputObj) => {
 
 export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
   if (!inputArray || !inputArray.length || !inputObj);
-  const { uploadIndex, chunksToUpload, vidSaveFolder, vidName, tgUploadId, title, type } = inputObj;
+  const { uploadIndex, chunksToUpload, vidSaveFolder, vidName, tgUploadId, title, type, vidSizeBytes } = inputObj;
 
   console.log(`UPLOADING VID CHUNK ${uploadIndex} OF ${chunksToUpload}`);
 
@@ -391,18 +391,15 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
     uploadIndex: uploadIndex,
     combineVidPath: combineVidPath,
     outputFileName: outputFileName,
+    vidSizeBytes: vidSizeBytes,
   };
 
-  const combineVidObj = await combineVidChunks(combineChunkParams);
-  // if (!combineVidObj) return null;
-
-  // console.log("COMBINE VID OBJ");
-  // console.log(combineVidObj);
+  await combineVidChunks(combineChunkParams);
 
   //STEP 2: BUILD FORM
   const formParams = {
-    uploadPath: combineVidObj.uploadPath,
-    uploadFileName: combineVidObj.uploadFileName,
+    uploadPath: combineVidPath,
+    uploadFileName: outputFileName,
     tgUploadId: tgUploadId,
   };
 
@@ -451,14 +448,17 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
 //loop through and upload in groups of 10 (5 min vids)
 export const combineVidChunks = async (inputObj) => {
   if (!inputObj) return null;
-  const { vidSaveFolder, vidName, inputArray, uploadIndex, combineVidPath, outputFileName } = inputObj;
+  const { vidSaveFolder, vidName, inputArray, uploadIndex, combineVidPath, outputFileName, vidSizeBytes } = inputObj;
 
   console.log("COMBINE VID CHUNKS");
   console.log(inputObj);
 
-  //check if vid already exists
+  //check if vid already exists / is good, return if so
   if (fs.existsSync(combineVidPath)) {
-    return true;
+    const vidSize = fs.statSync(combineVidPath).size;
+    if (vidSize * 1.2 > vidSizeBytes) return true;
+
+    fs.unlinkSync(combineVidPath);
   }
 
   //define things
