@@ -391,8 +391,6 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
   const combineVidObj = await combineVidChunks(combineChunkParams);
   // if (!combineVidObj) return null;
 
-  fs.unlinkSync(`${vidSaveFolder}concat_list.txt`);
-
   // console.log("COMBINE VID OBJ");
   // console.log(combineVidObj);
 
@@ -453,38 +451,53 @@ export const combineVidChunks = async (inputObj) => {
   console.log("COMBINE VID CHUNKS");
   console.log(inputObj);
 
-  //CREATE THE CONCAT LIST
-  let concatList = "";
-  for (const chunk of inputArray) {
-    concatList += `file '${chunk}' \n`;
-  }
-
-  fs.writeFileSync(`${vidSaveFolder}concat_list.txt`, concatList);
-
-  //creat vid upload path
+  //define things
+  const concatListPath = `${vidSaveFolder}concat_list.txt`;
   const outputFileName = `${vidName}_${uploadIndex}.mp4`;
   const combineVidPath = `${vidSaveFolder}${outputFileName}`;
 
-  //build ffmpeg cmd and execute
-  const cmd = `ffmpeg -f concat -safe 0 -i ${vidSaveFolder}concat_list.txt -c copy ${combineVidPath}`;
-  await execAsync(cmd);
+  //CREATE THE CONCAT LIST
+  try {
+    let concatList = "";
+    for (const chunk of inputArray) {
+      concatList += `file '${chunk}' \n`;
+    }
 
-  const returnObj = {
-    uploadFileName: outputFileName,
-    uploadPath: combineVidPath,
-  };
+    await fsPromises.writeFile(concatListPath, concatList);
 
-  // console.log("RETURN OBJ");
-  // console.log(returnObj);
+    //build ffmpeg cmd and execute
+    const cmd = `ffmpeg -f concat -safe 0 -i ${vidSaveFolder}concat_list.txt -c copy ${combineVidPath}`;
+    await execAsync(cmd);
 
-  if (!returnObj || !fs.existsSync(combineVidPath)) {
-    const error = new Error("COMBINE VID FUCKED, COMBINED VID DOESNT EXIST");
-    error.content = "COMBINE COMMAND: " + cmd;
-    error.function = "combineVidChunks";
-    throw error;
+    await fsPromises.unlink(concatListPath);
+
+    const returnObj = {
+      uploadFileName: outputFileName,
+      uploadPath: combineVidPath,
+    };
+
+    // Verify the combined video exists (async)
+    try {
+      await fsPromises.access(combineVidPath);
+    } catch (accessError) {
+      const error = new Error("COMBINE VID FAILED, COMBINED VID DOESN'T EXIST");
+      error.content = "COMBINE COMMAND: " + cmd;
+      error.function = "combineVidChunks";
+      throw error;
+    }
+
+    return returnObj;
+  } catch (e) {
+    // Clean up concat list if it exists and there was an error
+    try {
+      await fsPromises.unlink(concatListPath);
+    } catch (cleanupError) {
+      // Ignore cleanup errors - file might not exist
+    }
+
+    // Re-throw the original errors
+    throw e;
   }
-
-  return returnObj;
 };
 
 export const buildVidForm = async (inputObj) => {
