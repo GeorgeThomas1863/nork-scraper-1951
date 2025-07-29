@@ -424,7 +424,7 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
 
   //STEP 4: EDIT VID CAPTION
   //just build stupid caption text here
-  const titleLabel = `<b>Vid:</b>`;
+  const titleLabel = `Vid Titled:`;
   const titleStr = "🇰🇵 🇰🇵 🇰🇵";
   let captionText = "";
   if (chunksToUpload > 1) {
