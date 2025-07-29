@@ -265,12 +265,22 @@ export const uploadVidPageArrayTG = async (inputArray) => {
 
 export const uploadVidFS = async (inputObj) => {
   if (!inputObj) return null;
-  const { vidData, url } = inputObj;
-  // const { vidSaveFolder } = vidData;
-  const { tgUploadId, uploadChunkSize } = CONFIG;
+  const { url, vidURL } = inputObj;
+  const { tgUploadId, uploadChunkSize, vidsDownloaded } = CONFIG;
 
   console.log("UPLOAD VID FS!!!!!!!!!!!!!");
   console.log(inputObj);
+
+  //get vidObj data
+  const lookupParams = {
+    keyToLookup: "url",
+    itemValue: vidURL,
+  };
+  const vidObjModel = new dbModel(lookupParams, vidsDownloaded);
+  const vidObjData = await vidObjModel.getUniqueItem();
+
+  console.log("VID OBJ DATA");
+  console.log(vidObjData);
 
   // const vidFolderExists = fs.existsSync(vidSaveFolder);
   // if (!vidFolderExists) {
