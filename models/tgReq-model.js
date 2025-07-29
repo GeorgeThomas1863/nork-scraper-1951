@@ -136,57 +136,54 @@ class TgReq {
     }
   }
 
-  async tgVidFS(tokenIndex = 0, onProgress = null) {
-    const { form } = this.dataObject;
+  //with progress tracker
+  async tgVidFS(tokenIndex = 0) {
+    const { form, inputObj } = this.dataObject;
+    const { vidSizeBytes, vidSizeMB } = inputObj;
+
+    console.log(`STARTING UPLOAD OF ${vidSizeMB}MB VIDEO...`);
 
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/sendVideo`;
 
-    // console.log(url);
+    let bytesPosted = 0;
+    const startTime = Date.now();
 
-    // Add this before your axios call
-    console.log("Form type:", typeof form);
-    console.log("Form constructor:", form.constructor.name);
+    // Track bytes as they're sent
+    form.on("data", (chunk) => {
+      bytesPosted += chunk.length;
+    });
 
-    // Check if form has a getLength method (indicates it's not pre-buffered)
-    if (form.getLength) {
-      form.getLength((err, length) => {
-        console.log("Form length:", length);
-      });
-    }
+    // Progress logger every 5 seconds
+    const progressInterval = setInterval(() => {
+      if (bytesPosted > 0) {
+        const percent = Math.round((bytesPosted * 100) / vidSizeBytes);
+        const mbUploaded = (bytesPosted / (1024 * 1024)).toFixed(2);
+        const elapsed = (Date.now() - startTime) / 1000;
+        const speedMBps = bytesPosted / (1024 * 1024) / elapsed;
+
+        console.log(`Upload Progress: ${percent}% (${mbUploaded}MB / ${vidSizeMB}MB) - ${speedMBps.toFixed(2)} MB/s`);
+      }
+    }, 3000); // Every 5 seconds
 
     try {
       const res = await axios.post(url, form, {
         headers: form.getHeaders(),
         maxBodyLength: Infinity,
         maxContentLength: Infinity,
-        onUploadProgress: (progressEvent) => {
-          if (progressEvent.lengthComputable) {
-            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            const mbLoaded = (progressEvent.loaded / (1024 * 1024)).toFixed(2);
-            const mbTotal = (progressEvent.total / (1024 * 1024)).toFixed(2);
-
-            console.log(`Upload Progress: ${percentCompleted}% (${mbLoaded}MB / ${mbTotal}MB)`);
-
-            // Call custom progress callback if provided
-            if (onProgress && typeof onProgress === "function") {
-              onProgress({
-                percent: percentCompleted,
-                loaded: progressEvent.loaded,
-                total: progressEvent.total,
-                mbLoaded: parseFloat(mbLoaded),
-                mbTotal: parseFloat(mbTotal),
-              });
-            }
-          }
-        },
       });
+
+      clearInterval(progressInterval);
+      const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+      const avgSpeed = (vidSizeMB / duration).toFixed(2);
+      console.log(`Upload completed! ${vidSizeMB}MB in ${duration}s (avg: ${avgSpeed} MB/s)`);
 
       // console.log("!!!!!!RES");
       // console.log(res.data);
 
       return res.data;
     } catch (e) {
+      clearInterval(progressInterval);
       console.log("ERROR");
       console.log(e);
 
