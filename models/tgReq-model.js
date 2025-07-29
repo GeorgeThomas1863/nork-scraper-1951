@@ -139,16 +139,21 @@ class TgReq {
   async tgVidFS(tokenIndex = 0, onProgress = null) {
     const { form } = this.dataObject;
 
-    // console.log("!!!!!!TG VID FS OBJECT");
-    // console.log(this.dataObject);
-
-    // console.log("!!!!!!FORM");
-    // console.log(form);
-
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/sendVideo`;
 
-    console.log(url);
+    // console.log(url);
+
+    // Add this before your axios call
+    console.log("Form type:", typeof form);
+    console.log("Form constructor:", form.constructor.name);
+
+    // Check if form has a getLength method (indicates it's not pre-buffered)
+    if (form.getLength) {
+      form.getLength((err, length) => {
+        console.log("Form length:", length);
+      });
+    }
 
     try {
       const res = await axios.post(url, form, {
