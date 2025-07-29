@@ -142,10 +142,10 @@ class TgReq {
     // console.log("!!!!!!FORM");
     // console.log(form);
 
-    console.log(url);
-
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/sendVideo`;
+
+    console.log(url);
 
     try {
       const res = await axios.post(url, form, {
