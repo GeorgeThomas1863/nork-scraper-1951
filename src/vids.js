@@ -232,19 +232,27 @@ export const uploadVidPageArrayTG = async (inputArray) => {
     //stop if needed
     if (!scrapeState.scrapeActive) return uploadDataArray;
     try {
-      const vidUploadObj = await uploadVidFS(sortArray[i]);
-      if (!vidUploadObj) continue;
+      //double check vid page not already uploaded
+      console.log("UPLOADING VID PAGE");
+      console.log(sortArray[i]);
 
-      console.log("VID UPLOAD OBJ");
-      console.log(vidUploadObj);
+      // const vidUploadObj = await uploadVidFS(sortArray[i]);
+      // if (!vidUploadObj) continue;
 
-      //STORE REGARDLESS OF WHETHER RETURN (UNFUCK THIS LOGIC)
-      const storeModel = new dbModel(vidUploadObj, vidPagesUploaded);
-      const storeData = await storeModel.storeUniqueURL();
-      console.log("VID PAGE STORE DATA");
-      console.log(storeData);
+      // //STORE BOTH VIDPAGE AND VID HERE (STARTING WITH VIDPAGE)
+      // const vidPageObj = { ...sortArray[i], ...vidUploadObj.uploadVidDataArray };
 
-      uploadVidPageArray.push(vidUploadObj);
+      // const vidPageStoreModel = new dbModel(vidPageObj, vidPagesUploaded);
+      // const vidPageStoreData = await vidPageStoreModel.storeUniqueURL();
+      // console.log("VID PAGE STORE DATA");
+      // console.log(vidPageStoreData);
+
+      // const storeModel = new dbModel(vidUploadObj, vidPagesUploaded);
+      // const storeData = await storeModel.storeUniqueURL();
+      // console.log("VID PAGE STORE DATA");
+      // console.log(storeData);
+
+      // uploadVidPageArray.push(vidUploadObj);
     } catch (e) {
       console.log(e);
       // console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
@@ -320,25 +328,19 @@ export const uploadVidFS = async (inputObj) => {
       uploadVidDataArray.push(uploadVidData);
     }
 
-    // console.log("UPLOAD VID DATA ARRAY");
-    // console.log(uploadVidDataArray);
-    // console.log(uploadVidDataArray.length);
+    const returnObj = { ...uploadObj, uploadVidDataArray: uploadVidDataArray };
 
-    //store it
-    if (!uploadVidDataArray) return null;
+    return returnObj;
 
-    //STEP 3 STORE to VID UPLOADED [FIGURE OUT BETTER WAY TO DO THIS]
-    const storeObj = { ...uploadObj, uploadVidDataArray: uploadVidDataArray };
+    // // console.log("STORE OBJ");
+    // // console.log(storeObj);
 
-    // console.log("STORE OBJ");
-    // console.log(storeObj);
+    // const storeModel = new dbModel(storeObj, vidsUploaded);
+    // const storeData = await storeModel.storeUniqueURL();
+    // console.log("VID STORE DATA");
+    // console.log(storeData);
 
-    const storeModel = new dbModel(storeObj, vidsUploaded);
-    const storeData = await storeModel.storeUniqueURL();
-    console.log("VID STORE DATA");
-    console.log(storeData);
-
-    return storeObj;
+    // return storeObj;
   } catch (e) {
     console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
   }
