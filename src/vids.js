@@ -220,57 +220,40 @@ export const chunkVidByLength = async (inputPath, outputFolder) => {
 
 export const uploadVidPageArrayTG = async (inputArray) => {
   if (!inputArray || !inputArray.length) return null;
-
-  // console.log("!!!!!!!UPLOAD VID PAGE ARRAY");
-  // console.log(inputArray);
+  const { vidPagesUploaded } = CONFIG;
 
   const sortModel = new UTIL({ inputArray: inputArray });
   const sortArray = await sortModel.sortArrayByDate();
 
-  // console.log("SORT ARRAY");
-  // console.log(sortArray);
-
   if (!sortArray || !sortArray.length) return null;
 
-  const uploadDataArray = [];
+  const uploadVidPageArray = [];
   for (let i = 0; i < sortArray.length; i++) {
     //stop if needed
     if (!scrapeState.scrapeActive) return uploadDataArray;
     try {
       const vidUploadObj = await uploadVidFS(sortArray[i]);
+      if (!vidUploadObj) continue;
 
-      // const uploadModel = new Vid({ inputObj: inputObj });
-      // const postVidPageObjData = await uploadModel.postVidPageObj();
-      // if (!postVidPageObjData) continue;
+      const storeModel = new dbModel(vidUploadObj, vidPagesUploaded);
+      const storeData = await storeModel.storeUniqueURL();
+      console.log("VID PAGE STORE DATA");
+      console.log(storeData);
 
-      //Build store obj (just store object for first text chunk)
-      // const storeObj = { ...inputObj };
-      // storeObj.chat = postVidPageObjData?.chat;
-      // storeObj.message_id = postVidPageObjData?.message_id;
-      // storeObj.sender_chat = postVidPageObjData?.sender_chat;
-
-      // //store data
-      // const storeModel = new dbModel(storeObj, CONFIG.vidPagesUploaded);
-      // const storeData = await storeModel.storeUniqueURL();
-      // console.log(storeData);
-
-      // uploadDataArray.push(storeObj);
+      uploadVidPageArray.push(vidUploadObj);
     } catch (e) {
       // console.log(e);
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
   }
 
-  return uploadDataArray;
+  return uploadVidPageArray;
 };
 
 export const uploadVidFS = async (inputObj) => {
   if (!inputObj) return null;
   const { url, vidURL, title } = inputObj;
   const { tgUploadId, vidsUploaded, vidsDownloaded } = CONFIG;
-
-  // console.log("UPLOAD VID FS!!!!!!!!!!!!!");
-  // console.log(inputObj);
 
   //get vidObj data
   const lookupParams = {
@@ -333,14 +316,14 @@ export const uploadVidFS = async (inputObj) => {
       uploadVidDataArray.push(uploadVidData);
     }
 
-    console.log("UPLOAD VID DATA ARRAY");
-    console.log(uploadVidDataArray);
-    console.log(uploadVidDataArray.length);
+    // console.log("UPLOAD VID DATA ARRAY");
+    // console.log(uploadVidDataArray);
+    // console.log(uploadVidDataArray.length);
 
     //store it
-    // if (!uploadVidDataArray || uploadVidDataArray.length) return null;
+    if (!uploadVidDataArray) return null;
 
-    //STEP 3 STORE VID UPLOAD
+    //STEP 3 STORE VID
     const storeObj = { ...uploadObj, uploadVidDataArray: uploadVidDataArray };
 
     console.log("STORE OBJ");
@@ -348,6 +331,7 @@ export const uploadVidFS = async (inputObj) => {
 
     const storeModel = new dbModel(storeObj, vidsUploaded);
     const storeData = await storeModel.storeUniqueURL();
+    console.log("VID STORE DATA");
     console.log(storeData);
 
     return storeObj;
@@ -654,5 +638,3 @@ export const reDownloadVidHeaders = async (inputObj) => {
 
   return headerObj;
 };
-
-// Split video into segments of specified duration
