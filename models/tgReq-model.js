@@ -142,6 +142,8 @@ class TgReq {
     // console.log("!!!!!!FORM");
     // console.log(form);
 
+    console.log(url);
+
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/sendVideo`;
 
@@ -158,6 +160,9 @@ class TgReq {
       return res.data;
     } catch (e) {
       if (e.response && e.response.data) {
+        console.log("ERROR");
+        console.log(e);
+
         //check token
         const checkModel = new TgReq({ data: e.response.data });
         const checkData = await checkModel.checkToken();
