@@ -233,10 +233,9 @@ export const uploadVidPageArrayTG = async (inputArray) => {
     if (!scrapeState.scrapeActive) return uploadDataArray;
     try {
       const vidUploadObj = await uploadVidFS(sortArray[i]);
-     
 
       console.log("VID UPLOAD OBJ");
-      console.log(vidUploadObj)
+      console.log(vidUploadObj);
 
       //STORE REGARDLESS OF WHETHER RETURN (FIX THIS)
       const storeModel = new dbModel(vidUploadObj, vidPagesUploaded);
@@ -327,7 +326,7 @@ export const uploadVidFS = async (inputObj) => {
     //store it
     if (!uploadVidDataArray) return null;
 
-    //STEP 3 STORE to VID UPLOADED
+    //STEP 3 STORE to VID UPLOADED [FIGURE OUT BETTER WAY TO DO THIS]
     const storeObj = { ...uploadObj, uploadVidDataArray: uploadVidDataArray };
 
     // console.log("STORE OBJ");
@@ -341,7 +340,6 @@ export const uploadVidFS = async (inputObj) => {
     return storeObj;
   } catch (e) {
     console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-    if (storeObj) return storeObj;
   }
 };
 
@@ -433,9 +431,9 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
   const titleStr = "🇰🇵 🇰🇵 🇰🇵";
   let captionText = "";
   if (chunksToUpload > 1) {
-    captionText = `<b>Chunk:</b> ${uploadIndex} of ${chunksToUpload}\n\n${titleLabel} ${title} ${titleStr}`;
+    captionText = `<b>Chunk:</b> ${uploadIndex} of ${chunksToUpload}\n\n${titleStr}\n${titleLabel} ${title}`;
   } else {
-    captionText = `${titleLabel} <b>${title}</b> ${titleStr} `;
+    captionText = `${titleStr}\n${titleLabel} ${title}`;
   }
 
   const editCaptionParams = {
