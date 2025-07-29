@@ -314,8 +314,8 @@ export const uploadVidFS = async (inputObj) => {
   //get vid chunks
   const vidChunkArray = await getVidChunksFromFolder(uploadObj);
 
-  console.log("VID CHUNK ARRAY");
-  console.log(vidChunkArray);
+  // console.log("VID CHUNK ARRAY");
+  // console.log(vidChunkArray);
 
   if (!vidChunkArray || !vidChunkArray.length) return null;
 
@@ -328,8 +328,8 @@ export const uploadVidFS = async (inputObj) => {
     uploadObj.uploadIndex = i + 1;
     const uploadVidData = await uploadCombinedVidChunk(vidChunkArray[i], uploadObj);
 
-    console.log("UPLOAD VID DATA");
-    console.log(uploadVidData);
+    // console.log("UPLOAD VID DATA");
+    // console.log(uploadVidData);
 
     if (!uploadVidData) continue;
 
@@ -376,9 +376,9 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
 
   console.log(`UPLOADING VID CHUNK ${uploadIndex} OF ${chunksToUpload}`);
 
-  console.log("UPLOAD COMBINED VID CHUNK");
-  console.log(inputArray);
-  console.log(inputObj);
+  // console.log("UPLOAD COMBINED VID CHUNK");
+  // console.log(inputArray);
+  // console.log(inputObj);
 
   const outputFileName = `${vidName}_${uploadIndex}.mp4`;
   const combineVidPath = `${vidSaveFolder}${outputFileName}`;
@@ -452,8 +452,8 @@ export const combineVidChunks = async (inputObj) => {
   if (!inputObj) return null;
   const { vidSaveFolder, vidName, inputArray, uploadIndex, combineVidPath, outputFileName, vidSizeBytes } = inputObj;
 
-  console.log("COMBINE VID CHUNKS");
-  console.log(inputObj);
+  // console.log("COMBINE VID CHUNKS");
+  // console.log(inputObj);
 
   //check if vid already exists / is good, return if so
   if (fs.existsSync(combineVidPath)) {
@@ -509,8 +509,8 @@ export const buildVidForm = async (inputObj) => {
   if (!inputObj) return null;
   const { uploadPath, tgUploadId, uploadFileName } = inputObj;
 
-  console.log("BUILD VID FORM INPUT OBJ");
-  console.log(inputObj);
+  // console.log("BUILD VID FORM INPUT OBJ");
+  // console.log(inputObj);
 
   const readStream = fs.createReadStream(uploadPath);
 
@@ -565,8 +565,8 @@ export const reDownloadVids = async (inputArray) => {
       //get vid headers
       const headerObj = await reDownloadVidHeaders(fuckedObj);
 
-      console.log("!!!HEADER OBJ");
-      console.log(headerObj);
+      // console.log("!!!HEADER OBJ");
+      // console.log(headerObj);
 
       //redownload vid
       // const vidModel = new Vid({ inputObj: headerObj });
