@@ -448,6 +448,9 @@ export const combineVidChunks = async (inputObj) => {
   if (!inputObj) return null;
   const { vidSaveFolder, vidName, inputArray, uploadIndex } = inputObj;
 
+  console.log("COMBINE VID CHUNKS");
+  console.log(inputObj);
+
   //CREATE THE CONCAT LIST
   let concatList = "";
   for (const chunk of inputArray) {
