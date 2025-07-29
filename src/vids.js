@@ -474,6 +474,9 @@ export const combineVidChunks = async (inputObj) => {
     uploadPath: combineVidPath,
   };
 
+  console.log("RETURN OBJ");
+  console.log(returnObj);
+
   if (!returnObj || !fs.existsSync(combineVidPath)) {
     const error = new Error("COMBINE VID FUCKED, COMBINED VID DOESNT EXIST");
     error.content = "COMBINE COMMAND: " + cmd;
