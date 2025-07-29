@@ -138,33 +138,40 @@ class TgReq {
 
   //with progress tracker
   async tgVidFS(tokenIndex = 0) {
-    const { form, inputObj } = this.dataObject;
-    const { vidSizeBytes, vidSizeMB } = inputObj;
-
-    console.log(`STARTING UPLOAD OF ${vidSizeMB}MB VIDEO...`);
+    const { form } = this.dataObject;
 
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/sendVideo`;
 
-    let bytesPosted = 0;
+    const totalLength = await new Promise((resolve, reject) => {
+      form.getLength((err, length) => {
+        if (err) reject(err);
+        else resolve(length);
+      });
+    });
+
+    const totalMB = (totalLength / (1024 * 1024)).toFixed(2);
     const startTime = Date.now();
+    let bytes = 0;
+
+    console.log(`STARTING UPLOAD OF ${totalMB}MB VIDEO...`);
 
     // Track bytes as they're sent
     form.on("data", (chunk) => {
-      bytesPosted += chunk.length;
+      bytes += chunk.length;
     });
 
     // Progress logger every 5 seconds
     const progressInterval = setInterval(() => {
-      if (bytesPosted > 0) {
-        const percent = Math.round((bytesPosted * 100) / vidSizeBytes);
-        const mbUploaded = (bytesPosted / (1024 * 1024)).toFixed(2);
+      if (bytes > 0) {
+        const percent = Math.round((bytes * 100) / totalLength);
+        const mbUploaded = (bytes / (1024 * 1024)).toFixed(2);
         const elapsed = (Date.now() - startTime) / 1000;
-        const speedMBps = bytesPosted / (1024 * 1024) / elapsed;
+        const speedMBps = bytes / (1024 * 1024) / elapsed;
 
-        console.log(`Upload Progress: ${percent}% (${mbUploaded}MB / ${vidSizeMB}MB) - ${speedMBps.toFixed(2)} MB/s`);
+        console.log(`Upload Progress: ${percent}% (${mbUploaded}MB / ${totalMB}MB) - ${speedMBps.toFixed(2)} MB/s`);
       }
-    }, 3000); // Every 5 seconds
+    }, 2000); // Every 2 seconds
 
     try {
       const res = await axios.post(url, form, {
@@ -175,8 +182,8 @@ class TgReq {
 
       clearInterval(progressInterval);
       const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-      const avgSpeed = (vidSizeMB / duration).toFixed(2);
-      console.log(`Upload completed! ${vidSizeMB}MB in ${duration}s (avg: ${avgSpeed} MB/s)`);
+      const avgSpeed = (totalMB / duration).toFixed(2);
+      console.log(`Upload completed! ${totalMB}MB in ${duration}s (avg: ${avgSpeed} MB/s)`);
 
       // console.log("!!!!!!RES");
       // console.log(res.data);

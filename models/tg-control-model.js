@@ -253,8 +253,8 @@ class TG {
     const postModel = new TgReq(this.dataObject);
     const vidData = await postModel.tgVidFS(TgReq.tokenIndex);
 
-    console.log("VID DATA");
-    console.log(vidData);
+    // console.log("VID DATA");
+    // console.log(vidData);
 
     return vidData;
   }
