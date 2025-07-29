@@ -1,6 +1,7 @@
 import fs from "fs";
 import fsPromises from "fs/promises";
 import path from "path";
+import FormData from "form-data";
 
 import CONFIG from "../config/config.js";
 import KCNA from "../models/kcna-model.js";
@@ -367,9 +368,9 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
 
   console.log(`UPLOADING VID CHUNK ${uploadIndex} OF ${chunksToUpload}`);
 
-  console.log("UPLOAD COMBINED VID CHUNK");
-  console.log(inputArray);
-  console.log(inputObj);
+  // console.log("UPLOAD COMBINED VID CHUNK");
+  // console.log(inputArray);
+  // console.log(inputObj);
 
   //STEP 1: COMBINE VID CHUNKS
   const combineChunkParams = {
@@ -392,14 +393,18 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
     tgUploadId: tgUploadId,
   };
 
-  // const vidForm = await buildVidForm(formParams);
-  // if (!vidForm) return null;
+  const vidForm = await buildVidForm(formParams);
+  if (!vidForm) return null;
 
-  // //STEP 3: UPLOAD THE VID
-  // const uploadData = await tgPostVidFS({ form: vidForm });
-  // if (!uploadData || !uploadData.ok) return null;
+  //STEP 3: UPLOAD THE VID
+  const uploadModel = new TG({ form: vidForm });
+  const uploadData = await uploadModel.postVidTG();
+  if (!uploadData || !uploadData.ok) return null;
 
-  // //STEP 4: EDIT VID CAPTION
+  console.log("UPLOAD DATA");
+  console.log(uploadData);
+
+  //STEP 4: EDIT VID CAPTION
   // const captionParams = {
   //   uploadIndex: uploadIndex,
   //   chunksToUpload: chunksToUpload,
@@ -463,6 +468,35 @@ export const combineVidChunks = async (inputObj) => {
   }
 
   return returnObj;
+};
+
+export const buildVidForm = async (inputObj) => {
+  if (!inputObj) return null;
+  const { uploadPath, tgUploadId, uploadFileName } = inputObj;
+
+  const readStream = fs.createReadStream(uploadPath);
+
+  // Create form data for this chunk
+  const formData = new FormData();
+  formData.append("chat_id", tgUploadId);
+  formData.append("video", readStream, {
+    filename: uploadFileName,
+    // knownLength: end - start,
+  });
+
+  //set setting for auto play / streaming
+  formData.append("supports_streaming", "true");
+  formData.append("width", "1280");
+  formData.append("height", "720");
+
+  if (!formData || !readStream) {
+    const error = new Error("BUILD VID FORM FUCKED");
+    error.content = "FORM DATA: " + formData;
+    error.function = "buildVidForm";
+    throw error;
+  }
+
+  return formData;
 };
 
 //---------------------------

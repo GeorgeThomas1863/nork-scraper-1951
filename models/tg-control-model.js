@@ -248,6 +248,14 @@ class TG {
 
   //POST VIDS
 
+  async postVidTG() {
+    const { vidForm } = this.dataObject;
+
+    const postModel = new TgReq({ form: vidForm });
+    const vidData = await postModel.tgVidFS(TgReq.tokenIndex);
+    return vidData;
+  }
+
   // async postVidTG() {
   //   const { inputObj } = this.dataObject;
   //   const { vidSizeBytes, thumbnail } = inputObj;
@@ -312,108 +320,108 @@ class TG {
   //   // return storeObj;
   // }
 
-  async postChunkArray() {
-    const { inputObj } = this.dataObject;
-    const { totalChunks, chunkSize, vidSizeBytes } = inputObj;
-    const chunkObj = { ...inputObj };
+  // async postChunkArray() {
+  //   const { inputObj } = this.dataObject;
+  //   const { totalChunks, chunkSize, vidSizeBytes } = inputObj;
+  //   const chunkObj = { ...inputObj };
 
-    //send each chunk
-    const chunkDataArray = [];
-    for (let i = 0; i < totalChunks; i++) {
-      //STOP HERE if needed
-      if (!scrapeState.scrapeActive) return chunkDataArray;
+  //   //send each chunk
+  //   const chunkDataArray = [];
+  //   for (let i = 0; i < totalChunks; i++) {
+  //     //STOP HERE if needed
+  //     if (!scrapeState.scrapeActive) return chunkDataArray;
 
-      //define chunk
-      const start = i * chunkSize;
-      const end = Math.min(vidSizeBytes, start + chunkSize);
-      chunkObj.start = start;
-      chunkObj.end = end;
-      chunkObj.chunkNumber = i;
+  //     //define chunk
+  //     const start = i * chunkSize;
+  //     const end = Math.min(vidSizeBytes, start + chunkSize);
+  //     chunkObj.start = start;
+  //     chunkObj.end = end;
+  //     chunkObj.chunkNumber = i;
 
-      // console.log("!!!!!!CHUNK OBJ");
-      // console.log(chunkObj);
+  //     // console.log("!!!!!!CHUNK OBJ");
+  //     // console.log(chunkObj);
 
-      const postChunkModel = new TG({ inputObj: chunkObj });
-      const postChunkData = await postChunkModel.postVidChunk();
-      if (!postChunkData) continue;
+  //     const postChunkModel = new TG({ inputObj: chunkObj });
+  //     const postChunkData = await postChunkModel.postVidChunk();
+  //     if (!postChunkData) continue;
 
-      chunkDataArray.push(postChunkData);
-    }
+  //     chunkDataArray.push(postChunkData);
+  //   }
 
-    return chunkDataArray;
-  }
+  //   return chunkDataArray;
+  // }
 
-  //post each chunk, edit captions
-  async postVidChunk() {
-    const { inputObj } = this.dataObject;
-    const { totalChunks, titleNormal, dateNormal, vidId, chunkNumber } = inputObj;
+  // //post each chunk, edit captions
+  // async postVidChunk() {
+  //   const { inputObj } = this.dataObject;
+  //   const { totalChunks, titleNormal, dateNormal, vidId, chunkNumber } = inputObj;
 
-    //get chunk form
-    const formModel = new TG({ inputObj: inputObj });
-    const chunkForm = await formModel.getChunkForm();
+  //   //get chunk form
+  //   const formModel = new TG({ inputObj: inputObj });
+  //   const chunkForm = await formModel.getChunkForm();
 
-    // console.log("!!!!!!CHUNK FORM");
-    // console.log(chunkForm);
+  //   // console.log("!!!!!!CHUNK FORM");
+  //   // console.log(chunkForm);
 
-    console.log("Uploading chunk " + (chunkNumber + 1) + " of " + totalChunks);
+  //   console.log("Uploading chunk " + (chunkNumber + 1) + " of " + totalChunks);
 
-    //post chunk
-    const postModel = new TgReq({ form: chunkForm });
-    const chunkData = await postModel.tgVidFS(TgReq.tokenIndex);
-    if (!chunkData || !chunkData.result) return null;
+  //   //post chunk
+  //   const postModel = new TgReq({ form: chunkForm });
+  //   const chunkData = await postModel.tgVidFS(TgReq.tokenIndex);
+  //   if (!chunkData || !chunkData.result) return null;
 
-    //label the chunk (add caption)
-    const caption = titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + vidId + ".mp4; [" + (chunkNumber + 1) + " of " + totalChunks + "]";
+  //   //label the chunk (add caption)
+  //   const caption = titleNormal + "\n" + "<i>" + dateNormal + "</i>" + "\n" + "VIDEO: " + vidId + ".mp4; [" + (chunkNumber + 1) + " of " + totalChunks + "]";
 
-    //build edit caption params
-    const editParams = {
-      chat_id: chunkData.result.chat.id,
-      message_id: chunkData.result.message_id,
-      caption: caption,
-      parse_mode: "HTML",
-    };
+  //   //build edit caption params
+  //   const editParams = {
+  //     chat_id: chunkData.result.chat.id,
+  //     message_id: chunkData.result.message_id,
+  //     caption: caption,
+  //     parse_mode: "HTML",
+  //   };
 
-    const paramObj = {
-      params: editParams,
-      command: "editMessageCaption",
-    };
+  //   const paramObj = {
+  //     params: editParams,
+  //     command: "editMessageCaption",
+  //   };
 
-    //edit caption
-    const editModel = new TgReq({ inputObj: paramObj });
-    const editChunkData = await editModel.tgPost(TgReq.tokenIndex);
-    if (!editChunkData || !editChunkData.result) return null;
+  //   //edit caption
+  //   const editModel = new TgReq({ inputObj: paramObj });
+  //   const editChunkData = await editModel.tgPost(TgReq.tokenIndex);
+  //   if (!editChunkData || !editChunkData.result) return null;
 
-    //return chunk data
-    return chunkData;
-  }
+  //   //return chunk data
+  //   return chunkData;
+  // }
 
-  async getChunkForm() {
-    const { inputObj } = this.dataObject;
-    const { savePath, tgUploadId, thumbnailPath, start, end, chunkNumber, totalChunks } = inputObj;
+  // async getChunkForm() {
+  //   const { inputObj } = this.dataObject;
+  //   const { savePath, tgUploadId, thumbnailPath, start, end, chunkNumber, totalChunks } = inputObj;
 
-    // console.log("!!!!!!INPUT OBJ  ");
-    // console.log(inputObj);
+  //   // console.log("!!!!!!INPUT OBJ  ");
+  //   // console.log(inputObj);
 
-    const readStream = fs.createReadStream(savePath, { start: start, end: end - 1 });
+  //   const readStream = fs.createReadStream(savePath, { start: start, end: end - 1 });
 
-    // Create form data for this chunk
-    const formData = new FormData();
-    formData.append("chat_id", tgUploadId);
-    formData.append("video", readStream, {
-      filename: `chunk_${chunkNumber}_of_${totalChunks}.mp4`,
-      knownLength: end - start,
-    });
+  //   // Create form data for this chunk
+  //   const formData = new FormData();
+  //   formData.append("chat_id", tgUploadId);
+  //   formData.append("video", readStream, {
+  //     filename: `chunk_${chunkNumber}_of_${totalChunks}.mp4`,
+  //     knownLength: end - start,
+  //   });
 
-    //set setting for auto play / streaming
-    formData.append("supports_streaming", "true");
-    formData.append("width", "1280");
-    formData.append("height", "720");
+  //   //set setting for auto play / streaming
+  //   formData.append("supports_streaming", "true");
+  //   formData.append("width", "1280");
+  //   formData.append("height", "720");
 
-    //add thumbnail
-    formData.append("thumb", fs.createReadStream(thumbnailPath));
+  //   //add thumbnail
+  //   formData.append("thumb", fs.createReadStream(thumbnailPath));
 
-    return formData;
-  }
+  //   return formData;
+  // }
 }
 
 export default TG;
