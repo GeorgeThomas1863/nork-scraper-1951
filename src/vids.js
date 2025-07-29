@@ -403,14 +403,14 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
     tgUploadId: tgUploadId,
   };
 
-  const vidForm = await buildVidForm(formParams);
+  const form = await buildVidForm(formParams);
   // if (!vidForm) return null;
 
   // console.log("VID FORM");
   // console.log(vidForm);
 
   //STEP 3: UPLOAD THE VID
-  const uploadModel = new TG({ form: vidForm });
+  const uploadModel = new TG({ form: form });
   const uploadData = await uploadModel.postVidTG();
   if (!uploadData || !uploadData.ok) return null;
 

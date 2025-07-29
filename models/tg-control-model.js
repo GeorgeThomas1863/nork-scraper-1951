@@ -249,9 +249,8 @@ class TG {
   //POST VIDS
 
   async postVidTG() {
-    const { vidForm } = this.dataObject;
-
-    const postModel = new TgReq({ form: vidForm });
+    //passes the form
+    const postModel = new TgReq(this.dataObject);
     const vidData = await postModel.tgVidFS(TgReq.tokenIndex);
     return vidData;
   }
