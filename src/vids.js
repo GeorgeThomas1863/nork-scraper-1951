@@ -232,27 +232,28 @@ export const uploadVidPageArrayTG = async (inputArray) => {
     //stop if needed
     if (!scrapeState.scrapeActive) return uploadDataArray;
     try {
+      const vidPageObj = sortArray[i];
+
       //double check vid page not already uploaded
-      console.log("UPLOADING VID PAGE");
-      console.log(sortArray[i]);
+      const checkModel = new dbModel(vidPageObj, vidPagesUploaded);
+      await checkModel.urlNewCheck();
 
-      // const vidUploadObj = await uploadVidFS(sortArray[i]);
-      // if (!vidUploadObj) continue;
+      //upload vid page
+      const vidUploadObj = await uploadVidFS(vidPageObj);
+      if (!vidUploadObj || !vidUploadObj.uploadVidDataArray) continue;
 
-      // //STORE BOTH VIDPAGE AND VID HERE (STARTING WITH VIDPAGE)
-      // const vidPageObj = { ...sortArray[i], ...vidUploadObj.uploadVidDataArray };
+      //STORE BOTH VIDPAGE AND VID HERE (STARTING WITH VIDPAGE)
+      const vidPageStoreObj = { ...vidPageObj, ...vidUploadObj.uploadVidDataArray };
+      console.log("VID PAGE STORE OBJ");
+      console.log(vidPageStoreObj);
 
-      // const vidPageStoreModel = new dbModel(vidPageObj, vidPagesUploaded);
-      // const vidPageStoreData = await vidPageStoreModel.storeUniqueURL();
-      // console.log("VID PAGE STORE DATA");
-      // console.log(vidPageStoreData);
+      //store vid page
+      const vidPageStoreModel = new dbModel(vidPageStoreObj, vidPagesUploaded);
+      const vidPageStoreData = await vidPageStoreModel.storeUniqueURL();
+      console.log("VID PAGE STORE DATA");
+      console.log(vidPageStoreData);
 
-      // const storeModel = new dbModel(vidUploadObj, vidPagesUploaded);
-      // const storeData = await storeModel.storeUniqueURL();
-      // console.log("VID PAGE STORE DATA");
-      // console.log(storeData);
-
-      // uploadVidPageArray.push(vidUploadObj);
+      uploadVidPageArray.push(vidPageStoreObj);
     } catch (e) {
       console.log(e);
       // console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
@@ -328,19 +329,12 @@ export const uploadVidFS = async (inputObj) => {
       uploadVidDataArray.push(uploadVidData);
     }
 
-    const returnObj = { ...uploadObj, uploadVidDataArray: uploadVidDataArray };
+    const storeObj = { ...uploadObj, uploadVidDataArray: uploadVidDataArray };
 
-    return returnObj;
+    //store vid and return data regardless if store fails (bc not unique)
+    await storeVidUpload(storeObj);
 
-    // // console.log("STORE OBJ");
-    // // console.log(storeObj);
-
-    // const storeModel = new dbModel(storeObj, vidsUploaded);
-    // const storeData = await storeModel.storeUniqueURL();
-    // console.log("VID STORE DATA");
-    // console.log(storeData);
-
-    // return storeObj;
+    return storeObj;
   } catch (e) {
     console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
   }
@@ -379,12 +373,6 @@ export const getVidChunksFromFolder = async (inputObj) => {
 export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
   if (!inputArray || !inputArray.length || !inputObj);
   const { uploadIndex, chunksToUpload, vidSaveFolder, vidName, tgUploadId, title, type, vidSizeBytes, url } = inputObj;
-
-  // console.log(`UPLOADING VID CHUNK ${uploadIndex} OF ${chunksToUpload}`);
-
-  // console.log("UPLOAD COMBINED VID CHUNK");
-  // console.log(inputArray);
-  // console.log(inputObj);
 
   const chunkFileName = `${vidName}_${uploadIndex}.mp4`;
   const combineVidPath = `${vidSaveFolder}${chunkFileName}`;
@@ -425,9 +413,6 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
     throw error;
   }
 
-  // console.log("UPLOAD VID POSTED DATA");
-  // console.log(uploadData);
-
   //STEP 4: EDIT VID CAPTION
   //just build stupid caption text here
   const titleLabel = `<b>KCNA Vid Titled:</b>`;
@@ -458,9 +443,6 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
   returnObj.caption = captionText;
   returnObj.chunkFileName = chunkFileName;
   returnObj.combineVidPath = combineVidPath;
-
-  // console.log("RETURN OBJ");
-  // console.log(returnObj);s
 
   return returnObj;
 };
@@ -552,6 +534,25 @@ export const buildVidForm = async (inputObj) => {
   }
 
   return formData;
+};
+
+//in separate function to avoid throwing error / failing to return if vid already stored
+export const storeVidUpload = async (inputObj) => {
+  if (!inputObj) return null;
+  const { vidsUploaded } = CONFIG;
+
+  try {
+    const storeModel = new dbModel(inputObj, vidsUploaded);
+    const storeData = await storeModel.storeUniqueURL();
+
+    console.log("VID STORED");
+    console.log(storeData);
+
+    return true;
+  } catch (e) {
+    console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    return null;
+  }
 };
 
 //---------------------------
