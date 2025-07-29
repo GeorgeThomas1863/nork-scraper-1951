@@ -136,14 +136,14 @@ class TgReq {
     }
   }
 
-  async tgVidFS(tokenIndex = 0) {
+  async tgVidFS(tokenIndex = 0, onProgress = null) {
     const { form } = this.dataObject;
 
     // console.log("!!!!!!TG VID FS OBJECT");
     // console.log(this.dataObject);
 
-    console.log("!!!!!!FORM");
-    console.log(form);
+    // console.log("!!!!!!FORM");
+    // console.log(form);
 
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/sendVideo`;
@@ -155,10 +155,30 @@ class TgReq {
         headers: form.getHeaders(),
         maxBodyLength: Infinity,
         maxContentLength: Infinity,
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.lengthComputable) {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            const mbLoaded = (progressEvent.loaded / (1024 * 1024)).toFixed(2);
+            const mbTotal = (progressEvent.total / (1024 * 1024)).toFixed(2);
+
+            console.log(`Upload Progress: ${percentCompleted}% (${mbLoaded}MB / ${mbTotal}MB)`);
+
+            // Call custom progress callback if provided
+            if (onProgress && typeof onProgress === "function") {
+              onProgress({
+                percent: percentCompleted,
+                loaded: progressEvent.loaded,
+                total: progressEvent.total,
+                mbLoaded: parseFloat(mbLoaded),
+                mbTotal: parseFloat(mbTotal),
+              });
+            }
+          }
+        },
       });
 
-      console.log("!!!!!!RES");
-      console.log(res.data);
+      // console.log("!!!!!!RES");
+      // console.log(res.data);
 
       return res.data;
     } catch (e) {

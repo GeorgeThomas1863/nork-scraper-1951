@@ -251,7 +251,10 @@ class TG {
   async postVidTG() {
     //passes the form
     const postModel = new TgReq(this.dataObject);
-    const vidData = await postModel.tgVidFS(TgReq.tokenIndex);
+    const vidData = await postModel.tgVidFS(TgReq.tokenIndex, (progress) => {
+      console.log(`UPLOAD PROGRESS: ${progress.percent}%`);
+      console.log(`UPLOAD SIZE: ${progress.mbLoaded}MB / ${progress.mbTotal}MB`);
+    });
     return vidData;
   }
 
