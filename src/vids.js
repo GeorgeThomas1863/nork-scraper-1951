@@ -242,13 +242,10 @@ export const uploadVidPageArrayTG = async (inputArray) => {
       const vidUploadObj = await uploadVidFS(vidPageObj);
       if (!vidUploadObj || !vidUploadObj.uploadVidDataArray) continue;
 
-      //just store first vid upload data here (all stored in vidsUploaded)
+      //store vid page [just store first vid upload data here (all stored in vidsUploaded)]
       const storeObj = { ...vidPageObj };
-      storeObj.uploadVidDataItem = vidUploadObj.uploadVidDataArray[0];
-      // console.log("VID PAGE STORE OBJ");
-      // console.log(storeObj);
+      storeObj.uploadVidDataItem = vidUploadObj?.uploadVidDataArray[0] || null;
 
-      //store vid page
       const vidPageStoreModel = new dbModel(storeObj, vidPagesUploaded);
       const vidPageStoreData = await vidPageStoreModel.storeUniqueURL();
       console.log("VID PAGE STORE DATA");
