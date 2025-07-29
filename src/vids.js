@@ -268,30 +268,44 @@ export const uploadVidFS = async (inputObj) => {
   const { url, vidURL } = inputObj;
   const { tgUploadId, uploadChunkSize, vidsDownloaded } = CONFIG;
 
-  console.log("UPLOAD VID FS!!!!!!!!!!!!!");
-  console.log(inputObj);
+  // console.log("UPLOAD VID FS!!!!!!!!!!!!!");
+  // console.log(inputObj);
 
   //get vidObj data
   const lookupParams = {
     keyToLookup: "url",
     itemValue: vidURL,
   };
+
   const vidObjModel = new dbModel(lookupParams, vidsDownloaded);
   const vidObjData = await vidObjModel.getUniqueItem();
+  if (!vidObjData) return null;
 
-  console.log("VID OBJ DATA");
-  console.log(vidObjData);
+  //get text / date inputs
+  const normalModel = new UTIL({ inputObj: vidObjData });
+  const uploadObj = await normalModel.normalizeInputsTG();
+  if (!uploadObj) return null;
 
-  // const vidFolderExists = fs.existsSync(vidSaveFolder);
-  // if (!vidFolderExists) {
-  //   const error = new Error("VID NOT YET DOWNLOADED");
-  //   error.url = url;
-  //   error.function = "uploadVidFS";
-  //   throw error;
-  // }
+  const { vidSaveFolder } = uploadObj;
 
-  // const normalModel = new UTIL({ inputObj: inputObj });
-  // const normalObj = await normalModel.normalizeInputsTG();
+  //check if vid folder exists
+  if (!fs.existsSync(vidSaveFolder)) {
+    const error = new Error("VID FOLDER DOESNT EXIST");
+    error.url = url;
+    error.function = "uploadVidFS";
+    throw error;
+  }
+
+  //add channel upload
+  uploadObj.tgUploadId = tgUploadId;
+  uploadObj.scrapeId = scrapeState.scrapeId;
+
+  console.log("UPLOAD OBJ");
+  console.log(uploadObj);
+
+  //upload title
+  const tgModel = new TG({ inputObj: uploadObj });
+  await tgModel.postTitleTG();
 
   // const uploadObj = { ...inputObj, ...normalObj };
   // uploadObj.tgUploadId = tgUploadId;
