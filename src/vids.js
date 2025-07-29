@@ -245,8 +245,8 @@ export const uploadVidPageArrayTG = async (inputArray) => {
       //just store first vid upload data here (all stored in vidsUploaded)
       const storeObj = { ...vidPageObj };
       storeObj.uploadVidDataItem = vidUploadObj.uploadVidDataArray[0];
-      console.log("VID PAGE STORE OBJ");
-      console.log(storeObj);
+      // console.log("VID PAGE STORE OBJ");
+      // console.log(storeObj);
 
       //store vid page
       const vidPageStoreModel = new dbModel(storeObj, vidPagesUploaded);
