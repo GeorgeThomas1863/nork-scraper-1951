@@ -265,7 +265,7 @@ export const uploadVidPageArrayTG = async (inputArray) => {
 
 export const uploadVidFS = async (inputObj) => {
   if (!inputObj) return null;
-  const { url, vidURL } = inputObj;
+  const { url, vidURL, title } = inputObj;
   const { tgUploadId, uploadChunkSize, vidsDownloaded } = CONFIG;
 
   // console.log("UPLOAD VID FS!!!!!!!!!!!!!");
@@ -280,6 +280,9 @@ export const uploadVidFS = async (inputObj) => {
   const vidObjModel = new dbModel(lookupParams, vidsDownloaded);
   const vidObjData = await vidObjModel.getUniqueItem();
   if (!vidObjData) return null;
+
+  //add title
+  vidObjData.title = title;
 
   //get text / date inputs
   const normalModel = new UTIL({ inputObj: vidObjData });
@@ -306,6 +309,13 @@ export const uploadVidFS = async (inputObj) => {
   //upload title
   const tgModel = new TG({ inputObj: uploadObj });
   await tgModel.postTitleTG();
+
+  //get vid chunks
+  const vidChunkArray = await getVidChunksFromFolder(uploadObj);
+  if (!vidChunkArray || !vidChunkArray.length) return null;
+
+  console.log("VID CHUNK ARRAY");
+  console.log(vidChunkArray);
 
   // const uploadObj = { ...inputObj, ...normalObj };
   // uploadObj.tgUploadId = tgUploadId;
