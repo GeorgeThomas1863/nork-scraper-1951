@@ -327,11 +327,10 @@ export const uploadVidFS = async (inputObj) => {
     try {
       uploadObj.uploadIndex = i + 1;
       const uploadVidData = await uploadCombinedVidChunk(vidChunkArray[i], uploadObj);
-
-      // console.log("UPLOAD VID DATA");
-      // console.log(uploadVidData);
-
       if (!uploadVidData) continue;
+
+      console.log("UPLOAD VID DATA");
+      console.log(uploadVidData);
 
       // console.log("RETURN PARAMS");
       // console.log(uploadVidData);
@@ -385,8 +384,8 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
   // console.log(inputArray);
   // console.log(inputObj);
 
-  const outputFileName = `${vidName}_${uploadIndex}.mp4`;
-  const combineVidPath = `${vidSaveFolder}${outputFileName}`;
+  const chunkFileName = `${vidName}_${uploadIndex}.mp4`;
+  const combineVidPath = `${vidSaveFolder}${chunkFileName}`;
 
   //STEP 1: COMBINE VID CHUNKS
   const combineChunkParams = {
@@ -395,7 +394,7 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
     vidName: vidName,
     uploadIndex: uploadIndex,
     combineVidPath: combineVidPath,
-    outputFileName: outputFileName,
+    chunkFileName: chunkFileName,
     vidSizeBytes: vidSizeBytes,
   };
 
@@ -404,7 +403,7 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
   //STEP 2: BUILD FORM
   const formParams = {
     uploadPath: combineVidPath,
-    uploadFileName: outputFileName,
+    uploadFileName: chunkFileName,
     tgUploadId: tgUploadId,
   };
 
@@ -423,14 +422,19 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
     throw error;
   }
 
-  console.log("UPLOAD VID POSTED DATA");
-  console.log(uploadData);
+  // console.log("UPLOAD VID POSTED DATA");
+  // console.log(uploadData);
 
   //STEP 4: EDIT VID CAPTION
   //just build stupid caption text here
   const titleNormal = `<b>${title} ${type}</b>`;
   const titleStr = "🇰🇵 🇰🇵 🇰🇵";
-  const captionText = `<b>Chunk ${uploadIndex} of ${chunksToUpload}</b>\n\n${title} ${titleNormal} ${titleStr}`;
+  let captionText = "";
+  if (chunksToUpload > 1) {
+    captionText = `<b>Chunk ${uploadIndex} of ${chunksToUpload}</b>\n\n${titleStr} ${titleNormal} ${titleStr}`;
+  } else {
+    captionText = `<b>${titleStr} ${titleNormal} ${titleStr}</b>`;
+  }
 
   const editCaptionParams = {
     editChannelId: uploadData.result.chat.id,
@@ -447,10 +451,13 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
 
   fs.unlinkSync(combineVidPath);
 
-  const returnObj = { ...inputObj, ...uploadData.result };
+  const returnObj = { ...uploadData };
+  returnObj.caption = captionText;
+  returnObj.chunkFileName = chunkFileName;
+  returnObj.combineVidPath = combineVidPath;
 
-  console.log("RETURN OBJ");
-  console.log(returnObj);
+  // console.log("RETURN OBJ");
+  // console.log(returnObj);
 
   return returnObj;
 };
@@ -458,7 +465,7 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
 //loop through and upload in groups of 10 (5 min vids)
 export const combineVidChunks = async (inputObj) => {
   if (!inputObj) return null;
-  const { vidSaveFolder, vidName, inputArray, uploadIndex, combineVidPath, outputFileName, vidSizeBytes } = inputObj;
+  const { vidSaveFolder, inputArray, combineVidPath, vidSizeBytes } = inputObj;
 
   // console.log("COMBINE VID CHUNKS");
   // console.log(inputObj);
