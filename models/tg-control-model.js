@@ -259,6 +259,26 @@ class TG {
     return vidData;
   }
 
+  async editVidCaption() {
+    const { editChannelId, messageId, captionText } = this.dataObject;
+
+    const params = {
+      chat_id: editChannelId,
+      message_id: messageId,
+      caption: captionText,
+      parse_mode: "HTML",
+    };
+
+    const paramObj = {
+      params: params,
+      command: "editMessageCaption",
+    };
+
+    const editModel = new TgReq({ inputObj: paramObj });
+    const editData = await editModel.tgPost(TgReq.tokenIndex);
+    return editData;
+  }
+
   // async postVidTG() {
   //   const { inputObj } = this.dataObject;
   //   const { vidSizeBytes, thumbnail } = inputObj;

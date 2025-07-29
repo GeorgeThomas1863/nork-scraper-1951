@@ -158,8 +158,8 @@ class TgReq {
     // Progress logger every 5 seconds
     const progressInterval = setInterval(() => {
       const elapsed = (Date.now() - startTime) / 1000;
-      console.log(`Seconds Elapsed: ${elapsed.toFixed(3)}s`);
-    }, 2000); // Every 2 seconds
+      console.log(`Seconds Elapsed: ${elapsed.toFixed(1)}s`);
+    }, 5000); // Every 2 seconds
 
     try {
       const res = await axios.post(url, form, {

@@ -324,20 +324,25 @@ export const uploadVidFS = async (inputObj) => {
   const uploadVidDataArray = [];
   for (let i = 0; i < vidChunkArray.length; i++) {
     if (!scrapeState.scrapeActive) return null;
+    try {
+      uploadObj.uploadIndex = i + 1;
+      const uploadVidData = await uploadCombinedVidChunk(vidChunkArray[i], uploadObj);
 
-    uploadObj.uploadIndex = i + 1;
-    const uploadVidData = await uploadCombinedVidChunk(vidChunkArray[i], uploadObj);
+      // console.log("UPLOAD VID DATA");
+      // console.log(uploadVidData);
 
-    // console.log("UPLOAD VID DATA");
-    // console.log(uploadVidData);
+      if (!uploadVidData) continue;
 
-    if (!uploadVidData) continue;
+      // console.log("RETURN PARAMS");
+      // console.log(uploadVidData);
 
-    // console.log("RETURN PARAMS");
-    // console.log(uploadVidData);
-
-    uploadVidDataArray.push(uploadVidData);
+      uploadVidDataArray.push(uploadVidData);
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
   }
+
+  return uploadVidDataArray;
 };
 
 export const getVidChunksFromFolder = async (inputObj) => {
@@ -372,9 +377,9 @@ export const getVidChunksFromFolder = async (inputObj) => {
 
 export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
   if (!inputArray || !inputArray.length || !inputObj);
-  const { uploadIndex, chunksToUpload, vidSaveFolder, vidName, tgUploadId, title, type, vidSizeBytes } = inputObj;
+  const { uploadIndex, chunksToUpload, vidSaveFolder, vidName, tgUploadId, title, type, vidSizeBytes, url } = inputObj;
 
-  console.log(`UPLOADING VID CHUNK ${uploadIndex} OF ${chunksToUpload}`);
+  // console.log(`UPLOADING VID CHUNK ${uploadIndex} OF ${chunksToUpload}`);
 
   // console.log("UPLOAD COMBINED VID CHUNK");
   // console.log(inputArray);
@@ -409,37 +414,46 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
   //STEP 3: UPLOAD THE VID
   const uploadModel = new TG({ form: form });
   const uploadData = await uploadModel.postVidTG();
-  // if (!uploadData || !uploadData.ok) return null;
+
+  //throw error if vid upload fails
+  if (!uploadData || !uploadData.ok) {
+    const error = new Error("FAILED TO UPLOAD COMBINED VID CHUNK");
+    error.url = url;
+    error.function = "uploadCombinedVidChunk";
+    throw error;
+  }
 
   console.log("UPLOAD VID POSTED DATA");
   console.log(uploadData);
 
   //STEP 4: EDIT VID CAPTION
-  // const captionParams = {
-  //   uploadIndex: uploadIndex,
-  //   chunksToUpload: chunksToUpload,
-  //   title: title,
-  //   type: type,
-  // };
+  //just build stupid caption text here
+  const titleNormal = `<b>${title} ${type}</b>`;
+  const titleStr = "🇰🇵 🇰🇵 🇰🇵";
+  const captionText = `<b>Chunk ${uploadIndex} of ${chunksToUpload}</b>\n\n${title} ${titleNormal} ${titleStr}`;
 
-  // const vidCaption = await buildCaptionText(captionParams, "vid");
-  // if (!vidCaption) return null;
+  const editCaptionParams = {
+    editChannelId: uploadData.result.chat.id,
+    messageId: uploadData.result.message_id,
+    captionText: captionText,
+  };
 
-  // const editCaptionParams = {
-  //   editChannelId: uploadData.result.chat.id,
-  //   messageId: uploadData.result.message_id,
-  //   caption: vidCaption,
-  // };
+  console.log("EDIT CAPTION PARAMS");
+  console.log(editCaptionParams);
 
-  // const editVidData = await tgEditMessageCaption(editCaptionParams);
-  // if (!editVidData || !editVidData.ok) return null;
+  const editCaptionModel = new TG(editCaptionParams);
+  const editCaptionData = await editCaptionModel.tgEditMessageCaption();
+  if (!editCaptionData || !editCaptionData.ok) return null;
 
   // //STEP 5: DELETE THE VID
-  // fs.unlinkSync(combineVidObj.uploadPath);
+  fs.unlinkSync(combineVidPath);
 
-  // const returnObj = { ...combineVidObj, ...uploadData.result };
+  const returnObj = { ...inputObj, ...uploadData.result };
 
-  // return returnObj;
+  console.log("RETURN OBJ");
+  console.log(returnObj);
+
+  return returnObj;
 };
 
 //loop through and upload in groups of 10 (5 min vids)
