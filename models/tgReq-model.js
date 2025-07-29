@@ -152,30 +152,13 @@ class TgReq {
 
     const totalMB = (totalLength / (1024 * 1024)).toFixed(2);
     const startTime = Date.now();
-    let bytes = 0;
 
     console.log(`STARTING UPLOAD OF ${totalMB}MB VIDEO...`);
 
-    // Track bytes as they're sent
-    form.on("data", (chunk) => {
-      bytes += chunk.length;
-    });
-
     // Progress logger every 5 seconds
     const progressInterval = setInterval(() => {
-      if (bytes > 0) {
-        const percent = Math.round((bytes * 100) / totalLength);
-        const mbUploaded = (bytes / (1024 * 1024)).toFixed(2);
-        const elapsed = (Date.now() - startTime) / 1000;
-        const speedMBps = bytes / (1024 * 1024) / elapsed;
-
-        console.log("BYTES");
-        console.log(bytes);
-        console.log("TOTAL LENGTH");
-        console.log(totalLength);
-
-        console.log(`Upload Progress: ${percent}% (${mbUploaded}MB / ${totalMB}MB) - ${speedMBps.toFixed(2)} MB/s`);
-      }
+      const elapsed = (Date.now() - startTime) / 1000;
+      console.log(`Seconds Elapsed: ${elapsed.toFixed(3)}s`);
     }, 2000); // Every 2 seconds
 
     try {
