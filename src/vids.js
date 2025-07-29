@@ -303,8 +303,8 @@ export const uploadVidFS = async (inputObj) => {
   uploadObj.tgUploadId = tgUploadId;
   uploadObj.scrapeId = scrapeState.scrapeId;
 
-  console.log("UPLOAD OBJ");
-  console.log(uploadObj);
+  // console.log("UPLOAD OBJ");
+  // console.log(uploadObj);
 
   //upload title
   const tgModel = new TG({ inputObj: uploadObj });
@@ -314,8 +314,8 @@ export const uploadVidFS = async (inputObj) => {
   const vidChunkArray = await getVidChunksFromFolder(uploadObj);
   if (!vidChunkArray || !vidChunkArray.length) return null;
 
-  console.log("VID CHUNK ARRAY");
-  console.log(vidChunkArray);
+  // console.log("VID CHUNK ARRAY");
+  // console.log(vidChunkArray);
 
   // const uploadObj = { ...inputObj, ...normalObj };
   // uploadObj.tgUploadId = tgUploadId;

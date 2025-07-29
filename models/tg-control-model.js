@@ -82,7 +82,7 @@ class TG {
 
   async getTypeStr() {
     const { inputObj } = this.dataObject;
-    const { articleType, articleId, picSetId, vidPageId } = inputObj;
+    const { articleType, articleId, picSetId, vidId } = inputObj;
 
     if (articleType) {
       const articleTypeStr = await articleTypeTitleMap(articleType);
@@ -93,8 +93,8 @@ class TG {
       return "<b>TYPE:</b> Pic Set | ID: " + picSetId + "\n\n";
     }
 
-    if (vidPageId || vidPageId === 0) {
-      return "<b>TYPE:</b> Vid | ID: " + vidPageId + "\n\n";
+    if (vidId || vidId === 0) {
+      return "<b>TYPE:</b> Vid | ID: " + vidId + "\n\n";
     }
   }
 
