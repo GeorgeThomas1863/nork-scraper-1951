@@ -376,9 +376,12 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
 
   console.log(`UPLOADING VID CHUNK ${uploadIndex} OF ${chunksToUpload}`);
 
-  // console.log("UPLOAD COMBINED VID CHUNK");
-  // console.log(inputArray);
-  // console.log(inputObj);
+  console.log("UPLOAD COMBINED VID CHUNK");
+  console.log(inputArray);
+  console.log(inputObj);
+
+  const outputFileName = `${vidName}_${uploadIndex}.mp4`;
+  const combineVidPath = `${vidSaveFolder}${outputFileName}`;
 
   //STEP 1: COMBINE VID CHUNKS
   const combineChunkParams = {
@@ -386,6 +389,8 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
     vidSaveFolder: vidSaveFolder,
     vidName: vidName,
     uploadIndex: uploadIndex,
+    combineVidPath: combineVidPath,
+    outputFileName: outputFileName,
   };
 
   const combineVidObj = await combineVidChunks(combineChunkParams);
@@ -446,15 +451,18 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
 //loop through and upload in groups of 10 (5 min vids)
 export const combineVidChunks = async (inputObj) => {
   if (!inputObj) return null;
-  const { vidSaveFolder, vidName, inputArray, uploadIndex } = inputObj;
+  const { vidSaveFolder, vidName, inputArray, uploadIndex, combineVidPath, outputFileName } = inputObj;
 
   console.log("COMBINE VID CHUNKS");
   console.log(inputObj);
 
+  //check if vid already exists
+  if (fs.existsSync(combineVidPath)) {
+    return true;
+  }
+
   //define things
   const concatListPath = `${vidSaveFolder}concat_list.txt`;
-  const outputFileName = `${vidName}_${uploadIndex}.mp4`;
-  const combineVidPath = `${vidSaveFolder}${outputFileName}`;
 
   //CREATE THE CONCAT LIST
   try {
@@ -471,11 +479,6 @@ export const combineVidChunks = async (inputObj) => {
 
     await fsPromises.unlink(concatListPath);
 
-    const returnObj = {
-      uploadFileName: outputFileName,
-      uploadPath: combineVidPath,
-    };
-
     // Verify the combined video exists (async)
     try {
       await fsPromises.access(combineVidPath);
@@ -486,7 +489,7 @@ export const combineVidChunks = async (inputObj) => {
       throw error;
     }
 
-    return returnObj;
+    return true;
   } catch (e) {
     // Clean up concat list if it exists and there was an error
     try {
