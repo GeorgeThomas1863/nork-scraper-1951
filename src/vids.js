@@ -404,7 +404,7 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
   };
 
   const form = await buildVidForm(formParams);
-  // if (!vidForm) return null;
+  if (!form) return null;
 
   // console.log("VID FORM");
   // console.log(vidForm);
@@ -414,8 +414,8 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
   const uploadData = await uploadModel.postVidTG();
   if (!uploadData || !uploadData.ok) return null;
 
-  console.log("UPLOAD DATA");
-  console.log(uploadData);
+  // console.log("UPLOAD DATA");
+  // console.log(uploadData);
 
   //STEP 4: EDIT VID CAPTION
   // const captionParams = {

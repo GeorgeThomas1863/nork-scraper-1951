@@ -255,6 +255,10 @@ class TG {
       console.log(`UPLOAD PROGRESS: ${progress.percent}%`);
       console.log(`UPLOAD SIZE: ${progress.mbLoaded}MB / ${progress.mbTotal}MB`);
     });
+
+    console.log("VID DATA");
+    console.log(vidData);
+
     return vidData;
   }
 
