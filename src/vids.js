@@ -233,8 +233,12 @@ export const uploadVidPageArrayTG = async (inputArray) => {
     if (!scrapeState.scrapeActive) return uploadDataArray;
     try {
       const vidUploadObj = await uploadVidFS(sortArray[i]);
-      if (!vidUploadObj) continue;
+     
 
+      console.log("VID UPLOAD OBJ");
+      console.log(vidUploadObj)
+
+      //STORE REGARDLESS OF WHETHER RETURN (FIX THIS)
       const storeModel = new dbModel(vidUploadObj, vidPagesUploaded);
       const storeData = await storeModel.storeUniqueURL();
       console.log("VID PAGE STORE DATA");
@@ -323,11 +327,11 @@ export const uploadVidFS = async (inputObj) => {
     //store it
     if (!uploadVidDataArray) return null;
 
-    //STEP 3 STORE VID
+    //STEP 3 STORE to VID UPLOADED
     const storeObj = { ...uploadObj, uploadVidDataArray: uploadVidDataArray };
 
-    console.log("STORE OBJ");
-    console.log(storeObj);
+    // console.log("STORE OBJ");
+    // console.log(storeObj);
 
     const storeModel = new dbModel(storeObj, vidsUploaded);
     const storeData = await storeModel.storeUniqueURL();
@@ -337,6 +341,7 @@ export const uploadVidFS = async (inputObj) => {
     return storeObj;
   } catch (e) {
     console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    if (storeObj) return storeObj;
   }
 };
 
@@ -424,11 +429,11 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
 
   //STEP 4: EDIT VID CAPTION
   //just build stupid caption text here
-  const titleLabel = `Vid Titled:`;
+  const titleLabel = `<b>KCNA Vid Titled:</b>`;
   const titleStr = "🇰🇵 🇰🇵 🇰🇵";
   let captionText = "";
   if (chunksToUpload > 1) {
-    captionText = `<b>Chunk:</b> ${uploadIndex} of ${chunksToUpload}\n\n${titleLabel} <b>${title}</b> ${titleStr}`;
+    captionText = `<b>Chunk:</b> ${uploadIndex} of ${chunksToUpload}\n\n${titleLabel} ${title} ${titleStr}`;
   } else {
     captionText = `${titleLabel} <b>${title}</b> ${titleStr} `;
   }
