@@ -330,11 +330,14 @@ export const uploadVidFS = async (inputObj) => {
       const uploadVidData = await uploadCombinedVidChunk(vidChunkArray[i], uploadObj);
       if (!uploadVidData) continue;
 
-      console.log("UPLOAD VID DATA");
-      console.log(uploadVidData);
+      // console.log("UPLOAD VID DATA");
+      // console.log(uploadVidData);
 
       uploadVidDataArray.push(uploadVidData);
     }
+
+    console.log("UPLOAD VID DATA ARRAY");
+    console.log(uploadVidDataArray);
 
     //store it
     if (!uploadVidDataArray || uploadVidDataArray.length) return null;
@@ -439,13 +442,13 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
 
   //STEP 4: EDIT VID CAPTION
   //just build stupid caption text here
-  const titleNormal = `Video: <b>${title}</b>`;
+  const titleLabel = `<b>Video Titled:</b>`;
   const titleStr = "🇰🇵 🇰🇵 🇰🇵";
   let captionText = "";
   if (chunksToUpload > 1) {
-    captionText = `<b>Chunk:</b> ${uploadIndex} of ${chunksToUpload}\n\n ${titleNormal} ${titleStr}`;
+    captionText = `<b>Chunk:</b> ${uploadIndex} of ${chunksToUpload}\n\n${titleLabel} ${titleStr} ${title} ${titleStr}`;
   } else {
-    captionText = `${titleNormal} ${titleStr} `;
+    captionText = `${titleLabel} ${titleStr} ${title} ${titleStr} `;
   }
 
   const editCaptionParams = {
