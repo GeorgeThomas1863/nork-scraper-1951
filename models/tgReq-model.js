@@ -152,8 +152,8 @@ class TgReq {
         maxContentLength: Infinity,
       });
 
-      // console.log("!!!!!!RES");
-      // console.log(res.data);
+      console.log("!!!!!!RES");
+      console.log(res.data);
 
       return res.data;
     } catch (e) {

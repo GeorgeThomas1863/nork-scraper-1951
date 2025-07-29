@@ -474,8 +474,8 @@ export const combineVidChunks = async (inputObj) => {
     uploadPath: combineVidPath,
   };
 
-  console.log("RETURN OBJ");
-  console.log(returnObj);
+  // console.log("RETURN OBJ");
+  // console.log(returnObj);
 
   if (!returnObj || !fs.existsSync(combineVidPath)) {
     const error = new Error("COMBINE VID FUCKED, COMBINED VID DOESNT EXIST");
@@ -498,7 +498,6 @@ export const buildVidForm = async (inputObj) => {
   formData.append("chat_id", tgUploadId);
   formData.append("video", readStream, {
     filename: uploadFileName,
-    // knownLength: end - start,
   });
 
   //set setting for auto play / streaming
