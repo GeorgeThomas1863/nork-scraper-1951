@@ -267,7 +267,7 @@ export const uploadVidPageArrayTG = async (inputArray) => {
 export const uploadVidFS = async (inputObj) => {
   if (!inputObj) return null;
   const { url, vidURL, title } = inputObj;
-  const { tgUploadId, uploadChunkSize, vidsDownloaded } = CONFIG;
+  const { tgUploadId, vidsUploaded, vidsDownloaded } = CONFIG;
 
   // console.log("UPLOAD VID FS!!!!!!!!!!!!!");
   // console.log(inputObj);
@@ -312,19 +312,20 @@ export const uploadVidFS = async (inputObj) => {
   await tgModel.postTitleTG();
 
   //get vid chunks
-  const vidChunkArray = await getVidChunksFromFolder(uploadObj);
+  try {
+    const vidChunkArray = await getVidChunksFromFolder(uploadObj);
 
-  // console.log("VID CHUNK ARRAY");
-  // console.log(vidChunkArray);
+    // console.log("VID CHUNK ARRAY");
+    // console.log(vidChunkArray);
 
-  if (!vidChunkArray || !vidChunkArray.length) return null;
+    if (!vidChunkArray || !vidChunkArray.length) return null;
 
-  uploadObj.chunksToUpload = vidChunkArray.length;
+    uploadObj.chunksToUpload = vidChunkArray.length;
 
-  const uploadVidDataArray = [];
-  for (let i = 0; i < vidChunkArray.length; i++) {
-    if (!scrapeState.scrapeActive) return null;
-    try {
+    const uploadVidDataArray = [];
+    for (let i = 0; i < vidChunkArray.length; i++) {
+      if (!scrapeState.scrapeActive) return null;
+
       uploadObj.uploadIndex = i + 1;
       const uploadVidData = await uploadCombinedVidChunk(vidChunkArray[i], uploadObj);
       if (!uploadVidData) continue;
@@ -332,16 +333,26 @@ export const uploadVidFS = async (inputObj) => {
       console.log("UPLOAD VID DATA");
       console.log(uploadVidData);
 
-      // console.log("RETURN PARAMS");
-      // console.log(uploadVidData);
-
       uploadVidDataArray.push(uploadVidData);
-    } catch (e) {
-      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
-  }
 
-  return uploadVidDataArray;
+    //store it
+    if (!uploadVidDataArray || uploadVidDataArray.length) return null;
+
+    //STEP 3 STORE VID UPLOAD
+    const storeObj = { ...inputObj, uploadVidDataArray: uploadVidDataArray };
+
+    console.log("STORE OBJ");
+    console.log(storeObj);
+
+    const storeModel = new dbModel(storeObj, vidsUploaded);
+    const storeData = await storeModel.storeUniqueURL();
+    console.log(storeData);
+
+    return storeObj;
+  } catch (e) {
+    console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+  }
 };
 
 export const getVidChunksFromFolder = async (inputObj) => {
@@ -398,7 +409,8 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
     vidSizeBytes: vidSizeBytes,
   };
 
-  await combineVidChunks(combineChunkParams);
+  const combineVidObj = await combineVidChunks(combineChunkParams);
+  if (!combineVidObj) return null;
 
   //STEP 2: BUILD FORM
   const formParams = {
@@ -427,13 +439,13 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
 
   //STEP 4: EDIT VID CAPTION
   //just build stupid caption text here
-  const titleNormal = `<b>Video Titled:</b>  ${title}`;
-  // const titleStr = "🇰🇵 🇰🇵 🇰🇵";
+  const titleNormal = `Video: <b>${title}</b>`;
+  const titleStr = "🇰🇵 🇰🇵 🇰🇵";
   let captionText = "";
   if (chunksToUpload > 1) {
-    captionText = `<b>Chunk:</b> ${uploadIndex} of ${chunksToUpload}\n\n ${titleNormal}`;
+    captionText = `<b>Chunk:</b> ${uploadIndex} of ${chunksToUpload}\n\n ${titleNormal} ${titleStr}`;
   } else {
-    captionText = titleNormal;
+    captionText = `${titleNormal} ${titleStr} `;
   }
 
   const editCaptionParams = {
@@ -451,13 +463,13 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
 
   fs.unlinkSync(combineVidPath);
 
-  const returnObj = { ...uploadData };
+  const returnObj = { ...combineVidObj, ...uploadData };
   returnObj.caption = captionText;
   returnObj.chunkFileName = chunkFileName;
   returnObj.combineVidPath = combineVidPath;
 
   // console.log("RETURN OBJ");
-  // console.log(returnObj);
+  // console.log(returnObj);s
 
   return returnObj;
 };
