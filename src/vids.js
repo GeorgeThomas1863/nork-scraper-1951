@@ -391,8 +391,10 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
   const combineVidObj = await combineVidChunks(combineChunkParams);
   // if (!combineVidObj) return null;
 
-  console.log("COMBINE VID OBJ");
-  console.log(combineVidObj);
+  fs.unlinkSync(`${vidSaveFolder}concat_list.txt`);
+
+  // console.log("COMBINE VID OBJ");
+  // console.log(combineVidObj);
 
   //STEP 2: BUILD FORM
   const formParams = {
@@ -466,8 +468,6 @@ export const combineVidChunks = async (inputObj) => {
   //build ffmpeg cmd and execute
   const cmd = `ffmpeg -f concat -safe 0 -i ${vidSaveFolder}concat_list.txt -c copy ${combineVidPath}`;
   await execAsync(cmd);
-
-  fs.unlinkSync(`${vidSaveFolder}concat_list.txt`);
 
   const returnObj = {
     uploadFileName: outputFileName,
