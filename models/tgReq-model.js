@@ -136,7 +136,7 @@ class TgReq {
     }
   }
 
-  //with progress tracker
+  //with progress tracker ADD SOME SORT OF TIMEOUT MECHANISM
   async tgVidFS(tokenIndex = 0) {
     const { form } = this.dataObject;
 

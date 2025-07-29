@@ -330,20 +330,18 @@ export const uploadVidFS = async (inputObj) => {
       const uploadVidData = await uploadCombinedVidChunk(vidChunkArray[i], uploadObj);
       if (!uploadVidData) continue;
 
-      // console.log("UPLOAD VID DATA");
-      // console.log(uploadVidData);
-
       uploadVidDataArray.push(uploadVidData);
     }
 
     console.log("UPLOAD VID DATA ARRAY");
     console.log(uploadVidDataArray);
+    console.log(uploadVidDataArray.length);
 
     //store it
-    if (!uploadVidDataArray || uploadVidDataArray.length) return null;
+    // if (!uploadVidDataArray || uploadVidDataArray.length) return null;
 
     //STEP 3 STORE VID UPLOAD
-    const storeObj = { ...inputObj, uploadVidDataArray: uploadVidDataArray };
+    const storeObj = { ...uploadObj, uploadVidDataArray: uploadVidDataArray };
 
     console.log("STORE OBJ");
     console.log(storeObj);
@@ -466,7 +464,7 @@ export const uploadCombinedVidChunk = async (inputArray, inputObj) => {
 
   fs.unlinkSync(combineVidPath);
 
-  const returnObj = { ...combineVidObj, ...uploadData };
+  const returnObj = { ...combineVidObj, ...uploadData.result };
   returnObj.caption = captionText;
   returnObj.chunkFileName = chunkFileName;
   returnObj.combineVidPath = combineVidPath;
