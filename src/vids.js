@@ -313,6 +313,10 @@ export const uploadVidFS = async (inputObj) => {
 
   //get vid chunks
   const vidChunkArray = await getVidChunksFromFolder(uploadObj);
+
+  console.log("VID CHUNK ARRAY");
+  console.log(vidChunkArray);
+
   if (!vidChunkArray || !vidChunkArray.length) return null;
 
   uploadObj.chunksToUpload = vidChunkArray.length;
@@ -323,6 +327,10 @@ export const uploadVidFS = async (inputObj) => {
 
     uploadObj.uploadIndex = i + 1;
     const uploadVidData = await uploadCombinedVidChunk(vidChunkArray[i], uploadObj);
+
+    console.log("UPLOAD VID DATA");
+    console.log(uploadVidData);
+
     if (!uploadVidData) continue;
 
     // console.log("RETURN PARAMS");
