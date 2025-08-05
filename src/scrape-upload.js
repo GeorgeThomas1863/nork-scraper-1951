@@ -14,6 +14,7 @@ export const uploadNewTG = async () => {
   for (let i = 0; i < typeArr.length; i++) {
     if (!scrapeState.scrapeActive) return null;
     const type = typeArr[i];
+    if (type === "watch") continue;
     await uploadByTypeTG(type);
   }
 

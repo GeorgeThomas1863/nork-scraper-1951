@@ -40,6 +40,7 @@ export const deleteEmptyFilesFS = async () => {
       if (!scrapeState.scrapeActive) return true;
       //get file Array
       const type = typeArr[i];
+      if (type === "watch") continue;
       const { basePath } = await deleteItemsMap(type);
 
       const fileArray = await fs.readdir(basePath);
@@ -143,8 +144,9 @@ export const reDownloadMedia = async () => {
       if (!scrapeState.scrapeActive) return true;
       //get file Array
       const type = typeArr[i];
-      console.log("TYPE");
-      console.log(type);
+      if (type === "watch") continue;
+      // console.log("TYPE");
+      // console.log(type);
 
       const fileArrayFS = await getFileArrayFS(type);
 

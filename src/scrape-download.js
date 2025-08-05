@@ -26,6 +26,7 @@ export const findNewMedia = async () => {
   for (let i = 1; i < typeArr.length; i++) {
     if (!scrapeState.scrapeActive) return null;
     const findType = typeArr[i];
+    if (findType === "watch") continue;
     await getNewMediaData(findType);
   }
 
@@ -63,6 +64,7 @@ export const downloadNewMedia = async () => {
   for (let i = 1; i < typeArr.length; i++) {
     if (!scrapeState.scrapeActive) return null;
     const downloadType = typeArr[i];
+    if (downloadType === "watch") continue;
     await downloadNewMediaByType(downloadType);
   }
 

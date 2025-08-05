@@ -30,6 +30,7 @@ export const getNewListArray = async () => {
       //stop if needed
       if (!scrapeState.scrapeActive) return null;
       const type = typeArr[i];
+      if (type === "watch") continue;
       //could add return to an array but dont care
       await getNewListData(type);
     } catch (e) {
@@ -69,6 +70,7 @@ export const getNewContentArray = async () => {
       //stop if needed
       if (!scrapeState.scrapeActive) return null;
       const type = typeArr[i];
+      if (type === "watch") continue;
       //could add return to an array but dont care
       await getNewContentData(type);
     } catch (e) {
