@@ -6,6 +6,8 @@
 
 //BUILD KCTV INTO DISPLAY
 
+//Fixed pic data updating (had it off in scraper)
+
 //FIX HOW THE VID FAIL WORKS
 
 //KEEP TESTING SCHEDULER; RUN ON BLANK DB (AND SEE IF WORKS AFTER AN HOUR) [change interval test]
